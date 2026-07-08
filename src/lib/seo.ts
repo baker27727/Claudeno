@@ -27,12 +27,6 @@ export const SITE_SOCIAL: ReadonlyArray<string> = [
 ];
 
 /**
- * رابط SearchAction. يفترض أن الموقع يضم صفحة بحث على المسار
- * `/search` (ستُنفّذ بمهمة Pagefind). يمكن تجاوزه عند الحاجة.
- */
-export const SEARCH_PATH = "/search";
-
-/**
  * صورة OG الافتراضية للغة ما. تستعمل أنماط Track 2 (OG images satori):
  * `/og/default-<lang>.png`. عند غياب اللغة -> الإنجليزية.
  */
@@ -167,7 +161,12 @@ export function jsonLdScript(data: JsonLdObject | JsonLdObject[]): string {
 
 /**
  * schema.org/WebSite — يُصدَّر مرة واحدة على الصفحة الرئيسية.
- * `potentialAction` من نوع SearchAction يفعل Sitelinks Search Box.
+ *
+ * لا `potentialAction`/SearchAction هنا عمدًا: البحث في هذا الموقع نافذة
+ * Pagefind من جهة العميل فقط (src/islands/SearchPalette.svelte) — لا توجد
+ * صفحة نتائج بحث حقيقية على مسار قابل للزحف يمكن لـ Google استخدامه، وادّعاء
+ * SearchAction بدون ذلك يعطي بيانات منظّمة كاذبة. إن أُضيفت صفحة `/search`
+ * فعلية لاحقًا، يمكن إعادة `potentialAction` هنا.
  */
 export function websiteJsonLd(lang: Locale): JsonLdObject {
   return {
@@ -177,14 +176,6 @@ export function websiteJsonLd(lang: Locale): JsonLdObject {
     url: SITE_URL,
     inLanguage: lang,
     alternateName: "claude.mutaz.no",
-    potentialAction: {
-      "@type": "SearchAction",
-      target: {
-        "@type": "EntryPoint",
-        urlTemplate: `${SITE_URL}${SEARCH_PATH}?q={search_term_string}`,
-      },
-      "query-input": "required name=search_term_string",
-    },
   };
 }
 
@@ -228,7 +219,7 @@ export function courseJsonLd(module: ModuleLike, lang: Locale): JsonLdObject {
     name: m.title[lang],
     description: m.description[lang],
     provider: organizationJsonLd(),
-    url: absoluteUrl(`/${lang}/learn/${module.id}`),
+    url: absoluteUrl(`/${lang}/learn/${module.id}/`),
     inLanguage: lang,
     about,
     educationalLevel: LEVEL_TO_SCHEMA[m.level] ?? m.level,
@@ -239,7 +230,7 @@ export function courseJsonLd(module: ModuleLike, lang: Locale): JsonLdObject {
       inLanguage: lang,
       location: {
         "@type": "VirtualLocation",
-        url: absoluteUrl(`/${lang}/learn/${module.id}`),
+        url: absoluteUrl(`/${lang}/learn/${module.id}/`),
       },
     },
   };
@@ -310,8 +301,8 @@ export function moduleBreadcrumbs(
 ): Crumb[] {
   return [
     { name: homeLabel(lang), path: `/${lang}/` },
-    { name: lang === "no" ? "Lær" : "Learn", path: `/${lang}/learn` },
-    { name: moduleTitle, path: `/${lang}/learn/${moduleId}` },
+    { name: lang === "no" ? "Lær" : "Learn", path: `/${lang}/learn/` },
+    { name: moduleTitle, path: `/${lang}/learn/${moduleId}/` },
   ];
 }
 
@@ -322,6 +313,17 @@ export function pageBreadcrumbs(name: string, path: string, lang: Locale): Crumb
   return [
     { name: homeLabel(lang), path: `/${lang}/` },
     { name, path },
+  ];
+}
+
+/**
+ * راحة: يولّد BreadcrumbList موحد لمنشور مدونة: Home → Blog → Post.
+ */
+export function blogPostBreadcrumbs(postTitle: string, path: string, lang: Locale): Crumb[] {
+  return [
+    { name: homeLabel(lang), path: `/${lang}/` },
+    { name: lang === "no" ? "Bloggen" : "Blog", path: `/${lang}/blog/` },
+    { name: postTitle, path },
   ];
 }
 
@@ -341,7 +343,7 @@ export function itemListJsonLd(
     "@context": "https://schema.org",
     "@type": "ItemList",
     name: name ?? (lang === "no" ? "Endringslogg" : "Changelog"),
-    url: absoluteUrl(`/${lang}/changelog`),
+    url: absoluteUrl(`/${lang}/changelog/`),
     inLanguage: lang,
     itemListOrder: "https://schema.org/ItemListOrderDescending",
     numberOfItems: entries.length,
@@ -349,7 +351,7 @@ export function itemListJsonLd(
       "@type": "ListItem",
       position: index + 1,
       name: `v${entry.version}`,
-      url: absoluteUrl(`/${lang}/changelog`),
+      url: absoluteUrl(`/${lang}/changelog/`),
       description: entry.entry[lang],
       dateCreated: entry.date,
       version: entry.version,
@@ -386,7 +388,51 @@ export function webPageJsonLd(args: WebPageArgs): JsonLdObject {
 }
 
 // -------------------------------------------------------------------------
-// 8) OG / Twitter meta
+// 8) BlogPosting — منشورات المدونة
+// -------------------------------------------------------------------------
+
+export interface BlogPostingArgs {
+  title: string;
+  description: string;
+  lang: Locale;
+  path: string; // path-only, مثل /no/blog/v2-1-204-whats-new/
+  datePublished: string; // ISO datetime
+  author?: string;
+  tags?: string[];
+  image?: string; // path-only، اختياري — الافتراضي defaultOgImage(lang)
+}
+
+/**
+ * schema.org/BlogPosting — لكل منشور مدونة. `publisher` يشير إلى نفس
+ * Organization الثابت المستخدم في courseJsonLd.
+ */
+export function blogPostingJsonLd(args: BlogPostingArgs): JsonLdObject {
+  const url = absoluteUrl(args.path);
+  return {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    headline: args.title,
+    description: args.description,
+    inLanguage: args.lang,
+    url,
+    datePublished: args.datePublished,
+    dateModified: args.datePublished,
+    author: {
+      "@type": "Organization",
+      name: args.author ?? SITE_NAME,
+    },
+    publisher: organizationJsonLd(),
+    image: absoluteUrl(args.image ?? defaultOgImage(args.lang)),
+    ...(args.tags && args.tags.length > 0 ? { keywords: args.tags.join(", ") } : {}),
+    mainEntityOfPage: {
+      "@type": "WebPage",
+      "@id": url,
+    },
+  };
+}
+
+// -------------------------------------------------------------------------
+// 9) OG / Twitter meta
 // -------------------------------------------------------------------------
 
 /** قيم OpenGraph المدعومة هنا. */
