@@ -70,7 +70,3 @@ leser ved starten av hver økt.
 ## Nytt i v2.1.204
 
 **Hva er nytt (2.1.204):** Rettet en feil i hodeløse økter der hook-hendelser (f.eks. `SessionStart`-hooks) ikke strømmet riktig, noe som kunne føre til at eksterne arbeidsprosesser ble avsluttet som inaktive mens en hook fortsatt kjørte. Ingen endringer i innstillinger kreves for å dra nytte av denne rettelsen.
-
-## Nytt i v2.1.204
-
-**Oppdatering (v2.1.203):** Flere forbedringer for pålitelighet og synlighet ble lagt til for bakgrunns-/agent-økter: en advarsel vises nå når innloggingen din snart utløper (slik at bakgrunnsøkter ikke blir avbrutt), et grått ⏸-merke vises nå i bunnteksten i manuell tillatelsesmodus, og øktens ekstra arbeidskataloger eksponeres nå til MCP-tjenere via `roots/list` (med varsler ved endring). Også rettet: bakgrunnsøkter som ble ikke-responsive etter et foreldet daemon-økt-token, `claude agents`-økter som mistet kjørende underagenter ved gjenåpning, og en minne-/CPU-regresjon i kontekstbruk-indikatoren.

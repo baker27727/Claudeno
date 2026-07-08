@@ -75,7 +75,3 @@ Claude om å opprette underagenten for deg, eller lag markdown-filen i
 ## Nytt i v2.1.204
 
 **Hva er nytt (2.1.204):** I hodeløse (headless) økter strømmer nå hook-hendelser (inkludert `SessionStart`-hooks) riktig i stedet for å stoppe opp — dette retter en feil der eksterne arbeidsprosesser (remote workers) kunne bli avsluttet som inaktive midt i en hook, noe som kunne avbryte oppstart av underagenter i bakgrunns-/hodeløse arbeidsflyter.
-
-## Nytt i v2.1.204
-
-**Oppdatering (v2.1.204):** En feil som påvirket hodeløse økter er nå rettet — hook-hendelser (som `SessionStart`-hooks) strømmes nå korrekt under hodeløse økter. Tidligere kunne dette føre til at eksterne arbeidere ble avsluttet som inaktive midt i en hook, noe som avbrøt underagent-arbeid i bakgrunnen uventet.

@@ -68,7 +68,3 @@ reads at the start of every session.
 ## What's new in v2.1.204
 
 **What's new (2.1.204):** Fixed a bug affecting headless sessions where hook events (e.g. `SessionStart` hooks) did not stream properly, which could cause remote workers to be idle-reaped while a hook was still running. No settings changes are required to benefit from this fix.
-
-## What's new in v2.1.204
-
-**Update (v2.1.203):** Several reliability and visibility improvements landed for background/agent sessions: a warning now appears when your login is about to expire (so background sessions aren't interrupted), a grey ⏸ badge now shows in the footer when in manual permission mode, and the session's additional working directories are now exposed to MCP servers via `roots/list` (with change notifications). Also fixed: background sessions becoming unresponsive after a stale daemon session token, `claude agents` sessions losing running subagents when reopened, and a memory/CPU regression in the context-usage indicator.
