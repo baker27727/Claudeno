@@ -27,6 +27,13 @@ const SNAPSHOT_CHANGELOG_PATH = join(ROOT, "content/snapshots/upstream-changelog
 const ANTHROPIC_MODEL = process.env.ANTHROPIC_MODEL ?? "claude-sonnet-5";
 const DOCS_MAP_URL = "https://code.claude.com/docs/en/claude_code_docs_map.md";
 
+// Force every string scalar to be double-quoted on write. Without this, a
+// plain value like `date: 2026-07-08` round-trips as a YAML timestamp (not a
+// string) when re-parsed by Astro's content loader, breaking the `date:
+// z.string()` schema. Quoting everything sidesteps the whole class of
+// implicit-type-resolution bugs (dates, numeric-looking ids/versions, etc).
+const YAML_STRINGIFY_OPTS = { defaultStringType: "QUOTE_DOUBLE", defaultKeyType: "PLAIN" } as const;
+
 interface ContentPatch {
   file: string; // module slug, e.g. "cli-basics"
   en: string;
@@ -166,7 +173,7 @@ function applyChangelogEntry(entry: UpdatePlan["changelog_entry"]) {
     entry: { en: entry.en, no: entry.no },
     sources: [],
   });
-  writeFileSync(CHANGELOG_PATH, stringifyYaml(entries), "utf-8");
+  writeFileSync(CHANGELOG_PATH, stringifyYaml(entries, YAML_STRINGIFY_OPTS), "utf-8");
 }
 
 function applyGlossaryTerms(terms: GlossaryTerm[]) {
@@ -177,7 +184,7 @@ function applyGlossaryTerms(terms: GlossaryTerm[]) {
     if (known.has(term.en.toLowerCase())) continue;
     existing.push({ id: term.en.toLowerCase().replace(/\s+/g, "-"), en: term.en, no: term.no, note: term.note });
   }
-  writeFileSync(GLOSSARY_PATH, stringifyYaml(existing), "utf-8");
+  writeFileSync(GLOSSARY_PATH, stringifyYaml(existing, YAML_STRINGIFY_OPTS), "utf-8");
 }
 
 async function main() {
