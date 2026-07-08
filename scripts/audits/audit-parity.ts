@@ -1,10 +1,9 @@
 // audit-parity — fails if any "en" value lacks its "no" counterpart (or vice
-// versa) in any content file, or a module is missing en.mdx/no.mdx.
-// BLUEPRINT §4 / §8.
+// versa) in any content file, or a module/blog post is missing its en/no
+// counterpart file. BLUEPRINT §4 / §8.
 
-import { existsSync, readdirSync, readFileSync, statSync } from "node:fs";
+import { existsSync, readdirSync, statSync } from "node:fs";
 import { join } from "node:path";
-import { parse as parseYaml } from "yaml";
 import { CONTENT_ROOT, fail, listModuleDirs, pass, readYaml, walkBilingualParity } from "./_util.ts";
 
 const BLOG_ROOT = join(CONTENT_ROOT, "blog");
@@ -35,48 +34,21 @@ for (const file of ["glossary.yaml", "catalog.yaml", "changelog.yaml"]) {
   }
 }
 
-// §9: منشورات المدونة frontmatter ثنائي اللغة (title/description). نستخرج
-// الـ frontmatter (ما بين أول سطرين "---") ونمرّره عبر نفس قواعد التكافؤ.
+// Blog posts: each post directory (content/blog/<slug>/) must have both
+// en.md and no.md, the same pattern used for module lessons above — never a
+// single bilingual file (that used to render both languages stacked on one
+// page, which was a real SEO/readability bug).
 if (existsSync(BLOG_ROOT)) {
-  const posts = readdirSync(BLOG_ROOT).filter(
-    (name) => name.endsWith(".md") || name.endsWith(".mdx"),
-  );
-  for (const name of posts) {
-    const path = join(BLOG_ROOT, name);
-    if (!statSync(path).isFile()) continue;
-    const source = readFileSync(path, "utf-8");
-    const fm = extractFrontmatter(source);
-    if (!fm) {
-      errors.push(`blog/${name}: missing or malformed frontmatter (expected leading "---" block)`);
-      continue;
+  const postDirs = readdirSync(BLOG_ROOT).filter((name) => statSync(join(BLOG_ROOT, name)).isDirectory());
+  for (const dir of postDirs) {
+    const postPath = join(BLOG_ROOT, dir);
+    const hasEn = existsSync(join(postPath, "en.md")) || existsSync(join(postPath, "en.mdx"));
+    const hasNo = existsSync(join(postPath, "no.md")) || existsSync(join(postPath, "no.mdx"));
+    if (hasEn !== hasNo) {
+      errors.push(`blog/${dir}: has ${hasEn ? "en" : "no"} but is missing its ${hasEn ? "no" : "en"} counterpart`);
     }
-    let parsed: unknown;
-    try {
-      parsed = parseYaml(fm);
-    } catch (err) {
-      errors.push(`blog/${name}: frontmatter is not valid YAML (${(err as Error).message})`);
-      continue;
-    }
-    walkBilingualParity(parsed, `blog/${name}`, errors);
   }
 }
 
 if (errors.length > 0) fail("audit-parity", errors);
 pass("audit-parity");
-
-/**
- * يستخرج كتلة YAML frontmatter (ما بين أول سطرين "---" في بداية الملف).
- * يعيد `null` لو لم يبدأ الملف بـ "---".
- */
-function extractFrontmatter(source: string): string | null {
-  // تقليم BOM أو مسافات بيضاء بادئة.
-  const trimmed = source.replace(/^\uFEFF/, "");
-  if (!trimmed.startsWith("---")) return null;
-  const rest = trimmed.slice(3);
-  // السطر التالي يجب أن يكون newline ثم محتوى ثم "---" على سطر مستقل.
-  if (!rest.startsWith("\n") && !rest.startsWith("\r")) return null;
-  const closeRe = /\r?\n---\r?\n/;
-  const match = rest.match(closeRe);
-  if (!match || match.index === undefined) return null;
-  return rest.slice(0, match.index);
-}

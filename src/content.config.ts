@@ -136,16 +136,17 @@ const changelog = defineCollection({
 
 // -------------------------------------------------------------------------
 // blog — منشورات مدونة ثنائية اللغة (§2 + §9: تتبع كل تحديث لإصدار Claude Code).
-// title/description مفتوحان لـ MDX فيكتبهما الكاتب بأي شكل، لذا لا نقصرهما
-// على bilingual هنا — parity البصري يُفرض في صفحة الـ post نفسها (يختار القارئ
-// lang من [lang] param، والـ slug موحّد لكلا اللغتين).
+// نفس نمط دروس الوحدة (moduleDocs أعلاه): ملف en.md/no.mdx منفصل لكل لغة تحت
+// content/blog/<slug>/، وليس ملفًا واحدًا يحوي القسمين — حتى لا تُعرض الصفحة
+// بلغتين مخلوطتين معًا (كانت هذه مشكلة SEO/وضوح حقيقية قبل هذا التغيير).
+// title/description نصّان عاديان هنا (لا bilingual) لأن كل ملف بلغة واحدة أصلًا.
 // المسودة الافتراضية draft=true حتى يراجعها محرر بشري قبل النشر.
 // -------------------------------------------------------------------------
 const blog = defineCollection({
-  loader: glob({ base: "./content/blog", pattern: "**/*.{md,mdx}" }),
+  loader: glob({ base: "./content/blog", pattern: "**/{en,no}.{md,mdx}" }),
   schema: z.object({
-    title: bilingual,
-    description: bilingual,
+    title: z.string(),
+    description: z.string(),
     pubDate: z.string().datetime(),
     author: z.string().default("Claude Code Learn"),
     tags: z.array(z.string()).default([]),

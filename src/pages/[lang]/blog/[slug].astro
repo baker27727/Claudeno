@@ -1,37 +1,39 @@
 ---
 import { render } from "astro:content";
-import { getCollection } from "astro:content";
 import Base from "../../../layouts/Base.astro";
 import { LOCALES, useTranslations, formatDate, type Locale } from "../../../lib/i18n";
+import { getAllBlogPosts, postForLocale } from "../../../lib/blog";
 
 export async function getStaticPaths() {
-  const allPosts = await getCollection("blog");
+  const allPosts = await getAllBlogPosts();
   const isProd = import.meta.env.PROD;
-  const published = allPosts.filter((p) => !(isProd && p.data.draft));
-  // كل post يُولَّد مرتين — مرة لكل لغة — لكن الـ slug موحّد (§9: محتوى ثنائي اللغة
-  // في ملف واحد). نمرّر lang عبر props لاستخدامه في الترجمة والعرض.
+  // كل post له ملف en.md وملف no.md منفصلان (نفس نمط دروس الوحدة) — الـ slug
+  // هو اسم مجلّد المنشور، موحّد لكلا اللغتين، لكن كل صفحة تعرض لغتها فقط.
   return LOCALES.flatMap((lang) =>
-    published.map((post) => ({ params: { lang, slug: post.id }, props: { post } })),
+    allPosts
+      .filter((post) => !(isProd && postForLocale(post, lang).data.draft))
+      .map((post) => ({ params: { lang, slug: post.slug }, props: { post } })),
   );
 }
 
 const lang = Astro.params.lang as Locale;
 const t = useTranslations(lang);
-const { post } = Astro.props;
+const { post: postGroup } = Astro.props;
+const post = postForLocale(postGroup, lang);
 const { Content } = await render(post);
 ---
 
 <Base
   lang={lang}
-  title={`${post.data.title[lang]} — Claude Code Learn`}
-  description={post.data.description[lang]}
+  title={`${post.data.title} — Claude Code Learn`}
+  description={post.data.description}
 >
   <main class="post">
     <a class="post__back" href={`/${lang}/blog`}>&larr; {t("nav.blog")}</a>
 
     <article class="post__article">
       <header class="post__header">
-        <h1 class="post__title">{post.data.title[lang]}</h1>
+        <h1 class="post__title">{post.data.title}</h1>
         <div class="post__meta">
           <time datetime={post.data.pubDate}>
             {formatDate(new Date(post.data.pubDate), lang)}

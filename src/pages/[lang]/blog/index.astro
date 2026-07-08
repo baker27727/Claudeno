@@ -1,7 +1,7 @@
 ---
-import { getCollection } from "astro:content";
 import Base from "../../../layouts/Base.astro";
 import { LOCALES, useTranslations, formatDate, type Locale } from "../../../lib/i18n";
+import { getAllBlogPosts, postForLocale } from "../../../lib/blog";
 
 export function getStaticPaths() {
   return LOCALES.map((lang) => ({ params: { lang } }));
@@ -12,10 +12,11 @@ const t = useTranslations(lang);
 
 // كل منشورات المدونة، مرتّبة من الأحدث إلى الأقدم. المسودات (draft=true) لا تُعرض
 // في الإنتاج لأنها غير جاهزة بعد للمراجعة البشرية (§9).
-const allPosts = await getCollection("blog");
+const allPosts = await getAllBlogPosts();
 const isProd = import.meta.env.PROD;
 const posts = allPosts
-  .filter((p) => !(isProd && p.data.draft))
+  .map((group) => ({ slug: group.slug, data: postForLocale(group, lang).data }))
+  .filter(({ data }) => !(isProd && data.draft))
   .sort((a, b) => new Date(b.data.pubDate).getTime() - new Date(a.data.pubDate).getTime());
 ---
 
@@ -43,24 +44,24 @@ const posts = allPosts
       </p>
     ) : (
       <ol class="blog__list">
-        {posts.map((post) => (
+        {posts.map(({ slug, data }) => (
           <li class="blog__card">
-            <a class="blog__cardLink" href={`/${lang}/blog/${post.id}`}>
+            <a class="blog__cardLink" href={`/${lang}/blog/${slug}`}>
               <div class="blog__meta">
-                <time datetime={post.data.pubDate}>
-                  {formatDate(new Date(post.data.pubDate), lang)}
+                <time datetime={data.pubDate}>
+                  {formatDate(new Date(data.pubDate), lang)}
                 </time>
-                {post.data.draft && (
+                {data.draft && (
                   <span class="blog__draft">
                     {lang === "no" ? "Utkast" : "Draft"}
                   </span>
                 )}
               </div>
-              <h2 class="blog__title">{post.data.title[lang]}</h2>
-              <p class="blog__excerpt">{post.data.description[lang]}</p>
-              {post.data.tags.length > 0 && (
+              <h2 class="blog__title">{data.title}</h2>
+              <p class="blog__excerpt">{data.description}</p>
+              {data.tags.length > 0 && (
                 <ul class="blog__tags">
-                  {post.data.tags.map((tag) => (
+                  {data.tags.map((tag) => (
                     <li class="blog__tag">{tag}</li>
                   ))}
                 </ul>
