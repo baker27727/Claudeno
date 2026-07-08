@@ -21,9 +21,16 @@ function isExempt(url: string): boolean {
   return EXCEPTIONS.some((re) => re.test(url));
 }
 
+// content/snapshots/ is an internal diff-cache — a raw mirror of upstream's
+// own changelog text used by watch-upstream.ts to detect changes. It's never
+// published, so links inside it (which can include Anthropic's own stale or
+// bot-gated historical release URLs) shouldn't gate our publish pipeline.
+const SKIP_DIRS = new Set(["snapshots"]);
+
 function walkFiles(dir: string, exts: string[]): string[] {
   const out: string[] = [];
   for (const name of readdirSync(dir)) {
+    if (SKIP_DIRS.has(name)) continue;
     const path = join(dir, name);
     const stat = statSync(path);
     if (stat.isDirectory()) out.push(...walkFiles(path, exts));
