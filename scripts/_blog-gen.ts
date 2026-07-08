@@ -24,6 +24,18 @@ export function slugForVersion(version: string): string {
   return `v${version.replace(/\./g, "-")}-whats-new`;
 }
 
+// Meta description best practice is ~50-160 chars. The body paragraph (used
+// verbatim as the description) can run longer than that, so trim on a word
+// boundary rather than mid-word/mid-sentence.
+const META_DESCRIPTION_MAX = 157;
+
+function truncateForMeta(text: string): string {
+  if (text.length <= META_DESCRIPTION_MAX) return text;
+  const cut = text.slice(0, META_DESCRIPTION_MAX);
+  const lastSpace = cut.lastIndexOf(" ");
+  return `${cut.slice(0, lastSpace > 0 ? lastSpace : META_DESCRIPTION_MAX)}…`;
+}
+
 function frontmatter(opts: {
   title: string;
   description: string;
@@ -78,7 +90,7 @@ export async function generateWhatsNewPost(
 
   const enFile = `${frontmatter({
     title: `What's new in Claude Code v${version}`,
-    description: en.trim(),
+    description: truncateForMeta(en.trim()),
     pubDate,
     sources,
   })}
@@ -88,7 +100,7 @@ ${sources.length > 0 ? `\n**Sources:**\n${sources.map((s) => `- ${s}`).join("\n"
 
   const noFile = `${frontmatter({
     title: `Nytt i Claude Code v${version}`,
-    description: no.trim(),
+    description: truncateForMeta(no.trim()),
     pubDate,
     sources,
   })}
