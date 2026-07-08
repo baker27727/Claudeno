@@ -1,0 +1,165 @@
+---
+import Base from "../../layouts/Base.astro";
+import { LOCALES, useTranslations, type Locale } from "../../lib/i18n";
+import {
+  webPageJsonLd,
+  breadcrumbListJsonLd,
+  pageBreadcrumbs,
+  jsonLdScript,
+} from "../../lib/seo";
+
+export function getStaticPaths() {
+  return LOCALES.map((lang) => ({ params: { lang } }));
+}
+
+const lang = Astro.params.lang as Locale;
+const t = useTranslations(lang);
+
+const pagePath = `/${lang}/feedback`;
+const webPage = webPageJsonLd({
+  name: `${t("nav.feedback")} — Claude Code Learn`,
+  description: lang === "no"
+    ? "Send tilbakemelding om plattformen."
+    : "Send feedback about the platform.",
+  lang,
+  path: pagePath,
+});
+const crumbs = breadcrumbListJsonLd(pageBreadcrumbs(t("nav.feedback"), pagePath, lang));
+const jsonLd = jsonLdScript([webPage, crumbs]);
+
+const mailto = "mailto:hello@mutaz.no?subject=" + encodeURIComponent("Claude Code Learn feedback");
+const githubIssues = "https://github.com/anthropics/claude-code/issues";
+---
+
+<Base
+  lang={lang}
+  title={`${t("nav.feedback")} — Claude Code Learn`}
+  description={lang === "no" ? "Send tilbakemelding om plattformen." : "Send feedback about the platform."}
+>
+  <Fragment slot="head">
+    <Fragment set:html={jsonLd} />
+  </Fragment>
+
+  <main class="feedback">
+    <div class="feedback__layout">
+      <div class="feedback__intro">
+        <p class="feedback__eyebrow">{lang === "no" ? "Vi lytter" : "We're listening"}</p>
+        <h1>{t("nav.feedback")}</h1>
+        <p class="feedback__copy">
+          {lang === "no"
+            ? "Fant du en feil, en foreldet forklaring, eller mangler en modul? Fortell oss det — plattformen blir bedre av det."
+            : "Found a bug, an outdated explanation, or a missing module? Tell us — the platform gets better because of it."}
+        </p>
+      </div>
+
+      <div class="feedback__channels">
+        <a class="feedback__channel" href={mailto}>
+          <span class="feedback__channel-label">{lang === "no" ? "E-post" : "Email"}</span>
+          <span class="feedback__channel-title">
+            {lang === "no" ? "Send oss en e-post" : "Send an email"}
+          </span>
+          <span class="feedback__channel-desc">
+            {lang === "no" ? "For generell tilbakemelding eller spørsmål." : "For general feedback or questions."}
+          </span>
+          <span class="feedback__channel-arrow" aria-hidden="true">&rarr;</span>
+        </a>
+        <a class="feedback__channel" href={githubIssues} target="_blank" rel="noopener noreferrer">
+          <span class="feedback__channel-label">GitHub</span>
+          <span class="feedback__channel-title">
+            {lang === "no" ? "Rapporter en feil" : "Report a bug"}
+          </span>
+          <span class="feedback__channel-desc">
+            {lang === "no" ? "For feil, unøyaktigheter eller forslag." : "For bugs, inaccuracies, or suggestions."}
+          </span>
+          <span class="feedback__channel-arrow" aria-hidden="true">&rarr;</span>
+        </a>
+      </div>
+    </div>
+  </main>
+</Base>
+
+<style>
+  .feedback {
+    max-width: 56rem;
+    margin: 0 auto;
+    padding: var(--space-12) var(--space-6) var(--space-16);
+  }
+  .feedback__layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-12);
+    align-items: start;
+  }
+  .feedback__eyebrow {
+    margin: 0 0 var(--space-2);
+    color: var(--accent);
+    font-size: 0.8125rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+  .feedback__intro h1 {
+    margin: 0 0 var(--space-4);
+    font-size: clamp(2rem, 4vw, 2.75rem);
+  }
+  .feedback__copy {
+    margin: 0;
+    max-width: 26rem;
+    color: var(--fg-muted);
+    font-size: 1.0625rem;
+    line-height: 1.6;
+  }
+  .feedback__channels {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+  .feedback__channel {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+    padding: var(--space-5);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    background: var(--bg-elev);
+    text-decoration: none;
+    color: var(--fg);
+    transition: border-color var(--dur) var(--ease);
+  }
+  .feedback__channel:hover {
+    border-color: var(--accent);
+  }
+  .feedback__channel-label {
+    font-size: 0.6875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--accent);
+    font-weight: 600;
+  }
+  .feedback__channel-title {
+    font-family: var(--font-display);
+    font-size: 1.25rem;
+    font-weight: 600;
+  }
+  .feedback__channel-desc {
+    color: var(--fg-muted);
+    font-size: 0.875rem;
+  }
+  .feedback__channel-arrow {
+    position: absolute;
+    right: var(--space-5);
+    top: var(--space-5);
+    color: var(--fg-muted);
+    transition: color var(--dur) var(--ease);
+  }
+  .feedback__channel:hover .feedback__channel-arrow {
+    color: var(--accent);
+  }
+  @media (max-width: 720px) {
+    .feedback__layout {
+      grid-template-columns: 1fr;
+      gap: var(--space-8);
+    }
+  }
+</style>

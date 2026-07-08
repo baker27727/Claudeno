@@ -1,0 +1,73 @@
+---
+title: "Underagenter"
+description: "Deleger sideoppgaver til spesialiserte underagenter med sin egen kontekst og verktøy."
+---
+import Callout from "../../../src/components/Callout.astro";
+
+# Underagenter
+
+Underagenter er spesialiserte assistenter som utfører en sideoppgave i sitt eget
+kontekstvindu — med en egen systemprompt, begrenset verktøytilgang og uavhengige
+tillatelser — og returnerer bare et sammendrag til hovedsamtalen din. Bruk en når en
+oppgave ellers ville fylt økten din med søkeresultater eller logger du ikke trenger
+igjen.
+
+## Anatomien til en underagent
+
+```bash
+cat .claude/agents/code-reviewer.md
+```
+
+```markdown
+---
+name: code-reviewer
+description: Reviews code for correctness and style before a commit.
+tools: Read, Grep
+model: haiku
+---
+You are a meticulous code reviewer. Point out bugs, unclear naming, and
+missed edge cases. Do not rewrite code yourself.
+```
+
+En underagent er bare en markdown-fil: YAML-frontmatter (`name`, `description`,
+`tools`, `model`) etterfulgt av systempromptet som brødtekst.
+
+## Hvor underagenter ligger
+
+| Nivå | Sti |
+|---|---|
+| Prosjekt (delt med teamet) | `.claude/agents/` |
+| Personlig (alle dine prosjekter) | `~/.claude/agents/` |
+
+Claude leser hver underagents `description` for å avgjøre når en oppgave matcher den,
+så skriv en tydelig og spesifikk beskrivelse.
+
+<Callout type="tip" title="Tips">
+  Hold `tools` kort og spesifikk for jobben. En code-reviewer som bare kan `Read` og
+  `Grep` kan ikke ved et uhell skrive om filen den skal kritisere — minste privilegium
+  gjelder underagenter også.
+</Callout>
+
+<Callout type="note" title="Merk">
+  `model`-feltet godtar en forkortelse (`sonnet`, `haiku`, `opus`) eller `inherit` for å
+  bruke samme modell som driver hovedsamtalen. Velg en billigere modell som `haiku` for
+  høyvolum, lav-kompleksitet-sjekker.
+</Callout>
+
+## Opprette en
+
+```
+/agents
+```
+
+I nyere versjoner åpner ikke dette lenger en interaktiv veiviser — spør i stedet
+Claude om å opprette underagenten for deg, eller lag markdown-filen i
+`.claude/agents/` manuelt.
+
+## Oppsummering
+
+- En underagent er en markdown-fil med frontmatter — ingen spesielt verktøy trengs.
+- `description` er det Claude matcher mot, ikke filnavnet.
+- Å begrense `tools` til det jobben trenger er den viktigste sikkerhetsspaken du har.
+- Den kjører i sitt eget kontekstvindu og returnerer bare et sammendrag, slik at
+  hovedsamtalen din holdes ryddig.

@@ -1,0 +1,435 @@
+---
+import { render } from "astro:content";
+import Base from "../../../layouts/Base.astro";
+import TerminalSim from "../../../islands/TerminalSim.svelte";
+import Quiz from "../../../islands/Quiz.svelte";
+import { LOCALES, useTranslations, type Locale } from "../../../lib/i18n";
+import { getAllModules, type ModuleData } from "../../../lib/modules";
+import {
+  courseJsonLd,
+  faqJsonLd,
+  breadcrumbListJsonLd,
+  moduleBreadcrumbs,
+  jsonLdScript,
+  type QuizQuestion,
+  type ModuleLike,
+} from "../../../lib/seo";
+
+export async function getStaticPaths() {
+  const modules = await getAllModules();
+  return LOCALES.flatMap((lang) =>
+    modules.map((m) => ({ params: { lang, module: m.id }, props: { m } })),
+  );
+}
+
+const lang = Astro.params.lang as Locale;
+const t = useTranslations(lang);
+const { m } = Astro.props as { m: ModuleData };
+const allModules = await getAllModules();
+const currentIndex = allModules.findIndex((mod) => mod.id === m.id);
+const nextModule = allModules[currentIndex + 1];
+
+const { Content } = await render(m.doc[lang]);
+
+// BLUEPRINT §9 — JSON-LD لكل صفحة وحدة.
+const moduleLike: ModuleLike = { id: m.id, meta: m.meta };
+const course = courseJsonLd(moduleLike, lang);
+const faq = faqJsonLd(m.quiz.questions as QuizQuestion[], lang);
+const crumbs = breadcrumbListJsonLd(moduleBreadcrumbs(m.id, m.meta.title[lang], lang));
+const jsonLd = jsonLdScript([course, faq, crumbs]);
+---
+
+<Base
+  lang={lang}
+  title={`${m.meta.title[lang]} — Claude Code Learn`}
+  description={m.meta.description[lang]}
+  ogType="article"
+>
+  <Fragment slot="head">
+    <Fragment set:html={jsonLd} />
+  </Fragment>
+
+  <main class="lesson-page">
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <a href={`/${lang}/`}>Claude Code Learn</a>
+      <span aria-hidden="true">/</span>
+      <a href={`/${lang}/learn`}>{t("nav.learn")}</a>
+      <span aria-hidden="true">/</span>
+      <span aria-current="page">{m.meta.title[lang]}</span>
+    </nav>
+
+    <div class="lesson-layout">
+      <aside class="lesson-sidebar" aria-label={lang === "no" ? "Alle moduler" : "All modules"}>
+        <p class="lesson-sidebar__label">{t("nav.learn")}</p>
+        <ol class="lesson-sidebar__list">
+          {allModules.map((mod, i) => (
+            <li>
+              <a
+                href={`/${lang}/learn/${mod.id}`}
+                class="lesson-sidebar__link"
+                aria-current={mod.id === m.id ? "page" : undefined}
+              >
+                <span class="lesson-sidebar__index">{String(i + 1).padStart(2, "0")}</span>
+                <span class="lesson-sidebar__title">{mod.meta.title[lang]}</span>
+              </a>
+            </li>
+          ))}
+        </ol>
+      </aside>
+
+      <div class="lesson">
+        <div class="lesson__nav">
+          <a class="lesson__back" href={`/${lang}/learn`}>&larr; {t("module.back")}</a>
+          <div class="lesson__meta">
+            <span class={`lesson__level lesson__level--${m.meta.level}`}>{t(`module.level.${m.meta.level}`)}</span>
+            <span class="lesson__duration">{m.meta.duration_min} {t("module.duration")}</span>
+          </div>
+        </div>
+
+        <article class="lesson__prose">
+          <Content />
+        </article>
+
+        <section aria-labelledby="lesson-terminal-heading">
+          <p class="lesson__section-eyebrow">{String(m.meta.order).padStart(2, "0")}</p>
+          <h2 id="lesson-terminal-heading">{lang === "no" ? "Prøv det selv" : "Try it yourself"}</h2>
+          <TerminalSim client:visible steps={m.terminal.steps} mode="guided" locale={lang} />
+        </section>
+
+        <section aria-labelledby="lesson-quiz-heading">
+          <p class="lesson__section-eyebrow">{lang === "no" ? "Sjekk deg selv" : "Check yourself"}</p>
+          <h2 id="lesson-quiz-heading">{lang === "no" ? "Sjekk forståelsen" : "Check your understanding"}</h2>
+          <Quiz client:visible questions={m.quiz.questions} locale={lang} />
+        </section>
+
+        <div class="lesson__complete">
+          <button type="button" id="mark-complete" data-module-id={m.id}>
+            {t("module.markComplete")}
+          </button>
+        </div>
+
+        <div class="lesson__footer-nav">
+          {nextModule ? (
+            <a class="lesson__next" href={`/${lang}/learn/${nextModule.id}`}>
+              <span class="lesson__next-label">{lang === "no" ? "Neste modul" : "Next module"}</span>
+              <span class="lesson__next-title">{nextModule.meta.title[lang]} &rarr;</span>
+            </a>
+          ) : (
+            <a class="lesson__next" href={`/${lang}/learn`}>
+              <span class="lesson__next-label">{lang === "no" ? "Ferdig!" : "All done!"}</span>
+              <span class="lesson__next-title">{t("module.back")} &rarr;</span>
+            </a>
+          )}
+        </div>
+      </div>
+    </div>
+  </main>
+</Base>
+
+<script>
+  import { getModuleStatus, setModuleStatus } from "../../../lib/progress";
+
+  const btn = document.getElementById("mark-complete") as HTMLButtonElement | null;
+  const moduleId = btn?.dataset.moduleId;
+  if (moduleId) {
+    if (getModuleStatus(moduleId) === "not-started") {
+      setModuleStatus(moduleId, "in-progress");
+    }
+    const syncLabel = () => {
+      const status = getModuleStatus(moduleId);
+      if (btn && status === "completed") {
+        btn.textContent = btn.dataset.doneLabel ?? btn.textContent;
+        btn.disabled = true;
+      }
+    };
+    syncLabel();
+    btn?.addEventListener("click", () => {
+      setModuleStatus(moduleId, "completed");
+      window.dispatchEvent(new CustomEvent("ccl:progress-updated"));
+      syncLabel();
+    });
+  }
+</script>
+
+<style>
+  .lesson-page {
+    max-width: 72rem;
+    margin: 0 auto;
+    padding: var(--space-6) var(--space-6) var(--space-16);
+  }
+  .breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    margin-bottom: var(--space-6);
+    font-size: 0.8125rem;
+    color: var(--fg-muted);
+    flex-wrap: wrap;
+  }
+  .breadcrumb a {
+    color: var(--fg-muted);
+    text-decoration: none;
+  }
+  .breadcrumb a:hover {
+    color: var(--accent);
+  }
+  .breadcrumb [aria-current="page"] {
+    color: var(--fg);
+  }
+
+  .lesson-layout {
+    display: grid;
+    grid-template-columns: 14rem 1fr;
+    gap: var(--space-10);
+    align-items: start;
+  }
+  .lesson-sidebar {
+    position: sticky;
+    top: calc(var(--space-16) + var(--space-3));
+  }
+  .lesson-sidebar__label {
+    margin: 0 0 var(--space-3);
+    color: var(--fg-muted);
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+  .lesson-sidebar__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+  }
+  .lesson-sidebar__link {
+    display: flex;
+    align-items: baseline;
+    gap: var(--space-2);
+    padding: var(--space-2);
+    border-radius: var(--radius-sm);
+    text-decoration: none;
+    color: var(--fg-muted);
+    font-size: 0.875rem;
+  }
+  .lesson-sidebar__link:hover {
+    background: var(--bg-elev);
+    color: var(--fg);
+  }
+  .lesson-sidebar__link[aria-current="page"] {
+    background: var(--bg-elev);
+    color: var(--accent);
+    font-weight: 600;
+  }
+  .lesson-sidebar__index {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    flex-shrink: 0;
+  }
+
+  .lesson {
+    max-width: 42rem;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-10);
+    min-width: 0;
+  }
+  .lesson__nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+  }
+  .lesson__back {
+    color: var(--fg-muted);
+    text-decoration: none;
+    font-size: 0.875rem;
+  }
+  .lesson__back:hover {
+    color: var(--accent);
+  }
+  .lesson__meta {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+  }
+  .lesson__level {
+    font-size: 0.6875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    padding: 0.15rem 0.5rem;
+    border-radius: var(--radius-full);
+    border: 1px solid var(--border);
+    color: var(--fg-muted);
+  }
+  .lesson__level--beginner {
+    color: var(--ok);
+    border-color: var(--ok);
+  }
+  .lesson__level--intermediate {
+    color: var(--warn);
+    border-color: var(--warn);
+  }
+  .lesson__level--advanced {
+    color: var(--err);
+    border-color: var(--err);
+  }
+  .lesson__duration {
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    color: var(--fg-muted);
+  }
+  .lesson__section-eyebrow {
+    margin: 0 0 var(--space-2);
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+  .lesson__prose :global(h1) {
+    font-size: clamp(1.75rem, 4vw, 2.5rem);
+    margin: 0 0 var(--space-4);
+  }
+  .lesson__prose :global(h2) {
+    margin: var(--space-10) 0 var(--space-4);
+    font-size: 1.375rem;
+    padding-top: var(--space-8);
+    border-top: 1px solid var(--border);
+  }
+  .lesson__prose :global(h2:first-of-type) {
+    padding-top: 0;
+    border-top: none;
+  }
+  .lesson__prose :global(h3) {
+    font-size: 1.0625rem;
+    font-weight: 600;
+    margin: var(--space-6) 0 var(--space-2);
+  }
+  .lesson__prose :global(pre) {
+    background: var(--bg-elev);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: var(--space-4);
+    overflow-x: auto;
+    margin: 0 0 var(--space-4);
+  }
+  .lesson__prose :global(code) {
+    font-family: var(--font-mono);
+  }
+  .lesson__prose :global(:not(pre) > code) {
+    background: var(--bg-elev);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 0.1rem 0.4rem;
+    font-size: 0.875em;
+    color: var(--accent);
+  }
+  .lesson__prose :global(p) {
+    line-height: 1.7;
+    color: var(--fg);
+    margin: 0 0 var(--space-4);
+  }
+  .lesson__prose :global(ul),
+  .lesson__prose :global(ol) {
+    line-height: 1.7;
+    padding-left: 1.25rem;
+    margin: 0 0 var(--space-4);
+  }
+  .lesson__prose :global(li) {
+    margin-bottom: var(--space-2);
+    color: var(--fg);
+  }
+  .lesson__prose :global(li::marker) {
+    color: var(--accent);
+  }
+  .lesson__prose :global(table) {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0 0 var(--space-6);
+    font-size: 0.875rem;
+  }
+  .lesson__prose :global(th),
+  .lesson__prose :global(td) {
+    text-align: left;
+    padding: var(--space-2) var(--space-3);
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+  }
+  .lesson__prose :global(th) {
+    color: var(--fg-muted);
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    font-weight: 600;
+  }
+  .lesson__prose :global(td code),
+  .lesson__prose :global(th code) {
+    white-space: nowrap;
+  }
+  section h2 {
+    font-size: 1.25rem;
+    margin: 0 0 var(--space-4);
+  }
+  .lesson__complete {
+    display: flex;
+    justify-content: center;
+  }
+  .lesson__complete button {
+    background: var(--accent);
+    color: var(--accent-fg);
+    border: none;
+    border-radius: var(--radius);
+    padding: var(--space-3) var(--space-8);
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+  }
+  .lesson__complete button:disabled {
+    opacity: 0.6;
+    cursor: default;
+  }
+  .lesson__footer-nav {
+    border-top: 1px solid var(--border);
+    padding-top: var(--space-6);
+  }
+  .lesson__next {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+    text-decoration: none;
+    color: var(--fg);
+    text-align: right;
+    margin-left: auto;
+    width: fit-content;
+  }
+  .lesson__next-label {
+    color: var(--fg-muted);
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+  .lesson__next-title {
+    font-family: var(--font-display);
+    font-size: 1.25rem;
+    font-weight: 600;
+  }
+  .lesson__next:hover .lesson__next-title {
+    color: var(--accent);
+  }
+  @media (max-width: 860px) {
+    .lesson-layout {
+      grid-template-columns: 1fr;
+    }
+    .lesson-sidebar {
+      position: static;
+    }
+    .lesson-sidebar__list {
+      flex-direction: row;
+      flex-wrap: wrap;
+      overflow-x: auto;
+    }
+  }
+</style>

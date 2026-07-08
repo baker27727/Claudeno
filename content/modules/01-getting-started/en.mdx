@@ -1,0 +1,69 @@
+---
+title: "Getting Started with Claude Code"
+description: "Install Claude Code and run your first session."
+---
+import Callout from "../../../src/components/Callout.astro";
+import PlatformTabs from "../../../src/components/PlatformTabs.astro";
+
+# Getting Started with Claude Code
+
+Claude Code is Anthropic's official CLI for agentic coding. In this module you'll
+install it and run your first interactive session.
+
+## Install
+
+The native installer is the recommended method — it updates itself in the
+background, so you're always on the latest version.
+
+```bash
+curl -fsSL https://claude.ai/install.sh | bash
+```
+
+That command works on macOS, Linux, and WSL. Windows and Homebrew users have their
+own install commands, and don't auto-update the same way:
+
+<PlatformTabs id="install" tabs={[
+  { label: "Windows (PowerShell)", code: "irm https://claude.ai/install.ps1 | iex" },
+  { label: "Windows (CMD)", code: "curl -fsSL https://claude.ai/install.cmd -o install.cmd && install.cmd && del install.cmd" },
+  { label: "Homebrew", code: "brew install --cask claude-code" },
+]} />
+
+<Callout type="note" title="Note">
+  Homebrew and WinGet installs don't auto-update — run `brew upgrade claude-code` (or
+  `winget upgrade Anthropic.ClaudeCode`) periodically to stay current. The native
+  installer handles this for you.
+</Callout>
+
+## Run your first session
+
+```bash
+claude
+```
+
+This launches an interactive session in your project folder. Type your request
+in plain language, or `/help` to list the available commands.
+
+## Your first prompt
+
+Skip the trivial "hello world" test — a first prompt that actually tells you
+something useful is:
+
+```
+Explain what this project does and how the pieces fit together.
+```
+
+Claude reads the files in your project to answer, which doubles as a quick check
+that everything is wired up correctly.
+
+<Callout type="tip" title="Tip">
+  If something about the install seems off, run `/doctor` inside a session — it
+  diagnoses your Claude Code installation and settings, and can fix reported issues
+  for you.
+</Callout>
+
+## Key takeaways
+
+- The native installer (`curl ... | bash`) is recommended — it auto-updates in the background.
+- Homebrew and WinGet work too, but you have to upgrade them yourself.
+- Running `claude` with no arguments starts an interactive session in the current folder.
+- `/help` inside a session lists every command available to you.

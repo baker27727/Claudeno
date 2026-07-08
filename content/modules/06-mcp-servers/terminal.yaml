@@ -1,0 +1,35 @@
+steps:
+  - id: step-1
+    command: "claude mcp add --transport http notion https://mcp.notion.com/mcp"
+    output: |
+      Added MCP server "notion" (http transport).
+    explain:
+      en: "Adds a remote HTTP MCP server. Most hosted integrations (Notion, Stripe, Sentry, …) use this transport."
+      no: "Legger til en ekstern HTTP MCP-tjener. De fleste hostede integrasjoner (Notion, Stripe, Sentry, …) bruker denne transporten."
+    accepts_also: []
+  - id: step-2
+    command: "claude mcp add --transport stdio myserver -- npx server"
+    output: |
+      Added MCP server "myserver" (stdio transport).
+    explain:
+      en: "Adds a local stdio server that runs as a process on your machine. Everything after `--` is passed to the server untouched."
+      no: "Legger til en lokal stdio-tjener som kjører som en prosess på maskinen din. Alt etter `--` sendes uendret til tjeneren."
+    accepts_also: []
+  - id: step-3
+    command: "claude mcp add --transport http stripe --scope local https://mcp.stripe.com"
+    output: |
+      Added MCP server "stripe" (http transport, local scope).
+    explain:
+      en: "--scope local (the default) keeps this connection private to you in this project. Use --scope project or --scope user to share it."
+      no: "--scope local (standard) holder denne tilkoblingen privat for deg i dette prosjektet. Bruk --scope project eller --scope user for å dele den."
+    accepts_also: []
+  - id: step-4
+    command: "/mcp"
+    output: |
+      notion       connected     http
+      stripe       connected     http (local)
+      myserver     connected     stdio
+    explain:
+      en: "/mcp opens the interactive list of your MCP server connections and lets you reconnect, enable, or disable them."
+      no: "/mcp åpner den interaktive listen over MCP-tjenertilkoblingene dine og lar deg koble til på nytt, aktivere eller deaktivere dem."
+    accepts_also: []

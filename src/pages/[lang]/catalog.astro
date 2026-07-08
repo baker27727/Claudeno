@@ -1,0 +1,164 @@
+---
+import { getCollection } from "astro:content";
+import Base from "../../layouts/Base.astro";
+import { LOCALES, useTranslations, type Locale } from "../../lib/i18n";
+import {
+  webPageJsonLd,
+  breadcrumbListJsonLd,
+  pageBreadcrumbs,
+  jsonLdScript,
+  SITE_URL,
+  type JsonLdObject,
+} from "../../lib/seo";
+
+export function getStaticPaths() {
+  return LOCALES.map((lang) => ({ params: { lang } }));
+}
+
+const lang = Astro.params.lang as Locale;
+const t = useTranslations(lang);
+const entries = await getCollection("catalog");
+
+// BLUEPRINT §9 §4 — Catalog = WebPage مع mainEntity من نوع "ItemList"
+// (الفهرس نفسه ItemList من بنود الكتالوج).
+const catalogItemList: JsonLdObject = {
+  "@context": "https://schema.org",
+  "@type": "ItemList",
+  name: lang === "no" ? "Innholdskatalog" : "Content Catalog",
+  inLanguage: lang,
+  numberOfItems: entries.length,
+  itemListElement: entries.map((entry, i) => ({
+    "@type": "ListItem",
+    position: i + 1,
+    name: entry.data.title[lang],
+    url: `${SITE_URL}/${lang}${entry.data.href}`,
+    description: entry.data.kind,
+  })),
+};
+
+const pagePath = `/${lang}/catalog`;
+const webPage = webPageJsonLd({
+  name: `${t("nav.catalog")} — Claude Code Learn`,
+  description: lang === "no"
+    ? "Full oversikt over alt innhold."
+    : "Full index of everything on the site.",
+  lang,
+  path: pagePath,
+  mainEntity: { type: "ItemList", data: catalogItemList },
+});
+const crumbs = breadcrumbListJsonLd(pageBreadcrumbs(t("nav.catalog"), pagePath, lang));
+const jsonLd = jsonLdScript([webPage, crumbs]);
+
+const kindLabel: Record<string, { en: string; no: string }> = {
+  module: { en: "Module", no: "Modul" },
+  guide: { en: "Guide", no: "Guide" },
+  reference: { en: "Reference", no: "Referanse" },
+  tool: { en: "Tool", no: "Verktøy" },
+};
+---
+
+<Base
+  lang={lang}
+  title={`${t("nav.catalog")} — Claude Code Learn`}
+  description={lang === "no" ? "Full oversikt over alt innhold." : "Full index of everything on the site."}
+>
+  <Fragment slot="head">
+    <Fragment set:html={jsonLd} />
+  </Fragment>
+
+  <main class="catalog">
+    <header class="catalog__head">
+      <p class="catalog__eyebrow">{lang === "no" ? "Alt innhold" : "Everything, indexed"}</p>
+      <h1>{t("nav.catalog")}</h1>
+    </header>
+
+    {(["module", "guide", "reference", "tool"] as const)
+      .map((kind) => ({ kind, items: entries.filter((e) => e.data.kind === kind) }))
+      .filter((group) => group.items.length > 0)
+      .map((group) => (
+        <section class="catalog__group">
+          <h2>{kindLabel[group.kind]?.[lang] ?? group.kind}</h2>
+          <ul class="catalog__list">
+            {group.items.map((entry) => (
+              <li>
+                <a href={`/${lang}${entry.data.href}`} class="catalog__item">
+                  <span class="catalog__title">{entry.data.title[lang]}</span>
+                  <span class="catalog__arrow" aria-hidden="true">&rarr;</span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </section>
+      ))}
+  </main>
+</Base>
+
+<style>
+  .catalog {
+    max-width: 44rem;
+    margin: 0 auto;
+    padding: var(--space-12) var(--space-6) var(--space-16);
+  }
+  .catalog__head {
+    margin-bottom: var(--space-12);
+  }
+  .catalog__eyebrow {
+    margin: 0 0 var(--space-2);
+    color: var(--accent);
+    font-size: 0.8125rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+  .catalog__head h1 {
+    margin: 0;
+    font-size: clamp(2rem, 4vw, 2.75rem);
+  }
+  .catalog__group {
+    margin-bottom: var(--space-10);
+  }
+  .catalog__group h2 {
+    margin: 0 0 var(--space-3);
+    padding-bottom: var(--space-2);
+    border-bottom: 1px solid var(--border);
+    font-size: 0.8125rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--fg-muted);
+    font-family: var(--font-sans);
+  }
+  .catalog__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .catalog__item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-3);
+    padding: var(--space-3) 0;
+    border-bottom: 1px solid color-mix(in srgb, var(--border) 60%, transparent);
+    text-decoration: none;
+    color: var(--fg);
+    font-size: 1rem;
+  }
+  .catalog__list li:last-child .catalog__item {
+    border-bottom: none;
+  }
+  .catalog__arrow {
+    color: var(--fg-muted);
+    transform: translateX(-4px);
+    opacity: 0;
+    transition: transform var(--dur) var(--ease), opacity var(--dur) var(--ease);
+  }
+  .catalog__item:hover {
+    color: var(--accent);
+  }
+  .catalog__item:hover .catalog__arrow {
+    transform: translateX(0);
+    opacity: 1;
+    color: var(--accent);
+  }
+</style>

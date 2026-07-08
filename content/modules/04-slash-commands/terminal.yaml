@@ -1,0 +1,49 @@
+steps:
+  - id: step-1
+    command: "/help"
+    output: |
+      Available commands: /clear, /compact, /resume, /model, /permissions, /mcp, /init, /rewind, ...
+    explain:
+      en: "/help lists every slash command available in your current session."
+      no: "/help lister opp alle slash-kommandoer som er tilgjengelige i den gjeldende økten."
+    accepts_also: []
+  - id: step-2
+    command: "/clear"
+    output: |
+      Conversation context cleared. The previous conversation is still available in /resume.
+    explain:
+      en: "/clear starts a brand new conversation with empty context. Aliases: /reset, /new."
+      no: "/clear starter en helt ny samtale med tom kontekst. Aliaser: /reset, /new."
+    accepts_also: []
+  - id: step-3
+    command: "/compact"
+    output: |
+      Summarizing conversation to free up context…
+    explain:
+      en: "/compact summarizes the conversation so far instead of wiping it — you keep working, just with less clutter."
+      no: "/compact oppsummerer samtalen så langt i stedet for å tømme den — du fortsetter å jobbe, bare med mindre rot."
+    accepts_also: []
+  - id: step-4
+    command: "/resume"
+    output: |
+      Opening session picker — pick a conversation by name or ID to continue.
+    explain:
+      en: "/resume reopens a past conversation, including ones you started with /clear. Alias: /continue."
+      no: "/resume åpner en tidligere samtale på nytt, også de du startet med /clear. Alias: /continue."
+    accepts_also: []
+  - id: step-5
+    command: "/model"
+    output: |
+      Opening model picker — select a model to use for this and future sessions.
+    explain:
+      en: "/model switches which Claude model you're using and saves it as your default."
+      no: "/model bytter hvilken Claude-modell du bruker og lagrer den som standard."
+    accepts_also: []
+  - id: step-6
+    command: "/rewind"
+    output: |
+      Opening rewind view — step back to an earlier point in the conversation and/or your code.
+    explain:
+      en: "/rewind undoes changes to code, the conversation, or both. Aliases: /checkpoint, /undo."
+      no: "/rewind angrer endringer i koden, samtalen, eller begge deler. Aliaser: /checkpoint, /undo."
+    accepts_also: []

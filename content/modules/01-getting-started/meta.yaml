@@ -1,0 +1,12 @@
+id: getting-started
+order: 1
+level: beginner            # beginner | intermediate | advanced
+duration_min: 15
+covers_version: "2.1.0"    # أحدث إصدار Claude Code تم التحقق منه
+title:
+  en: "Getting Started with Claude Code"
+  no: "Kom i gang med Claude Code"
+description:
+  en: "Install Claude Code and run your first session."
+  no: "Installer Claude Code og kjør din første økt."
+tags: [installation, basics]

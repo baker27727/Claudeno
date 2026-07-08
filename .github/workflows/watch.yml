@@ -1,0 +1,33 @@
+name: Watch upstream
+
+on:
+  schedule:
+    - cron: "0 6 * * *" # 06:00 UTC daily
+  workflow_dispatch: {}
+
+jobs:
+  watch:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm ci
+      - name: Configure git identity for automated commits
+        run: |
+          git config user.name "claude-code-learn-bot"
+          git config user.email "actions@users.noreply.github.com"
+      - name: Detect upstream changes
+        id: diff
+        run: npm run watch:upstream
+      - name: Generate and publish update
+        if: steps.diff.outputs.changed == 'true'
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          LATEST_VERSION: ${{ steps.diff.outputs.latest_version }}
+        run: npm run generate:update

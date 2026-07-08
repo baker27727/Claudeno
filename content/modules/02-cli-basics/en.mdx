@@ -1,0 +1,88 @@
+---
+title: "CLI Basics"
+description: "The flags you'll actually use: checking your version, scripting with print mode, resuming sessions, and picking a model."
+---
+import Callout from "../../../src/components/Callout.astro";
+
+# CLI Basics
+
+The `claude` CLI has dozens of flags, but you'll reach for a handful of them
+constantly. This module covers those — the rest are worth skimming in
+`claude --help` once, not memorizing.
+
+## Check your version
+
+```bash
+claude --version
+```
+
+Useful when a doc or teammate refers to a specific version — behavior genuinely
+changes between releases.
+
+## Run a single request (print mode)
+
+```bash
+claude -p "list the files in this repo"
+```
+
+`-p` (or `--print`) sends one request, prints the answer, and exits — no interactive
+session. This is the mode scripts and CI pipelines should use, since there's no prompt
+waiting for input.
+
+<Callout type="tip" title="Tip">
+  Print mode composes with shell pipes: `cat error.log | claude -p "what's wrong here?"`
+  feeds file content straight in.
+</Callout>
+
+## Resuming sessions: -c vs -r
+
+Two flags resume past work, and picking the wrong one wastes time.
+
+```bash
+claude -c
+```
+
+`-c` (or `--continue`) resumes your **most recent** session in the current directory —
+no picker, no name needed. Fastest option when you know it's the last thing you were
+doing.
+
+```bash
+claude -r "fix-login-bug"
+```
+
+`-r` (or `--resume`) resumes a **specific** session by ID or name — useful once you
+have more than one session going in the same project.
+
+<Callout type="mistake" title="Common mistake">
+  Reaching for `-c` when you actually want a named session from earlier in the week —
+  it only ever grabs the latest one. Use `-r` with a name or ID instead.
+</Callout>
+
+## Picking a model for this session
+
+```bash
+claude --model sonnet
+```
+
+`--model` overrides your saved default for just this session — handy for comparing
+model behavior on the same task without changing your global preference. (The
+in-session equivalent is [`/model`](/en/learn/slash-commands).)
+
+## Flags at a glance
+
+| Flag | What it does |
+|---|---|
+| `--version`, `-v` | Print the installed CLI version |
+| `--print`, `-p` | Run one request, print the result, exit |
+| `--continue`, `-c` | Resume the most recent session, no picker |
+| `--resume`, `-r` | Resume a specific session by ID or name |
+| `--model` | Set the model for this session |
+| `--verbose` | Enable verbose logging, useful when troubleshooting |
+| `--settings` | Point at a settings JSON file or inline JSON |
+| `--add-dir` | Grant access to an extra working directory |
+
+## Key takeaways
+
+- `-p` is for scripts and pipelines; it never opens an interactive session.
+- `-c` resumes the latest session automatically; `-r` lets you pick by name or ID.
+- `--model` changes the model for one session only, without touching your default.

@@ -1,0 +1,24 @@
+steps:
+  - id: step-1
+    command: "cat .claude/agents/code-reviewer.md"
+    output: |
+      ---
+      name: code-reviewer
+      description: Reviews code for correctness and style before a commit.
+      tools: Read, Grep
+      model: haiku
+      ---
+      You are a meticulous code reviewer. Point out bugs, unclear naming, and
+      missed edge cases. Do not rewrite code yourself.
+    explain:
+      en: "A subagent is a markdown file with frontmatter (name, description, tools, model) plus a system prompt as the body."
+      no: "En underagent er en markdown-fil med frontmatter (name, description, tools, model) pluss en systemprompt som brødtekst."
+    accepts_also: []
+  - id: step-2
+    command: "/agents"
+    output: |
+      Ask Claude to create a subagent, or edit files in .claude/agents/ directly.
+    explain:
+      en: "Recent Claude Code versions no longer open an interactive wizard for /agents — create subagents by asking Claude or editing .claude/agents/ files directly."
+      no: "Nyere versjoner av Claude Code åpner ikke lenger en interaktiv veiviser for /agents — opprett underagenter ved å spørre Claude eller redigere .claude/agents/-filer direkte."
+    accepts_also: []

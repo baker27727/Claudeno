@@ -1,0 +1,12 @@
+id: mcp-servers
+order: 6
+level: advanced
+duration_min: 18
+covers_version: "2.1.0"
+title:
+  en: "MCP Servers"
+  no: "MCP-tjenere"
+description:
+  en: "Connect Claude Code to external tools and data sources with the Model Context Protocol."
+  no: "Koble Claude Code til eksterne verktøy og datakilder med Model Context Protocol."
+tags: [mcp, advanced, integrations]

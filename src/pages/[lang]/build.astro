@@ -1,0 +1,75 @@
+---
+import Base from "../../layouts/Base.astro";
+import ConfigBuilder from "../../islands/ConfigBuilder.svelte";
+import { LOCALES, useTranslations, type Locale } from "../../lib/i18n";
+import {
+  webPageJsonLd,
+  breadcrumbListJsonLd,
+  pageBreadcrumbs,
+  jsonLdScript,
+} from "../../lib/seo";
+
+export function getStaticPaths() {
+  return LOCALES.map((lang) => ({ params: { lang } }));
+}
+
+const lang = Astro.params.lang as Locale;
+const t = useTranslations(lang);
+
+const pagePath = `/${lang}/build`;
+const description = lang === "no"
+  ? "Generer CLAUDE.md, underagenter, hooks og MCP-tjener-oppsett for prosjektet ditt."
+  : "Generate CLAUDE.md, subagents, hooks, and MCP server setups for your project.";
+const webPage = webPageJsonLd({
+  name: `${t("build.title")} — Claude Code Learn`,
+  description,
+  lang,
+  path: pagePath,
+});
+const crumbs = breadcrumbListJsonLd(pageBreadcrumbs(t("build.title"), pagePath, lang));
+const jsonLd = jsonLdScript([webPage, crumbs]);
+---
+
+<Base lang={lang} title={`${t("build.title")} — Claude Code Learn`} description={description}>
+  <Fragment slot="head">
+    <Fragment set:html={jsonLd} />
+  </Fragment>
+
+  <main class="build-page">
+    <p class="build-page__eyebrow">{lang === "no" ? "Fire generatorer" : "Four generators"}</p>
+    <h1>{t("build.title")}</h1>
+    <p class="build-page__intro">
+      {lang === "no"
+        ? "CLAUDE.md, underagenter, hooks og MCP-tjenere — fyll ut feltene, se resultatet live, og lim rett inn i prosjektet ditt."
+        : "CLAUDE.md, subagents, hooks, and MCP servers — fill in the fields, watch the output update live, and paste it straight into your project."}
+    </p>
+    <ConfigBuilder client:load locale={lang} />
+  </main>
+</Base>
+
+<style>
+  .build-page {
+    max-width: 64rem;
+    margin: 0 auto;
+    padding: var(--space-12) var(--space-6) var(--space-16);
+  }
+  .build-page__eyebrow {
+    margin: 0 0 var(--space-2);
+    color: var(--accent);
+    font-size: 0.8125rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+  .build-page h1 {
+    margin: 0 0 var(--space-3);
+    font-size: clamp(2rem, 4vw, 2.75rem);
+  }
+  .build-page__intro {
+    color: var(--fg-muted);
+    margin: 0 0 var(--space-8);
+    max-width: 40rem;
+    font-size: 1.0625rem;
+    line-height: 1.6;
+  }
+</style>

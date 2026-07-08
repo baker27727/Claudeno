@@ -1,0 +1,67 @@
+---
+// Tip / warning / note box usable inside lesson MDX. Content authors set the
+// visible `title` per language (no i18n magic here — keeps MDX self-contained).
+interface Props {
+  type?: "tip" | "warning" | "note" | "mistake";
+  title: string;
+}
+
+const { type = "tip", title } = Astro.props;
+---
+
+<aside class={`callout callout--${type}`}>
+  <p class="callout__title">{title}</p>
+  <div class="callout__body">
+    <slot />
+  </div>
+</aside>
+
+<style>
+  .callout {
+    margin: var(--space-6) 0;
+    padding: var(--space-4) var(--space-5);
+    border-left: 2px solid var(--border);
+    background: var(--bg-elev);
+    border-radius: 0 var(--radius) var(--radius) 0;
+  }
+  .callout--tip {
+    border-left-color: var(--accent);
+  }
+  .callout--warning,
+  .callout--mistake {
+    border-left-color: var(--warn);
+  }
+  .callout--note {
+    border-left-color: var(--fg-muted);
+  }
+  .callout__title {
+    margin: 0 0 var(--space-1);
+    font-size: 0.8125rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--fg-muted);
+  }
+  .callout--tip .callout__title {
+    color: var(--accent);
+  }
+  .callout--warning .callout__title,
+  .callout--mistake .callout__title {
+    color: var(--warn);
+  }
+  .callout__body {
+    font-size: 0.9375rem;
+    line-height: 1.6;
+    color: var(--fg);
+  }
+  .callout__body :global(p) {
+    margin: 0;
+  }
+  .callout__body :global(p + p) {
+    margin-top: var(--space-2);
+  }
+  .callout__body :global(code) {
+    font-family: var(--font-mono);
+    font-size: 0.875em;
+  }
+</style>

@@ -1,0 +1,94 @@
+---
+// Zero-JS, accessible tabs (radio-button CSS trick) for platform-specific
+// commands — e.g. macOS/Linux vs Windows install instructions. No hydration
+// cost, works with JS disabled, keyboard-navigable via native radio inputs.
+interface TabDef {
+  label: string;
+  code: string;
+}
+
+interface Props {
+  id: string;
+  tabs: TabDef[];
+}
+
+const { id, tabs } = Astro.props;
+---
+
+<div class="ptabs">
+  {tabs.map((_, i) => (
+    <input
+      type="radio"
+      name={`ptabs-${id}`}
+      id={`ptabs-${id}-${i}`}
+      class="ptabs__radio"
+      checked={i === 0}
+    />
+  ))}
+  <div class="ptabs__labels" role="tablist">
+    {tabs.map((t, i) => (
+      <label for={`ptabs-${id}-${i}`} class="ptabs__label">{t.label}</label>
+    ))}
+  </div>
+  <div class="ptabs__panels">
+    {tabs.map((t) => (
+      <pre class="ptabs__panel"><code>{t.code}</code></pre>
+    ))}
+  </div>
+</div>
+
+<style>
+  .ptabs {
+    margin: 0 0 var(--space-4);
+  }
+  .ptabs__radio {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+  }
+  .ptabs__labels {
+    display: flex;
+    gap: var(--space-1);
+    border-bottom: 1px solid var(--border);
+    margin-bottom: -1px;
+  }
+  .ptabs__label {
+    padding: var(--space-2) var(--space-3);
+    font-size: 0.8125rem;
+    font-weight: 500;
+    color: var(--fg-muted);
+    border-bottom: 2px solid transparent;
+    cursor: pointer;
+    user-select: none;
+  }
+  .ptabs__label:hover {
+    color: var(--fg);
+  }
+  .ptabs__panel {
+    display: none;
+    margin: 0;
+    background: var(--bg-elev);
+    border: 1px solid var(--border);
+    border-top-left-radius: 0;
+    border-radius: var(--radius);
+    padding: var(--space-4);
+    overflow-x: auto;
+  }
+  /* positional show/hide — works for any number of tabs, no dynamic CSS needed */
+  .ptabs__radio:nth-of-type(1):checked ~ .ptabs__labels .ptabs__label:nth-child(1),
+  .ptabs__radio:nth-of-type(2):checked ~ .ptabs__labels .ptabs__label:nth-child(2),
+  .ptabs__radio:nth-of-type(3):checked ~ .ptabs__labels .ptabs__label:nth-child(3),
+  .ptabs__radio:nth-of-type(4):checked ~ .ptabs__labels .ptabs__label:nth-child(4) {
+    color: var(--accent);
+    border-bottom-color: var(--accent);
+  }
+  .ptabs__radio:nth-of-type(1):checked ~ .ptabs__panels .ptabs__panel:nth-child(1),
+  .ptabs__radio:nth-of-type(2):checked ~ .ptabs__panels .ptabs__panel:nth-child(2),
+  .ptabs__radio:nth-of-type(3):checked ~ .ptabs__panels .ptabs__panel:nth-child(3),
+  .ptabs__radio:nth-of-type(4):checked ~ .ptabs__panels .ptabs__panel:nth-child(4) {
+    display: block;
+  }
+  .ptabs__radio:focus-visible ~ .ptabs__labels .ptabs__label {
+    outline: none;
+  }
+</style>

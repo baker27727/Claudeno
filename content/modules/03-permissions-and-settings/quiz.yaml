@@ -1,0 +1,37 @@
+questions:
+  - id: q1
+    prompt:
+      en: "Which file holds project-wide permissions that are committed to git and shared with your team?"
+      no: "Hvilken fil inneholder prosjektomfattende tillatelser som committes til git og deles med teamet?"
+    options:
+      - { id: a, en: ".claude/settings.local.json", no: ".claude/settings.local.json" }
+      - { id: b, en: ".claude/settings.json", no: ".claude/settings.json" }
+      - { id: c, en: "~/.claude/settings.json", no: "~/.claude/settings.json" }
+    correct: b
+    explain:
+      en: "`.claude/settings.json` is the project scope — shared via git. `.local.json` is personal and gitignored; `~/.claude/settings.json` is your user-level config."
+      no: "`.claude/settings.json` er prosjektomfanget — delt via git. `.local.json` er personlig og gitignored; `~/.claude/settings.json` er din brukerkonfigurasjon."
+  - id: q2
+    prompt:
+      en: "In permissions.allow/deny, what happens when a pattern matches both lists?"
+      no: "I permissions.allow/deny, hva skjer når et mønster matcher begge listene?"
+    options:
+      - { id: a, en: "allow wins", no: "allow vinner" }
+      - { id: b, en: "deny wins", no: "deny vinner" }
+      - { id: c, en: "Claude Code asks the user", no: "Claude Code spør brukeren" }
+    correct: b
+    explain:
+      en: "Deny always takes precedence over allow when both match the same pattern."
+      no: "Deny har alltid forrang over allow når begge matcher samme mønster."
+  - id: q3
+    prompt:
+      en: "Which command opens an interactive dialog for allow/ask/deny rules, instead of hand-editing JSON?"
+      no: "Hvilken kommando åpner en interaktiv dialog for allow/ask/deny-regler, i stedet for å redigere JSON for hånd?"
+    options:
+      - { id: a, en: "/permissions", no: "/permissions" }
+      - { id: b, en: "/settings", no: "/settings" }
+      - { id: c, en: "/config", no: "/config" }
+    correct: a
+    explain:
+      en: "/permissions (alias /allowed-tools) opens an interactive dialog to manage allow, ask, and deny rules by scope."
+      no: "/permissions (alias /allowed-tools) åpner en interaktiv dialog for å administrere allow-, ask- og deny-regler etter nivå."

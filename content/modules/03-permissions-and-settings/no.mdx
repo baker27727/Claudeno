@@ -1,0 +1,68 @@
+---
+title: "Tillatelser og innstillinger"
+description: "Kontroller hva Claude kan gjøre med tillatelser i settings.json, og hvordan CLAUDE.md skiller seg fra det."
+---
+import Callout from "../../../src/components/Callout.astro";
+
+# Tillatelser og innstillinger
+
+`settings.json` kontrollerer hva Claude Code *har lov til å gjøre*. Den finnes på
+flere nivåer:
+
+| Nivå | Sti | Delt med teamet? |
+|---|---|---|
+| Prosjekt | `.claude/settings.json` | Ja (committes) |
+| Lokal | `.claude/settings.local.json` | Nei (gitignored, personlig) |
+| Bruker | `~/.claude/settings.json` | Nei, gjelder alle dine prosjekter |
+
+## Tillatelser: allow og deny
+
+```bash
+cat .claude/settings.json
+```
+
+```json
+{
+  "permissions": {
+    "allow": ["Bash(npm run test *)"],
+    "deny": ["Read(./.env)"]
+  }
+}
+```
+
+Mønstre bruker verktøynavnet pluss et argumentmønster i parentes, med
+`*`-jokertegn. **`deny` vinner alltid** når et mønster matcher begge listene.
+
+<Callout type="tip" title="Tips">
+  Start smalt. Sett opp noen få lavrisiko- eller lesbare kommandoer først
+  (`Bash(npm run test *)`, `Bash(git status)`), og utvid listen etter hvert som du ser
+  hva Claude faktisk trenger — i stedet for å tillate brede mønstre som `Bash(*)` fra
+  starten.
+</Callout>
+
+Du kan se over og redigere disse reglene uten å redigere JSON for hånd: kjør
+`/permissions` inni en økt for å åpne en interaktiv dialog for allow-, ask- og
+deny-regler etter nivå.
+
+## Plan-modus
+
+```bash
+claude --permission-mode plan
+```
+
+Starter en økt der Claude foreslår planen sin før den gjør noen endringer —
+nyttig for å vurdere risikabelt arbeid før det skjer.
+
+## settings.json vs. CLAUDE.md
+
+`settings.json` konfigurerer *atferd* (tillatelser, hooks, modell). `CLAUDE.md` gir
+Claude *kontekst* — prosjektkonvensjoner, arkitekturnotater, stilguider — som den
+leser ved starten av hver økt.
+
+## Oppsummering
+
+- `.claude/settings.json` er det delte, committede nivået; `.local.json` er personlig.
+- `deny` slår `allow` når begge matcher samme mønster.
+- `/permissions` gir deg en interaktiv dialog i stedet for å redigere JSON for hånd.
+- `settings.json` styrer hva Claude kan *gjøre*; `CLAUDE.md` forteller den hva den skal
+  *vite*.

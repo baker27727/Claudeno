@@ -1,0 +1,199 @@
+---
+import ThemeToggle from "../islands/ThemeToggle.svelte";
+import SearchPalette from "../islands/SearchPalette.svelte";
+import { useTranslations, switchLocalePath, type Locale } from "../lib/i18n";
+
+interface Props {
+  lang: Locale;
+}
+
+const { lang }: Props = Astro.props;
+const t = useTranslations(lang);
+const otherPath = switchLocalePath(Astro.url.pathname, lang === "en" ? "no" : "en");
+
+const links: Array<{ href: string; label: string }> = [
+  { href: `/${lang}/learn`, label: t("nav.learn") },
+  { href: `/${lang}/playground`, label: t("nav.playground") },
+  { href: `/${lang}/build`, label: t("nav.build") },
+  { href: `/${lang}/reference`, label: t("nav.reference") },
+  { href: `/${lang}/blog`, label: t("nav.blog") },
+  { href: `/${lang}/quiz`, label: t("nav.quiz") },
+  { href: `/${lang}/changelog`, label: t("nav.changelog") },
+  { href: `/${lang}/feedback`, label: t("nav.feedback") },
+];
+
+const searchLabel = lang === "no" ? "Søk" : "Search";
+---
+
+<header class="site-nav">
+  <div class="site-nav__inner">
+    <a href={`/${lang}/`} class="site-nav__brand">
+      <img src="/favicon.svg" alt="" width="24" height="24" />
+      <span>Claude Code Learn</span>
+    </a>
+    <nav aria-label="Primary">
+      <ul class="site-nav__links">
+        {links.map((link) => (
+          <li><a href={link.href}>{link.label}</a></li>
+        ))}
+      </ul>
+    </nav>
+    <div class="site-nav__actions">
+      <SearchPalette client:idle locale={lang} showButton buttonLabel={searchLabel} />
+      <a href={otherPath} class="site-nav__lang" rel="alternate" hreflang={lang === "en" ? "no" : "en"}>
+        {t("lang.switch")}
+      </a>
+      <ThemeToggle client:load label={t("theme.toggle")} />
+      <details class="site-nav__mobile">
+        <summary aria-label={lang === "no" ? "Meny" : "Menu"}>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+            <path d="M3 6h18M3 12h18M3 18h18" />
+          </svg>
+        </summary>
+        <ul class="site-nav__mobile-list">
+          {links.map((link) => (
+            <li><a href={link.href}>{link.label}</a></li>
+          ))}
+          <li>
+            <a href={otherPath} rel="alternate" hreflang={lang === "en" ? "no" : "en"}>
+              {t("lang.switch")}
+            </a>
+          </li>
+        </ul>
+      </details>
+    </div>
+  </div>
+</header>
+
+<style>
+  .site-nav {
+    position: sticky;
+    top: 0;
+    z-index: 40;
+    border-bottom: 1px solid var(--border);
+    background: color-mix(in srgb, var(--bg) 88%, transparent);
+    backdrop-filter: blur(10px);
+  }
+  .site-nav__inner {
+    max-width: 72rem;
+    margin: 0 auto;
+    padding: var(--space-4) var(--space-6);
+    display: flex;
+    align-items: center;
+    gap: var(--space-8);
+  }
+  .site-nav__brand {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-weight: 700;
+    font-size: 1.0625rem;
+    color: var(--fg);
+    text-decoration: none;
+    white-space: nowrap;
+  }
+  .site-nav__brand img {
+    border-radius: var(--radius-sm);
+  }
+  .site-nav__links {
+    list-style: none;
+    display: flex;
+    gap: var(--space-6);
+    margin: 0;
+    padding: 0;
+    flex: 1;
+    overflow-x: auto;
+  }
+  .site-nav__links a {
+    color: var(--fg-muted);
+    text-decoration: none;
+    font-size: 0.9375rem;
+    white-space: nowrap;
+  }
+  .site-nav__links a:hover {
+    color: var(--fg);
+  }
+  .site-nav__actions {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+  }
+  .site-nav__lang {
+    color: var(--fg-muted);
+    text-decoration: none;
+    font-size: 0.875rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-full);
+    padding: var(--space-1) var(--space-3);
+  }
+  .site-nav__lang:hover {
+    color: var(--fg);
+    border-color: var(--accent);
+  }
+  .site-nav__mobile {
+    display: none;
+    position: relative;
+  }
+  .site-nav__mobile summary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.25rem;
+    height: 2.25rem;
+    border-radius: var(--radius-full);
+    border: 1px solid var(--border);
+    background: var(--bg-elev);
+    color: var(--fg);
+    cursor: pointer;
+    list-style: none;
+  }
+  .site-nav__mobile summary::-webkit-details-marker {
+    display: none;
+  }
+  .site-nav__mobile summary:hover {
+    border-color: var(--accent);
+  }
+  .site-nav__mobile[open] summary {
+    border-color: var(--accent);
+  }
+  .site-nav__mobile-list {
+    position: absolute;
+    top: calc(100% + var(--space-2));
+    right: 0;
+    z-index: 50;
+    list-style: none;
+    margin: 0;
+    padding: var(--space-2);
+    min-width: 12rem;
+    background: var(--bg-elev);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-md);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+  }
+  .site-nav__mobile-list a {
+    display: block;
+    padding: var(--space-2) var(--space-3);
+    border-radius: var(--radius-sm);
+    color: var(--fg);
+    text-decoration: none;
+    font-size: 0.9375rem;
+  }
+  .site-nav__mobile-list a:hover {
+    background: var(--bg);
+    color: var(--accent);
+  }
+  @media (max-width: 640px) {
+    .site-nav__links {
+      display: none;
+    }
+    .site-nav__mobile {
+      display: block;
+    }
+    .site-nav__lang {
+      display: none;
+    }
+  }
+</style>

@@ -1,0 +1,12 @@
+id: slash-commands
+order: 4
+level: beginner
+duration_min: 15
+covers_version: "2.1.0"
+title:
+  en: "Slash Commands"
+  no: "Slash-kommandoer"
+description:
+  en: "Manage context, switch models, undo mistakes, and configure your session without leaving the conversation."
+  no: "Håndter kontekst, bytt modell, angre feil, og konfigurer økten uten å forlate samtalen."
+tags: [slash-commands, basics]

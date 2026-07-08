@@ -1,0 +1,37 @@
+questions:
+  - id: q1
+    prompt:
+      en: "Which command starts an interactive session?"
+      no: "Hvilken kommando starter en interaktiv økt?"
+    options:
+      - { id: a, en: "claude", no: "claude" }
+      - { id: b, en: "claude run", no: "claude run" }
+      - { id: c, en: "claude start", no: "claude start" }
+    correct: a
+    explain:
+      en: "Running `claude` with no arguments opens an interactive session."
+      no: "Å kjøre `claude` uten argumenter åpner en interaktiv økt."
+  - id: q2
+    prompt:
+      en: "Which install method is recommended because it auto-updates in the background?"
+      no: "Hvilken installasjonsmetode anbefales fordi den oppdaterer seg selv i bakgrunnen?"
+    options:
+      - { id: a, en: "Homebrew (brew install --cask claude-code)", no: "Homebrew (brew install --cask claude-code)" }
+      - { id: b, en: "The native installer (curl ... | bash)", no: "Den native installereren (curl ... | bash)" }
+      - { id: c, en: "WinGet (winget install Anthropic.ClaudeCode)", no: "WinGet (winget install Anthropic.ClaudeCode)" }
+    correct: b
+    explain:
+      en: "The native installer keeps itself current automatically. Homebrew and WinGet installs require running an upgrade command yourself."
+      no: "Den native installereren holder seg selv oppdatert automatisk. Homebrew- og WinGet-installasjoner krever at du selv kjører en oppgraderingskommando."
+  - id: q3
+    prompt:
+      en: "Something seems wrong with your installation. Which in-session command diagnoses it?"
+      no: "Noe virker feil med installasjonen din. Hvilken kommando i økten diagnostiserer den?"
+    options:
+      - { id: a, en: "/doctor", no: "/doctor" }
+      - { id: b, en: "/status", no: "/status" }
+      - { id: c, en: "/repair", no: "/repair" }
+    correct: a
+    explain:
+      en: "/doctor diagnoses and verifies your Claude Code installation and settings, and can fix reported issues."
+      no: "/doctor diagnostiserer og verifiserer Claude Code-installasjonen og innstillingene dine, og kan fikse rapporterte problemer."

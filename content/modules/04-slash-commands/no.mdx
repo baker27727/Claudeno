@@ -1,0 +1,91 @@
+---
+title: "Slash-kommandoer"
+description: "Håndter kontekst, bytt modell, angre feil, og konfigurer økten uten å forlate samtalen."
+---
+import Callout from "../../../src/components/Callout.astro";
+
+# Slash-kommandoer
+
+Inne i en interaktiv økt styrer kommandoer som starter med `/` selve økten — konteksten
+din, modellen din, historikken din — i stedet for å be Claude gjøre noe i koden din. En
+kommando gjenkjennes bare i starten av meldingen din; alt etter blir et argument. Når du er i tvil, funker alltid denne:
+
+```bash
+/help
+```
+
+## Håndtere konteksten din
+
+To kommandoer høres like ut, men gjør svært forskjellige ting.
+
+```bash
+/clear
+```
+
+`/clear` starter en helt ny samtale med fullstendig tom kontekst. Den gamle samtalen
+er ikke borte — den er bare parkert; du kan åpne den igjen senere. Aliaser: `/reset`,
+`/new`.
+
+```bash
+/compact
+```
+
+`/compact` frigjør plass ved å **oppsummere** samtalen så langt, i stedet for å tømme
+den. Du fortsetter å jobbe i samme samtale, bare med et lettere kontekstvindu.
+
+<Callout type="tip" title="Tips">
+  Bruk `/clear` når du bytter til en helt urelatert oppgave. Bruk `/compact` når du
+  fortsatt jobber med det samme, men samtalen har blitt lang.
+</Callout>
+
+## Fortsette senere
+
+```bash
+/resume
+```
+
+`/resume` åpner en tidligere samtale på nytt ved å velge den fra en liste, også de du
+forlot med `/clear`. Alias: `/continue`. Dette er annerledes enn `-c`/`--continue` på
+CLI-nivå (dekket i [CLI-grunnleggende](/no/learn/cli-basics)), som alltid gjenopptar
+den *siste* samtalen uten en velger.
+
+## Bytte modell midt i økten
+
+```bash
+/model
+```
+
+`/model` åpner en velger for å bytte hvilken Claude-modell økten bruker, og lagrer
+valget som standard for nye økter. Ingen grunn til å restarte Claude Code for å prøve
+en annen modell.
+
+## Angre en feil
+
+```bash
+/rewind
+```
+
+`/rewind` går tilbake til et tidligere punkt — i koden, i samtalen, eller begge deler.
+Det er det nærmeste du kommer et sikkerhetsnett når en endring gikk et sted du ikke
+ville. Aliaser: `/checkpoint`, `/undo`.
+
+<Callout type="mistake" title="Vanlig feil">
+  Å bruke `/clear` for å "angre" en dårlig endring fjerner bare konteksten din — den
+  rører ikke filene Claude endret. Bruk `/rewind` for faktisk å rulle tilbake kode.
+</Callout>
+
+## Flere kommandoer verdt å kjenne til
+
+| Kommando | Formål |
+|---|---|
+| `/permissions` | Administrer allow/ask/deny-regler for verktøy. Alias `/allowed-tools`. |
+| `/mcp` | Koble til, list opp, eller koble til på nytt MCP-tjenere. |
+| `/init` | Generer en start-`CLAUDE.md` for et nytt prosjekt. |
+
+## Oppsummering
+
+- `/clear` tømmer konteksten og starter på nytt; `/compact` oppsummerer uten å tømme.
+- `/resume` åpner enhver tidligere samtale på nytt via navn eller ID — ingenting er
+  virkelig tapt.
+- `/model` bytter modell uten å restarte økten.
+- `/rewind` er den ekte "angre"-kommandoen for kodeendringer, ikke `/clear`.

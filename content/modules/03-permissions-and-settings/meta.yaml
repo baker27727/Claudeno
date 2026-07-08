@@ -1,0 +1,12 @@
+id: permissions-and-settings
+order: 3
+level: intermediate
+duration_min: 15
+covers_version: "2.1.0"
+title:
+  en: "Permissions & Settings"
+  no: "Tillatelser og innstillinger"
+description:
+  en: "Control what Claude can do with settings.json permissions, and how CLAUDE.md differs from it."
+  no: "Kontroller hva Claude kan gjøre med tillatelser i settings.json, og hvordan CLAUDE.md skiller seg fra det."
+tags: [permissions, settings, configuration]

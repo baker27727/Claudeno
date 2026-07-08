@@ -1,0 +1,85 @@
+questions:
+  - id: q1
+    prompt:
+      en: "Which command shows every slash command available in your session?"
+      no: "Hvilken kommando viser alle slash-kommandoer som er tilgjengelige i økten din?"
+    options:
+      - { id: a, en: "/help", no: "/help" }
+      - { id: b, en: "/list", no: "/list" }
+      - { id: c, en: "/commands", no: "/commands" }
+    correct: a
+    explain:
+      en: "/help shows the commands available in the current session."
+      no: "/help viser kommandoene som er tilgjengelige i den gjeldende økten."
+  - id: q2
+    prompt:
+      en: "You want to start a completely fresh conversation with empty context. Which command?"
+      no: "Du vil starte en helt ny samtale med tom kontekst. Hvilken kommando?"
+    options:
+      - { id: a, en: "/compact", no: "/compact" }
+      - { id: b, en: "/clear", no: "/clear" }
+      - { id: c, en: "/rewind", no: "/rewind" }
+    correct: b
+    explain:
+      en: "/clear wipes the context entirely and starts a new conversation. /compact summarizes instead of wiping; /rewind steps back rather than starting over."
+      no: "/clear tømmer konteksten helt og starter en ny samtale. /compact oppsummerer i stedet for å tømme; /rewind går tilbake i stedet for å starte på nytt."
+  - id: q3
+    prompt:
+      en: "Your context window is getting full, but you want to keep the conversation going without losing it entirely. Which command?"
+      no: "Kontekstvinduet ditt begynner å bli fullt, men du vil fortsette samtalen uten å miste den helt. Hvilken kommando?"
+    options:
+      - { id: a, en: "/clear", no: "/clear" }
+      - { id: b, en: "/help", no: "/help" }
+      - { id: c, en: "/compact", no: "/compact" }
+    correct: c
+    explain:
+      en: "/compact summarizes the conversation so far to free up space, without discarding it like /clear does."
+      no: "/compact oppsummerer samtalen så langt for å frigjøre plass, uten å forkaste den slik /clear gjør."
+  - id: q4
+    prompt:
+      en: "Which command lets you switch which Claude model the session uses?"
+      no: "Hvilken kommando lar deg bytte hvilken Claude-modell økten bruker?"
+    options:
+      - { id: a, en: "/model", no: "/model" }
+      - { id: b, en: "/permissions", no: "/permissions" }
+      - { id: c, en: "/mcp", no: "/mcp" }
+    correct: a
+    explain:
+      en: "/model opens a picker to switch models and saves your choice as the default."
+      no: "/model åpner en velger for å bytte modell og lagrer valget som standard."
+  - id: q5
+    prompt:
+      en: "You just had Claude make a change you didn't want. Which command steps back to an earlier point?"
+      no: "Claude gjorde nettopp en endring du ikke ville ha. Hvilken kommando går tilbake til et tidligere punkt?"
+    options:
+      - { id: a, en: "/clear", no: "/clear" }
+      - { id: b, en: "/rewind", no: "/rewind" }
+      - { id: c, en: "/resume", no: "/resume" }
+    correct: b
+    explain:
+      en: "/rewind undoes changes to code, the conversation, or both. Aliases: /checkpoint, /undo."
+      no: "/rewind angrer endringer i koden, samtalen, eller begge deler. Aliaser: /checkpoint, /undo."
+  - id: q6
+    prompt:
+      en: "Which command manages your MCP server connections?"
+      no: "Hvilken kommando administrerer MCP-tjenertilkoblingene dine?"
+    options:
+      - { id: a, en: "/init", no: "/init" }
+      - { id: b, en: "/permissions", no: "/permissions" }
+      - { id: c, en: "/mcp", no: "/mcp" }
+    correct: c
+    explain:
+      en: "/mcp opens the interactive list of MCP server connections, or reconnects/enables/disables one by name."
+      no: "/mcp åpner den interaktive listen over MCP-tjenertilkoblinger, eller kobler til/aktiverer/deaktiverer én ved navn."
+  - id: q7
+    prompt:
+      en: "Which command reopens a past conversation by name or ID?"
+      no: "Hvilken kommando åpner en tidligere samtale på nytt via navn eller ID?"
+    options:
+      - { id: a, en: "/resume", no: "/resume" }
+      - { id: b, en: "/clear", no: "/clear" }
+      - { id: c, en: "/model", no: "/model" }
+    correct: a
+    explain:
+      en: "/resume (alias /continue) reopens a past conversation, including ones you left via /clear."
+      no: "/resume (alias /continue) åpner en tidligere samtale på nytt, også de du forlot via /clear."

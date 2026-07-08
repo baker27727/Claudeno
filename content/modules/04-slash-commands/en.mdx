@@ -1,0 +1,92 @@
+---
+title: "Slash Commands"
+description: "Manage context, switch models, undo mistakes, and configure your session without leaving the conversation."
+---
+import Callout from "../../../src/components/Callout.astro";
+
+# Slash Commands
+
+Inside an interactive session, commands starting with `/` control the session itself —
+your context, your model, your history — rather than asking Claude to do something in
+your code. A command is only recognized at the start of your message; anything after
+it becomes an argument. When in doubt, this always works:
+
+```bash
+/help
+```
+
+## Managing your context
+
+Two commands sound similar but do very different things.
+
+```bash
+/clear
+```
+
+`/clear` starts a brand new conversation with completely empty context. The old
+conversation isn't gone — it's just parked; you can reopen it later. Aliases: `/reset`,
+`/new`.
+
+```bash
+/compact
+```
+
+`/compact` frees up space by **summarizing** the conversation so far, instead of
+wiping it. You keep working in the same conversation, just with a lighter context
+window.
+
+<Callout type="tip" title="Tip">
+  Use `/clear` when you're switching to a genuinely unrelated task. Use `/compact`
+  when you're still working on the same thing but the conversation has gotten long.
+</Callout>
+
+## Continuing later
+
+```bash
+/resume
+```
+
+`/resume` reopens a past conversation by picking it from a list, including ones you
+left behind with `/clear`. Alias: `/continue`. This is different from `-c`/`--continue`
+at the CLI level (covered in [CLI Basics](/en/learn/cli-basics)), which always resumes
+the *most recent* conversation without a picker.
+
+## Switching models mid-session
+
+```bash
+/model
+```
+
+`/model` opens a picker to switch which Claude model the session uses, and saves your
+choice as the default for new sessions. No need to restart Claude Code to try a
+different model.
+
+## Undoing a mistake
+
+```bash
+/rewind
+```
+
+`/rewind` steps back to an earlier point — in the code, in the conversation, or both.
+It's the closest thing to a safety net for when a change went somewhere you didn't
+want. Aliases: `/checkpoint`, `/undo`.
+
+<Callout type="mistake" title="Common mistake">
+  Reaching for `/clear` to "undo" a bad edit just loses your context — it doesn't
+  touch the files Claude changed. Use `/rewind` to actually roll back code.
+</Callout>
+
+## More commands worth knowing
+
+| Command | Purpose |
+|---|---|
+| `/permissions` | Manage allow/ask/deny rules for tools. Alias `/allowed-tools`. |
+| `/mcp` | Connect to, list, or reconnect MCP servers. |
+| `/init` | Generate a starter `CLAUDE.md` for a new project. |
+
+## Key takeaways
+
+- `/clear` wipes context and starts fresh; `/compact` summarizes without wiping.
+- `/resume` reopens any past conversation by name or ID — nothing is truly lost.
+- `/model` switches models without restarting the session.
+- `/rewind` is the real "undo" for code changes, not `/clear`.

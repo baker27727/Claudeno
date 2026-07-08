@@ -1,0 +1,19 @@
+steps:
+  - id: step-1
+    command: "curl -fsSL https://claude.ai/install.sh | bash"
+    output: |
+      Installing Claude Code…
+      Installed. Run "claude" to get started.
+    explain:
+      en: "The native installer downloads Claude Code and sets it up to auto-update in the background. Works on macOS, Linux, and WSL."
+      no: "Den native installereren laster ned Claude Code og setter den opp til å oppdatere seg selv i bakgrunnen. Fungerer på macOS, Linux og WSL."
+    accepts_also: []
+  - id: step-2
+    command: "claude"
+    output: |
+      Welcome to Claude Code!
+      Type your request in plain language, or /help for commands.
+    explain:
+      en: "Launches an interactive session in your project folder."
+      no: "Starter en interaktiv økt i prosjektmappen din."
+    accepts_also: ["claude --help"]

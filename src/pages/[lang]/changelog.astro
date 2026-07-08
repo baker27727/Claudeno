@@ -1,0 +1,157 @@
+---
+import { getCollection } from "astro:content";
+import Base from "../../layouts/Base.astro";
+import { LOCALES, useTranslations, formatDate, type Locale } from "../../lib/i18n";
+import {
+  itemListJsonLd,
+  breadcrumbListJsonLd,
+  pageBreadcrumbs,
+  jsonLdScript,
+  type ChangelogEntry,
+} from "../../lib/seo";
+
+export function getStaticPaths() {
+  return LOCALES.map((lang) => ({ params: { lang } }));
+}
+
+const lang = Astro.params.lang as Locale;
+const t = useTranslations(lang);
+const entries = (await getCollection("changelog")).sort(
+  (a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime(),
+) as unknown as Array<{ data: ChangelogEntry }>;
+
+// BLUEPRINT §9 — سجل التغييرات كـ ItemList.
+const list = itemListJsonLd(entries.map((e) => e.data), lang);
+const path = `/${lang}/changelog`;
+const crumbs = breadcrumbListJsonLd(pageBreadcrumbs(t("nav.changelog"), path, lang));
+const jsonLd = jsonLdScript([list, crumbs]);
+---
+
+<Base
+  lang={lang}
+  title={`${t("nav.changelog")} — Claude Code Learn`}
+  description={lang === "no" ? "Hva er nytt i Claude Code." : "What's new in Claude Code."}
+>
+  <Fragment slot="head">
+    <Fragment set:html={jsonLd} />
+  </Fragment>
+
+  <main class="changelog">
+    <header class="changelog__head">
+      <p class="changelog__eyebrow">{lang === "no" ? "Endringslogg" : "Release notes"}</p>
+      <h1>{t("nav.changelog")}</h1>
+    </header>
+
+    <ol class="changelog__list">
+      {entries.map((entry) => (
+        <li class="changelog__entry">
+          <div class="changelog__rail" aria-hidden="true">
+            <span class="changelog__dot"></span>
+          </div>
+          <div class="changelog__body">
+            <div class="changelog__meta">
+              <span class="changelog__version">v{entry.data.version}</span>
+              <time datetime={entry.data.date}>{formatDate(new Date(entry.data.date), lang)}</time>
+            </div>
+            <p>{entry.data.entry[lang]}</p>
+            {entry.data.sources && entry.data.sources.length > 0 && (
+              <p class="changelog__sources">
+                {entry.data.sources.map((src) => (
+                  <a href={src} target="_blank" rel="noopener noreferrer">{src}</a>
+                ))}
+              </p>
+            )}
+          </div>
+        </li>
+      ))}
+    </ol>
+  </main>
+</Base>
+
+<style>
+  .changelog {
+    max-width: 40rem;
+    margin: 0 auto;
+    padding: var(--space-12) var(--space-6) var(--space-16);
+  }
+  .changelog__head {
+    margin-bottom: var(--space-12);
+  }
+  .changelog__eyebrow {
+    margin: 0 0 var(--space-2);
+    color: var(--accent);
+    font-size: 0.8125rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+  .changelog__head h1 {
+    margin: 0;
+    font-size: clamp(2rem, 4vw, 2.75rem);
+  }
+  .changelog__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .changelog__entry {
+    display: grid;
+    grid-template-columns: 1.25rem 1fr;
+    gap: var(--space-5);
+  }
+  .changelog__rail {
+    position: relative;
+    display: flex;
+    justify-content: center;
+  }
+  .changelog__rail::before {
+    content: "";
+    position: absolute;
+    top: 0.4rem;
+    bottom: calc(-1 * var(--space-8));
+    width: 1px;
+    background: var(--border);
+  }
+  .changelog__entry:last-child .changelog__rail::before {
+    display: none;
+  }
+  .changelog__dot {
+    width: 0.55rem;
+    height: 0.55rem;
+    margin-top: 0.4rem;
+    border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 20%, transparent);
+  }
+  .changelog__body {
+    padding-bottom: var(--space-10);
+  }
+  .changelog__meta {
+    display: flex;
+    gap: var(--space-3);
+    align-items: baseline;
+    margin-bottom: var(--space-2);
+  }
+  .changelog__version {
+    font-family: var(--font-mono);
+    color: var(--fg);
+    font-weight: 600;
+    font-size: 1.0625rem;
+  }
+  .changelog__meta time {
+    color: var(--fg-muted);
+    font-size: 0.8125rem;
+  }
+  .changelog__body p {
+    margin: 0;
+    color: var(--fg-muted);
+    line-height: 1.6;
+  }
+  .changelog__sources {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+    font-size: 0.8125rem;
+    margin: var(--space-2) 0 0;
+  }
+</style>

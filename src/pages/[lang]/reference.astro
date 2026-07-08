@@ -1,0 +1,199 @@
+---
+import Base from "../../layouts/Base.astro";
+import { LOCALES, useTranslations, type Locale } from "../../lib/i18n";
+import {
+  webPageJsonLd,
+  breadcrumbListJsonLd,
+  pageBreadcrumbs,
+  jsonLdScript,
+  type JsonLdObject,
+} from "../../lib/seo";
+
+export function getStaticPaths() {
+  return LOCALES.map((lang) => ({ params: { lang } }));
+}
+
+const lang = Astro.params.lang as Locale;
+const t = useTranslations(lang);
+
+// groups of commands keyed by language.
+const groups: Array<{ title: { en: string; no: string }; items: Array<{ cmd: string; desc: { en: string; no: string } }> }> = [
+  {
+    title: { en: "Getting started", no: "Kom i gang" },
+    items: [
+      { cmd: "curl -fsSL https://claude.ai/install.sh | bash", desc: { en: "Install the CLI (macOS/Linux/WSL) — auto-updates in the background.", no: "Installer CLI-en (macOS/Linux/WSL) — oppdaterer seg selv i bakgrunnen." } },
+      { cmd: "claude", desc: { en: "Start an interactive session.", no: "Start en interaktiv økt." } },
+      { cmd: "claude --help", desc: { en: "List available flags and commands.", no: "List tilgjengelige flagg og kommandoer." } },
+    ],
+  },
+  {
+    title: { en: "In-session slash commands", no: "Slash-kommandoer i økten" },
+    items: [
+      { cmd: "/help", desc: { en: "Show help for the current session.", no: "Vis hjelp for gjeldende økt." } },
+      { cmd: "/clear", desc: { en: "Clear the conversation context.", no: "Tøm samtalekonteksten." } },
+      { cmd: "/agents", desc: { en: "Manage configured subagents.", no: "Administrer konfigurerte underagenter." } },
+      { cmd: "/config", desc: { en: "Open configuration settings.", no: "Åpne konfigurasjonsinnstillinger." } },
+    ],
+  },
+  {
+    title: { en: "Configuration", no: "Konfigurasjon" },
+    items: [
+      { cmd: "CLAUDE.md", desc: { en: "Project-level instructions read at session start.", no: "Prosjektinstruksjoner som leses ved oppstart av økt." } },
+      { cmd: ".claude/settings.json", desc: { en: "Permissions, hooks, and tool configuration.", no: "Tillatelser, hooks og verktøykonfigurasjon." } },
+    ],
+  },
+];
+
+// BLUEPRINT §9 §4 — Reference = WebPage مع mainEntity من نوع "ItemList"
+// (ورقة الغش عبارة عن قائمة أوامر، فهي ItemList رسميًّا).
+const flatItems = groups.flatMap((g) => g.items);
+const referenceItemList: JsonLdObject = {
+  "@context": "https://schema.org",
+  "@type": "ItemList",
+  name: lang === "no" ? "Claude Code-kommandoer" : "Claude Code Commands",
+  inLanguage: lang,
+  numberOfItems: flatItems.length,
+  itemListElement: flatItems.map((item, i) => ({
+    "@type": "ListItem",
+    position: i + 1,
+    name: item.cmd,
+    description: item.desc[lang],
+  })),
+};
+
+const pagePath = `/${lang}/reference`;
+const webPage = webPageJsonLd({
+  name: `${t("nav.reference")} — Claude Code Learn`,
+  description: lang === "no"
+    ? "Kommando-jukselapp for Claude Code."
+    : "Command cheat sheet for Claude Code.",
+  lang,
+  path: pagePath,
+  mainEntity: { type: "ItemList", data: referenceItemList },
+});
+const crumbs = breadcrumbListJsonLd(pageBreadcrumbs(t("nav.reference"), pagePath, lang));
+const jsonLd = jsonLdScript([webPage, crumbs]);
+---
+
+<Base
+  lang={lang}
+  title={`${t("nav.reference")} — Claude Code Learn`}
+  description={lang === "no" ? "Kommando-jukselapp for Claude Code." : "Command cheat sheet for Claude Code."}
+>
+  <Fragment slot="head">
+    <Fragment set:html={jsonLd} />
+  </Fragment>
+
+  <main class="reference">
+    <header class="reference__head">
+      <p class="reference__eyebrow">{lang === "no" ? "Referanse" : "Reference"}</p>
+      <h1>{t("nav.reference")}</h1>
+      <p class="reference__intro">
+        {lang === "no"
+          ? "De kommandoene og filene du faktisk kommer til å bruke — ingen fyllstoff."
+          : "The commands and files you'll actually reach for — no filler."}
+      </p>
+    </header>
+
+    {groups.map((group, gi) => (
+      <section class="reference__group">
+        <div class="reference__group-head">
+          <span class="reference__index">{String(gi + 1).padStart(2, "0")}</span>
+          <h2>{group.title[lang]}</h2>
+        </div>
+        <ul class="reference__list">
+          {group.items.map((item) => (
+            <li class="reference__row">
+              <code class="reference__cmd">{item.cmd}</code>
+              <span class="reference__desc">{item.desc[lang]}</span>
+            </li>
+          ))}
+        </ul>
+      </section>
+    ))}
+  </main>
+</Base>
+
+<style>
+  .reference {
+    max-width: 44rem;
+    margin: 0 auto;
+    padding: var(--space-12) var(--space-6) var(--space-16);
+  }
+  .reference__head {
+    margin-bottom: var(--space-12);
+  }
+  .reference__eyebrow {
+    margin: 0 0 var(--space-2);
+    color: var(--accent);
+    font-size: 0.8125rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+  .reference__head h1 {
+    margin: 0 0 var(--space-3);
+    font-size: clamp(2rem, 4vw, 2.75rem);
+  }
+  .reference__intro {
+    margin: 0;
+    max-width: 32rem;
+    color: var(--fg-muted);
+    font-size: 1.0625rem;
+    line-height: 1.6;
+  }
+  .reference__group {
+    margin-bottom: var(--space-12);
+  }
+  .reference__group-head {
+    display: flex;
+    align-items: baseline;
+    gap: var(--space-3);
+    margin-bottom: var(--space-5);
+    padding-bottom: var(--space-3);
+    border-bottom: 1px solid var(--border);
+  }
+  .reference__index {
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    color: var(--accent);
+  }
+  .reference__group-head h2 {
+    margin: 0;
+    font-size: 1.25rem;
+    font-weight: 500;
+  }
+  .reference__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .reference__row {
+    display: grid;
+    grid-template-columns: minmax(0, 16rem) 1fr;
+    gap: var(--space-5);
+    align-items: baseline;
+    padding: var(--space-3) 0;
+    border-bottom: 1px solid color-mix(in srgb, var(--border) 60%, transparent);
+  }
+  .reference__row:last-child {
+    border-bottom: none;
+  }
+  .reference__cmd {
+    font-family: var(--font-mono);
+    font-size: 0.875rem;
+    color: var(--accent);
+    word-break: break-word;
+  }
+  .reference__desc {
+    color: var(--fg-muted);
+    font-size: 0.9375rem;
+    line-height: 1.5;
+  }
+  @media (max-width: 640px) {
+    .reference__row {
+      grid-template-columns: 1fr;
+      gap: var(--space-1);
+    }
+  }
+</style>

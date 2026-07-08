@@ -1,0 +1,33 @@
+# §3.4 — قاموس EN↔NO الموحّد. وكيل الترجمة مُلزَم بهذه المصطلحات.
+# `id` مطلوب لمحمّل الملفات في Astro؛ نستخدم المصطلح الإنجليزي كمعرّف.
+- id: session
+  en: "session"
+  no: "økt"
+- id: prompt
+  en: "prompt"
+  no: "ledetekst"     # أو الإبقاء على prompt حسب العرف التقني النرويجي
+- id: repository
+  en: "repository"
+  no: "kodelager"
+  note: "يشيع أيضًا 'repo' بين المطورين النرويجيين — نستخدم repo في السياق غير الرسمي"
+- id: command
+  en: "command"
+  no: "kommando"
+- id: subagent
+  en: "subagent"
+  no: "underagent"
+- id: permissions
+  en: "permissions"
+  no: "tillatelser"
+- id: settings
+  en: "settings"
+  no: "innstillinger"
+- id: slash-command
+  en: "slash command"
+  no: "slash-kommando"
+- id: mcp-server
+  en: "MCP server"
+  no: "MCP-tjener"
+- id: flag
+  en: "flag"
+  no: "flagg"

@@ -1,0 +1,12 @@
+id: cli-basics
+order: 2
+level: beginner
+duration_min: 15
+covers_version: "2.1.0"
+title:
+  en: "CLI Basics"
+  no: "CLI-grunnleggende"
+description:
+  en: "The flags you'll actually use: checking your version, scripting with print mode, resuming sessions, and picking a model."
+  no: "Flaggene du faktisk kommer til å bruke: sjekke versjonen din, skripte med print-modus, gjenoppta økter, og velge modell."
+tags: [cli, basics]

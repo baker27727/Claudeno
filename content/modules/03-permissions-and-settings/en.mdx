@@ -1,0 +1,66 @@
+---
+title: "Permissions & Settings"
+description: "Control what Claude can do with settings.json permissions, and how CLAUDE.md differs from it."
+---
+import Callout from "../../../src/components/Callout.astro";
+
+# Permissions & Settings
+
+`settings.json` controls what Claude Code is *allowed to do*. It exists at several
+scopes:
+
+| Scope | Path | Shared with team? |
+|---|---|---|
+| Project | `.claude/settings.json` | Yes (committed) |
+| Local | `.claude/settings.local.json` | No (gitignored, personal) |
+| User | `~/.claude/settings.json` | No, applies to all your projects |
+
+## Permissions: allow and deny
+
+```bash
+cat .claude/settings.json
+```
+
+```json
+{
+  "permissions": {
+    "allow": ["Bash(npm run test *)"],
+    "deny": ["Read(./.env)"]
+  }
+}
+```
+
+Patterns use the tool name plus an argument pattern in parentheses, with `*`
+wildcards. **`deny` always wins** when a pattern matches both lists.
+
+<Callout type="tip" title="Tip">
+  Start narrow. Allow-list a handful of read-only or low-risk commands first
+  (`Bash(npm run test *)`, `Bash(git status)`), then widen the list as you see what
+  Claude actually needs — instead of allowing broad patterns like `Bash(*)` up front.
+</Callout>
+
+You can review and edit these rules without hand-editing JSON: run `/permissions`
+inside a session to open an interactive dialog for allow, ask, and deny rules by
+scope.
+
+## Plan mode
+
+```bash
+claude --permission-mode plan
+```
+
+Starts a session where Claude proposes its plan before making any changes —
+handy for reviewing risky work before it happens.
+
+## settings.json vs. CLAUDE.md
+
+`settings.json` configures *behavior* (permissions, hooks, model). `CLAUDE.md` gives
+Claude *context* — project conventions, architecture notes, style guides — that it
+reads at the start of every session.
+
+## Key takeaways
+
+- `.claude/settings.json` is the shared, committed scope; `.local.json` is personal.
+- `deny` beats `allow` whenever a pattern matches both.
+- `/permissions` gives you an interactive dialog instead of hand-editing JSON.
+- `settings.json` controls what Claude can *do*; `CLAUDE.md` tells it what to *know*.

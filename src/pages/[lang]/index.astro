@@ -1,0 +1,417 @@
+---
+import Base from "../../layouts/Base.astro";
+import TerminalSim from "../../islands/TerminalSim.svelte";
+import { LOCALES, useTranslations, type Locale } from "../../lib/i18n";
+import { getAllModules } from "../../lib/modules";
+import {
+  websiteJsonLd,
+  organizationJsonLd,
+  jsonLdScript,
+} from "../../lib/seo";
+
+export function getStaticPaths() {
+  return LOCALES.map((lang) => ({ params: { lang } }));
+}
+
+const lang = Astro.params.lang as Locale;
+const t = useTranslations(lang);
+const modules = await getAllModules();
+const commandBank = modules.flatMap((m) => m.terminal.steps);
+const previewModules = modules.slice(0, 4);
+
+// BLUEPRINT §9 — JSON-LD للصفحة الرئيسية: WebSite + Organization.
+const jsonLd = jsonLdScript([websiteJsonLd(lang), organizationJsonLd()]);
+
+// محتوى الصفحة الرئيسية — نصوص أصلية بالكامل (ليست منسوخة من أي موقع مرجعي).
+const copy = {
+  en: {
+    h1: "Claude Code, learned by typing — not scrolling.",
+    lede: "A live terminal, a placement quiz, and a config generator. Free, in your browser, in English or Norsk — nothing to install first.",
+    ctaPrimary: "Start learning",
+    ctaSecondary: "Find your level",
+    stageLabel: "Live in your browser",
+    notes: [
+      { k: "Real output", v: "Runs actual Claude Code commands, not screenshots." },
+      { k: "Real files", v: "Config builder hands you an actual CLAUDE.md." },
+      { k: "Real reasoning", v: "Quiz answers explain the why, not just right or wrong." },
+    ],
+    pathEyebrow: "The path",
+    pathTitle: "Six modules, beginner to advanced",
+    pathAll: "See all modules",
+    toolsLabel: "Straight to a tool",
+    tools: [
+      { title: "Playground", body: "every command, free-form", href: "playground" },
+      { title: "Config Builder", body: "CLAUDE.md, agents, hooks, MCP", href: "build" },
+      { title: "Cheat Sheet", body: "the commands worth remembering", href: "reference" },
+      { title: "Level check", body: "12 questions, one recommendation", href: "quiz" },
+    ],
+  },
+  no: {
+    h1: "Claude Code — lært ved å skrive, ikke bla.",
+    lede: "En live terminal, en nivåtest og en konfigurasjonsgenerator. Gratis, i nettleseren din, på norsk eller engelsk — ingenting å installere først.",
+    ctaPrimary: "Begynn å lære",
+    ctaSecondary: "Finn nivået ditt",
+    stageLabel: "Live i nettleseren",
+    notes: [
+      { k: "Ekte output", v: "Kjører faktiske Claude Code-kommandoer, ikke skjermbilder." },
+      { k: "Ekte filer", v: "Konfigbyggeren gir deg en ekte CLAUDE.md." },
+      { k: "Ekte resonnement", v: "Quiz-svar forklarer hvorfor, ikke bare riktig eller galt." },
+    ],
+    pathEyebrow: "Stien",
+    pathTitle: "Seks moduler, fra nybegynner til avansert",
+    pathAll: "Se alle moduler",
+    toolsLabel: "Rett til et verktøy",
+    tools: [
+      { title: "Lekeplass", body: "alle kommandoer, fritt fram", href: "playground" },
+      { title: "Konfigbygger", body: "CLAUDE.md, agenter, hooks, MCP", href: "build" },
+      { title: "Jukselapp", body: "kommandoene verdt å huske", href: "reference" },
+      { title: "Nivåtest", body: "12 spørsmål, én anbefaling", href: "quiz" },
+    ],
+  },
+} as const;
+
+const c = copy[lang];
+---
+
+<Base
+  lang={lang}
+  title="Claude Code Learn"
+  description={lang === "no"
+    ? "Lær Claude Code interaktivt — på norsk og engelsk."
+    : "Learn Claude Code interactively — in English and Norwegian."}
+>
+  {/* JSON-LD عبر head slot — يضمن خروج الـ script داخل <head> */}
+  <Fragment slot="head">
+    <Fragment set:html={jsonLd} />
+  </Fragment>
+
+  <main class="home">
+    <header class="intro">
+      <h1>{c.h1}</h1>
+      <p class="intro__lede">{c.lede}</p>
+      <div class="intro__ctas">
+        <a href={`/${lang}/learn`} class="cta cta--primary">{c.ctaPrimary}</a>
+        <a href={`/${lang}/quiz`} class="cta cta--secondary">{c.ctaSecondary}</a>
+      </div>
+    </header>
+
+    <section class="stage">
+      <div class="stage__inner">
+        <p class="stage__label">
+          <span class="stage__dot" aria-hidden="true"></span>
+          {c.stageLabel}
+        </p>
+        <TerminalSim client:load steps={commandBank} mode="free" locale={lang} />
+        <dl class="stage__notes">
+          {c.notes.map((n) => (
+            <div class="stage__note">
+              <dt>{n.k}</dt>
+              <dd>{n.v}</dd>
+            </div>
+          ))}
+        </dl>
+      </div>
+    </section>
+
+    <section class="path" aria-labelledby="path-heading">
+      <div class="path__head">
+        <div>
+          <p class="section-eyebrow">{c.pathEyebrow}</p>
+          <h2 id="path-heading">{c.pathTitle}</h2>
+        </div>
+        <a href={`/${lang}/learn`} class="path__all">{c.pathAll} &rarr;</a>
+      </div>
+      <ol class="path__list">
+        {previewModules.map((m, i) => (
+          <li>
+            <a class="path__row" href={`/${lang}/learn/${m.id}`}>
+              <span class="path__index">{String(i + 1).padStart(2, "0")}</span>
+              <span class="path__title">{m.meta.title[lang]}</span>
+              <span class={`path__level path__level--${m.meta.level}`}>{t(`module.level.${m.meta.level}`)}</span>
+              <span class="path__duration">{m.meta.duration_min} {t("module.duration")}</span>
+            </a>
+          </li>
+        ))}
+      </ol>
+    </section>
+
+    <section class="tools" aria-label={c.toolsLabel}>
+      <p class="tools__label">{c.toolsLabel}</p>
+      <nav class="tools__row">
+        {c.tools.map((tool, i) => (
+          <>
+            {i > 0 && <span class="tools__sep" aria-hidden="true">/</span>}
+            <a class="tools__item" href={`/${lang}/${tool.href}`}>
+              <span class="tools__title">{tool.title}</span>
+              <span class="tools__body">{tool.body}</span>
+            </a>
+          </>
+        ))}
+      </nav>
+    </section>
+  </main>
+</Base>
+
+<style>
+  .section-eyebrow {
+    margin: 0 0 var(--space-2);
+    color: var(--accent);
+    font-size: 0.8125rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  /* ---------- intro (full-width headline, no split) ---------- */
+  .intro {
+    max-width: 44rem;
+    margin: 0 auto;
+    padding: var(--space-16) var(--space-6) var(--space-10);
+    text-align: left;
+  }
+  .intro h1 {
+    font-size: clamp(2.5rem, 6vw, 4.25rem);
+    line-height: 1.02;
+    letter-spacing: -0.015em;
+    font-weight: 600;
+    margin: 0 0 var(--space-6);
+  }
+  .intro__lede {
+    color: var(--fg-muted);
+    font-size: 1.1875rem;
+    line-height: 1.55;
+    margin: 0 0 var(--space-8);
+  }
+  .intro__ctas {
+    display: flex;
+    align-items: center;
+    gap: var(--space-5);
+    flex-wrap: wrap;
+  }
+  .cta {
+    display: inline-block;
+    padding: var(--space-3) var(--space-6);
+    border-radius: var(--radius);
+    font-weight: 600;
+    text-decoration: none;
+  }
+  .cta--primary {
+    background: var(--accent);
+    color: var(--accent-fg);
+  }
+  .cta--secondary {
+    color: var(--fg);
+    border-bottom: 1px solid var(--border);
+    padding-left: 0;
+    padding-right: 0;
+    border-radius: 0;
+  }
+  .cta--secondary:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  /* ---------- stage: terminal as the centerpiece, full-bleed tint ---------- */
+  .stage {
+    background: var(--bg-elev);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+  .stage__inner {
+    max-width: 56rem;
+    margin: 0 auto;
+    padding: var(--space-10) var(--space-6) var(--space-12);
+  }
+  .stage__label {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    margin: 0 0 var(--space-3);
+    color: var(--fg-muted);
+    font-size: 0.8125rem;
+    font-family: var(--font-mono);
+  }
+  .stage__dot {
+    width: 0.4rem;
+    height: 0.4rem;
+    border-radius: 50%;
+    background: var(--ok);
+  }
+  .stage__notes {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    margin: var(--space-8) 0 0;
+  }
+  .stage__note {
+    padding: 0 var(--space-5);
+    border-left: 1px solid var(--border);
+  }
+  .stage__note:first-child {
+    padding-left: 0;
+    border-left: none;
+  }
+  .stage__note dt {
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: var(--fg);
+    margin-bottom: var(--space-1);
+  }
+  .stage__note dd {
+    margin: 0;
+    color: var(--fg-muted);
+    font-size: 0.8125rem;
+    line-height: 1.5;
+  }
+  @media (max-width: 700px) {
+    .stage__notes {
+      grid-template-columns: 1fr;
+      gap: var(--space-4);
+    }
+    .stage__note {
+      padding-left: 0;
+      border-left: none;
+      border-top: 1px solid var(--border);
+      padding-top: var(--space-4);
+    }
+    .stage__note:first-child {
+      border-top: none;
+      padding-top: 0;
+    }
+  }
+
+  /* ---------- learning path preview ---------- */
+  .path {
+    max-width: 56rem;
+    margin: 0 auto;
+    padding: var(--space-12) var(--space-6);
+  }
+  .path__head {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: var(--space-4);
+    flex-wrap: wrap;
+    margin-bottom: var(--space-6);
+  }
+  .path__head h2 {
+    margin: 0;
+    font-size: 1.75rem;
+  }
+  .path__all {
+    color: var(--fg-muted);
+    text-decoration: none;
+    font-size: 0.9375rem;
+    white-space: nowrap;
+  }
+  .path__all:hover {
+    color: var(--accent);
+  }
+  .path__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .path__row {
+    display: grid;
+    grid-template-columns: 2.5rem 1fr auto auto;
+    align-items: center;
+    gap: var(--space-4);
+    padding: var(--space-4) var(--space-2);
+    border-top: 1px solid var(--border);
+    text-decoration: none;
+    color: var(--fg);
+    transition: background var(--dur) var(--ease);
+  }
+  .path__list li:last-child .path__row {
+    border-bottom: 1px solid var(--border);
+  }
+  .path__row:hover {
+    background: var(--bg-elev);
+    color: var(--accent);
+  }
+  .path__index {
+    font-family: var(--font-mono);
+    color: var(--fg-muted);
+    font-size: 0.875rem;
+  }
+  .path__title {
+    font-weight: 500;
+  }
+  .path__level {
+    font-size: 0.6875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    padding: 0.1rem 0.5rem;
+    border-radius: var(--radius-full);
+    border: 1px solid var(--border);
+    color: var(--fg-muted);
+    white-space: nowrap;
+  }
+  .path__level--beginner {
+    color: var(--ok);
+    border-color: var(--ok);
+  }
+  .path__level--intermediate {
+    color: var(--warn);
+    border-color: var(--warn);
+  }
+  .path__level--advanced {
+    color: var(--err);
+    border-color: var(--err);
+  }
+  .path__duration {
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    color: var(--fg-muted);
+    white-space: nowrap;
+  }
+  @media (max-width: 640px) {
+    .path__row {
+      grid-template-columns: 1.5rem 1fr;
+    }
+    .path__level,
+    .path__duration {
+      display: none;
+    }
+  }
+
+  /* ---------- tools: lean inline list, no cards ---------- */
+  .tools {
+    max-width: 56rem;
+    margin: 0 auto;
+    padding: 0 var(--space-6) var(--space-16);
+  }
+  .tools__label {
+    margin: 0 0 var(--space-4);
+    padding-top: var(--space-8);
+    border-top: 1px solid var(--border);
+    color: var(--fg-muted);
+    font-size: 0.8125rem;
+  }
+  .tools__row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: var(--space-3);
+  }
+  .tools__sep {
+    color: var(--border);
+  }
+  .tools__item {
+    display: inline-flex;
+    align-items: baseline;
+    gap: var(--space-2);
+    text-decoration: none;
+    color: var(--fg);
+  }
+  .tools__title {
+    font-weight: 600;
+  }
+  .tools__body {
+    color: var(--fg-muted);
+    font-size: 0.875rem;
+  }
+  .tools__item:hover .tools__title {
+    color: var(--accent);
+  }
+</style>

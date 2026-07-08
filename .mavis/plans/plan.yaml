@@ -1,0 +1,525 @@
+version: 1
+plan:
+  name: 'إكمال النواقص في منصة Claude Code Learn (EN/NO)'
+  max_concurrency: 7
+  max_consecutive_failures: 2
+  max_cycles: 10
+  auto_reject_retries: 1
+  verifier_config:
+    default_verifiers: [verifier]
+    audit_sample_rate: 0.0
+tasks:
+  # ---------------------------------------------------------------------------
+  # Track 1 — SEO foundations: Schema.org JSON-LD على كل الصفحات
+  # ---------------------------------------------------------------------------
+  - id: seo-structured-data
+    title: 'SEO: Schema.org JSON-LD (Course + FAQPage + Organization + WebSite)'
+    assigned_to: coder
+    verified_by: verifier
+    max_retries: 2
+    prompt: |-
+      المهمة: إضافة Schema.org JSON-LD إلى منصة Claude Code Learn لتحسين SEO.
+
+      ## مصادر الحقيقة
+      - المخطط الكامل في /Users/eythan/Desktop/Claudeno/claude-code-learn-blueprint.md (§9 SEO والنمو)
+      - layout الحالي: /Users/eythan/Desktop/Claudeno/src/layouts/Base.astro
+      - صفحة الوحدة: /Users/eythan/Desktop/Claudeno/src/pages/[lang]/learn/[module].astro
+      - الصفحة الرئيسية: /Users/eytan/Desktop/Claudeno/src/pages/[lang]/index.astro
+      - نظام i18n: /Users/eythan/Desktop/Claudeno/src/lib/i18n.ts
+      - جمع الوحدات: /Users/eythan/Desktop/Claudeno/src/lib/modules.ts
+
+      ## ما يجب تنفيذه
+
+      ### 1. على الصفحة الرئيسية (/[lang]/index.astro)
+      أضف JSON-LD من نوعين في `<head>`:
+      - `WebSite` يحتوي: name, url, inLanguage, alternateName, potentialAction (SearchAction)
+      - `Organization` يحتوي: name, url, logo, sameAs (روابط GitHub/Twitter اختيارية)
+
+      ### 2. على صفحات الوحدات (/[lang]/learn/[module].astro)
+      أضف JSON-LD:
+      - `Course` مع provider = المنظمة، hasCourseInstance، inLanguage، description، about، educationalLevel
+      - `FAQPage` يولّد من `quiz.yaml` — كل سؤال في الاختبار يصبح `Question`، كل إجابة صحيحة تصبح `Answer`
+      - `BreadcrumbList` للملاحة: Home > Learn > Module Title
+
+      ### 3. على صفحات Changelog (/[lang]/changelog.astro)
+      - `ItemList` يحتوي الـ changelog entries
+
+      ### 4. على صفحات Reference و Catalog
+      - `WebPage` بسيط مع mainEntity من النوع المناسب
+
+      ### 5. على جميع الصفحات
+      أضف `<meta property="og:type">`, `og:title`, `og:description`, `og:url`,
+      `og:locale`, `og:site_name`, `og:image` (سيتم توفيره من Track 2 — اترك placeholder
+      لمسار افتراضي `/og-default.png`)، `twitter:card` = `summary_large_image`.
+
+      ### 6. تحديث Base.astro
+      اجعله يقبل slot اختياري `jsonLd` لتُمرّره الصفحات، أو أنشئ helper في src/lib/seo.ts
+      يولّد JSON-LD markup آمن (escape صحيح، type صحيح).
+
+      ## التنفيذ العملي
+      - أنشئ ملف جديد `src/lib/seo.ts` يحتوي دوال `websiteJsonLd(lang)`,
+        `organizationJsonLd()`, `courseJsonLd(module, lang)`,
+        `faqJsonLd(questions, lang)` — كلها typescript typed.
+      - استخدم `set:html` في Astro لتضمين الـ JSON-LD.
+      - لا تستخدم أي حزمة npm خارجية — كله pure TS.
+      - اختبر بـ `npm run build` وتأكد أن JSON-LD يظهر في HTML.
+      - شغّل `npm run audit` للتأكد أن parity ما زال يمر.
+
+      ## شرط الإيقاف
+      - كل الصفحات تخرج JSON-LD صحيح (تحقق بـ grep في dist/)
+      - `npm run build` و `npm run audit` ينجحان
+      - لم تكسر أي صفحة موجودة
+
+      أبلغ عن: قائمة الملفات المُعدّلة/المُنشأة، أمر التحقق، عينة من JSON-LD output.
+    verify_prompt: |-
+      أعد التحقق بشكل مستقل:
+
+      1. شغّل `npm run build` في /Users/eythan/Desktop/Claudeno — يجب أن ينجح بدون أخطاء.
+      2. شغّل `npm run audit` — يجب أن ينجح.
+      3. افتح dist/en/index.html و dist/en/learn/getting-started/index.html:
+         - تحقّق أن `<script type="application/ld+json">` موجود.
+         - تحقق أن JSON-LD قابل للـ parse (JSON.parse).
+         - تحقق أن Course يحتوي `provider` و `inLanguage`.
+         - تحقق أن FAQPage يحتوي على الأقل سؤالين من الأسئلة الفعلية.
+      4. تحقق أن الصفحات الأخرى (catalog, changelog, reference) تحتوي JSON-LD مناسب.
+      5. تحقق أن `<meta property="og:...">` موجود في Base layout.
+      6. تحقق أن صفحة /no/ تحتوي نفس البنية لكن بـ inLanguage="no".
+
+      اكتب تقرير PASS/FAIL مع أمثلة مقتطعة.
+
+  # ---------------------------------------------------------------------------
+  # Track 2 — OG images آلية عبر satori + @resvg/resvg-js
+  # ---------------------------------------------------------------------------
+  - id: og-images-satori
+    title: 'OG images: توليد صور آلية لكل وحدة (EN + NO) وقت البناء'
+    assigned_to: coder
+    verified_by: verifier
+    max_retries: 2
+    prompt: |-
+      المهمة: توليد OG images آلية لكل وحدة وكل لغة، وقت البناء، باستخدام satori + @resvg/resvg-js.
+
+      ## السياق
+      المخطط §9 ينص على: "صور OG آلية لكل وحدة (satori/vercel-og وقت البناء) بكلتا اللغتين".
+
+      ## ما يجب تنفيذه
+
+      ### 1. أضف الحزم
+      ```bash
+      npm install satori @resvg/resvg-js
+      ```
+      و `@types/react` كـ devDependency (satori تتوقع React elements — استخدم createElement).
+
+      ### 2. أنشئ `scripts/build-og.ts`
+      سكربت يقرأ كل وحدة من `content/modules/*/meta.yaml` ويولّد صورتين:
+      - `dist/og/<module-id>-en.png` (1200×630)
+      - `dist/og/<module-id>-no.png`
+      - `dist/og/default-en.png` و `dist/og/default-no.png` (للصفحات غير المرتبطة بوحدة)
+
+      استخدم قالب satori يحتوي: title, description (مختصرة)،
+      شعار "Claude Code Learn"، لون الخلفية من tokens.css، الخط Inter (موجود على النظام).
+
+      ### 3. أنشئ `src/lib/og.ts`
+      wrapper حول السكربت + Astro integration اختيارية عبر `astro:build:done`.
+
+      ### 4. حدّث Base.astro
+      أضف `<meta property="og:image" content={ogImageUrl}>` ديناميكي حسب الصفحة.
+      - على /[lang]/learn/[module]/: /og/<id>-<lang>.png
+      - على باقي الصفحات: /og/default-<lang>.png
+
+      ### 5. حدّث package.json
+      أضف `prebuild` script يشغّل `tsx scripts/build-og.ts` تلقائيًا قبل `astro build`.
+
+      ### 6. أضف OG image generation لـ Astro
+      الطريقة المفضلة: Astro integration بسيط (src/integrations/og-images.ts) يستخدم
+      hook `astro:build:done` لتوليد الصور عند البناء. هذا يضمن أن deploy.yml
+      في .github/workflows لا يحتاج تعديل.
+
+      ## شرط الإيقاف
+      - `npm run build` ينتج صور PNG صالحة في dist/og/
+      - `dist/en/index.html` يحتوي og:image يشير إلى /og/default-en.png
+      - `dist/en/learn/getting-started/index.html` يحتوي og:image يشير إلى
+        /og/getting-started-en.png
+      - الصور بصيغة PNG، 1200×630، > 5KB (ليست فارغة)
+      - `npm run audit` ما زال يمر
+
+      أبلغ عن: قائمة الملفات المُعدّلة، أمر التحقق، عينة من الصورة (file size + dimensions).
+    verify_prompt: |-
+      أعد التحقق بشكل مستقل:
+
+      1. احذف dist/og/ إن وُجد، ثم شغّل `npm run build` في /Users/eythan/Desktop/Claudeno.
+      2. تحقق أن dist/og/ يحتوي:
+         - default-en.png و default-no.png
+         - ملف لكل وحدة من الـ 6 modules لكل لغة (12 ملف)
+      3. تحقق من `file dist/og/default-en.png`:
+         - PNG signature
+         - 1200×630 dimensions
+         - size > 5KB
+      4. افتح dist/en/learn/getting-started/index.html، تحقق من og:image.
+      5. افتح dist/no/learn/getting-started/index.html، تحقق من og:image يشير لـ -no.png.
+      6. تحقق أن og:image URL يبدأ بـ /og/ (مسار نسبي) أو يحتوي على site URL.
+
+      اكتب تقرير PASS/FAIL مع أبعاد فعلية لكل صورة.
+
+  # ---------------------------------------------------------------------------
+  # Track 3 — Search via Pagefind + ⌘K palette
+  # ---------------------------------------------------------------------------
+  - id: search-pagefind
+    title: 'بحث ⌘K: Pagefind + SearchPalette.svelte'
+    assigned_to: coder
+    verified_by: verifier
+    max_retries: 2
+    prompt: |-
+      المهمة: إضافة بحث ⌘K قوي عبر Pagefind، يستهدف المحتوى كله (modules, blog, reference).
+
+      ## السياق
+      المخطط §2 و §5 ينصّان على SearchPalette.svelte يستخدم Pagefind.
+
+      ## ما يجب تنفيذه
+
+      ### 1. أضف Pagefind كـ devDependency
+      ```bash
+      npm install -D pagefind
+      ```
+
+      ### 2. أنشئ integration بسيط
+      `src/integrations/pagefind.ts` يستخدم `astro:build:done` hook لتشغيل
+      `pagefind --site dist` بعد البناء، فيولّد dist/pagefind/.
+
+      ### 3. أنشئ `src/islands/SearchPalette.svelte`
+      - يفتح بـ ⌘K (Mac) أو Ctrl+K (Windows/Linux) أو زر في النافبار.
+      - Modal مع input كبير، نتائج فورية (debounce 150ms).
+      - يستخدم `import('/pagefind/pagefind.js')` lazy فقط عند الفتح.
+      - يعرض: title + snippet + breadcrumb.
+      - يقفز للـ URL عند Enter أو click.
+      - يدعم التنقل بالأسهم (↑↓) بين النتائج.
+      - يدعم Esc للإغلاق.
+      - ARIA: role="dialog", aria-modal, focus trap.
+      - يحترم `prefers-color-scheme` و يطابق design tokens.
+
+      ### 4. حدّث Nav.astro
+      - أضف زر بحث في `.site-nav__actions` يفتح الـ palette.
+      - اعرض keyboard shortcut hint (⌘K).
+
+      ### 5. هيكل البحث
+      - بحث في: عناوين الوحدات، عناوين الـ blog posts (لاحقًا)، العناوين في reference.
+      - عند البناء، Pagefind يفهرس كل صفحات dist تلقائيًا.
+
+      ### 6. حدّث package.json
+      - أضف `astro:db:postbuild` integration script أو ضع Pagefind في postbuild hook.
+
+      ## شرط الإيقاف
+      - `npm run build` ينتج dist/pagefind/ مع pagefind.js و index.
+      - Nav.astro يحوي زر بحث.
+      - dist/en/index.html يحوي الـ palette في hydrated state.
+      - فتح palette بـ ⌘K يعمل في المتصفح (manual smoke).
+      - bundle JS الإضافي < 50KB gzipped.
+
+      أبلغ عن: قائمة الملفات، أوامر التحقق، حجم dist/pagefind/.
+    verify_prompt: |-
+      أعد التحقق بشكل مستقل:
+
+      1. شغّل `npm run build` في /Users/eythan/Desktop/Claudeno.
+      2. تحقق أن dist/pagefind/pagefind.js موجود.
+      3. تحقق أن dist/pagefind/index/ موجود ويحتوي بيانات.
+      4. تحقق أن dist/en/index.html يحوي زر بحث في nav (افتح HTML وابحث عن "search" أو "⌘K" أو aria-label).
+      5. تحقق أن SearchPalette.svelte:
+         - يستورد /pagefind/pagefind.js ديناميكيًا (لا static import)
+         - يربط ⌘K و Ctrl+K
+         - يستخدم `client:idle` أو `client:load` في nav (لا client:visible)
+         - يطبق role="dialog" و aria-modal
+      6. حجم dist/pagefind/ معقول (< 5MB).
+
+      اكتب تقرير PASS/FAIL مع sample file listing.
+
+  # ---------------------------------------------------------------------------
+  # Track 4 — Blog system + auto-generation في generate-update.ts
+  # ---------------------------------------------------------------------------
+  - id: blog-system
+    title: 'Blog: نظام + توليد تلقائي لمسودات "What''s new in vX.Y"'
+    assigned_to: coder
+    verified_by: verifier
+    max_retries: 2
+    prompt: |-
+      المهمة: إنشاء نظام مدونة + ربطه بخط الأتمتة لتوليد مسودات آلية مع كل تحديث.
+
+      ## السياق
+      المخطط §2 و §9 ينصّان على مدونة تتبع الإصدارات، كل PR تحديث آلي يولّد مسودة.
+
+      ## ما يجب تنفيذه
+
+      ### 1. أضف مجموعة محتوى blog في src/content.config.ts
+      ```ts
+      const blog = defineCollection({
+        loader: glob({ base: "./content/blog", pattern: "**/*.{md,mdx}" }),
+        schema: z.object({
+          title: bilingual,
+          description: bilingual,
+          pubDate: z.string().datetime(),
+          author: z.string().default("Claude Code Learn"),
+          tags: z.array(z.string()).default([]),
+          draft: z.boolean().default(true),
+        }),
+      });
+      ```
+      وأضفها إلى export.
+
+      ### 2. أضف Schema بدل collection
+      تأكد أن كل ملف blog هو bilingual (مفتوح — لا نقصر title/description على bilingual
+      للحفاظ على بساطة MDX). عدّل ليلائم MDX frontmatter.
+
+      ### 3. أنشئ الصفحات
+      - `src/pages/[lang]/blog/index.astro` — قائمة بالـ posts (الأحدث أولاً).
+      - `src/pages/[lang]/blog/[slug].astro` — صفحة post. generateStaticPaths
+        يقرأ content/blog.
+      - قالب blog post: title, date, author, tags, body (MDX).
+
+      ### 4. أضف Nav link للـ blog في i18n.ts
+      - "nav.blog" بـ EN ("Blog") و NO ("Blogg").
+
+      ### 5. أضف للـ Nav.astro
+      - blog link بين reference و changelog.
+
+      ### 6. أنشئ helper لتوليد post تلقائي
+      في `scripts/_blog-gen.ts`:
+      ```ts
+      export async function generateWhatsNewPost(version: string, en: string, no: string, sources: string[]): Promise<string>
+      ```
+      يكتب `content/blog/${version}-whats-new.md` (مسودة، draft=true) بـ frontmatter
+      يحتوي title/description/pubDate/tags/draft=true.
+
+      ### 7. حدّث scripts/generate-update.ts
+      بعد `applyChangelogEntry`، استدعِ `generateWhatsNewPost` لكتابة مسودة المدونة.
+      أضف `content/blog/` إلى `git add`.
+
+      ### 8. أضف ملف seed
+      `content/blog/welcome.md` كأول post (يدوي) للاختبار.
+
+      ### 9. حدّث audits/audit-parity.ts
+      امشِ على content/blog/* وتأكد أي bilingual متوازن. (ربما لا يحتاج لأن MDX frontmatter
+      يقبل بدون bilingual — تأكد من المسار).
+
+      ## شرط الإيقاف
+      - `npm run build` ينتج /en/blog/ و /no/blog/ و /en/blog/welcome/ و /no/blog/welcome/.
+      - Nav.astro يحوي Blog link.
+      - `npm run audit` يمر.
+      - ملف seed `content/blog/welcome.md` يُعرض بشكل صحيح في EN و NO.
+
+      أبلغ عن: قائمة الملفات، طريقة توليد post جديد من generate-update.
+    verify_prompt: |-
+      أعد التحقق بشكل مستقل:
+
+      1. شغّل `npm run build` في /Users/eythan/Desktop/Claudeno.
+      2. تحقق أن dist/en/blog/index.html و dist/no/blog/index.html موجودان.
+      3. تحقق أن dist/en/blog/welcome/index.html موجود ويعرض محتوى الـ seed.
+      4. تحقق أن scripts/generate-update.ts يستورد helper blog-gen ويستدعيه بعد applyChangelogEntry.
+      5. تحقق أن git add يحوي content/blog/ في openPullRequest.
+      6. تحقق أن Nav.astro يحوي link للـ blog.
+      7. تحقق أن Schema.org JSON-LD على صفحات blog (قد يحتاج Course أو Article —
+        اقبل إذا غائب، هذا في track آخر).
+
+      اكتب تقرير PASS/FAIL.
+
+  # ---------------------------------------------------------------------------
+  # Track 5 — Quality & CI (typecheck, Plausible, Lighthouse, a11y)
+  # ---------------------------------------------------------------------------
+  - id: quality-ci
+    title: 'Quality & CI: typecheck في CI + Plausible + Lighthouse CI + axe a11y'
+    assigned_to: coder
+    verified_by: verifier
+    max_retries: 2
+    prompt: |-
+      المهمة: تعزيز CI/CD بفحوصات الجودة (typecheck, performance, accessibility, analytics).
+
+      ## ما يجب تنفيذه
+
+      ### 1. `npm run check` في audits.yml
+      أضف `npm run check` كخطوة أولى في .github/workflows/audits.yml قبل audits.
+
+      ### 2. Plausible analytics
+      - أضف في `src/layouts/Base.astro` (في `<head>`):
+        ```html
+        <script defer data-domain="claudecode.no" src="https://plausible.io/js/script.js"></script>
+        ```
+        اجعل domain متغير env عبر `import.meta.env.PUBLIC_PLAUSIBLE_DOMAIN` و
+        `PUBLIC_PLAUSIBLE_HOST` في astro.config.mjs (site config). إذا فارغ، لا تُحمّل السكربت.
+
+      ### 3. Lighthouse CI
+      - أضف `@lhci/cli` كـ devDependency.
+      - أنشئ `.lighthouserc.json`:
+        - url: قائمة بكل الصفحات (EN/NO homepage, learn, learn/getting-started, quiz).
+        - assertions: performance ≥ 90, accessibility ≥ 95, best-practices ≥ 95,
+          seo ≥ 95, pwa غير مطلوب.
+        - budgets: js < 60KB per page (مذكور في المخطط §6.2.5).
+      - أضف `.github/workflows/lighthouse.yml` يشغّل `lhci autorun` على push إلى main
+        و PR (مع رفع التقارير كـ artifacts).
+
+      ### 4. axe-core a11y في CI
+      - أضف `@axe-core/cli` كـ devDependency.
+      - أضف `.github/workflows/a11y.yml` يشغّل `axe http://localhost:4321/<urls>`
+        ضد dev server.
+      - أو: أضف خطوة في audits.yml تشغّل axe ضد preview server.
+      - threshold: zero serious/critical violations.
+
+      ### 5. تحديث README
+      أضف قسم "Quality checks" يوثّق الفحوصات.
+
+      ## شرط الإيقاف
+      - audits.yml يحوي `npm run check` بنجاح محلي (نعم: قد يفشل على أخطاء TS حقيقية
+        — أصلحها بنفسك إن لزم).
+      - Base.astro يحوي Plausible script (commented out when env فارغ).
+      - .lighthouserc.json موجود و صالح.
+      - .github/workflows/lighthouse.yml و a11y.yml موجودان و syntax صحيح.
+      - `npm run audit` و `npm run build` يمرّان.
+
+      أبلغ عن: قائمة الملفات، أوامر التحقق، وأي TS errors تم إصلاحها.
+    verify_prompt: |-
+      أعد التحقق بشكل مستقل:
+
+      1. في /Users/eythan/Desktop/Claudeno، شغّل `npm run check` بنفسك — يجب أن ينجح (أو تذكر ما تم إصلاحه).
+      2. تحقق أن .github/workflows/audits.yml يحوي خطوة `npm run check` قبل باقي الـ steps.
+      3. تحقق أن Base.astro يحوي plausible script مشروط بـ env.
+      4. تحقق أن .lighthouserc.json صالح JSON ويحتوي assertions و budgets.
+      5. تحقق أن .github/workflows/lighthouse.yml و a11y.yml موجودان و YAML صحيح.
+      6. تحقق أن `npm run audit` يمر.
+
+      اكتب تقرير PASS/FAIL.
+
+  # ---------------------------------------------------------------------------
+  # Track 6 — Polish: README + nav links + favicon + placement quiz
+  # ---------------------------------------------------------------------------
+  - id: polish-final
+    title: 'Polish: تحديث README + nav links + favicon + تحسين placement quiz'
+    assigned_to: coder
+    verified_by: verifier
+    max_retries: 1
+    prompt: |-
+      المهمة: تنظيف نهائي وتجربة مستخدم.
+
+      ## ما يجب تنفيذه
+
+      ### 1. تحديث README.md
+      الواقع الحالي مختلف عن الموثّق:
+      - 6 modules منجزة (وليس وحدة واحدة).
+      - المراحل 2 و 3 منجزة فعليًا.
+      - اذكر كل الـ pages الحالية.
+      - اذكر المهام المخططة المتبقية (Launch + Plausible live + Lighthouse CI + Search).
+
+      ### 2. Nav.astro
+      أضف `nav.quiz` و `nav.feedback` للـ links array (مفقودان حاليًا).
+
+      ### 3. Favicon
+      - أنشئ `public/favicon.svg` (بسيط، monogram "CL" مع لون accent).
+      - أضف في Base.astro:
+        ```html
+        <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+        ```
+
+      ### 4. تحسين placement quiz (/[lang]/quiz)
+      حاليًا يدمج أسئلة كل الوحدات بالتسلسل.
+      المطلوب:
+      - اعرض score breakdown حسب المستوى (beginner/intermediate/advanced).
+      - في نهاية الـ quiz، أوصي بأول وحدة بناءً على المستوى:
+        - إذا كان beginner ضعيف → /learn/getting-started
+        - إذا كان intermediate قوي → /learn/cli-basics أو /learn/permissions-and-settings
+        - إذا كان advanced قوي → /learn/subagents أو /learn/mcp-servers
+      - اعرض النتيجة في بطاقة مع CTA.
+
+      ### 5. src/pages/[lang]/quiz.astro
+      - اجعل الـ Quiz client island تقبل callback `onFinish` وتُمرر score breakdown.
+      - اعمل helper صغير في src/lib/quiz-rec.ts يحسب التوصية.
+
+      ## شرط الإيقاف
+      - README محدّث ويعكس الحقيقة.
+      - Nav يحوي 7 روابط (Learn, Playground, Config, Reference, Blog, Changelog, Quiz, Feedback).
+      - public/favicon.svg موجود و Base.astro يحوي tag مناسب.
+      - /quiz يعرض score breakdown + توصية.
+      - `npm run build` و `npm run audit` ينجحان.
+
+      أبلغ عن: قائمة الملفات، screenshot منطق التوصية.
+    verify_prompt: |-
+      أعد التحقق بشكل مستقل:
+
+      1. تحقق أن README.md ذاكر 6 modules (وليس 1) ولا يحوي "المراحل 2-4 قيد الانتظار" إلا كقسم منفصل.
+      2. تحقق أن Nav.astro يحوي link للـ quiz و feedback.
+      3. تحقق أن public/favicon.svg موجود و Base.astro يحوي `<link rel="icon" ...>`.
+      4. شغّل `npm run build` و تحقق أن dist/en/quiz/index.html يعرض score breakdown.
+      5. تحقق أن dist/en/quiz/index.html يعرض CTA link لوحدة محددة.
+      6. شغّل `npm run audit`.
+
+      اكتب تقرير PASS/FAIL.
+
+  # ---------------------------------------------------------------------------
+  # Track 7 — Final integration gate
+  # ---------------------------------------------------------------------------
+  - id: final-gate
+    title: 'Gate نهائي: build + audit + smoke checks لجميع المخرجات'
+    assigned_to: verifier
+    role: verify-as-task
+    depends_on:
+      - seo-structured-data
+      - og-images-satori
+      - search-pagefind
+      - blog-system
+      - quality-ci
+      - polish-final
+    max_retries: 1
+    prompt: |-
+      المهمة: التحقق الشامل من أن كل المهام السابقة أنتجت deliverable متكامل.
+
+      ## الفحوصات المطلوبة
+
+      ### 1. أكمل التنظيف والبناء
+      ```bash
+      cd /Users/eythan/Desktop/Claudeno
+      rm -rf dist .astro
+      npm install   # للتأكد أن كل الحزم الجديدة مُثبّتة
+      npm run check
+      npm run audit
+      npm run build
+      ```
+
+      ### 2. فحوصات deliverables (يجب أن تكون PASS جميعها)
+      لكل من: SEO, OG, Search, Blog, CI, Polish — تحقّق:
+
+      **SEO:**
+      - dist/en/index.html يحوي JSON-LD WebSite و Organization
+      - dist/en/learn/getting-started/index.html يحوي JSON-LD Course و FAQPage
+      - كل الصفحات تحوي og: meta tags
+
+      **OG:**
+      - dist/og/ موجود ويحتوي 14 PNG على الأقل (default × 2 + 6 modules × 2)
+      - كل PNG ≥ 5KB و 1200×630
+
+      **Search:**
+      - dist/pagefind/pagefind.js موجود
+      - Nav يحوي زر بحث (افتح dist/en/index.html وابحث عن ⌘K أو search)
+
+      **Blog:**
+      - dist/en/blog/index.html و /no/blog/index.html موجودان
+      - dist/en/blog/welcome/index.html يعرض post
+
+      **CI:**
+      - .github/workflows/audits.yml يحوي npm run check
+      - .lighthouserc.json موجود و JSON صالح
+      - .github/workflows/lighthouse.yml موجود
+
+      **Polish:**
+      - README.md محدّث
+      - public/favicon.svg موجود
+      - Nav يحوي 7 روابط على الأقل
+
+      ### 3. الفحوصات الانحدارية
+      - كل الـ 30 صفحة الأصلية لا تزال تُبنى
+      - `npm run audit` ينجح (parity, quiz, terminal, links)
+      - لا TS errors في `npm run check`
+
+      ### 4. فحص بصري سريع (اختياري)
+      - استخدم `npx http-server dist -p 4321` و curl الصفحات الرئيسية للتحقق من الـ HTML.
+
+      ## المُخرج
+      تقرير PASS/FAIL واحد. إذا FAIL، اذكر:
+      - المهمة الفاشلة
+      - السبب الجذري
+      - الملف/السطر المحدد
+
+      لا تعدّل أي ملف — هذا دور verify-as-task.

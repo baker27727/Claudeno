@@ -1,0 +1,65 @@
+---
+import Base from "../../layouts/Base.astro";
+import TerminalSim from "../../islands/TerminalSim.svelte";
+import { LOCALES, useTranslations, type Locale } from "../../lib/i18n";
+import { getAllModules } from "../../lib/modules";
+import {
+  webPageJsonLd,
+  breadcrumbListJsonLd,
+  pageBreadcrumbs,
+  jsonLdScript,
+} from "../../lib/seo";
+
+export function getStaticPaths() {
+  return LOCALES.map((lang) => ({ params: { lang } }));
+}
+
+const lang = Astro.params.lang as Locale;
+const t = useTranslations(lang);
+const modules = await getAllModules();
+const commandBank = modules.flatMap((m) => m.terminal.steps);
+
+const pagePath = `/${lang}/playground`;
+const webPage = webPageJsonLd({
+  name: `${t("nav.playground")} — Claude Code Learn`,
+  description: lang === "no"
+    ? "Prøv Claude Code-kommandoer fritt."
+    : "Try Claude Code commands freely.",
+  lang,
+  path: pagePath,
+});
+const crumbs = breadcrumbListJsonLd(pageBreadcrumbs(t("nav.playground"), pagePath, lang));
+const jsonLd = jsonLdScript([webPage, crumbs]);
+---
+
+<Base
+  lang={lang}
+  title={`${t("nav.playground")} — Claude Code Learn`}
+  description={lang === "no" ? "Prøv Claude Code-kommandoer fritt." : "Try Claude Code commands freely."}
+>
+  <Fragment slot="head">
+    <Fragment set:html={jsonLd} />
+  </Fragment>
+
+  <main class="playground">
+    <h1>{t("nav.playground")}</h1>
+    <p class="playground__intro">
+      {lang === "no"
+        ? "Alle kommandoer fra alle moduler er tilgjengelige her — uten rekkefølge."
+        : "Every command from every module is available here — no order required."}
+    </p>
+    <TerminalSim client:load steps={commandBank} mode="free" locale={lang} />
+  </main>
+</Base>
+
+<style>
+  .playground {
+    max-width: 48rem;
+    margin: 0 auto;
+    padding: var(--space-8) var(--space-6) var(--space-16);
+  }
+  .playground__intro {
+    color: var(--fg-muted);
+    margin: 0 0 var(--space-6);
+  }
+</style>

@@ -1,0 +1,61 @@
+questions:
+  - id: q1
+    prompt:
+      en: "Which flag runs a single request without opening an interactive session?"
+      no: "Hvilket flagg kjører én forespørsel uten å åpne en interaktiv økt?"
+    options:
+      - { id: a, en: "-p / --print", no: "-p / --print" }
+      - { id: b, en: "-c / --continue", no: "-c / --continue" }
+      - { id: c, en: "--verbose", no: "--verbose" }
+    correct: a
+    explain:
+      en: "`-p` (or `--print`) is non-interactive, print-mode: Claude answers once and exits."
+      no: "`-p` (eller `--print`) er ikke-interaktiv print-modus: Claude svarer én gang og avslutter."
+  - id: q2
+    prompt:
+      en: "How do you resume your most recent Claude Code session?"
+      no: "Hvordan gjenopptar du din siste Claude Code-økt?"
+    options:
+      - { id: a, en: "claude --new", no: "claude --new" }
+      - { id: b, en: "claude -c", no: "claude -c" }
+      - { id: c, en: "claude --history", no: "claude --history" }
+    correct: b
+    explain:
+      en: "`claude -c` (or `--continue`) resumes the last session with its context."
+      no: "`claude -c` (eller `--continue`) gjenopptar siste økt med konteksten intakt."
+  - id: q3
+    prompt:
+      en: "You have three sessions going and want to resume the one named \"fix-login-bug\" specifically, not just the most recent. Which flag?"
+      no: "Du har tre økter i gang og vil gjenoppta den som heter \"fix-login-bug\" spesifikt, ikke bare den siste. Hvilket flagg?"
+    options:
+      - { id: a, en: "-c / --continue", no: "-c / --continue" }
+      - { id: b, en: "-r / --resume", no: "-r / --resume" }
+      - { id: c, en: "-p / --print", no: "-p / --print" }
+    correct: b
+    explain:
+      en: "-r / --resume picks a specific session by ID or name. -c always grabs the most recent one, with no choice involved."
+      no: "-r / --resume velger en bestemt økt ved ID eller navn. -c henter alltid den siste, uten noe valg involvert."
+  - id: q4
+    prompt:
+      en: "Which flag overrides your saved default model for just this session?"
+      no: "Hvilket flagg overstyrer din lagrede standardmodell for kun denne økten?"
+    options:
+      - { id: a, en: "--settings", no: "--settings" }
+      - { id: b, en: "--model", no: "--model" }
+      - { id: c, en: "--add-dir", no: "--add-dir" }
+    correct: b
+    explain:
+      en: "--model sets which model the current session uses."
+      no: "--model setter hvilken modell den gjeldende økten bruker."
+  - id: q5
+    prompt:
+      en: "Which command prints the installed Claude Code CLI version?"
+      no: "Hvilken kommando skriver ut installert Claude Code CLI-versjon?"
+    options:
+      - { id: a, en: "claude --version", no: "claude --version" }
+      - { id: b, en: "claude version", no: "claude version" }
+      - { id: c, en: "claude --about", no: "claude --about" }
+    correct: a
+    explain:
+      en: "`claude --version` (or `-v`) prints the installed CLI version."
+      no: "`claude --version` (eller `-v`) skriver ut installert CLI-versjon."

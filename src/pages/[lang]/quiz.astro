@@ -1,0 +1,71 @@
+---
+import Base from "../../layouts/Base.astro";
+import Quiz from "../../islands/Quiz.svelte";
+import { LOCALES, useTranslations, type Locale } from "../../lib/i18n";
+import { getAllModules } from "../../lib/modules";
+import {
+  webPageJsonLd,
+  jsonLdScript,
+  pageBreadcrumbs,
+  breadcrumbListJsonLd,
+} from "../../lib/seo";
+
+export function getStaticPaths() {
+  return LOCALES.map((lang) => ({ params: { lang } }));
+}
+
+const lang = Astro.params.lang as Locale;
+const t = useTranslations(lang);
+const modules = await getAllModules();
+
+// اسحب كل أسئلة الوحدات بالتسلسل، مع تسجيل مستوى كل سؤال (للـ breakdown).
+// هذا يجعل صفحة /quiz تحوّط الـ island بـ data كافية لتوليد التوصية.
+const questions = modules.flatMap((m) => m.quiz.questions);
+const levels = modules.flatMap((m) =>
+  m.quiz.questions.map(() => m.meta.level),
+) as Array<"beginner" | "intermediate" | "advanced">;
+
+// JSON-LD: WebPage + BreadcrumbList (API الجديد: absoluteUrl(path), Crumb.path).
+const pagePath = `/${lang}/quiz`;
+const webPage = webPageJsonLd({
+  name: `${t("nav.quiz")} — Claude Code Learn`,
+  description: lang === "no"
+    ? "Finn ut hvor du bør starte."
+    : "Find out where to start.",
+  path: pagePath,
+  lang,
+});
+const crumbs = breadcrumbListJsonLd(pageBreadcrumbs(t("nav.quiz"), pagePath, lang));
+const jsonLd = jsonLdScript([webPage, crumbs]);
+---
+
+<Base
+  lang={lang}
+  title={`${t("nav.quiz")} — Claude Code Learn`}
+  description={lang === "no" ? "Finn ut hvor du bør starte." : "Find out where to start."}
+>
+  <Fragment slot="head">
+    <Fragment set:html={jsonLd} />
+  </Fragment>
+  <main class="quiz-page">
+    <h1>{t("nav.quiz")}</h1>
+    <p class="quiz-page__intro">
+      {lang === "no"
+        ? "Svar på spørsmål fra alle modulene for å se hva du allerede kan — vi anbefaler hvor du bør begynne."
+        : "Answer questions drawn from every module to see what you already know — we'll suggest where to start."}
+    </p>
+    <Quiz client:load questions={questions} levels={levels} locale={lang} />
+  </main>
+</Base>
+
+<style>
+  .quiz-page {
+    max-width: 40rem;
+    margin: 0 auto;
+    padding: var(--space-8) var(--space-6) var(--space-16);
+  }
+  .quiz-page__intro {
+    color: var(--fg-muted);
+    margin: 0 0 var(--space-6);
+  }
+</style>

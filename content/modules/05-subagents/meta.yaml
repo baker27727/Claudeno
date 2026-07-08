@@ -1,0 +1,12 @@
+id: subagents
+order: 5
+level: advanced
+duration_min: 18
+covers_version: "2.1.0"
+title:
+  en: "Subagents"
+  no: "Underagenter"
+description:
+  en: "Delegate side tasks to specialized subagents with their own context and tools."
+  no: "Deleger sideoppgaver til spesialiserte underagenter med sin egen kontekst og verktøy."
+tags: [subagents, advanced]

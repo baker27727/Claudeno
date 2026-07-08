@@ -1,0 +1,437 @@
+// =========================================================================
+// SEO & Schema.org JSON-LD helpers — BLUEPRINT §9
+//
+// كل المولّدات pure TypeScript (لا حزم npm خارجية). تستقبل كل صفحة أنواع
+// الإشارة المعرّفة في BLUEPRINT (ModuleData, QuizQuestion) لإنتاج مخططات
+// Schema.org متوافقة مع Google Rich Results.
+//
+// التواقيع تطابق حرفيًا ما ورد في موجز المهمة:
+//   • websiteJsonLd(lang)
+//   • organizationJsonLd()
+//   • courseJsonLd(module, lang)
+//   • faqJsonLd(questions, lang)
+// =========================================================================
+
+import type { Locale } from "./i18n";
+
+// -------------------------------------------------------------------------
+// ثوابت على مستوى الوحدة — مصدر حقيقة واحد لكل ثوابت SEO
+// -------------------------------------------------------------------------
+
+export const SITE_URL = "https://claude.mutaz.no";
+export const SITE_NAME = "Claude Code Learn";
+export const SITE_LOGO_URL = "https://claude.mutaz.no/favicon.svg";
+export const SITE_SOCIAL: ReadonlyArray<string> = [
+  "https://github.com/anthropics/claude-code",
+  "https://docs.claude.com/en/docs/claude-code/overview",
+];
+
+/**
+ * رابط SearchAction. يفترض أن الموقع يضم صفحة بحث على المسار
+ * `/search` (ستُنفّذ بمهمة Pagefind). يمكن تجاوزه عند الحاجة.
+ */
+export const SEARCH_PATH = "/search";
+
+/**
+ * صورة OG الافتراضية للغة ما. تستعمل أنماط Track 2 (OG images satori):
+ * `/og/default-<lang>.png`. عند غياب اللغة -> الإنجليزية.
+ */
+export function defaultOgImage(lang: Locale): string {
+  const safe: Locale = lang === "no" ? "no" : "en";
+  return `/og/default-${safe}.png`;
+}
+
+/** روابط المسار الجذري للغة. */
+export function localeRoot(lang: Locale): string {
+  return `${SITE_URL}/${lang}`;
+}
+
+/** يبني رابطًا مطلقًا من base + path. */
+export function absoluteUrl(path: string): string {
+  return `${SITE_URL}${path.startsWith("/") ? path : `/${path}`}`;
+}
+
+/** تسمية "الصفحة الرئيسية" حسب اللغة. */
+function homeLabel(lang: Locale): string {
+  return lang === "no" ? "Hjem" : "Home";
+}
+
+/** خرائط المستوى التعليمي لقيم Schema.org المقبولة. */
+const LEVEL_TO_SCHEMA: Record<string, string> = {
+  beginner: "Beginner",
+  intermediate: "Intermediate",
+  advanced: "Advanced",
+};
+
+/**
+ * Locale الجذر لـ OG (en_US / nb_NO).
+ */
+const OG_LOCALES: Record<Locale, string> = {
+  en: "en_US",
+  no: "nb_NO",
+};
+
+// -------------------------------------------------------------------------
+// واجهات (Types)
+// -------------------------------------------------------------------------
+
+/** هيكل Schema.org/JSON-LD node (لاستخدام Schema.org Context ثابت). */
+export interface JsonLdObject {
+  "@context": "https://schema.org";
+  "@type": string;
+  [key: string]: unknown;
+}
+
+/** يُطابق شكل quiz.yaml المُعرَّف في `src/content.config.ts`. */
+export interface QuizQuestion {
+  id: string;
+  prompt: { en: string; no: string };
+  options: Array<{ id: string; en: string; no: string }>;
+  correct: string;
+  explain: { en: string; no: string };
+}
+
+/** يُطابق شكل meta.yaml للوحدة. */
+export interface ModuleMeta {
+  id: string;
+  order: number;
+  level: "beginner" | "intermediate" | "advanced";
+  duration_min: number;
+  covers_version: string;
+  title: { en: string; no: string };
+  description: { en: string; no: string };
+  tags: string[];
+}
+
+/**
+ * الواجهة المجمّعة للوحدة. يُمرَّر فقط الجزء الذي نحتاجه إلى
+ * `courseJsonLd` (لا نهتم بمحتوى الدرس هنا).
+ */
+export interface ModuleLike {
+  id: string;
+  meta: ModuleMeta;
+}
+
+/** بند قائمة للأرض الخبز (BreadcrumbList). */
+export interface Crumb {
+  name: string;
+  path: string; // path-only، سيُغلّف بـ absoluteUrl
+}
+
+/** بند سجل تغييرات لإخراجه كـ ListItem في ItemList.
+ *  مطابق لِمخطط `changelog` في `src/content.config.ts`. */
+export interface ChangelogEntry {
+  version: string;
+  date: string; // ISO yyyy-mm-dd
+  entry: { en: string; no: string };
+  sources?: string[];
+}
+
+/** مدخل WebPage.mainEntity (مطلوب للصفحات Reference و Catalog). */
+export interface WebPageMainEntity {
+  /** مثل "ItemList" أو "TechArticle". */
+  type: string;
+  /** كائن JSON-LD صالح (سيُسلسل ويُغلّف داخل mainEntity). */
+  data: JsonLdObject;
+}
+
+/** مدخلات WebPage المُحدَّدة. */
+export interface WebPageArgs {
+  name: string;
+  description: string;
+  lang: Locale;
+  path: string; // path-only
+  mainEntity?: WebPageMainEntity;
+}
+
+// -------------------------------------------------------------------------
+// JSON-LD script markup — آمن عبر escape لِـ `</script>`
+// -------------------------------------------------------------------------
+
+/**
+ * يُغلّف كائن (أو مصفوفة) JSON-LD في وسم `<script type="application/ld+json">`
+ * صالح للتضمين في Astro عبر `set:html`. يُهرّب الأحرف الحساسة
+ * (`<`, `>`, `&`) إلى صيغ Unicode JSON لمنع إغلاق الوسم مبكرًا.
+ */
+export function jsonLdScript(data: JsonLdObject | JsonLdObject[]): string {
+  const json = JSON.stringify(data)
+    .replace(/</g, "\\u003c")
+    .replace(/>/g, "\\u003e")
+    .replace(/&/g, "\\u0026");
+  return `<script type="application/ld+json">${json}</script>`;
+}
+
+// -------------------------------------------------------------------------
+// 1) WebSite — BLUEPRINT §9 + Section 1 (الصفحة الرئيسية)
+// -------------------------------------------------------------------------
+
+/**
+ * schema.org/WebSite — يُصدَّر مرة واحدة على الصفحة الرئيسية.
+ * `potentialAction` من نوع SearchAction يفعل Sitelinks Search Box.
+ */
+export function websiteJsonLd(lang: Locale): JsonLdObject {
+  return {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    name: SITE_NAME,
+    url: SITE_URL,
+    inLanguage: lang,
+    alternateName: "claude.mutaz.no",
+    potentialAction: {
+      "@type": "SearchAction",
+      target: {
+        "@type": "EntryPoint",
+        urlTemplate: `${SITE_URL}${SEARCH_PATH}?q={search_term_string}`,
+      },
+      "query-input": "required name=search_term_string",
+    },
+  };
+}
+
+// -------------------------------------------------------------------------
+// 2) Organization — BLUEPRINT §9 + Section 1 (الصفحة الرئيسية)
+// -------------------------------------------------------------------------
+
+/**
+ * schema.org/Organization — مصدر الحقيقة الوحيد لـ `provider` في Course.
+ * لا يحتاج إلى معطيات إضافية لأن الثوابت مكتفية.
+ */
+export function organizationJsonLd(): JsonLdObject {
+  const node: JsonLdObject = {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    name: SITE_NAME,
+    url: SITE_URL,
+    logo: SITE_LOGO_URL,
+    sameAs: [...SITE_SOCIAL],
+  };
+  return node;
+}
+
+// -------------------------------------------------------------------------
+// 3) Course — BLUEPRINT §9 + Section 2 (صفحة الوحدة)
+// -------------------------------------------------------------------------
+
+/**
+ * schema.org/Course — provider = Organization ثابتي، hasCourseInstance،
+ * inLanguage، description، about (tags)، educationalLevel، ويذكر نسخة
+ * Claude Code في about لمزيد من السياق.
+ */
+export function courseJsonLd(module: ModuleLike, lang: Locale): JsonLdObject {
+  const m = module.meta;
+  const about = [...m.tags];
+  if (m.covers_version) about.push(`Claude Code ${m.covers_version}`);
+
+  const course: JsonLdObject = {
+    "@context": "https://schema.org",
+    "@type": "Course",
+    name: m.title[lang],
+    description: m.description[lang],
+    provider: organizationJsonLd(),
+    url: absoluteUrl(`/${lang}/learn/${module.id}`),
+    inLanguage: lang,
+    about,
+    educationalLevel: LEVEL_TO_SCHEMA[m.level] ?? m.level,
+    hasCourseInstance: {
+      "@type": "CourseInstance",
+      courseMode: "online",
+      courseWorkload: `PT${m.duration_min}M`,
+      inLanguage: lang,
+      location: {
+        "@type": "VirtualLocation",
+        url: absoluteUrl(`/${lang}/learn/${module.id}`),
+      },
+    },
+  };
+  return course;
+}
+
+// -------------------------------------------------------------------------
+// 4) FAQPage — BLUEPRINT §9 + Section 2 (صفحة الوحدة)
+// -------------------------------------------------------------------------
+
+/**
+ * schema.org/FAQPage — كل سؤال في `questions` يصبح `Question` وإجابته
+ * الصحيحة (مأخوذة من `correct`) تصبح `acceptedAnswer` مع دمج شرح
+ * `explain` داخل نص الإجابة لمزيد من السياق.
+ */
+export function faqJsonLd(questions: QuizQuestion[], lang: Locale): JsonLdObject {
+  return {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    name: lang === "no" ? "Ofte stilte spørsmål" : "Frequently Asked Questions",
+    inLanguage: lang,
+    mainEntity: questions.map((q) => {
+      const correct = q.options.find((o) => o.id === q.correct);
+      const answerText = correct
+        ? q.explain[lang]
+          ? `${correct[lang]} — ${q.explain[lang]}`
+          : correct[lang]
+        : "";
+      return {
+        "@type": "Question",
+        name: q.prompt[lang],
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: answerText,
+        },
+      };
+    }),
+  };
+}
+
+// -------------------------------------------------------------------------
+// 5) BreadcrumbList — BLUEPRINT §9 + Section 2 (ملاحة)
+// -------------------------------------------------------------------------
+
+/**
+ * schema.org/BreadcrumbList — عناصر فتات الخبز. الترتيب تصاعدي.
+ */
+export function breadcrumbListJsonLd(crumbs: Crumb[]): JsonLdObject {
+  return {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: crumbs.map((crumb, index) => ({
+      "@type": "ListItem",
+      position: index + 1,
+      name: crumb.name,
+      item: absoluteUrl(crumb.path),
+    })),
+  };
+}
+
+/**
+ * راحة: يولّد BreadcrumbList موحد لصفحة وحدة: Home → Learn → Module.
+ */
+export function moduleBreadcrumbs(
+  moduleId: string,
+  moduleTitle: string,
+  lang: Locale,
+): Crumb[] {
+  return [
+    { name: homeLabel(lang), path: `/${lang}/` },
+    { name: lang === "no" ? "Lær" : "Learn", path: `/${lang}/learn` },
+    { name: moduleTitle, path: `/${lang}/learn/${moduleId}` },
+  ];
+}
+
+/**
+ * راحة: BreadcrumbList لصفحة فرعية: Home → page.
+ */
+export function pageBreadcrumbs(name: string, path: string, lang: Locale): Crumb[] {
+  return [
+    { name: homeLabel(lang), path: `/${lang}/` },
+    { name, path },
+  ];
+}
+
+// -------------------------------------------------------------------------
+// 6) ItemList — BLUEPRINT §9 + Section 3 (Changelog)
+// -------------------------------------------------------------------------
+
+/**
+ * schema.org/ItemList — سجل التغييرات بترتيب تنازلي زمنيًّا.
+ */
+export function itemListJsonLd(
+  entries: ChangelogEntry[],
+  lang: Locale,
+  name?: string,
+): JsonLdObject {
+  return {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    name: name ?? (lang === "no" ? "Endringslogg" : "Changelog"),
+    url: absoluteUrl(`/${lang}/changelog`),
+    inLanguage: lang,
+    itemListOrder: "https://schema.org/ItemListOrderDescending",
+    numberOfItems: entries.length,
+    itemListElement: entries.map((entry, index) => ({
+      "@type": "ListItem",
+      position: index + 1,
+      name: `v${entry.version}`,
+      url: absoluteUrl(`/${lang}/changelog`),
+      description: entry.entry[lang],
+      dateCreated: entry.date,
+      version: entry.version,
+    })),
+  };
+}
+
+// -------------------------------------------------------------------------
+// 7) WebPage — BLUEPRINT §9 + Section 4 (Reference و Catalog)
+// -------------------------------------------------------------------------
+
+/**
+ * schema.org/WebPage — للصفحات العامة. يدعم mainEntity اختياري بنوع
+ * مناسب (مثل "ItemList" للـ Catalog، أو "TechArticle" للـ Reference).
+ */
+export function webPageJsonLd(args: WebPageArgs): JsonLdObject {
+  const node: JsonLdObject = {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    name: args.name,
+    description: args.description,
+    url: absoluteUrl(args.path),
+    inLanguage: args.lang,
+  };
+  if (args.mainEntity) {
+    const inner = args.mainEntity.data;
+    // ضمان أن @type هو النوع الذي حدده المتصل (يفوز على أي @type داخلي).
+    node.mainEntity = {
+      ...inner,
+      "@type": args.mainEntity.type,
+    };
+  }
+  return node;
+}
+
+// -------------------------------------------------------------------------
+// 8) OG / Twitter meta
+// -------------------------------------------------------------------------
+
+/** قيم OpenGraph المدعومة هنا. */
+export type OgType = "website" | "article" | "profile";
+
+export interface OpenGraphMeta {
+  ogType: OgType;
+  ogTitle: string;
+  ogDescription: string;
+  ogUrl: string;
+  ogLocale: string;
+  ogSiteName: string;
+  ogImage: string;
+  twitterCard: "summary" | "summary_large_image";
+  twitterTitle: string;
+  twitterDescription: string;
+  twitterImage: string;
+}
+
+/**
+ * يبني قيم OG/Twitter. الافتراضي يستخدم `/og/default-<lang>.png` المُولَّد
+ * من قِبَل مهمة Track 2 (OG images via satori).
+ *   • الصفحات العامة → `defaultOgImage(lang)`
+ *   • صفحات الوحدات  → `/og/<moduleId>-<lang>.png` (يُمرَّر يدويًا)
+ */
+export function openGraphMeta(args: {
+  type?: OgType;
+  title: string;
+  description: string;
+  url: string;
+  lang: Locale;
+  image?: string;
+}): OpenGraphMeta {
+  const image = args.image ?? defaultOgImage(args.lang);
+  return {
+    ogType: args.type ?? "website",
+    ogTitle: args.title,
+    ogDescription: args.description,
+    ogUrl: args.url,
+    ogLocale: OG_LOCALES[args.lang],
+    ogSiteName: SITE_NAME,
+    ogImage: image,
+    twitterCard: "summary_large_image",
+    twitterTitle: args.title,
+    twitterDescription: args.description,
+    twitterImage: image,
+  };
+}

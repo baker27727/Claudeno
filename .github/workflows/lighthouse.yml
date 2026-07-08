@@ -1,0 +1,60 @@
+name: Lighthouse CI
+
+# BLUEPRINT §10 + quality-ci — يقيس performance/a11y/best-practices/SEO
+# على الصفحات الحرجة (homepage + learn + learn/getting-started + quiz لكل لغة)
+# عند كل push إلى main وكل PR.
+# PWA معطّل عمدًا (BLUEPRINT §10 — مشروع ثابت بدون offline).
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+# ألغِ التشغيل التلقائي عندما يكون الـ commit عبارة عن تحديث للـ watch-bot
+# لتفادي حلقات لا نهائية.
+concurrency:
+  group: lighthouse-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  lighthouse:
+    name: Lighthouse audit
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: read
+      checks: write
+      pull-requests: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build site
+        run: npm run build
+        env:
+          # تحليلات Plausible معطّلة في CI — لا نريد تلويث الإحصاءات.
+          PUBLIC_PLAUSIBLE_DOMAIN: ""
+
+      - name: Run @lhci/cli autorun
+        run: npx --no-install lhci autorun
+        env:
+          LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
+
+      - name: Upload Lighthouse reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: lighthouse-reports
+          path: .lighthouseci/**
+          if-no-files-found: ignore
+          retention-days: 14

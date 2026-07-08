@@ -1,0 +1,34 @@
+name: Content freshness audit
+
+# Monthly deep accuracy check — independent of version bumps. Re-fetches the
+# live docs pages each module teaches from and asks Claude to fix anything
+# that's drifted (e.g. a recommended command changing without a CHANGELOG
+# entry calling it out). Publishes automatically if the fix passes the full
+# verification suite; otherwise opens a PR explaining what failed.
+
+on:
+  schedule:
+    - cron: "0 7 1 * *" # 07:00 UTC on the 1st of each month
+  workflow_dispatch: {}
+
+jobs:
+  freshness:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm ci
+      - name: Configure git identity for automated commits
+        run: |
+          git config user.name "claude-code-learn-bot"
+          git config user.email "actions@users.noreply.github.com"
+      - name: Audit content against live docs
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: npm run audit:freshness

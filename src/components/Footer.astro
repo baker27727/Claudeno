@@ -1,0 +1,155 @@
+---
+import { useTranslations, type Locale } from "../lib/i18n";
+
+interface Props {
+  lang: Locale;
+}
+
+const { lang }: Props = Astro.props;
+const t = useTranslations(lang);
+const year = new Date().getFullYear();
+
+const learnLinks = [
+  { href: `/${lang}/learn`, label: t("nav.learn") },
+  { href: `/${lang}/playground`, label: t("nav.playground") },
+  { href: `/${lang}/build`, label: t("nav.build") },
+  { href: `/${lang}/quiz`, label: t("nav.quiz") },
+];
+
+const resourceLinks = [
+  { href: `/${lang}/reference`, label: t("nav.reference") },
+  { href: `/${lang}/blog`, label: t("nav.blog") },
+  { href: `/${lang}/changelog`, label: t("nav.changelog") },
+  { href: `/${lang}/catalog`, label: t("nav.catalog") },
+];
+
+const externalLinks = [
+  { href: "https://github.com/anthropics/claude-code", label: "GitHub" },
+  { href: "https://docs.claude.com/en/docs/claude-code/overview", label: t("footer.docs") },
+];
+---
+
+<footer class="site-footer">
+  <div class="site-footer__grid">
+    <div class="site-footer__brand">
+      <a href={`/${lang}/`} class="site-footer__logo">
+        <img src="/favicon.svg" alt="" width="22" height="22" />
+        <span>Claude Code Learn</span>
+      </a>
+      <p>{t("footer.tagline")}</p>
+    </div>
+
+    <nav aria-label="Footer — learn">
+      <h2>{t("footer.nav")}</h2>
+      <ul>
+        {learnLinks.map((l) => (
+          <li><a href={l.href}>{l.label}</a></li>
+        ))}
+      </ul>
+    </nav>
+
+    <nav aria-label="Footer — resources">
+      <h2>{t("footer.resources")}</h2>
+      <ul>
+        {resourceLinks.map((l) => (
+          <li><a href={l.href}>{l.label}</a></li>
+        ))}
+      </ul>
+    </nav>
+
+    <nav aria-label="Footer — links">
+      <h2>{t("footer.links")}</h2>
+      <ul>
+        {externalLinks.map((l) => (
+          <li><a href={l.href} target="_blank" rel="noopener noreferrer">{l.label}</a></li>
+        ))}
+        <li><a href={`/${lang}/feedback`}>{t("nav.feedback")}</a></li>
+      </ul>
+    </nav>
+  </div>
+
+  <div class="site-footer__bottom">
+    <p>&copy; {year} Claude Code Learn — {t("footer.builtWith")}</p>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    border-top: 1px solid var(--border);
+    margin-top: var(--space-16);
+  }
+  .site-footer__grid {
+    max-width: 72rem;
+    margin: 0 auto;
+    padding: var(--space-12) var(--space-6) var(--space-8);
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+    gap: var(--space-8);
+  }
+  .site-footer__brand {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    max-width: 20rem;
+  }
+  .site-footer__logo {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-weight: 700;
+    color: var(--fg);
+    text-decoration: none;
+  }
+  .site-footer__logo img {
+    border-radius: var(--radius-sm);
+  }
+  .site-footer__brand p {
+    margin: 0;
+    color: var(--fg-muted);
+    font-size: 0.875rem;
+    line-height: 1.6;
+  }
+  .site-footer h2 {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--fg-muted);
+    margin: 0 0 var(--space-3);
+    font-weight: 600;
+  }
+  .site-footer ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+  .site-footer a {
+    color: var(--fg);
+    text-decoration: none;
+    font-size: 0.875rem;
+  }
+  .site-footer a:hover {
+    color: var(--accent);
+  }
+  .site-footer__bottom {
+    border-top: 1px solid var(--border);
+  }
+  .site-footer__bottom p {
+    max-width: 72rem;
+    margin: 0 auto;
+    padding: var(--space-4) var(--space-6);
+    color: var(--fg-muted);
+    font-size: 0.8125rem;
+  }
+  @media (max-width: 720px) {
+    .site-footer__grid {
+      grid-template-columns: 1fr 1fr;
+    }
+    .site-footer__brand {
+      grid-column: 1 / -1;
+      max-width: none;
+    }
+  }
+</style>

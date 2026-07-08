@@ -1,0 +1,10 @@
+# سجل التحديثات — يولّده خط الأتمتة (§7) عند رصد إصدار رسمي جديد.
+# `id` مطلوب لمحمّل الملفات؛ نستخدم رقم الإصدار كمعرّف.
+- id: "2.1.0"
+  version: "2.1.0"
+  date: "2026-07-06"
+  entry:
+    en: "Initial platform launch covering Claude Code 2.1.0."
+    no: "Første lansering av plattformen som dekker Claude Code 2.1.0."
+  sources:
+    - "https://github.com/anthropics/claude-code"

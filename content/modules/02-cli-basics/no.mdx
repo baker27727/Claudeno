@@ -1,0 +1,88 @@
+---
+title: "CLI-grunnleggende"
+description: "Flaggene du faktisk kommer til å bruke: sjekke versjonen din, skripte med print-modus, gjenoppta økter, og velge modell."
+---
+import Callout from "../../../src/components/Callout.astro";
+
+# CLI-grunnleggende
+
+`claude`-CLI-en har dusinvis av flagg, men du kommer bare til å bruke en håndfull av
+dem stadig vekk. Denne modulen dekker de — resten er verdt å skumme gjennom i
+`claude --help` én gang, ikke pugge.
+
+## Sjekk versjonen din
+
+```bash
+claude --version
+```
+
+Nyttig når en dokumentasjon eller kollega refererer til en spesifikk versjon —
+oppførselen endrer seg faktisk mellom utgivelser.
+
+## Kjør én forespørsel (print-modus)
+
+```bash
+claude -p "list the files in this repo"
+```
+
+`-p` (eller `--print`) sender én forespørsel, skriver ut svaret, og avslutter — ingen
+interaktiv økt. Dette er modusen skript og CI-pipelines bør bruke, siden det ikke er
+noen ledetekst som venter på input.
+
+<Callout type="tip" title="Tips">
+  Print-modus fungerer med shell-pipes: `cat error.log | claude -p "what's wrong here?"`
+  mater filinnhold rett inn.
+</Callout>
+
+## Gjenoppta økter: -c vs -r
+
+To flagg gjenopptar tidligere arbeid, og å velge feil kaster bort tid.
+
+```bash
+claude -c
+```
+
+`-c` (eller `--continue`) gjenopptar din **siste** økt i gjeldende mappe — ingen
+velger, ikke noe navn nødvendig. Raskeste alternativ når du vet det er det siste du
+gjorde.
+
+```bash
+claude -r "fix-login-bug"
+```
+
+`-r` (eller `--resume`) gjenopptar en **bestemt** økt ved ID eller navn — nyttig når
+du har mer enn én økt i gang i samme prosjekt.
+
+<Callout type="mistake" title="Vanlig feil">
+  Å bruke `-c` når du egentlig vil ha en navngitt økt fra tidligere i uken — den henter
+  alltid bare den siste. Bruk `-r` med et navn eller en ID i stedet.
+</Callout>
+
+## Velg modell for denne økten
+
+```bash
+claude --model sonnet
+```
+
+`--model` overstyrer din lagrede standard for kun denne økten — nyttig for å
+sammenligne modellatferd på samme oppgave uten å endre den globale preferansen din.
+(Tilsvarende inni økten er [`/model`](/no/learn/slash-commands).)
+
+## Flagg i oversikt
+
+| Flagg | Hva det gjør |
+|---|---|
+| `--version`, `-v` | Skriv ut installert CLI-versjon |
+| `--print`, `-p` | Kjør én forespørsel, skriv ut resultatet, avslutt |
+| `--continue`, `-c` | Gjenoppta siste økt, ingen velger |
+| `--resume`, `-r` | Gjenoppta en bestemt økt ved ID eller navn |
+| `--model` | Sett modellen for denne økten |
+| `--verbose` | Aktiver utførlig logging, nyttig ved feilsøking |
+| `--settings` | Pek på en settings-JSON-fil eller inline JSON |
+| `--add-dir` | Gi tilgang til en ekstra arbeidsmappe |
+
+## Oppsummering
+
+- `-p` er for skript og pipelines; den åpner aldri en interaktiv økt.
+- `-c` gjenopptar siste økt automatisk; `-r` lar deg velge ved navn eller ID.
+- `--model` endrer modellen for kun én økt, uten å røre standarden din.

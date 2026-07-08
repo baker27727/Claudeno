@@ -1,0 +1,43 @@
+---
+// الجذر / يوجّه حسب لغة المتصفح (BLUEPRINT §4). النرويجية هي اللغة
+// الافتراضية للموقع — يُوجَّه أي زائر غير محدَّد اللغة (أو لغة متصفحه ليست
+// إنجليزية صراحة) إلى /no/. الإنجليزية فقط عند تفضيل صريح لها.
+// نُصدر وسوم OG/Twitter الأساسية — Astro 5 سيُولّد صفحة redirect بسيطة
+// لمحرك البحث/المستخدم، لكن تبقى وسوم SEO محفوظة في head.
+---
+
+<!doctype html>
+<html lang="no">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex" />
+    <meta name="description" content="Lær Claude Code interaktivt — på norsk og engelsk." />
+    <link rel="canonical" href="https://claude.mutaz.no/no/" />
+    <title>Claude Code Learn</title>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Claude Code Learn" />
+    <meta property="og:description" content="Lær Claude Code interaktivt — på norsk og engelsk." />
+    <meta property="og:url" content="https://claude.mutaz.no/" />
+    <meta property="og:locale" content="nb_NO" />
+    <meta property="og:site_name" content="Claude Code Learn" />
+    <meta property="og:image" content="/og/default-no.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Claude Code Learn" />
+    <meta name="twitter:description" content="Lær Claude Code interaktivt — på norsk og engelsk." />
+    <meta name="twitter:image" content="/og/default-no.png" />
+    <meta http-equiv="refresh" content="0; url=/no/" />
+    <script is:inline>
+      // إعادة توجيه فورية عبر JS (بلا وميض). النرويجية افتراضية دائمًا،
+      // ما عدا تفضيل إنجليزي صريح في المتصفح أو اختيار محفوظ سابقًا.
+      var saved = localStorage.getItem("ccl:lang");
+      var nav = (navigator.language || "no").toLowerCase();
+      var lang = saved || (nav.indexOf("en") === 0 ? "en" : "no");
+      localStorage.setItem("ccl:lang", lang);
+      location.replace("/" + lang + "/");
+    </script>
+  </head>
+  <body>
+    <a href="/no/">Fortsett til Claude Code Learn</a>
+  </body>
+</html>

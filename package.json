@@ -1,0 +1,47 @@
+{
+  "name": "claude-code-learn",
+  "type": "module",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Interactive Claude Code learning platform (EN/NO)",
+  "scripts": {
+    "dev": "astro dev",
+    "start": "astro dev",
+    "build": "astro build",
+    "prebuild": "tsx scripts/build-og.ts",
+    "check": "astro check",
+    "astro": "astro",
+    "audit:parity": "tsx scripts/audits/audit-parity.ts",
+    "audit:quiz": "tsx scripts/audits/audit-quiz.ts",
+    "audit:terminal": "tsx scripts/audits/audit-terminal.ts",
+    "audit:links": "tsx scripts/audits/audit-links.ts",
+    "audit": "npm run audit:parity && npm run audit:quiz && npm run audit:terminal && npm run audit:links",
+    "watch:upstream": "tsx scripts/watch-upstream.ts",
+    "generate:update": "tsx scripts/generate-update.ts",
+    "audit:freshness": "tsx scripts/audit-freshness.ts",
+    "deploy": "bash scripts/deploy.sh"
+  },
+  "dependencies": {
+    "@astrojs/check": "^0.9.4",
+    "@astrojs/mdx": "^4.2.0",
+    "@astrojs/sitemap": "^3.2.1",
+    "@astrojs/svelte": "^7.0.0",
+    "@resvg/resvg-js": "^2.6.2",
+    "astro": "^5.4.0",
+    "satori": "^0.26.0",
+    "satori-html": "^0.3.2",
+    "svelte": "^5.19.0",
+    "typescript": "^5.7.3",
+    "zod": "^3.24.1"
+  },
+  "devDependencies": {
+    "@axe-core/cli": "^4.12.1",
+    "@lhci/cli": "^0.15.1",
+    "@tailwindcss/vite": "^4.0.0",
+    "@types/react": "^19.2.17",
+    "pagefind": "^1.5.2",
+    "tailwindcss": "^4.0.0",
+    "tsx": "^4.19.2",
+    "yaml": "^2.8.3"
+  }
+}

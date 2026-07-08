@@ -1,0 +1,22 @@
+steps:
+  - id: step-1
+    command: "cat .claude/settings.json"
+    output: |
+      {
+        "permissions": {
+          "allow": ["Bash(npm run test *)"],
+          "deny": ["Read(./.env)"]
+        }
+      }
+    explain:
+      en: "Project settings live in .claude/settings.json and are committed to git — shared with your whole team."
+      no: "Prosjektinnstillinger ligger i .claude/settings.json og committes til git — delt med hele teamet."
+    accepts_also: []
+  - id: step-2
+    command: "claude --permission-mode plan"
+    output: |
+      Starting session in plan mode — Claude will propose changes before making them.
+    explain:
+      en: "Plan mode has Claude describe its plan before touching any files, useful for reviewing risky changes."
+      no: "Plan-modus lar Claude beskrive planen sin før den rører noen filer — nyttig for å vurdere risikable endringer."
+    accepts_also: []

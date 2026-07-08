@@ -1,0 +1,37 @@
+questions:
+  - id: q1
+    prompt:
+      en: "Where do project-specific subagents live?"
+      no: "Hvor ligger prosjektspesifikke underagenter?"
+    options:
+      - { id: a, en: "~/.claude/agents/", no: "~/.claude/agents/" }
+      - { id: b, en: ".claude/agents/", no: ".claude/agents/" }
+      - { id: c, en: ".claude/subagents.json", no: ".claude/subagents.json" }
+    correct: b
+    explain:
+      en: "Project subagents live in `.claude/agents/` and can be checked into version control for the whole team."
+      no: "Prosjekt-underagenter ligger i `.claude/agents/` og kan committes til versjonskontroll for hele teamet."
+  - id: q2
+    prompt:
+      en: "What does Claude use to decide when to delegate a task to a subagent?"
+      no: "Hva bruker Claude for å avgjøre når en oppgave skal delegeres til en underagent?"
+    options:
+      - { id: a, en: "The subagent's description field", no: "Underagentens description-felt" }
+      - { id: b, en: "The subagent's file name only", no: "Kun underagentens filnavn" }
+      - { id: c, en: "A random selection", no: "Et tilfeldig valg" }
+    correct: a
+    explain:
+      en: "Claude matches the task at hand against each subagent's `description` to decide when to delegate — write it clearly."
+      no: "Claude matcher oppgaven mot hver underagents `description` for å avgjøre når den skal delegere — skriv den tydelig."
+  - id: q3
+    prompt:
+      en: "Why should a subagent's `tools` list be as short as possible?"
+      no: "Hvorfor bør en underagents `tools`-liste være så kort som mulig?"
+    options:
+      - { id: a, en: "It makes the YAML file shorter", no: "Det gjør YAML-filen kortere" }
+      - { id: b, en: "It limits what the subagent can accidentally do — least privilege", no: "Det begrenser hva underagenten kan gjøre ved et uhell — minste privilegium" }
+      - { id: c, en: "Claude ignores tools beyond the third one", no: "Claude ignorerer verktøy utover det tredje" }
+    correct: b
+    explain:
+      en: "Restricting tools to only what the job needs means a subagent can't accidentally edit files or run commands outside its purpose."
+      no: "Å begrense verktøy til kun det jobben trenger betyr at en underagent ikke ved et uhell kan redigere filer eller kjøre kommandoer utenfor formålet sitt."

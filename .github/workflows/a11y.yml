@@ -1,0 +1,100 @@
+name: Accessibility (axe-core)
+
+# BLUEPRINT §10 + quality-ci — يفحص الصفحات الحرجة باستخدام axe-core
+# عبر @axe-core/cli ضد خادم التطوير (Astro dev) لرصد الانتهاكات
+# serious/critical قبل الدمج.
+# URL list يجب أن يبقى متطابقًا مع .lighthouserc.json لضمان التغطية المتساوية.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+concurrency:
+  group: a11y-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  axe:
+    name: axe-core audit
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Chromium browser
+        # @axe-core/cli يعتمد على puppeteer داخليًا — نثبّت المتصفح مسبقًا
+        # لتفادي التحميل في كل خطوة وأيضًا لتسريع CI.
+        run: npx puppeteer browsers install chrome
+
+      - name: Start Astro dev server
+        run: |
+          set -eu
+          npm run dev -- --host 127.0.0.1 --port 4321 > .dev-server.log 2>&1 &
+          DEV_PID=$!
+          echo $DEV_PID > .dev-pid
+          # ننتظر حتى يستجيب الـ dev server.
+          for i in $(seq 1 90); do
+            if curl -fsS http://127.0.0.1:4321/en/ > /dev/null 2>&1; then
+              echo "Dev server ready after ${i}s"
+              break
+            fi
+            sleep 1
+          done
+          # تأكيد الاستعداد قبل المتابعة.
+          curl -fsS http://127.0.0.1:4321/en/ > /dev/null
+        env:
+          # تحليلات Plausible معطّلة في CI — لا نريد تلويث الإحصاءات.
+          PUBLIC_PLAUSIBLE_DOMAIN: ""
+
+      - name: Run axe-core (WCAG 2.1 AA, best-practice)
+        run: |
+          # axe يفشل (exit 1) عند أي انتهاك. نُقيّد بـ:
+          #   - wcag2a/2aa/21a/21aa: تغطية BLUEPRINT §6.2 (WCAG 2.1 AA).
+          #   - best-practice: تنبيهات axe الإضافية غير المعيارية.
+          # zero serious/critical violations = threshold المطلوب.
+          npx --no-install axe \
+            --exit \
+            --disable-inline-styles \
+            --tags wcag2a,wcag2aa,wcag21a,wcag21aa,best-practice \
+            http://127.0.0.1:4321/en/ \
+            http://127.0.0.1:4321/no/ \
+            http://127.0.0.1:4321/en/learn/ \
+            http://127.0.0.1:4321/no/learn/ \
+            http://127.0.0.1:4321/en/learn/getting-started/ \
+            http://127.0.0.1:4321/no/learn/getting-started/ \
+            http://127.0.0.1:4321/en/quiz/ \
+            http://127.0.0.1:4321/no/quiz/
+
+      - name: Stop dev server
+        if: always()
+        run: |
+          if [ -f .dev-pid ]; then
+            kill "$(cat .dev-pid)" 2>/dev/null || true
+            rm -f .dev-pid
+          fi
+          # نبقي السجل في الـ artifacts لو فشلت الخطوة.
+          if [ -f .dev-server.log ]; then
+            mkdir -p .a11y-artifacts
+            cp .dev-server.log .a11y-artifacts/ || true
+          fi
+
+      - name: Upload dev-server log on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: a11y-dev-server-log
+          path: .a11y-artifacts/**
+          if-no-files-found: ignore
+          retention-days: 7

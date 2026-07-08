@@ -1,0 +1,41 @@
+name: Deploy
+
+# Builds the site and rsyncs dist/ to the production Ubuntu server
+# (claude.mutaz.no) over SSH. Runs on every push to main — including the
+# direct pushes made by watch.yml / freshness.yml once their changes pass
+# verification, so a fully-automated content update ends with the live site
+# actually updating, with no manual step in between.
+#
+# Required repo secrets:
+#   DEPLOY_SSH_KEY   private key for a dedicated deploy-only account (see
+#                    scripts/deploy.sh / README for how it was provisioned)
+#   DEPLOY_HOST      server address, e.g. 54.39.98.204
+#   DEPLOY_USER      ssh user, e.g. ubuntu
+#   DEPLOY_PATH      remote web root, e.g. /var/www/claude.mutaz.no/
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm ci
+      - run: npm run build
+      - name: Deploy over rsync/SSH
+        env:
+          DEPLOY_SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
+          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+          DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
+          DEPLOY_PATH: ${{ secrets.DEPLOY_PATH }}
+        run: |
+          mkdir -p ~/.ssh
+          printf '%s\n' "$DEPLOY_SSH_KEY" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          ssh-keyscan -H "$DEPLOY_HOST" >> ~/.ssh/known_hosts 2>/dev/null
+          rsync -az --delete -e "ssh -i ~/.ssh/deploy_key" dist/ "$DEPLOY_USER@$DEPLOY_HOST:$DEPLOY_PATH"

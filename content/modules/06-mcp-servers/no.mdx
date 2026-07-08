@@ -1,0 +1,76 @@
+---
+title: "MCP-tjenere"
+description: "Koble Claude Code til eksterne verktøy og datakilder med Model Context Protocol."
+---
+import Callout from "../../../src/components/Callout.astro";
+
+# MCP-tjenere
+
+Model Context Protocol (MCP) er en åpen standard som kobler Claude Code til eksterne
+verktøy, databaser og API-er — saksbehandlingssystemer, overvåkingsdashboard, CRM-er
+og mer — slik at Claude kan handle direkte på dem i stedet for at du kopierer inn data
+manuelt.
+
+## Legg til en ekstern tjener (HTTP)
+
+```bash
+claude mcp add --transport http notion https://mcp.notion.com/mcp
+```
+
+De fleste hostede integrasjoner eksponerer et HTTP- (eller SSE-)endepunkt. Dette er
+den enkleste måten å koble til en tredjepartstjeneste på.
+
+## Legg til en lokal tjener (stdio)
+
+```bash
+claude mcp add --transport stdio myserver -- npx server
+```
+
+Stdio-tjenere kjører som en prosess på din egen maskin — bra for verktøy som trenger
+direkte systemtilgang eller et tilpasset skript. Alt etter `--` sendes uendret til
+den prosessen, atskilt fra Claudes egne flagg som `--transport` eller `--env`.
+
+## Valg av transport
+
+| Transport | Kjører hvor | Typisk bruk |
+|---|---|---|
+| `stdio` | Lokal prosess | Tilpassede skript, direkte systemtilgang |
+| `http` / `sse` | Ekstern | Hostede SaaS-integrasjoner |
+| `ws` | Ekstern, vedvarende | Tjenere som pusher hendelser uoppfordret |
+
+## Valg av nivå (scope)
+
+```bash
+claude mcp add --transport http stripe --scope local https://mcp.stripe.com
+```
+
+`--scope` styrer hvem andre som ser denne tjeneren: `local` (standard) holder den
+privat for deg i dette prosjektet, `project` skriver den til en committet `.mcp.json`
+hele teamet ditt får, og `user` gjør den tilgjengelig på tvers av alle prosjektene du
+jobber i.
+
+<Callout type="mistake" title="Vanlig feil">
+  Å legge til en tjener med API-nøkkel med `--scope project` — det committer
+  tilkoblingskonfigurasjonen der hele teamet ditt (og git-historikken) kan se den. Bruk
+  `local`- eller `user`-nivå for alt som er sensitivt med tanke på legitimasjon.
+</Callout>
+
+## Administrere tilkoblinger
+
+```
+/mcp
+```
+
+`/mcp` åpner den interaktive listen over MCP-tjenertilkoblingene dine. Send
+`reconnect <server>` for å koble til på nytt en som falt fra, eller `enable`/`disable`
+med et tjenernavn (eller `all`) for å endre tilkoblingsstatus uten å åpne dialogen.
+
+## Oppsummering
+
+- `stdio` kjører lokalt; `http`/`sse`/`ws` kobler til en ekstern tjener.
+- `claude mcp add --transport <type> <name> <url>` er den generelle formen for
+  eksterne tjenere; stdio-tjenere legger til `-- <command>` på slutten.
+- `--scope` avgjør om en tilkobling er privat (`local`), delt med teamet ditt
+  (`project`), eller tilgjengelig overalt du jobber (`user`) — velg bevisst for alt
+  med legitimasjon.
+- `/mcp` administrerer tilkoblinger uten å forlate økten din.

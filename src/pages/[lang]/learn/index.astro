@@ -1,0 +1,207 @@
+---
+import Base from "../../../layouts/Base.astro";
+import ProgressMap from "../../../islands/ProgressMap.svelte";
+import { LOCALES, useTranslations, type Locale } from "../../../lib/i18n";
+import { getAllModules } from "../../../lib/modules";
+import {
+  webPageJsonLd,
+  breadcrumbListJsonLd,
+  pageBreadcrumbs,
+  jsonLdScript,
+} from "../../../lib/seo";
+
+export function getStaticPaths() {
+  return LOCALES.map((lang) => ({ params: { lang } }));
+}
+
+const lang = Astro.params.lang as Locale;
+const t = useTranslations(lang);
+const modules = await getAllModules();
+
+const pagePath = `/${lang}/learn`;
+const webPage = webPageJsonLd({
+  name: `${t("nav.learn")} — Claude Code Learn`,
+  description: lang === "no"
+    ? "Alle moduler i Claude Code Learn."
+    : "All modules in Claude Code Learn.",
+  lang,
+  path: pagePath,
+});
+const crumbs = breadcrumbListJsonLd(pageBreadcrumbs(t("nav.learn"), pagePath, lang));
+const jsonLd = jsonLdScript([webPage, crumbs]);
+---
+
+<Base
+  lang={lang}
+  title={`${t("nav.learn")} — Claude Code Learn`}
+  description={lang === "no" ? "Alle moduler i Claude Code Learn." : "All modules in Claude Code Learn."}
+>
+  <Fragment slot="head">
+    <Fragment set:html={jsonLd} />
+  </Fragment>
+
+  <main class="learn">
+    <header class="learn__head">
+      <p class="learn__eyebrow">{lang === "no" ? "Læringssti" : "Learning path"}</p>
+      <h1>{t("nav.learn")}</h1>
+    </header>
+
+    <div class="learn__layout">
+      <ol class="learn__path">
+        {modules.map((m, i) => (
+          <li>
+            <a class="module-row" href={`/${lang}/learn/${m.id}`}>
+              <span class="module-row__index">{String(i + 1).padStart(2, "0")}</span>
+              <div class="module-row__body">
+                <div class="module-row__title-line">
+                  <h2>{m.meta.title[lang]}</h2>
+                  <span class={`module-row__level module-row__level--${m.meta.level}`}>
+                    {t(`module.level.${m.meta.level}`)}
+                  </span>
+                </div>
+                <p>{m.meta.description[lang]}</p>
+              </div>
+              <span class="module-row__duration">{m.meta.duration_min}<small>{t("module.duration")}</small></span>
+            </a>
+          </li>
+        ))}
+      </ol>
+
+      <aside>
+        <ProgressMap
+          client:load
+          locale={lang}
+          modules={modules.map((m) => ({ id: m.id, href: `/${lang}/learn/${m.id}`, title: m.meta.title }))}
+        />
+      </aside>
+    </div>
+  </main>
+</Base>
+
+<style>
+  .learn {
+    max-width: 72rem;
+    margin: 0 auto;
+    padding: var(--space-12) var(--space-6) var(--space-16);
+  }
+  .learn__head {
+    margin-bottom: var(--space-10);
+  }
+  .learn__eyebrow {
+    margin: 0 0 var(--space-2);
+    color: var(--accent);
+    font-size: 0.8125rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+  .learn__head h1 {
+    margin: 0;
+    font-size: clamp(2rem, 4vw, 2.75rem);
+  }
+  .learn__layout {
+    display: grid;
+    grid-template-columns: 1fr 20rem;
+    gap: var(--space-10);
+    align-items: start;
+  }
+  .learn__path {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .module-row {
+    display: grid;
+    grid-template-columns: 3rem 1fr auto;
+    align-items: center;
+    gap: var(--space-5);
+    padding: var(--space-5) var(--space-2);
+    border-top: 1px solid var(--border);
+    border-left: 2px solid transparent;
+    text-decoration: none;
+    color: var(--fg);
+    transition: border-color var(--dur) var(--ease), background var(--dur) var(--ease), padding-left var(--dur) var(--ease);
+  }
+  .learn__path li:last-child .module-row {
+    border-bottom: 1px solid var(--border);
+  }
+  .module-row:hover {
+    border-left-color: var(--accent);
+    background: var(--bg-elev);
+    padding-left: var(--space-4);
+  }
+  .module-row__index {
+    font-family: var(--font-mono);
+    font-size: 0.9375rem;
+    color: var(--fg-muted);
+  }
+  .module-row__body {
+    min-width: 0;
+  }
+  .module-row__title-line {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    margin-bottom: var(--space-1);
+    flex-wrap: wrap;
+  }
+  .module-row__title-line h2 {
+    margin: 0;
+    font-size: 1.1875rem;
+    font-weight: 500;
+  }
+  .module-row p {
+    margin: 0;
+    color: var(--fg-muted);
+    font-size: 0.9375rem;
+  }
+  .module-row__level {
+    font-size: 0.6875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    padding: 0.1rem 0.5rem;
+    border-radius: var(--radius-full);
+    border: 1px solid var(--border);
+    color: var(--fg-muted);
+    white-space: nowrap;
+  }
+  .module-row__level--beginner {
+    color: var(--ok);
+    border-color: var(--ok);
+  }
+  .module-row__level--intermediate {
+    color: var(--warn);
+    border-color: var(--warn);
+  }
+  .module-row__level--advanced {
+    color: var(--err);
+    border-color: var(--err);
+  }
+  .module-row__duration {
+    font-family: var(--font-mono);
+    font-size: 1.25rem;
+    color: var(--fg-muted);
+    text-align: right;
+    white-space: nowrap;
+  }
+  .module-row__duration small {
+    display: block;
+    font-family: var(--font-sans);
+    font-size: 0.6875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+  @media (max-width: 860px) {
+    .learn__layout {
+      grid-template-columns: 1fr;
+    }
+  }
+  @media (max-width: 560px) {
+    .module-row {
+      grid-template-columns: 2rem 1fr;
+    }
+    .module-row__duration {
+      display: none;
+    }
+  }
+</style>

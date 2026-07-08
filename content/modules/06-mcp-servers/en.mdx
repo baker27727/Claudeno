@@ -1,0 +1,74 @@
+---
+title: "MCP Servers"
+description: "Connect Claude Code to external tools and data sources with the Model Context Protocol."
+---
+import Callout from "../../../src/components/Callout.astro";
+
+# MCP Servers
+
+The Model Context Protocol (MCP) is an open standard that connects Claude Code to
+external tools, databases, and APIs — issue trackers, monitoring dashboards, CRMs,
+and more — so Claude can act on them directly instead of you copy-pasting data in.
+
+## Add a remote server (HTTP)
+
+```bash
+claude mcp add --transport http notion https://mcp.notion.com/mcp
+```
+
+Most hosted integrations expose an HTTP (or SSE) endpoint. This is the simplest way
+to connect to a third-party service.
+
+## Add a local server (stdio)
+
+```bash
+claude mcp add --transport stdio myserver -- npx server
+```
+
+Stdio servers run as a process on your own machine — good for tools that need direct
+system access or a custom script. Everything after `--` is passed to that process
+untouched, separate from Claude's own flags like `--transport` or `--env`.
+
+## Choosing a transport
+
+| Transport | Runs where | Typical use |
+|---|---|---|
+| `stdio` | Local process | Custom scripts, direct system access |
+| `http` / `sse` | Remote | Hosted SaaS integrations |
+| `ws` | Remote, persistent | Servers that push events unprompted |
+
+## Choosing a scope
+
+```bash
+claude mcp add --transport http stripe --scope local https://mcp.stripe.com
+```
+
+`--scope` controls who else sees this server: `local` (default) keeps it private to
+you in this project, `project` writes it to a committed `.mcp.json` your whole team
+gets, and `user` makes it available across every project you work in.
+
+<Callout type="mistake" title="Common mistake">
+  Adding an API-key-bearing server with `--scope project` — that commits the
+  connection config where your whole team (and git history) can see it. Use `local`
+  or `user` scope for anything credential-sensitive.
+</Callout>
+
+## Managing connections
+
+```
+/mcp
+```
+
+`/mcp` opens the interactive list of your MCP server connections. Pass
+`reconnect <server>` to reconnect one that dropped, or `enable`/`disable` with a
+server name (or `all`) to change connection state without opening the dialog.
+
+## Key takeaways
+
+- `stdio` runs locally; `http`/`sse`/`ws` connect to a remote server.
+- `claude mcp add --transport <type> <name> <url>` is the general shape for remote
+  servers; stdio servers add `-- <command>` at the end.
+- `--scope` decides whether a connection is private (`local`), shared with your team
+  (`project`), or available everywhere you work (`user`) — pick deliberately for
+  anything with credentials.
+- `/mcp` manages connections without leaving your session.

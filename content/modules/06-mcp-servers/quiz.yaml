@@ -1,0 +1,49 @@
+questions:
+  - id: q1
+    prompt:
+      en: "Which MCP transport is used for a local process running on your own machine?"
+      no: "Hvilken MCP-transport brukes for en lokal prosess som kjører på din egen maskin?"
+    options:
+      - { id: a, en: "http", no: "http" }
+      - { id: b, en: "sse", no: "sse" }
+      - { id: c, en: "stdio", no: "stdio" }
+    correct: c
+    explain:
+      en: "stdio servers run as local processes on your machine, ideal for tools needing direct system access."
+      no: "stdio-tjenere kjører som lokale prosesser på maskinen din, ideelt for verktøy som trenger direkte systemtilgang."
+  - id: q2
+    prompt:
+      en: "In `claude mcp add [options] <name> -- <command>`, what does `--` do?"
+      no: "I `claude mcp add [options] <name> -- <command>`, hva gjør `--`?"
+    options:
+      - { id: a, en: "Nothing, it's optional decoration", no: "Ingenting, det er valgfri dekorasjon" }
+      - { id: b, en: "Separates Claude's own options from the server command and its arguments", no: "Skiller Claudes egne opsjoner fra tjenerkommandoen og dens argumenter" }
+      - { id: c, en: "Escapes the server name", no: "Escaper tjenernavnet" }
+    correct: b
+    explain:
+      en: "Everything after `--` is passed to the server process untouched, separate from flags like --transport or --env."
+      no: "Alt etter `--` sendes uendret til tjenerprosessen, atskilt fra flagg som --transport eller --env."
+  - id: q3
+    prompt:
+      en: "You're adding a server with an API key and don't want your whole team to see the connection config. Which --scope?"
+      no: "Du legger til en tjener med en API-nøkkel og vil ikke at hele teamet skal se tilkoblingskonfigurasjonen. Hvilken --scope?"
+    options:
+      - { id: a, en: "project", no: "project" }
+      - { id: b, en: "local", no: "local" }
+      - { id: c, en: "user", no: "user" }
+    correct: b
+    explain:
+      en: "local (the default) keeps the connection private to you in this project. project commits it to .mcp.json for the whole team to see."
+      no: "local (standard) holder tilkoblingen privat for deg i dette prosjektet. project committer den til .mcp.json som hele teamet ser."
+  - id: q4
+    prompt:
+      en: "Which command opens the interactive list of your MCP server connections?"
+      no: "Hvilken kommando åpner den interaktive listen over MCP-tjenertilkoblingene dine?"
+    options:
+      - { id: a, en: "/mcp", no: "/mcp" }
+      - { id: b, en: "/permissions", no: "/permissions" }
+      - { id: c, en: "/connections", no: "/connections" }
+    correct: a
+    explain:
+      en: "/mcp lists your MCP server connections and lets you reconnect, enable, or disable them."
+      no: "/mcp lister opp MCP-tjenertilkoblingene dine og lar deg koble til på nytt, aktivere eller deaktivere dem."

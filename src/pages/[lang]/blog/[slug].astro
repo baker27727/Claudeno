@@ -1,0 +1,178 @@
+---
+import { render } from "astro:content";
+import { getCollection } from "astro:content";
+import Base from "../../../layouts/Base.astro";
+import { LOCALES, useTranslations, formatDate, type Locale } from "../../../lib/i18n";
+
+export async function getStaticPaths() {
+  const allPosts = await getCollection("blog");
+  const isProd = import.meta.env.PROD;
+  const published = allPosts.filter((p) => !(isProd && p.data.draft));
+  // كل post يُولَّد مرتين — مرة لكل لغة — لكن الـ slug موحّد (§9: محتوى ثنائي اللغة
+  // في ملف واحد). نمرّر lang عبر props لاستخدامه في الترجمة والعرض.
+  return LOCALES.flatMap((lang) =>
+    published.map((post) => ({ params: { lang, slug: post.id }, props: { post } })),
+  );
+}
+
+const lang = Astro.params.lang as Locale;
+const t = useTranslations(lang);
+const { post } = Astro.props;
+const { Content } = await render(post);
+---
+
+<Base
+  lang={lang}
+  title={`${post.data.title[lang]} — Claude Code Learn`}
+  description={post.data.description[lang]}
+>
+  <main class="post">
+    <a class="post__back" href={`/${lang}/blog`}>&larr; {t("nav.blog")}</a>
+
+    <article class="post__article">
+      <header class="post__header">
+        <h1 class="post__title">{post.data.title[lang]}</h1>
+        <div class="post__meta">
+          <time datetime={post.data.pubDate}>
+            {formatDate(new Date(post.data.pubDate), lang)}
+          </time>
+          <span class="post__author">{post.data.author}</span>
+          {post.data.draft && (
+            <span class="post__draft">
+              {lang === "no" ? "Utkast" : "Draft"}
+            </span>
+          )}
+        </div>
+        {post.data.tags.length > 0 && (
+          <ul class="post__tags">
+            {post.data.tags.map((tag) => (
+              <li class="post__tag">{tag}</li>
+            ))}
+          </ul>
+        )}
+      </header>
+
+      <div class="post__body">
+        <Content />
+      </div>
+
+      {post.data.sources.length > 0 && (
+        <footer class="post__sources">
+          <p class="post__sources-label">{lang === "no" ? "Kilder" : "Sources"}</p>
+          <ul>
+            {post.data.sources.map((src) => (
+              <li><a href={src} target="_blank" rel="noopener noreferrer">{src}</a></li>
+            ))}
+          </ul>
+        </footer>
+      )}
+    </article>
+  </main>
+</Base>
+
+<style>
+  .post {
+    max-width: 48rem;
+    margin: 0 auto;
+    padding: var(--space-8) var(--space-6) var(--space-16);
+  }
+  .post__back {
+    color: var(--fg-muted);
+    text-decoration: none;
+    font-size: 0.875rem;
+    display: inline-block;
+    margin-bottom: var(--space-6);
+  }
+  .post__back:hover {
+    color: var(--accent);
+  }
+  .post__header {
+    margin-bottom: var(--space-8);
+    padding-bottom: var(--space-5);
+    border-bottom: 1px solid var(--border);
+  }
+  .post__title {
+    font-size: clamp(1.75rem, 4vw, 2.5rem);
+    line-height: 1.15;
+    margin: 0 0 var(--space-3);
+  }
+  .post__meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-3);
+    color: var(--fg-muted);
+    font-size: 0.875rem;
+  }
+  .post__author::before {
+    content: "·";
+    margin-right: var(--space-3);
+  }
+  .post__draft {
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    font-size: 0.6875rem;
+    color: var(--accent);
+    border: 1px solid var(--accent);
+    border-radius: var(--radius-full);
+    padding: 0.05rem 0.5rem;
+  }
+  .post__tags {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    margin: var(--space-3) 0 0;
+    padding: 0;
+  }
+  .post__tag {
+    font-size: 0.75rem;
+    color: var(--fg-muted);
+    background: var(--bg-elev);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-full);
+    padding: 0.1rem 0.6rem;
+  }
+  .post__body :global(h2) {
+    margin-top: var(--space-8);
+  }
+  .post__body :global(p) {
+    line-height: 1.7;
+    margin: 0 0 var(--space-4);
+  }
+  .post__body :global(pre) {
+    background: var(--bg-elev);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: var(--space-4);
+    overflow-x: auto;
+  }
+  .post__body :global(code) {
+    font-family: var(--font-mono);
+  }
+  .post__body :global(ul),
+  .post__body :global(ol) {
+    line-height: 1.7;
+  }
+  .post__sources {
+    margin-top: var(--space-10);
+    padding-top: var(--space-5);
+    border-top: 1px solid var(--border);
+  }
+  .post__sources-label {
+    margin: 0 0 var(--space-2);
+    color: var(--fg-muted);
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+  .post__sources ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+    font-size: 0.8125rem;
+  }
+</style>

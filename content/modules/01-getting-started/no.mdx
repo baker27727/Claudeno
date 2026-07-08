@@ -1,0 +1,69 @@
+---
+title: "Kom i gang med Claude Code"
+description: "Installer Claude Code og kjør din første økt."
+---
+import Callout from "../../../src/components/Callout.astro";
+import PlatformTabs from "../../../src/components/PlatformTabs.astro";
+
+# Kom i gang med Claude Code
+
+Claude Code er Anthropics offisielle CLI for agentbasert koding. I denne modulen
+installerer du det og kjører din første interaktive økt.
+
+## Installer
+
+Den native installereren er den anbefalte metoden — den oppdaterer seg selv i
+bakgrunnen, så du er alltid på nyeste versjon.
+
+```bash
+curl -fsSL https://claude.ai/install.sh | bash
+```
+
+Den kommandoen fungerer på macOS, Linux og WSL. Windows- og Homebrew-brukere har sine
+egne installasjonskommandoer, og oppdaterer seg ikke automatisk på samme måte:
+
+<PlatformTabs id="install" tabs={[
+  { label: "Windows (PowerShell)", code: "irm https://claude.ai/install.ps1 | iex" },
+  { label: "Windows (CMD)", code: "curl -fsSL https://claude.ai/install.cmd -o install.cmd && install.cmd && del install.cmd" },
+  { label: "Homebrew", code: "brew install --cask claude-code" },
+]} />
+
+<Callout type="note" title="Merk">
+  Homebrew- og WinGet-installasjoner oppdaterer seg ikke automatisk — kjør
+  `brew upgrade claude-code` (eller `winget upgrade Anthropic.ClaudeCode`) jevnlig for
+  å holde deg oppdatert. Den native installereren håndterer dette for deg.
+</Callout>
+
+## Kjør din første økt
+
+```bash
+claude
+```
+
+Dette starter en interaktiv økt i prosjektmappen din. Skriv forespørselen din
+på vanlig språk, eller `/help` for å liste tilgjengelige kommandoer.
+
+## Din første forespørsel
+
+Hopp over den trivielle "hello world"-testen — en første forespørsel som faktisk
+forteller deg noe nyttig er:
+
+```
+Forklar hva dette prosjektet gjør og hvordan delene henger sammen.
+```
+
+Claude leser filene i prosjektet ditt for å svare, noe som samtidig fungerer som en
+rask sjekk på at alt er riktig koblet sammen.
+
+<Callout type="tip" title="Tips">
+  Hvis noe med installasjonen virker feil, kjør `/doctor` inni en økt — den
+  diagnostiserer Claude Code-installasjonen og innstillingene dine, og kan fikse
+  rapporterte problemer for deg.
+</Callout>
+
+## Oppsummering
+
+- Den native installereren (`curl ... | bash`) anbefales — den oppdaterer seg selv i bakgrunnen.
+- Homebrew og WinGet fungerer også, men du må oppgradere dem selv.
+- Å kjøre `claude` uten argumenter starter en interaktiv økt i gjeldende mappe.
+- `/help` inni en økt lister opp alle kommandoer tilgjengelige for deg.

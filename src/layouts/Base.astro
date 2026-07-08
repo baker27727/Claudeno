@@ -1,0 +1,110 @@
+---
+import "../styles/global.css";
+import { ClientRouter } from "astro:transitions";
+import { isLocale, switchLocalePath, DEFAULT_LOCALE } from "../lib/i18n";
+import { resolveOgImage } from "../lib/og";
+import Nav from "../components/Nav.astro";
+import Footer from "../components/Footer.astro";
+import { openGraphMeta } from "../lib/seo";
+
+interface Props {
+  title: string;
+  description?: string;
+  lang?: string;
+  nav?: boolean;
+  /** نوع og:type — `article` للوحدات/التدوينات، `website` للصفحات العامة. */
+  ogType?: "website" | "article" | "profile";
+  /**
+   * صورة OG مخصّصة (اختيارية). الافتراضي يُشتق من المسار تلقائيًا:
+   *   - /<lang>/learn/<id>/  →  /og/<id>-<lang>.png
+   *   - /<lang>/...          →  /og/default-<lang>.png
+   *   - غير ذلك              →  /og/default-en.png
+   * مرّر قيمة هنا لتجاوز الاشتقاق (مثل صورة مدوّنة مختلفة).
+   */
+  ogImage?: string;
+}
+
+const {
+  title,
+  description = "",
+  lang: langProp,
+  nav = true,
+  ogType = "website",
+  ogImage,
+} = Astro.props;
+const lang = isLocale(langProp) ? langProp : DEFAULT_LOCALE;
+
+// hreflang تلقائي لكل صفحة (BLUEPRINT §4).
+const path = Astro.url.pathname;
+const enHref = new URL(switchLocalePath(path, "en"), Astro.site).href;
+const noHref = new URL(switchLocalePath(path, "no"), Astro.site).href;
+
+// OG image ديناميكي (BLUEPRINT §9) — يُشتق من المسار عند عدم تمرير ogImage.
+const resolvedOg = resolveOgImage(path, ogImage);
+
+// OG/Twitter meta لكل صفحة (BLUEPRINT §9).
+const og = openGraphMeta({
+  type: ogType,
+  title,
+  description,
+  url: Astro.url.href,
+  lang,
+  image: resolvedOg.image,
+});
+---
+
+<!doctype html>
+<html lang={lang} dir="ltr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    {description && <meta name="description" content={description} />}
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="canonical" href={Astro.url.href} />
+
+    {/* زوج الخطوط: Fraunces (عناوين) + Public Sans (واجهة) — BLUEPRINT §6 */}
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Public+Sans:wght@400;500;600;700;800&display=swap"
+    />
+
+    {/* hreflang تلقائي (BLUEPRINT §4) */}
+    <link rel="alternate" hreflang="en" href={enHref} />
+    <link rel="alternate" hreflang="no" href={noHref} />
+    <link rel="alternate" hreflang="x-default" href={enHref} />
+
+    {/* Open Graph (BLUEPRINT §9) — على جميع الصفحات */}
+    <meta property="og:type" content={og.ogType} />
+    <meta property="og:title" content={og.ogTitle} />
+    <meta property="og:description" content={og.ogDescription} />
+    <meta property="og:url" content={og.ogUrl} />
+    <meta property="og:locale" content={og.ogLocale} />
+    <meta property="og:site_name" content={og.ogSiteName} />
+    <meta property="og:image" content={og.ogImage} />
+
+    {/* Twitter Card — على جميع الصفحات */}
+    <meta name="twitter:card" content={og.twitterCard} />
+    <meta name="twitter:title" content={og.twitterTitle} />
+    <meta name="twitter:description" content={og.twitterDescription} />
+    <meta name="twitter:image" content={og.twitterImage} />
+
+    {/* JSON-LD slot — الصفحات تمرّر هنا وسوم <script type="application/ld+json">…</script>.
+        يضمن هذا الوضع إخراج الـ JSON-LD داخل <head> كما يتوقع Google. */}
+    <slot name="head" />
+
+    <ClientRouter />
+    <script is:inline>
+      // تطبيق التفضيل المحفوظ قبل الطلاء لتفادي وميض الثيم.
+      const t = localStorage.getItem("ccl:theme");
+      if (t) document.documentElement.dataset.theme = t;
+    </script>
+  </head>
+  <body>
+    {nav && <Nav lang={lang} />}
+    <div class="page-content"><slot /></div>
+    {nav && <Footer lang={lang} />}
+  </body>
+</html>

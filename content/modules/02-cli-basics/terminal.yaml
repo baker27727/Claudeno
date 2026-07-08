@@ -1,0 +1,44 @@
+steps:
+  - id: step-1
+    command: "claude --version"
+    output: |
+      2.1.0 (Claude Code)
+    explain:
+      en: "Prints the installed CLI version. Useful when following version-specific docs."
+      no: "Skriver ut installert CLI-versjon. Nyttig når du følger versjonsspesifikk dokumentasjon."
+    accepts_also: ["claude -v"]
+  - id: step-2
+    command: "claude -p \"list the files in this repo\""
+    output: |
+      README.md
+      package.json
+      src/
+      content/
+    explain:
+      en: "-p / --print runs a single non-interactive request and prints the result, instead of opening a session."
+      no: "-p / --print kjører én enkelt forespørsel uten interaktiv økt og skriver ut resultatet."
+    accepts_also: ["claude --print \"list the files in this repo\""]
+  - id: step-3
+    command: "claude -c"
+    output: |
+      Resuming most recent session…
+    explain:
+      en: "-c / --continue resumes your most recent session with its full context."
+      no: "-c / --continue gjenopptar den siste økten din med hele konteksten intakt."
+    accepts_also: ["claude --continue"]
+  - id: step-4
+    command: "claude -r \"fix-login-bug\""
+    output: |
+      Resuming session "fix-login-bug"…
+    explain:
+      en: "-r / --resume picks a specific session by ID or name, unlike -c which always grabs the most recent one."
+      no: "-r / --resume velger en bestemt økt ved ID eller navn, i motsetning til -c som alltid henter den siste."
+    accepts_also: ["claude --resume \"fix-login-bug\""]
+  - id: step-5
+    command: "claude --model sonnet"
+    output: |
+      Starting session with model: sonnet
+    explain:
+      en: "--model sets which Claude model this session uses, overriding your saved default."
+      no: "--model setter hvilken Claude-modell denne økten bruker, og overstyrer din lagrede standard."
+    accepts_also: []

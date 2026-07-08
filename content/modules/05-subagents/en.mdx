@@ -1,0 +1,72 @@
+---
+title: "Subagents"
+description: "Delegate side tasks to specialized subagents with their own context and tools."
+---
+import Callout from "../../../src/components/Callout.astro";
+
+# Subagents
+
+Subagents are specialized assistants that run a side task in their own context
+window — with a custom system prompt, limited tool access, and independent
+permissions — then return only a summary to your main conversation. Use one when a
+task would otherwise flood your session with search results or logs you won't need
+again.
+
+## Anatomy of a subagent
+
+```bash
+cat .claude/agents/code-reviewer.md
+```
+
+```markdown
+---
+name: code-reviewer
+description: Reviews code for correctness and style before a commit.
+tools: Read, Grep
+model: haiku
+---
+You are a meticulous code reviewer. Point out bugs, unclear naming, and
+missed edge cases. Do not rewrite code yourself.
+```
+
+A subagent is just a markdown file: YAML frontmatter (`name`, `description`, `tools`,
+`model`) followed by its system prompt as the body.
+
+## Where subagents live
+
+| Scope | Path |
+|---|---|
+| Project (shared with your team) | `.claude/agents/` |
+| Personal (all your projects) | `~/.claude/agents/` |
+
+Claude reads each subagent's `description` to decide when a task matches it, so write
+a clear, specific description.
+
+<Callout type="tip" title="Tip">
+  Keep `tools` short and specific to the job. A code-reviewer that can only `Read` and
+  `Grep` can't accidentally rewrite the file it's supposed to be critiquing — least
+  privilege applies to subagents too.
+</Callout>
+
+<Callout type="note" title="Note">
+  The `model` field accepts a shorthand (`sonnet`, `haiku`, `opus`) or `inherit` to use
+  whatever model is driving the main conversation. Pick a cheaper model like `haiku`
+  for high-volume, low-complexity checks.
+</Callout>
+
+## Creating one
+
+```
+/agents
+```
+
+In recent versions this no longer opens an interactive wizard — instead, ask Claude to
+create the subagent for you, or create the markdown file in `.claude/agents/` by hand.
+
+## Key takeaways
+
+- A subagent is a markdown file with frontmatter — no special tooling to create one.
+- Its `description` is what Claude matches against, not its file name.
+- Limiting `tools` to what the job needs is the single biggest safety lever you have.
+- It runs in its own context window and hands back only a summary, keeping your main
+  conversation uncluttered.
