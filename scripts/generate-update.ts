@@ -24,7 +24,10 @@ const CHANGELOG_PATH = join(ROOT, "content/changelog.yaml");
 const SNAPSHOT_VERSION_PATH = join(ROOT, "content/snapshots/upstream-version.txt");
 const SNAPSHOT_CHANGELOG_PATH = join(ROOT, "content/snapshots/upstream-changelog.md");
 
-const ANTHROPIC_MODEL = process.env.ANTHROPIC_MODEL ?? "claude-sonnet-5";
+// Haiku 4.5 is plenty for this: bounded structured extraction (a short diff
+// in, a few bilingual sentences + JSON out) — not a task that needs a
+// flagship model, and running daily makes the price difference compound.
+const ANTHROPIC_MODEL = process.env.ANTHROPIC_MODEL ?? "claude-haiku-4-5-20251001";
 const DOCS_MAP_URL = "https://code.claude.com/docs/en/claude_code_docs_map.md";
 
 // Force every string scalar to be double-quoted on write. Without this, a

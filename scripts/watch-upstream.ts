@@ -17,10 +17,32 @@ const DIFF_OUTPUT_PATH = join(ROOT, ".upstream-diff.md");
 const NPM_REGISTRY_URL = "https://registry.npmjs.org/@anthropic-ai/claude-code/latest";
 const CHANGELOG_URL = "https://raw.githubusercontent.com/anthropics/claude-code/main/CHANGELOG.md";
 
+// Hard cap on what gets handed to generate-update.ts as "the diff". Upstream's
+// CHANGELOG.md is cumulative (every release ever, reverse-chronological), not
+// a diff — without this, computeDiff()'s fallback path (or a first-ever run)
+// would send the entire multi-thousand-line file as API input on every call.
+const MAX_DIFF_CHARS = 12_000;
+
 async function fetchText(url: string): Promise<string> {
   const res = await fetch(url);
   if (!res.ok) throw new Error(`GET ${url} -> HTTP ${res.status}`);
   return res.text();
+}
+
+/**
+ * Upstream's CHANGELOG.md has newest entries prepended to the top. If it's a
+ * clean superset of what we already know (the common case), the real "diff"
+ * is just the new prefix — so we send only that to the API instead of the
+ * whole cumulative history on every single run. Falls back to a bounded
+ * prefix if upstream edited older entries too (not a clean prepend).
+ */
+function computeDiff(latest: string, known: string): string {
+  if (!known) return latest.slice(0, MAX_DIFF_CHARS); // first run ever
+  if (latest.endsWith(known)) {
+    const delta = latest.slice(0, latest.length - known.length).trim();
+    if (delta) return delta.slice(0, MAX_DIFF_CHARS);
+  }
+  return latest.slice(0, MAX_DIFF_CHARS);
 }
 
 async function main() {
@@ -38,8 +60,9 @@ async function main() {
   console.log(changed ? "Upstream change detected." : "No upstream change.");
 
   if (changed) {
-    writeFileSync(DIFF_OUTPUT_PATH, changelog, "utf-8");
-    console.log(`Wrote upstream CHANGELOG to ${DIFF_OUTPUT_PATH}`);
+    const diff = computeDiff(changelog, knownChangelog);
+    writeFileSync(DIFF_OUTPUT_PATH, diff, "utf-8");
+    console.log(`Wrote upstream diff (${diff.length} chars) to ${DIFF_OUTPUT_PATH}`);
   }
 
   const githubOutput = process.env.GITHUB_OUTPUT;

@@ -20,7 +20,9 @@ import { join } from "node:path";
 import { listModuleDirs } from "./audits/_util.ts";
 import { verifyAndPublish } from "./_auto-publish.ts";
 
-const ANTHROPIC_MODEL = process.env.ANTHROPIC_MODEL ?? "claude-sonnet-5";
+// Haiku 4.5 is plenty for this: bounded drift-detection against live docs,
+// not a task that needs a flagship model — see generate-update.ts for why.
+const ANTHROPIC_MODEL = process.env.ANTHROPIC_MODEL ?? "claude-haiku-4-5-20251001";
 
 // module slug (folder name under content/modules/) -> canonical doc source(s)
 const DOC_SOURCES: Record<string, string[]> = {
