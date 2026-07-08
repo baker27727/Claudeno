@@ -20,7 +20,12 @@
     "watch:upstream": "tsx scripts/watch-upstream.ts",
     "generate:update": "tsx scripts/generate-update.ts",
     "audit:freshness": "tsx scripts/audit-freshness.ts",
-    "deploy": "bash scripts/deploy.sh"
+    "deploy": "bash scripts/deploy.sh",
+    "seo:validate": "tsx scripts/seo/validate-metadata.ts",
+    "seo:links": "tsx scripts/seo/validate-links.ts",
+    "seo:sitemap": "tsx scripts/seo/validate-sitemap.ts",
+    "seo:report": "tsx scripts/seo/report.ts",
+    "seo:audit": "npm run build && npm run seo:validate && npm run seo:links && npm run seo:sitemap"
   },
   "dependencies": {
     "@astrojs/check": "^0.9.4",
