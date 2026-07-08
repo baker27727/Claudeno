@@ -33,10 +33,15 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Install Chromium browser
-        # @axe-core/cli يعتمد على puppeteer داخليًا — نثبّت المتصفح مسبقًا
-        # لتفادي التحميل في كل خطوة وأيضًا لتسريع CI.
-        run: npx puppeteer browsers install chrome
+      - name: Install Chromium browser + matching chromedriver
+        # @axe-core/cli يعتمد على selenium-webdriver داخليًا، الذي يحلّ
+        # chromedriver بمعزل عن Chrome الذي يثبّته puppeteer — إن جاء
+        # إصدار Chrome أحدث من بيانات chromedriver المتزامنة (أو العكس)
+        # يفشل الاتصال بـ "session not created: version mismatch".
+        # browser-driver-manager يثبّت الاثنين متزامنين لتفادي هذا الانجراف.
+        run: |
+          npx puppeteer browsers install chrome
+          npx browser-driver-manager install chrome
 
       - name: Start Astro dev server
         run: |
@@ -64,17 +69,25 @@ jobs:
           #   - wcag2a/2aa/21a/21aa: تغطية BLUEPRINT §6.2 (WCAG 2.1 AA).
           #   - best-practice: تنبيهات axe الإضافية غير المعيارية.
           # zero serious/critical violations = threshold المطلوب.
-          npx --no-install axe \
-            --exit \
-            --tags wcag2a,wcag2aa,wcag21a,wcag21aa,best-practice \
-            http://127.0.0.1:4321/en/ \
-            http://127.0.0.1:4321/no/ \
-            http://127.0.0.1:4321/en/learn/ \
-            http://127.0.0.1:4321/no/learn/ \
-            http://127.0.0.1:4321/en/learn/getting-started/ \
-            http://127.0.0.1:4321/no/learn/getting-started/ \
-            http://127.0.0.1:4321/en/quiz/ \
-            http://127.0.0.1:4321/no/quiz/
+          #
+          # إعادة محاولة 3 مرات: شبكة أمان إضافية ضد انجراف عابر في إصدار
+          # المتصفح/driver لا علاقة له بجودة المحتوى نفسه.
+          for attempt in 1 2 3; do
+            npx --no-install axe \
+              --exit \
+              --tags wcag2a,wcag2aa,wcag21a,wcag21aa,best-practice \
+              http://127.0.0.1:4321/en/ \
+              http://127.0.0.1:4321/no/ \
+              http://127.0.0.1:4321/en/learn/ \
+              http://127.0.0.1:4321/no/learn/ \
+              http://127.0.0.1:4321/en/learn/getting-started/ \
+              http://127.0.0.1:4321/no/learn/getting-started/ \
+              http://127.0.0.1:4321/en/quiz/ \
+              http://127.0.0.1:4321/no/quiz/ && exit 0
+            echo "axe attempt ${attempt} failed, retrying…" >&2
+            sleep 5
+          done
+          exit 1
 
       - name: Stop dev server
         if: always()
