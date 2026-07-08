@@ -25,7 +25,10 @@ const { id, tabs } = Astro.props;
       checked={i === 0}
     />
   ))}
-  <div class="ptabs__labels" role="tablist">
+  {/* عناصر radio/label أصلية بدلالاتها الافتراضية — لا role="tablist" بلا
+     تطبيق كامل لنمط ARIA tabs (aria-selected + تنقّل بالأسهم)؛ نصف تطبيق
+     يعطي وعدًا زائفًا لقارئ الشاشة أسوأ من عدم استخدامه إطلاقًا. */}
+  <div class="ptabs__labels">
     {tabs.map((t, i) => (
       <label for={`ptabs-${id}-${i}`} class="ptabs__label">{t.label}</label>
     ))}

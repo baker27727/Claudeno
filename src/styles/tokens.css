@@ -64,11 +64,11 @@
   --bg-elev: #ffffff;
   --fg: #1a1d23;
   --fg-muted: #5b6472;
-  --accent: #c65f3f; /* نسخة أغمق قليلًا لضمان تباين AA على خلفية فاتحة */
+  --accent: #a8461f; /* أغمق من الوضع الداكن — ~5.9:1 على أبيض، هامش أمان فوق حد 4.5:1 (axe-verified) */
   --accent-fg: #ffffff;
   --border: #e4e2dc;
 
-  --ok: #16a34a;
+  --ok: #12703a; /* أغمق من #16a34a — الأصلي كان 3.3:1 فقط وفشل AA؛ هذا ~6.2:1 */
   --warn: #b45309;
   --err: #dc2626;
 
@@ -78,17 +78,21 @@
   color-scheme: light;
 }
 
-/* احترام تفضيل النظام حين لا يوجد اختيار صريح من المستخدم */
+/* احترام تفضيل النظام حين لا يوجد اختيار صريح من المستخدم.
+   ⚠️ يجب أن تُطابق هذه القيم [data-theme="light"] أعلاه حرفيًا — هذا هو
+   المسار الفعّال فعليًا عند أول زيارة بلا تفضيل محفوظ (وهو ما يفحصه
+   axe-core/Chrome headless افتراضيًا)، فأي تعديل على ألوان الوضع الفاتح
+   يجب أن يُطبَّق هنا أيضًا. */
 @media (prefers-color-scheme: light) {
   :root:not([data-theme]) {
     --bg: #fafaf8;
     --bg-elev: #ffffff;
     --fg: #1a1d23;
     --fg-muted: #5b6472;
-    --accent: #c65f3f;
+    --accent: #a8461f;
     --accent-fg: #ffffff;
     --border: #e4e2dc;
-    --ok: #16a34a;
+    --ok: #12703a;
     --warn: #b45309;
     --err: #dc2626;
     --shadow-sm: 0 1px 2px rgb(0 0 0 / 0.08);

@@ -52,7 +52,7 @@
     </p>
   </div>
 
-  <div class="progress__bar" role="progressbar" aria-valuenow={doneCount} aria-valuemin={0} aria-valuemax={modules.length}>
+  <div class="progress__bar" role="progressbar" aria-label={t.heading} aria-valuenow={doneCount} aria-valuemin={0} aria-valuemax={modules.length}>
     <div class="progress__bar-fill" style={`width:${modules.length ? (doneCount / modules.length) * 100 : 0}%`}></div>
   </div>
 

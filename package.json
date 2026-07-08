@@ -9,6 +9,7 @@
     "start": "astro dev",
     "build": "astro build",
     "prebuild": "tsx scripts/build-og.ts",
+    "preview": "astro preview",
     "check": "astro check",
     "astro": "astro",
     "audit:parity": "tsx scripts/audits/audit-parity.ts",
