@@ -19,12 +19,12 @@ const t = useTranslations(lang);
 const modules = await getAllModules();
 const commandBank = modules.flatMap((m) => m.terminal.steps);
 
-const pagePath = `/${lang}/playground`;
+const pagePath = `/${lang}/playground/`;
 const webPage = webPageJsonLd({
   name: `${t("nav.playground")} — Claude Code Learn`,
   description: lang === "no"
-    ? "Prøv Claude Code-kommandoer fritt."
-    : "Try Claude Code commands freely.",
+    ? "Prøv Claude Code-kommandoer fritt i en trygg terminalsimulator, rett i nettleseren."
+    : "Try Claude Code commands freely in a safe terminal simulator, right in your browser.",
   lang,
   path: pagePath,
 });
@@ -35,7 +35,7 @@ const jsonLd = jsonLdScript([webPage, crumbs]);
 <Base
   lang={lang}
   title={`${t("nav.playground")} — Claude Code Learn`}
-  description={lang === "no" ? "Prøv Claude Code-kommandoer fritt." : "Try Claude Code commands freely."}
+  description={lang === "no" ? "Prøv Claude Code-kommandoer fritt i en trygg terminalsimulator, rett i nettleseren." : "Try Claude Code commands freely in a safe terminal simulator, right in your browser."}
 >
   <Fragment slot="head">
     <Fragment set:html={jsonLd} />

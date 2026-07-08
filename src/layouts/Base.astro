@@ -63,18 +63,36 @@ const og = openGraphMeta({
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="canonical" href={Astro.url.href} />
 
-    {/* زوج الخطوط: Fraunces (عناوين) + Public Sans (واجهة) — BLUEPRINT §6 */}
+    {/* زوج الخطوط: Fraunces (عناوين) + Public Sans (واجهة) — BLUEPRINT §6.
+        تحميل غير حاجب: preload + rel=stylesheet مؤجّل عبر onload، مع
+        <noscript> بديل — يمنع الخط من حجب أول عرض (LCP) بلا تغيير الخطوط
+        نفسها أو أي أثر بصري. */}
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      rel="stylesheet"
+      rel="preload"
+      as="style"
       href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Public+Sans:wght@400;500;600;700;800&display=swap"
     />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Public+Sans:wght@400;500;600;700;800&display=swap"
+      media="print"
+      onload="this.media='all'"
+    />
+    <noscript>
+      <link
+        rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Public+Sans:wght@400;500;600;700;800&display=swap"
+      />
+    </noscript>
 
     {/* hreflang تلقائي (BLUEPRINT §4) */}
     <link rel="alternate" hreflang="en" href={enHref} />
     <link rel="alternate" hreflang="no" href={noHref} />
-    <link rel="alternate" hreflang="x-default" href={enHref} />
+    {/* x-default -> Norwegian: NO is DEFAULT_LOCALE (src/lib/i18n.ts) and the
+        site's own routing/sitemap i18n config also default to "no". */}
+    <link rel="alternate" hreflang="x-default" href={noHref} />
 
     {/* Open Graph (BLUEPRINT §9) — على جميع الصفحات */}
     <meta property="og:type" content={og.ogType} />

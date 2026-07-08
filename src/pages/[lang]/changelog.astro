@@ -30,7 +30,9 @@ const jsonLd = jsonLdScript([list, crumbs]);
 <Base
   lang={lang}
   title={`${t("nav.changelog")} — Claude Code Learn`}
-  description={lang === "no" ? "Hva er nytt i Claude Code." : "What's new in Claude Code."}
+  description={lang === "no"
+    ? "Se hva som er nytt i Claude Code, oppdatert automatisk med hver utgivelse."
+    : "See what's new in Claude Code, updated automatically with every release."}
 >
   <Fragment slot="head">
     <Fragment set:html={jsonLd} />

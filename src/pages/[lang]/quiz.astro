@@ -26,12 +26,12 @@ const levels = modules.flatMap((m) =>
 ) as Array<"beginner" | "intermediate" | "advanced">;
 
 // JSON-LD: WebPage + BreadcrumbList (API الجديد: absoluteUrl(path), Crumb.path).
-const pagePath = `/${lang}/quiz`;
+const pagePath = `/${lang}/quiz/`;
 const webPage = webPageJsonLd({
   name: `${t("nav.quiz")} — Claude Code Learn`,
   description: lang === "no"
-    ? "Finn ut hvor du bør starte."
-    : "Find out where to start.",
+    ? "Svar på 12 spørsmål om Claude Code og få en anbefaling om hvor du bør starte å lære."
+    : "Answer 12 questions about Claude Code and get a recommendation for where to start learning.",
   path: pagePath,
   lang,
 });
@@ -42,7 +42,7 @@ const jsonLd = jsonLdScript([webPage, crumbs]);
 <Base
   lang={lang}
   title={`${t("nav.quiz")} — Claude Code Learn`}
-  description={lang === "no" ? "Finn ut hvor du bør starte." : "Find out where to start."}
+  description={lang === "no" ? "Svar på 12 spørsmål om Claude Code og få en anbefaling om hvor du bør starte å lære." : "Answer 12 questions about Claude Code and get a recommendation for where to start learning."}
 >
   <Fragment slot="head">
     <Fragment set:html={jsonLd} />

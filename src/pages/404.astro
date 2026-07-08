@@ -1,0 +1,90 @@
+---
+// 404 كاتش-أول لأي مسار غير متطابق (Astro يبني هذا إلى dist/404.html تلقائيًا).
+// لا بادئة لغة هنا (المسار غير معروف)، لذا نعرض اللغتين معًا بدل التخمين.
+import Base from "../layouts/Base.astro";
+---
+
+<Base lang="no" title="404 — Claude Code Learn" nav={false}>
+  <Fragment slot="head">
+    <meta name="robots" content="noindex" />
+  </Fragment>
+  <main class="notfound">
+    <p class="notfound__code" aria-hidden="true">404</p>
+    <h1>Siden finnes ikke &middot; Page not found</h1>
+    <p class="notfound__lede">
+      Vi fant ikke siden du lette etter. Den kan være flyttet eller slettet.
+    </p>
+    <p class="notfound__lede">
+      We couldn't find the page you were looking for. It may have moved or been removed.
+    </p>
+    <div class="notfound__links">
+      <a href="/no/" class="cta cta--primary">Til forsiden (norsk)</a>
+      <a href="/en/" class="cta cta--secondary">Homepage (English)</a>
+    </div>
+    <div class="notfound__links notfound__links--secondary">
+      <a href="/no/learn/">Lær Claude Code</a>
+      <span aria-hidden="true">&middot;</span>
+      <a href="/no/blog/">Bloggen</a>
+      <span aria-hidden="true">&middot;</span>
+      <a href="/no/reference/">Kommandoreferanse</a>
+    </div>
+  </main>
+</Base>
+
+<style>
+  .notfound {
+    max-width: 32rem;
+    margin: 0 auto;
+    padding: var(--space-16) var(--space-6);
+    text-align: center;
+  }
+  .notfound__code {
+    font-family: var(--font-mono);
+    font-size: 0.875rem;
+    color: var(--accent);
+    letter-spacing: 0.08em;
+    margin: 0 0 var(--space-4);
+  }
+  .notfound h1 {
+    font-size: clamp(1.5rem, 4vw, 2rem);
+    margin: 0 0 var(--space-4);
+  }
+  .notfound__lede {
+    color: var(--fg-muted);
+    line-height: 1.6;
+    margin: 0 0 var(--space-2);
+  }
+  .notfound__links {
+    display: flex;
+    justify-content: center;
+    gap: var(--space-3);
+    margin-top: var(--space-8);
+    flex-wrap: wrap;
+  }
+  .notfound__links--secondary {
+    margin-top: var(--space-5);
+    font-size: 0.875rem;
+    color: var(--fg-muted);
+  }
+  .notfound__links--secondary a {
+    color: var(--fg-muted);
+  }
+  .notfound__links--secondary a:hover {
+    color: var(--accent);
+  }
+  .cta {
+    display: inline-block;
+    padding: var(--space-3) var(--space-6);
+    border-radius: var(--radius);
+    text-decoration: none;
+    font-weight: 600;
+  }
+  .cta--primary {
+    background: var(--accent);
+    color: var(--accent-fg);
+  }
+  .cta--secondary {
+    border: 1px solid var(--border);
+    color: var(--fg);
+  }
+</style>

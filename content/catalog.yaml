@@ -4,58 +4,58 @@
   title:
     en: "Getting Started with Claude Code"
     no: "Kom i gang med Claude Code"
-  href: "/learn/getting-started"
+  href: "/learn/getting-started/"
 - id: cli-basics
   kind: module
   title:
     en: "CLI Basics"
     no: "CLI-grunnleggende"
-  href: "/learn/cli-basics"
+  href: "/learn/cli-basics/"
 - id: permissions-and-settings
   kind: module
   title:
     en: "Permissions & Settings"
     no: "Tillatelser og innstillinger"
-  href: "/learn/permissions-and-settings"
+  href: "/learn/permissions-and-settings/"
 - id: slash-commands
   kind: module
   title:
     en: "Slash Commands"
     no: "Slash-kommandoer"
-  href: "/learn/slash-commands"
+  href: "/learn/slash-commands/"
 - id: subagents
   kind: module
   title:
     en: "Subagents"
     no: "Underagenter"
-  href: "/learn/subagents"
+  href: "/learn/subagents/"
 - id: mcp-servers
   kind: module
   title:
     en: "MCP Servers"
     no: "MCP-tjenere"
-  href: "/learn/mcp-servers"
+  href: "/learn/mcp-servers/"
 - id: reference-cheatsheet
   kind: reference
   title:
     en: "Command Cheat Sheet"
     no: "Kommando-jukselapp"
-  href: "/reference"
+  href: "/reference/"
 - id: playground
   kind: tool
   title:
     en: "Playground"
     no: "Lekeplass"
-  href: "/playground"
+  href: "/playground/"
 - id: config-builder
   kind: tool
   title:
     en: "Config Builder"
     no: "Konfigbygger"
-  href: "/build"
+  href: "/build/"
 - id: level-check
   kind: guide
   title:
     en: "Level check quiz"
     no: "Nivåtest"
-  href: "/quiz"
+  href: "/quiz/"

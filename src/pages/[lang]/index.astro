@@ -75,10 +75,12 @@ const c = copy[lang];
 
 <Base
   lang={lang}
-  title="Claude Code Learn"
+  title={lang === "no"
+    ? "Claude Code på norsk – lær med terminal, øvelser og konfigbygger"
+    : "Claude Code Learn – interactive terminal, quizzes, config builder"}
   description={lang === "no"
-    ? "Lær Claude Code interaktivt — på norsk og engelsk."
-    : "Learn Claude Code interactively — in English and Norwegian."}
+    ? "Lær Claude Code praktisk, rett i nettleseren – prøv ekte kommandoer, ta nivåtesten og bygg din egen CLAUDE.md. En norsk guide for utviklere."
+    : "Learn Claude Code hands-on in your browser – run real commands, take the level quiz, and build your own CLAUDE.md. Free, no install required."}
 >
   {/* JSON-LD عبر head slot — يضمن خروج الـ script داخل <head> */}
   <Fragment slot="head">
@@ -90,8 +92,8 @@ const c = copy[lang];
       <h1>{c.h1}</h1>
       <p class="intro__lede">{c.lede}</p>
       <div class="intro__ctas">
-        <a href={`/${lang}/learn`} class="cta cta--primary">{c.ctaPrimary}</a>
-        <a href={`/${lang}/quiz`} class="cta cta--secondary">{c.ctaSecondary}</a>
+        <a href={`/${lang}/learn/`} class="cta cta--primary">{c.ctaPrimary}</a>
+        <a href={`/${lang}/quiz/`} class="cta cta--secondary">{c.ctaSecondary}</a>
       </div>
     </header>
 
@@ -119,12 +121,12 @@ const c = copy[lang];
           <p class="section-eyebrow">{c.pathEyebrow}</p>
           <h2 id="path-heading">{c.pathTitle}</h2>
         </div>
-        <a href={`/${lang}/learn`} class="path__all">{c.pathAll} &rarr;</a>
+        <a href={`/${lang}/learn/`} class="path__all">{c.pathAll} &rarr;</a>
       </div>
       <ol class="path__list">
         {previewModules.map((m, i) => (
           <li>
-            <a class="path__row" href={`/${lang}/learn/${m.id}`}>
+            <a class="path__row" href={`/${lang}/learn/${m.id}/`}>
               <span class="path__index">{String(i + 1).padStart(2, "0")}</span>
               <span class="path__title">{m.meta.title[lang]}</span>
               <span class={`path__level path__level--${m.meta.level}`}>{t(`module.level.${m.meta.level}`)}</span>
@@ -141,7 +143,7 @@ const c = copy[lang];
         {c.tools.map((tool, i) => (
           <>
             {i > 0 && <span class="tools__sep" aria-hidden="true">/</span>}
-            <a class="tools__item" href={`/${lang}/${tool.href}`}>
+            <a class="tools__item" href={`/${lang}/${tool.href}/`}>
               <span class="tools__title">{tool.title}</span>
               <span class="tools__body">{tool.body}</span>
             </a>

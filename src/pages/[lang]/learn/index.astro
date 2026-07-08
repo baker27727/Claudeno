@@ -18,12 +18,16 @@ const lang = Astro.params.lang as Locale;
 const t = useTranslations(lang);
 const modules = await getAllModules();
 
-const pagePath = `/${lang}/learn`;
+const pagePath = `/${lang}/learn/`;
+const title = lang === "no"
+  ? "Lær Claude Code – moduler fra nybegynner til avansert"
+  : "Learn Claude Code – modules from beginner to advanced";
+const description = lang === "no"
+  ? "Alle moduler i Claude Code Learn — fra å komme i gang til underagenter og MCP-tjenere, på norsk."
+  : "All modules in Claude Code Learn — from getting started to subagents and MCP servers.";
 const webPage = webPageJsonLd({
-  name: `${t("nav.learn")} — Claude Code Learn`,
-  description: lang === "no"
-    ? "Alle moduler i Claude Code Learn."
-    : "All modules in Claude Code Learn.",
+  name: title,
+  description,
   lang,
   path: pagePath,
 });
@@ -33,8 +37,8 @@ const jsonLd = jsonLdScript([webPage, crumbs]);
 
 <Base
   lang={lang}
-  title={`${t("nav.learn")} — Claude Code Learn`}
-  description={lang === "no" ? "Alle moduler i Claude Code Learn." : "All modules in Claude Code Learn."}
+  title={title}
+  description={description}
 >
   <Fragment slot="head">
     <Fragment set:html={jsonLd} />
@@ -50,7 +54,7 @@ const jsonLd = jsonLdScript([webPage, crumbs]);
       <ol class="learn__path">
         {modules.map((m, i) => (
           <li>
-            <a class="module-row" href={`/${lang}/learn/${m.id}`}>
+            <a class="module-row" href={`/${lang}/learn/${m.id}/`}>
               <span class="module-row__index">{String(i + 1).padStart(2, "0")}</span>
               <div class="module-row__body">
                 <div class="module-row__title-line">
@@ -71,7 +75,7 @@ const jsonLd = jsonLdScript([webPage, crumbs]);
         <ProgressMap
           client:load
           locale={lang}
-          modules={modules.map((m) => ({ id: m.id, href: `/${lang}/learn/${m.id}`, title: m.meta.title }))}
+          modules={modules.map((m) => ({ id: m.id, href: `/${lang}/learn/${m.id}/`, title: m.meta.title }))}
         />
       </aside>
     </div>

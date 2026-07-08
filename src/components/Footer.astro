@@ -10,17 +10,17 @@ const t = useTranslations(lang);
 const year = new Date().getFullYear();
 
 const learnLinks = [
-  { href: `/${lang}/learn`, label: t("nav.learn") },
-  { href: `/${lang}/playground`, label: t("nav.playground") },
-  { href: `/${lang}/build`, label: t("nav.build") },
-  { href: `/${lang}/quiz`, label: t("nav.quiz") },
+  { href: `/${lang}/learn/`, label: t("nav.learn") },
+  { href: `/${lang}/playground/`, label: t("nav.playground") },
+  { href: `/${lang}/build/`, label: t("nav.build") },
+  { href: `/${lang}/quiz/`, label: t("nav.quiz") },
 ];
 
 const resourceLinks = [
-  { href: `/${lang}/reference`, label: t("nav.reference") },
-  { href: `/${lang}/blog`, label: t("nav.blog") },
-  { href: `/${lang}/changelog`, label: t("nav.changelog") },
-  { href: `/${lang}/catalog`, label: t("nav.catalog") },
+  { href: `/${lang}/reference/`, label: t("nav.reference") },
+  { href: `/${lang}/blog/`, label: t("nav.blog") },
+  { href: `/${lang}/changelog/`, label: t("nav.changelog") },
+  { href: `/${lang}/catalog/`, label: t("nav.catalog") },
 ];
 
 const externalLinks = [
@@ -63,7 +63,7 @@ const externalLinks = [
         {externalLinks.map((l) => (
           <li><a href={l.href} target="_blank" rel="noopener noreferrer">{l.label}</a></li>
         ))}
-        <li><a href={`/${lang}/feedback`}>{t("nav.feedback")}</a></li>
+        <li><a href={`/${lang}/feedback/`}>{t("nav.feedback")}</a></li>
       </ul>
     </nav>
   </div>

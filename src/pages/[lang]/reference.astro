@@ -61,12 +61,12 @@ const referenceItemList: JsonLdObject = {
   })),
 };
 
-const pagePath = `/${lang}/reference`;
+const pagePath = `/${lang}/reference/`;
 const webPage = webPageJsonLd({
   name: `${t("nav.reference")} — Claude Code Learn`,
   description: lang === "no"
-    ? "Kommando-jukselapp for Claude Code."
-    : "Command cheat sheet for Claude Code.",
+    ? "Norsk jukselapp med Claude Code-kommandoene du faktisk trenger — CLI, slash-kommandoer og flagg."
+    : "A practical cheat sheet with the Claude Code commands you actually need — CLI, slash commands, and flags.",
   lang,
   path: pagePath,
   mainEntity: { type: "ItemList", data: referenceItemList },
@@ -78,7 +78,7 @@ const jsonLd = jsonLdScript([webPage, crumbs]);
 <Base
   lang={lang}
   title={`${t("nav.reference")} — Claude Code Learn`}
-  description={lang === "no" ? "Kommando-jukselapp for Claude Code." : "Command cheat sheet for Claude Code."}
+  description={lang === "no" ? "Norsk jukselapp med Claude Code-kommandoene du faktisk trenger — CLI, slash-kommandoer og flagg." : "A practical cheat sheet with the Claude Code commands you actually need — CLI, slash commands, and flags."}
 >
   <Fragment slot="head">
     <Fragment set:html={jsonLd} />

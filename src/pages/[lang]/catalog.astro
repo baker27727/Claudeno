@@ -36,12 +36,12 @@ const catalogItemList: JsonLdObject = {
   })),
 };
 
-const pagePath = `/${lang}/catalog`;
+const pagePath = `/${lang}/catalog/`;
 const webPage = webPageJsonLd({
   name: `${t("nav.catalog")} — Claude Code Learn`,
   description: lang === "no"
-    ? "Full oversikt over alt innhold."
-    : "Full index of everything on the site.",
+    ? "Full oversikt over alle moduler, verktøy og guider for å lære Claude Code på norsk."
+    : "Full index of every module, tool, and guide for learning Claude Code on this site.",
   lang,
   path: pagePath,
   mainEntity: { type: "ItemList", data: catalogItemList },
@@ -60,7 +60,7 @@ const kindLabel: Record<string, { en: string; no: string }> = {
 <Base
   lang={lang}
   title={`${t("nav.catalog")} — Claude Code Learn`}
-  description={lang === "no" ? "Full oversikt over alt innhold." : "Full index of everything on the site."}
+  description={lang === "no" ? "Full oversikt over alle moduler, verktøy og guider for å lære Claude Code på norsk." : "Full index of every module, tool, and guide for learning Claude Code on this site."}
 >
   <Fragment slot="head">
     <Fragment set:html={jsonLd} />

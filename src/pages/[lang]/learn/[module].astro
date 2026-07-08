@@ -53,7 +53,7 @@ const jsonLd = jsonLdScript([course, faq, crumbs]);
     <nav class="breadcrumb" aria-label="Breadcrumb">
       <a href={`/${lang}/`}>Claude Code Learn</a>
       <span aria-hidden="true">/</span>
-      <a href={`/${lang}/learn`}>{t("nav.learn")}</a>
+      <a href={`/${lang}/learn/`}>{t("nav.learn")}</a>
       <span aria-hidden="true">/</span>
       <span aria-current="page">{m.meta.title[lang]}</span>
     </nav>
@@ -65,7 +65,7 @@ const jsonLd = jsonLdScript([course, faq, crumbs]);
           {allModules.map((mod, i) => (
             <li>
               <a
-                href={`/${lang}/learn/${mod.id}`}
+                href={`/${lang}/learn/${mod.id}/`}
                 class="lesson-sidebar__link"
                 aria-current={mod.id === m.id ? "page" : undefined}
               >
@@ -79,7 +79,7 @@ const jsonLd = jsonLdScript([course, faq, crumbs]);
 
       <div class="lesson">
         <div class="lesson__nav">
-          <a class="lesson__back" href={`/${lang}/learn`}>&larr; {t("module.back")}</a>
+          <a class="lesson__back" href={`/${lang}/learn/`}>&larr; {t("module.back")}</a>
           <div class="lesson__meta">
             <span class={`lesson__level lesson__level--${m.meta.level}`}>{t(`module.level.${m.meta.level}`)}</span>
             <span class="lesson__duration">{m.meta.duration_min} {t("module.duration")}</span>
@@ -110,12 +110,12 @@ const jsonLd = jsonLdScript([course, faq, crumbs]);
 
         <div class="lesson__footer-nav">
           {nextModule ? (
-            <a class="lesson__next" href={`/${lang}/learn/${nextModule.id}`}>
+            <a class="lesson__next" href={`/${lang}/learn/${nextModule.id}/`}>
               <span class="lesson__next-label">{lang === "no" ? "Neste modul" : "Next module"}</span>
               <span class="lesson__next-title">{nextModule.meta.title[lang]} &rarr;</span>
             </a>
           ) : (
-            <a class="lesson__next" href={`/${lang}/learn`}>
+            <a class="lesson__next" href={`/${lang}/learn/`}>
               <span class="lesson__next-label">{lang === "no" ? "Ferdig!" : "All done!"}</span>
               <span class="lesson__next-title">{t("module.back")} &rarr;</span>
             </a>

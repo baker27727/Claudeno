@@ -2,6 +2,7 @@
 import Base from "../../../layouts/Base.astro";
 import { LOCALES, useTranslations, formatDate, type Locale } from "../../../lib/i18n";
 import { getAllBlogPosts, postForLocale } from "../../../lib/blog";
+import { webPageJsonLd, breadcrumbListJsonLd, pageBreadcrumbs, jsonLdScript } from "../../../lib/seo";
 
 export function getStaticPaths() {
   return LOCALES.map((lang) => ({ params: { lang } }));
@@ -18,15 +19,29 @@ const posts = allPosts
   .map((group) => ({ slug: group.slug, data: postForLocale(group, lang).data }))
   .filter(({ data }) => !(isProd && data.draft))
   .sort((a, b) => new Date(b.data.pubDate).getTime() - new Date(a.data.pubDate).getTime());
+
+const pagePath = `/${lang}/blog/`;
+const description = lang === "no"
+  ? "Hva er nytt i Claude Code — og historien bak plattformen."
+  : "What's new in Claude Code — and the story behind the platform.";
+const webPage = webPageJsonLd({
+  name: `${t("nav.blog")} — Claude Code Learn`,
+  description,
+  lang,
+  path: pagePath,
+});
+const crumbs = breadcrumbListJsonLd(pageBreadcrumbs(t("nav.blog"), pagePath, lang));
+const jsonLd = jsonLdScript([webPage, crumbs]);
 ---
 
 <Base
   lang={lang}
   title={`${t("nav.blog")} — Claude Code Learn`}
-  description={lang === "no"
-    ? "Hva er nytt i Claude Code — og historien bak plattformen."
-    : "What's new in Claude Code — and the story behind the platform."}
+  description={description}
 >
+  <Fragment slot="head">
+    <Fragment set:html={jsonLd} />
+  </Fragment>
   <main class="blog">
     <header class="blog__header">
       <p class="blog__eyebrow">{lang === "no" ? "Bloggen" : "The blog"}</p>
@@ -46,7 +61,7 @@ const posts = allPosts
       <ol class="blog__list">
         {posts.map(({ slug, data }) => (
           <li class="blog__card">
-            <a class="blog__cardLink" href={`/${lang}/blog/${slug}`}>
+            <a class="blog__cardLink" href={`/${lang}/blog/${slug}/`}>
               <div class="blog__meta">
                 <time datetime={data.pubDate}>
                   {formatDate(new Date(data.pubDate), lang)}

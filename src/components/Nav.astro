@@ -12,14 +12,14 @@ const t = useTranslations(lang);
 const otherPath = switchLocalePath(Astro.url.pathname, lang === "en" ? "no" : "en");
 
 const links: Array<{ href: string; label: string }> = [
-  { href: `/${lang}/learn`, label: t("nav.learn") },
-  { href: `/${lang}/playground`, label: t("nav.playground") },
-  { href: `/${lang}/build`, label: t("nav.build") },
-  { href: `/${lang}/reference`, label: t("nav.reference") },
-  { href: `/${lang}/blog`, label: t("nav.blog") },
-  { href: `/${lang}/quiz`, label: t("nav.quiz") },
-  { href: `/${lang}/changelog`, label: t("nav.changelog") },
-  { href: `/${lang}/feedback`, label: t("nav.feedback") },
+  { href: `/${lang}/learn/`, label: t("nav.learn") },
+  { href: `/${lang}/playground/`, label: t("nav.playground") },
+  { href: `/${lang}/build/`, label: t("nav.build") },
+  { href: `/${lang}/reference/`, label: t("nav.reference") },
+  { href: `/${lang}/blog/`, label: t("nav.blog") },
+  { href: `/${lang}/quiz/`, label: t("nav.quiz") },
+  { href: `/${lang}/changelog/`, label: t("nav.changelog") },
+  { href: `/${lang}/feedback/`, label: t("nav.feedback") },
 ];
 
 const searchLabel = lang === "no" ? "Søk" : "Search";

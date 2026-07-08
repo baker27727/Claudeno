@@ -10,6 +10,11 @@ import ogImages from "./src/integrations/og-images.ts";
 // https://astro.build/config
 export default defineConfig({
   site: "https://claude.mutaz.no",
+  // صريح بدل الافتراضي "ignore": مخرجات البناء الثابت دومًا على شكل
+  // page/index.html (شكل الشرطة المائلة الختامية) — "ignore" كان يترك كل
+  // رابط داخلي بلا شرطة مائلة يتعارض ضمنيًا مع ذلك ومع صفحة SITEMAP نفسها،
+  // مما يخلق احتمال محتوى مكرر (نفس الصفحة على رابطين مختلفين لمحرك البحث).
+  trailingSlash: "always",
   integrations: [
     mdx(),
     svelte(),
@@ -18,6 +23,9 @@ export default defineConfig({
         defaultLocale: "no",
         locales: { en: "en", no: "no" },
       },
+      // الجذر `/` هو صفحة إعادة توجيه noindex فقط (src/pages/index.astro) —
+      // إدراجها في sitemap.xml يناقض وسم robots الخاص بها.
+      filter: (page) => new URL(page).pathname !== "/",
     }),
     pagefind(),
     ogImages(),
