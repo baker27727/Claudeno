@@ -74,6 +74,13 @@ export async function verifyAndPublish(opts: {
       execFileSync("git", ["add", ...opts.paths]);
       execFileSync("git", ["commit", "-m", opts.commitMessage]);
       execFileSync("git", ["push", "origin", "HEAD:main"]);
+      // GitHub doesn't fire `on: push` workflows for commits made with
+      // GITHUB_TOKEN, so deploy.yml would never see this push. Dispatch it
+      // explicitly so the live site actually picks up the change.
+      if (process.env.GH_TOKEN) {
+        const dispatch = run("gh", ["workflow", "run", "deploy.yml", "--ref", "main"]);
+        if (!dispatch.ok) console.error(`Warning: failed to dispatch deploy.yml: ${dispatch.output}`);
+      }
       return { published: true, reason: "Verification passed — pushed directly to main." };
     } catch (err) {
       // Push rejected (e.g. branch protection, someone pushed in the meantime).

@@ -1,10 +1,14 @@
 name: Deploy
 
 # Builds the site and rsyncs dist/ to the production Ubuntu server
-# (claude.mutaz.no) over SSH. Runs on every push to main — including the
-# direct pushes made by watch.yml / freshness.yml once their changes pass
-# verification, so a fully-automated content update ends with the live site
-# actually updating, with no manual step in between.
+# (claude.mutaz.no) over SSH. Runs on every human push to main (`on: push`).
+#
+# GitHub does NOT fire `on: push` workflows for commits made with the
+# built-in GITHUB_TOKEN (anti-recursion protection), so the direct-to-main
+# pushes watch.yml / freshness.yml make after a verified content update would
+# otherwise never actually deploy. _auto-publish.ts works around this by
+# explicitly dispatching this workflow (`gh workflow run deploy.yml`) right
+# after a successful push — hence `workflow_dispatch` below.
 #
 # Required repo secrets:
 #   DEPLOY_SSH_KEY   private key for a dedicated deploy-only account (see
@@ -16,6 +20,7 @@ name: Deploy
 on:
   push:
     branches: [main]
+  workflow_dispatch: {}
 
 jobs:
   deploy:

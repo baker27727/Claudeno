@@ -17,6 +17,10 @@ jobs:
     permissions:
       contents: write
       pull-requests: write
+      # actions: write lets _auto-publish.ts trigger deploy.yml directly — pushes made
+      # with GITHUB_TOKEN don't fire other workflows' `on: push` triggers, so deploy
+      # would otherwise never run after an autonomous content publish.
+      actions: write
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
