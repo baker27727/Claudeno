@@ -158,6 +158,15 @@ function appendWhatsNew(modulePath: string, locale: "en" | "no", version: string
   }
   const heading = locale === "en" ? `## What's new in v${version}` : `## Nytt i v${version}`;
   const current = readFileSync(file, "utf-8").trimEnd();
+  // watch-upstream.ts flags a run as "changed" whenever the fetched CHANGELOG
+  // text differs at all, which can happen without the latest version bumping
+  // (e.g. upstream edits/backfills older entries). Without this guard, a
+  // second run for a version already documented here would append a second,
+  // slightly-reworded "What's new in vX" section instead of a no-op.
+  if (current.includes(heading)) {
+    console.warn(`Skipping ${file}: already has a "${heading}" section`);
+    return;
+  }
   writeFileSync(file, `${current}\n\n${heading}\n\n${text.trim()}\n`, "utf-8");
 }
 
