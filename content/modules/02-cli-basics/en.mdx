@@ -86,3 +86,7 @@ in-session equivalent is [`/model`](/en/learn/slash-commands).)
 - `-p` is for scripts and pipelines; it never opens an interactive session.
 - `-c` resumes the latest session automatically; `-r` lets you pick by name or ID.
 - `--model` changes the model for one session only, without touching your default.
+
+## What's new in v2.1.204
+
+**What's new (2.1.204):** This release is a targeted fix for headless sessions: hook events (such as `SessionStart`) now stream properly instead of stalling, preventing remote workers from being idle-reaped mid-hook.

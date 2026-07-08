@@ -70,3 +70,7 @@ create the subagent for you, or create the markdown file in `.claude/agents/` by
 - Limiting `tools` to what the job needs is the single biggest safety lever you have.
 - It runs in its own context window and hands back only a summary, keeping your main
   conversation uncluttered.
+
+## What's new in v2.1.204
+
+**What's new (2.1.204):** In headless sessions, hook events (including `SessionStart` hooks) now stream correctly instead of stalling — this fixes an issue where remote workers could be idle-reaped in the middle of a hook running, which could interrupt subagent startup in background/headless workflows.

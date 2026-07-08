@@ -1,33 +1,43 @@
-# §3.4 — قاموس EN↔NO الموحّد. وكيل الترجمة مُلزَم بهذه المصطلحات.
-# `id` مطلوب لمحمّل الملفات في Astro؛ نستخدم المصطلح الإنجليزي كمعرّف.
-- id: session
+- id: "session"
   en: "session"
   no: "økt"
-- id: prompt
+- id: "prompt"
   en: "prompt"
-  no: "ledetekst"     # أو الإبقاء على prompt حسب العرف التقني النرويجي
-- id: repository
+  no: "ledetekst"
+- id: "repository"
   en: "repository"
   no: "kodelager"
-  note: "يشيع أيضًا 'repo' بين المطورين النرويجيين — نستخدم repo في السياق غير الرسمي"
-- id: command
+  note: "يشيع أيضًا 'repo' بين المطورين النرويجيين — نستخدم repo في السياق غير
+    الرسمي"
+- id: "command"
   en: "command"
   no: "kommando"
-- id: subagent
+- id: "subagent"
   en: "subagent"
   no: "underagent"
-- id: permissions
+- id: "permissions"
   en: "permissions"
   no: "tillatelser"
-- id: settings
+- id: "settings"
   en: "settings"
   no: "innstillinger"
-- id: slash-command
+- id: "slash-command"
   en: "slash command"
   no: "slash-kommando"
-- id: mcp-server
+- id: "mcp-server"
   en: "MCP server"
   no: "MCP-tjener"
-- id: flag
+- id: "flag"
   en: "flag"
   no: "flagg"
+- id: "hook"
+  en: "hook"
+  no: "hook"
+  note: "Kept as 'hook' in Norwegian technical usage (no established Bokmål
+    translation in Claude Code docs); event names like SessionStart remain
+    untranslated as code identifiers."
+- id: "headless-session"
+  en: "headless session"
+  no: "hodeløs økt"
+  note: "Refers to sessions run without an interactive terminal UI (e.g.
+    background/remote workers)."

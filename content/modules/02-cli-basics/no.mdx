@@ -86,3 +86,7 @@ sammenligne modellatferd på samme oppgave uten å endre den globale preferansen
 - `-p` er for skript og pipelines; den åpner aldri en interaktiv økt.
 - `-c` gjenopptar siste økt automatisk; `-r` lar deg velge ved navn eller ID.
 - `--model` endrer modellen for kun én økt, uten å røre standarden din.
+
+## Nytt i v2.1.204
+
+**Hva er nytt (2.1.204):** Denne utgivelsen er en målrettet rettelse for hodeløse økter: hook-hendelser (som `SessionStart`) strømmer nå riktig i stedet for å stoppe opp, noe som forhindrer at eksterne arbeidsprosesser blir avsluttet som inaktive midt i en hook.

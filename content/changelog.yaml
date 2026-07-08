@@ -1,5 +1,14 @@
-# سجل التحديثات — يولّده خط الأتمتة (§7) عند رصد إصدار رسمي جديد.
-# `id` مطلوب لمحمّل الملفات؛ نستخدم رقم الإصدار كمعرّف.
+- id: "2.1.204"
+  version: "2.1.204"
+  date: "2026-07-08"
+  entry:
+    en: "Fixed hook events (including SessionStart hooks) not streaming during
+      headless sessions, which could cause remote workers to be idle-reaped
+      mid-hook."
+    no: "Rettet en feil der hook-hendelser (inkludert SessionStart-hooks) ikke ble
+      strømmet under hodeløse økter, noe som kunne føre til at eksterne
+      arbeidsprosesser ble avsluttet som inaktive midt i en hook."
+  sources: []
 - id: "2.1.0"
   version: "2.1.0"
   date: "2026-07-06"

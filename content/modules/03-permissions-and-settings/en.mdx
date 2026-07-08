@@ -64,3 +64,7 @@ reads at the start of every session.
 - `deny` beats `allow` whenever a pattern matches both.
 - `/permissions` gives you an interactive dialog instead of hand-editing JSON.
 - `settings.json` controls what Claude can *do*; `CLAUDE.md` tells it what to *know*.
+
+## What's new in v2.1.204
+
+**What's new (2.1.204):** Fixed a bug affecting headless sessions where hook events (e.g. `SessionStart` hooks) did not stream properly, which could cause remote workers to be idle-reaped while a hook was still running. No settings changes are required to benefit from this fix.

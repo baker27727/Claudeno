@@ -71,3 +71,7 @@ Claude om å opprette underagenten for deg, eller lag markdown-filen i
 - Å begrense `tools` til det jobben trenger er den viktigste sikkerhetsspaken du har.
 - Den kjører i sitt eget kontekstvindu og returnerer bare et sammendrag, slik at
   hovedsamtalen din holdes ryddig.
+
+## Nytt i v2.1.204
+
+**Hva er nytt (2.1.204):** I hodeløse (headless) økter strømmer nå hook-hendelser (inkludert `SessionStart`-hooks) riktig i stedet for å stoppe opp — dette retter en feil der eksterne arbeidsprosesser (remote workers) kunne bli avsluttet som inaktive midt i en hook, noe som kunne avbryte oppstart av underagenter i bakgrunns-/hodeløse arbeidsflyter.

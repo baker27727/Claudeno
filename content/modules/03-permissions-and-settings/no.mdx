@@ -66,3 +66,7 @@ leser ved starten av hver økt.
 - `/permissions` gir deg en interaktiv dialog i stedet for å redigere JSON for hånd.
 - `settings.json` styrer hva Claude kan *gjøre*; `CLAUDE.md` forteller den hva den skal
   *vite*.
+
+## Nytt i v2.1.204
+
+**Hva er nytt (2.1.204):** Rettet en feil i hodeløse økter der hook-hendelser (f.eks. `SessionStart`-hooks) ikke strømmet riktig, noe som kunne føre til at eksterne arbeidsprosesser ble avsluttet som inaktive mens en hook fortsatt kjørte. Ingen endringer i innstillinger kreves for å dra nytte av denne rettelsen.
