@@ -41,3 +41,8 @@
   no: "hodeløs økt"
   note: "Refers to sessions run without an interactive terminal UI (e.g.
     background/remote workers)."
+- id: "idle-reaped"
+  en: "idle-reaped"
+  no: "avsluttet som inaktiv"
+  note: "Refers to background workers being terminated automatically after being
+    detected as idle."

@@ -74,3 +74,7 @@ create the subagent for you, or create the markdown file in `.claude/agents/` by
 ## What's new in v2.1.204
 
 **What's new (2.1.204):** In headless sessions, hook events (including `SessionStart` hooks) now stream correctly instead of stalling — this fixes an issue where remote workers could be idle-reaped in the middle of a hook running, which could interrupt subagent startup in background/headless workflows.
+
+## What's new in v2.1.204
+
+**Update (v2.1.204):** A bug affecting headless sessions has been fixed — hook events (such as `SessionStart` hooks) now stream correctly during headless sessions. Previously, this could cause remote workers to be idle-reaped mid-hook, interrupting background subagent work unexpectedly.
