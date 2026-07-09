@@ -51,10 +51,16 @@ const jsonLd = jsonLdScript([webPage, crumbs]);
     </header>
 
     {lang === "no" && (
-      <p class="learn__guide-hint">
-        Ny av Claude Code? <a href="/no/guider/claude-code-pa-norsk/">Les startguiden</a> for
-        en rask oversikt før du hopper inn i modulene.
-      </p>
+      <aside class="learn__guide-hint" aria-label="Guider">
+        <p class="learn__guide-hint-lede">
+          Usikker på om du bør lese eller øve først? En guide gir deg en rask oversikt uten
+          øvelser; en modul har terminalsimulator og en sjekk på forståelsen.
+        </p>
+        <div class="learn__guide-hint-links">
+          <a href="/no/guider/hva-er-claude-code/">Hva er Claude Code?</a>
+          <a href="/no/guider/claude-code-pa-norsk/">Claude Code på norsk: startguide</a>
+        </div>
+      </aside>
     )}
 
     <div class="learn__layout">
@@ -112,11 +118,31 @@ const jsonLd = jsonLdScript([webPage, crumbs]);
   }
   .learn__guide-hint {
     margin: 0 0 var(--space-8);
+    padding: var(--space-5);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    background: var(--bg-elev);
+  }
+  .learn__guide-hint-lede {
+    margin: 0 0 var(--space-4);
     color: var(--fg-muted);
     font-size: 0.9375rem;
+    line-height: 1.5;
+    max-width: 42rem;
   }
-  .learn__guide-hint a {
+  .learn__guide-hint-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3) var(--space-5);
+  }
+  .learn__guide-hint-links a {
     color: var(--accent);
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.9375rem;
+  }
+  .learn__guide-hint-links a:hover {
+    text-decoration: underline;
   }
   .learn__layout {
     display: grid;

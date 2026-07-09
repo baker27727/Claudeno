@@ -3,7 +3,6 @@ import Base from "../../layouts/Base.astro";
 import TerminalSim from "../../islands/TerminalSim.svelte";
 import { LOCALES, useTranslations, type Locale } from "../../lib/i18n";
 import { getAllModules } from "../../lib/modules";
-import { guideIndexPath } from "../../lib/guides";
 import {
   websiteJsonLd,
   organizationJsonLd,
@@ -19,9 +18,6 @@ const t = useTranslations(lang);
 const modules = await getAllModules();
 const commandBank = modules.flatMap((m) => m.terminal.steps);
 const previewModules = modules.slice(0, 4);
-// Guides use a locale-specific segment (/no/guider/ vs /en/guides/), unlike
-// the other tools below — so it's given as a full path, not a bare segment.
-const guidesHref = guideIndexPath(lang);
 
 // BLUEPRINT §9 — JSON-LD للصفحة الرئيسية: WebSite + Organization.
 const jsonLd = jsonLdScript([websiteJsonLd(lang), organizationJsonLd()]);
@@ -44,7 +40,6 @@ const copy = {
     pathAll: "See all modules",
     toolsLabel: "Straight to a tool",
     tools: [
-      { title: "Guides", body: "plain-language explainers, not lessons", href: guidesHref },
       { title: "Playground", body: "every command, free-form", href: "playground" },
       { title: "Config Builder", body: "CLAUDE.md, agents, hooks, MCP", href: "build" },
       { title: "Cheat Sheet", body: "the commands worth remembering", href: "reference" },
@@ -67,7 +62,6 @@ const copy = {
     pathAll: "Se alle moduler",
     toolsLabel: "Rett til et verktøy",
     tools: [
-      { title: "Guider", body: "enkle forklaringer, ikke leksjoner", href: guidesHref },
       { title: "Lekeplass", body: "alle kommandoer, fritt fram", href: "playground" },
       { title: "Konfigbygger", body: "CLAUDE.md, agenter, hooks, MCP", href: "build" },
       { title: "Jukselapp", body: "kommandoene verdt å huske", href: "reference" },
@@ -143,13 +137,33 @@ const c = copy[lang];
       </ol>
     </section>
 
+    {lang === "no" && (
+      <section class="guides-promo" aria-labelledby="guides-promo-heading">
+        <p class="section-eyebrow">Norske guider</p>
+        <h2 id="guides-promo-heading">Norske guider</h2>
+        <p class="guides-promo__lede">
+          Start med en enkel forklaring av Claude Code, eller følg den komplette norske startguiden.
+        </p>
+        <div class="guides-promo__links">
+          <a class="guides-promo__link" href="/no/guider/hva-er-claude-code/">
+            <span class="guides-promo__link-title">Hva er Claude Code?</span>
+            <span class="guides-promo__link-arrow" aria-hidden="true">&rarr;</span>
+          </a>
+          <a class="guides-promo__link" href="/no/guider/claude-code-pa-norsk/">
+            <span class="guides-promo__link-title">Claude Code på norsk: komplett startguide</span>
+            <span class="guides-promo__link-arrow" aria-hidden="true">&rarr;</span>
+          </a>
+        </div>
+      </section>
+    )}
+
     <section class="tools" aria-label={c.toolsLabel}>
       <p class="tools__label">{c.toolsLabel}</p>
       <nav class="tools__row">
         {c.tools.map((tool, i) => (
           <>
             {i > 0 && <span class="tools__sep" aria-hidden="true">/</span>}
-            <a class="tools__item" href={tool.href.startsWith("/") ? tool.href : `/${lang}/${tool.href}/`}>
+            <a class="tools__item" href={`/${lang}/${tool.href}/`}>
               <span class="tools__title">{tool.title}</span>
               <span class="tools__body">{tool.body}</span>
             </a>
@@ -380,6 +394,60 @@ const c = copy[lang];
     .path__level,
     .path__duration {
       display: none;
+    }
+  }
+
+  /* ---------- guides-promo: two-link callout, NO-only ---------- */
+  .guides-promo {
+    max-width: 56rem;
+    margin: 0 auto;
+    padding: var(--space-12) var(--space-6) 0;
+  }
+  .guides-promo h2 {
+    margin: 0 0 var(--space-3);
+    font-size: 1.75rem;
+  }
+  .guides-promo__lede {
+    max-width: 38rem;
+    color: var(--fg-muted);
+    font-size: 1.0625rem;
+    line-height: 1.6;
+    margin: 0 0 var(--space-6);
+  }
+  .guides-promo__links {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-4);
+  }
+  .guides-promo__link {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-3);
+    padding: var(--space-5);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    text-decoration: none;
+    color: var(--fg);
+    transition: border-color var(--dur) var(--ease);
+  }
+  .guides-promo__link:hover {
+    border-color: var(--accent);
+  }
+  .guides-promo__link-title {
+    font-weight: 600;
+    line-height: 1.35;
+  }
+  .guides-promo__link-arrow {
+    flex-shrink: 0;
+    color: var(--fg-muted);
+  }
+  .guides-promo__link:hover .guides-promo__link-arrow {
+    color: var(--accent);
+  }
+  @media (max-width: 640px) {
+    .guides-promo__links {
+      grid-template-columns: 1fr;
     }
   }
 

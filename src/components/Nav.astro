@@ -2,7 +2,6 @@
 import ThemeToggle from "../islands/ThemeToggle.svelte";
 import SearchPalette from "../islands/SearchPalette.svelte";
 import { useTranslations, switchLocalePath, type Locale } from "../lib/i18n";
-import { guideIndexPath } from "../lib/guides";
 
 interface Props {
   lang: Locale;
@@ -20,9 +19,11 @@ const otherPath = availableLocales.includes(otherLocale)
   ? switchLocalePath(Astro.url.pathname, otherLocale)
   : `/${otherLocale}/`;
 
+// Guider/Guides is deliberately kept out of the top nav — at common laptop
+// widths (~1280px) a 9th item pushed the language switcher off-screen.
+// Discoverable instead via the homepage, /learn/, and the footer.
 const links: Array<{ href: string; label: string }> = [
   { href: `/${lang}/learn/`, label: t("nav.learn") },
-  { href: guideIndexPath(lang), label: t("nav.guides") },
   { href: `/${lang}/playground/`, label: t("nav.playground") },
   { href: `/${lang}/build/`, label: t("nav.build") },
   { href: `/${lang}/reference/`, label: t("nav.reference") },
