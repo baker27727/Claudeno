@@ -2,17 +2,27 @@
 import ThemeToggle from "../islands/ThemeToggle.svelte";
 import SearchPalette from "../islands/SearchPalette.svelte";
 import { useTranslations, switchLocalePath, type Locale } from "../lib/i18n";
+import { guideIndexPath } from "../lib/guides";
 
 interface Props {
   lang: Locale;
+  /** Restrict which locales the language switcher may target — see Base.astro. */
+  availableLocales?: Locale[];
 }
 
-const { lang }: Props = Astro.props;
+const { lang, availableLocales = ["en", "no"] }: Props = Astro.props;
 const t = useTranslations(lang);
-const otherPath = switchLocalePath(Astro.url.pathname, lang === "en" ? "no" : "en");
+const otherLocale = lang === "en" ? "no" : "en";
+// If the current page isn't translated into otherLocale yet (e.g. a
+// NO-only guide), don't link straight into a 404 — fall back to that
+// locale's homepage instead.
+const otherPath = availableLocales.includes(otherLocale)
+  ? switchLocalePath(Astro.url.pathname, otherLocale)
+  : `/${otherLocale}/`;
 
 const links: Array<{ href: string; label: string }> = [
   { href: `/${lang}/learn/`, label: t("nav.learn") },
+  { href: guideIndexPath(lang), label: t("nav.guides") },
   { href: `/${lang}/playground/`, label: t("nav.playground") },
   { href: `/${lang}/build/`, label: t("nav.build") },
   { href: `/${lang}/reference/`, label: t("nav.reference") },

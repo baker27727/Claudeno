@@ -155,6 +155,29 @@ const blog = defineCollection({
   }),
 });
 
+// -------------------------------------------------------------------------
+// guides — صفحات SEO دائمة (evergreen) ثنائية اللغة، بخلاف blog: ليست أخبارًا
+// مؤرَّخة (لا pubDate، بل updatedDate)، وترتيبها عبر `order` يدويًا لا زمنيًا.
+// نفس نمط الملف-لكل-لغة (content/guides/<slug>/{en,no}.md)، لكن بخلاف blog لا
+// نشترط وجود كلا اللغتين معًا — النشر الأول يبدأ بالنرويجية فقط عمدًا، والدليل
+// الإنجليزي المقابل قد يُضاف لاحقًا (انظر src/lib/guides.ts).
+// -------------------------------------------------------------------------
+const guides = defineCollection({
+  loader: glob({ base: "./content/guides", pattern: "**/{en,no}.{md,mdx}" }),
+  schema: z.object({
+    title: z.string(),
+    description: z.string(),
+    updatedDate: z.string().datetime(),
+    author: z.string().default("Claude Code Learn"),
+    tags: z.array(z.string()).default([]),
+    sources: z.array(z.string().url()).default([]),
+    draft: z.boolean().default(true),
+    order: z.number().default(0),
+    relatedModules: z.array(z.string()).default([]),
+    relatedTools: z.array(z.string()).default([]),
+  }),
+});
+
 export const collections = {
   moduleMeta,
   moduleTerminal,
@@ -164,4 +187,5 @@ export const collections = {
   catalog,
   changelog,
   blog,
+  guides,
 };

@@ -13,6 +13,7 @@
 // =========================================================================
 
 import type { Locale } from "./i18n";
+import { guideIndexPath } from "./guides";
 
 // -------------------------------------------------------------------------
 // ثوابت على مستوى الوحدة — مصدر حقيقة واحد لكل ثوابت SEO
@@ -432,7 +433,63 @@ export function blogPostingJsonLd(args: BlogPostingArgs): JsonLdObject {
 }
 
 // -------------------------------------------------------------------------
-// 9) OG / Twitter meta
+// 9) TechArticle — أدلة SEO الدائمة (guides)
+// -------------------------------------------------------------------------
+
+export interface GuideArticleArgs {
+  title: string;
+  description: string;
+  lang: Locale;
+  path: string; // path-only, مثل /no/guider/hva-er-claude-code/
+  updatedDate: string; // ISO datetime — لا datePublished منفصل (BLUEPRINT: ليست أخبارًا مؤرَّخة)
+  author?: string;
+  tags?: string[];
+  image?: string;
+}
+
+/**
+ * schema.org/TechArticle — لأدلة SEO الدائمة (guides)، بخلاف BlogPosting:
+ * لا `datePublished` منفصل (الدليل دائم التحديث وليس منشورًا مؤرَّخًا)، فقط
+ * `dateModified` من `updatedDate`.
+ */
+export function guideArticleJsonLd(args: GuideArticleArgs): JsonLdObject {
+  const url = absoluteUrl(args.path);
+  return {
+    "@context": "https://schema.org",
+    "@type": "TechArticle",
+    headline: args.title,
+    description: args.description,
+    inLanguage: args.lang,
+    url,
+    dateModified: args.updatedDate,
+    author: {
+      "@type": "Organization",
+      name: args.author ?? SITE_NAME,
+    },
+    publisher: organizationJsonLd(),
+    image: absoluteUrl(args.image ?? defaultOgImage(args.lang)),
+    ...(args.tags && args.tags.length > 0 ? { keywords: args.tags.join(", ") } : {}),
+    mainEntityOfPage: {
+      "@type": "WebPage",
+      "@id": url,
+    },
+  };
+}
+
+/**
+ * راحة: يولّد BreadcrumbList موحد لصفحة دليل: Home → Guider/Guides → Guide.
+ */
+export function guideBreadcrumbs(guideTitle: string, path: string, lang: Locale): Crumb[] {
+  const guidesLabel = lang === "no" ? "Guider" : "Guides";
+  return [
+    { name: homeLabel(lang), path: `/${lang}/` },
+    { name: guidesLabel, path: guideIndexPath(lang) },
+    { name: guideTitle, path },
+  ];
+}
+
+// -------------------------------------------------------------------------
+// 10) OG / Twitter meta
 // -------------------------------------------------------------------------
 
 /** قيم OpenGraph المدعومة هنا. */

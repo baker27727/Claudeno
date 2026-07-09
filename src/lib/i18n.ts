@@ -15,6 +15,7 @@ export function isLocale(value: string | undefined): value is Locale {
 export const ui = {
   en: {
     "nav.learn": "Learn",
+    "nav.guides": "Guides",
     "nav.playground": "Playground",
     "nav.build": "Config Builder",
     "nav.reference": "Reference",
@@ -68,6 +69,7 @@ export const ui = {
   },
   no: {
     "nav.learn": "Lær",
+    "nav.guides": "Guider",
     "nav.playground": "Lekeplass",
     "nav.build": "Konfigbygger",
     "nav.reference": "Referanse",
@@ -137,7 +139,24 @@ export function formatDate(date: Date, locale: Locale): string {
   }).format(date);
 }
 
-/** يبدّل بين مسارَي اللغة مع الحفاظ على بقية المسار (لروابط hreflang). */
+// بعض المسارات تختلف تسميتها فعليًا حسب اللغة، وليس فقط بادئة /en|no — مثل
+// أدلة SEO الدائمة: /no/guider/ مقابل /en/guides/ (URL نرويجي طبيعي، وليس
+// ترجمة حرفية لـ "guides"). أي بادئة مسار هنا تُستبدل مع اللغة معًا.
+const LOCALIZED_SEGMENT_TO_LOCALE: Record<string, Locale> = { guider: "no", guides: "en" };
+const LOCALE_TO_LOCALIZED_SEGMENT: Record<Locale, string> = { no: "guider", en: "guides" };
+
+/**
+ * يبدّل بين مسارَي اللغة مع الحفاظ على بقية المسار (لروابط hreflang ومبدّل
+ * اللغة في Nav.astro). يتعامل مع مقاطع المسار المترجمة (guider/guides) بشكل
+ * خاص؛ كل ما عداها بادئة /en|no بسيطة.
+ */
 export function switchLocalePath(pathname: string, to: Locale): string {
+  const stripped = pathname.replace(/^\/(en|no)(?=\/|$)/, "");
+  const segMatch = stripped.match(/^\/([^/]+)(\/.*)?$/);
+  const firstSegment = segMatch?.[1];
+  if (firstSegment && firstSegment in LOCALIZED_SEGMENT_TO_LOCALE) {
+    const rest = segMatch?.[2] ?? "";
+    return `/${to}/${LOCALE_TO_LOCALIZED_SEGMENT[to]}${rest}`;
+  }
   return pathname.replace(/^\/(en|no)(?=\/|$)/, `/${to}`);
 }

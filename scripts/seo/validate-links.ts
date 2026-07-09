@@ -3,9 +3,7 @@
 // trailingSlash:"always" only the slash form maps to a real dist/ file).
 // Also flags any internal link that's accidentally http:// instead of https.
 
-import { existsSync } from "node:fs";
-import { join } from "node:path";
-import { walkHtmlFiles, HREF_RE, DIST, printReport, type Finding } from "./_util.ts";
+import { walkHtmlFiles, HREF_RE, resolvesToPage, printReport, type Finding } from "./_util.ts";
 
 const SITE_URL = "https://claude.mutaz.no";
 
@@ -13,19 +11,6 @@ function isInternal(href: string): boolean {
   if (href.startsWith(SITE_URL)) return true;
   if (href.startsWith("/") && !href.startsWith("//")) return true;
   return false;
-}
-
-function toPathname(href: string): string {
-  return href.startsWith(SITE_URL) ? href.slice(SITE_URL.length) || "/" : href;
-}
-
-/** Does a URL path resolve to a real file in dist/? */
-function resolves(pathname: string): boolean {
-  const clean = pathname.split("#")[0].split("?")[0];
-  if (clean === "/") return existsSync(join(DIST, "index.html"));
-  if (clean.endsWith("/")) return existsSync(join(DIST, clean.slice(1), "index.html"));
-  // Non-slash internal paths are only valid for real static files (favicon, robots.txt, og images).
-  return existsSync(join(DIST, clean.slice(1)));
 }
 
 const NOINDEX_RE = /<meta\s+name="robots"\s+content="[^"]*noindex/;
@@ -45,8 +30,7 @@ export function run(): Finding[] {
         continue;
       }
       if (!isInternal(href)) continue;
-      const pathname = toPathname(href);
-      if (!resolves(pathname)) {
+      if (!resolvesToPage(href, SITE_URL)) {
         findings.push({ page: urlPath, issue: `broken internal link: ${href}` });
       }
     }

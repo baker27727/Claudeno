@@ -7,6 +7,7 @@ import {
   walkHtmlFiles,
   extractTag,
   extractAllTags,
+  resolvesToPage,
   TITLE_RE,
   DESCRIPTION_RE,
   CANONICAL_RE,
@@ -74,17 +75,26 @@ export function run(): Finding[] {
     }
 
     // --- hreflang (only for locale-prefixed pages) ---
+    // Not a strict "en+no+x-default always present" check: a page (e.g. a
+    // guide not yet translated) may legitimately exist in only one locale —
+    // Base.astro's availableLocales prop omits the untranslated tag rather
+    // than pointing hreflang at a page that doesn't exist. So instead this
+    // requires x-default plus at least one locale, and — more rigorously
+    // than before — verifies every hreflang tag actually present resolves to
+    // a real built page, which the old all-three-required check never did.
     if (/^\/(en|no)\//.test(urlPath)) {
       const pairs = [...html.matchAll(HREFLANG_RE)].map((m) => ({ lang: m[1], href: m[2] }));
-      const langs = new Set(pairs.map((p) => p.lang));
-      for (const required of ["en", "no", "x-default"]) {
-        if (!langs.has(required)) {
-          findings.push({ page: urlPath, issue: `missing hreflang="${required}"` });
-        }
+      if (!pairs.some((p) => p.lang === "x-default")) {
+        findings.push({ page: urlPath, issue: 'missing hreflang="x-default"' });
+      }
+      if (!pairs.some((p) => p.lang === "en" || p.lang === "no")) {
+        findings.push({ page: urlPath, issue: "no locale hreflang tags found (expected en and/or no)" });
       }
       for (const p of pairs) {
         if (p.href.startsWith("http://")) {
           findings.push({ page: urlPath, issue: `hreflang="${p.lang}" uses http://: ${p.href}` });
+        } else if (!resolvesToPage(p.href, SITE_URL)) {
+          findings.push({ page: urlPath, issue: `hreflang="${p.lang}" points to a page that doesn't exist: ${p.href}` });
         }
       }
     }

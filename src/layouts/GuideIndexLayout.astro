@@ -1,0 +1,189 @@
+---
+// Shared rendering for both /no/guider/ and /en/guides/ — the two thin page
+// files under src/pages/{no/guider,en/guides}/index.astro just pass `lang`.
+// Guides are evergreen (not dated news), so unlike blog/index.astro this
+// lists by `order`, not pubDate, and shows "Updated <date>" rather than a
+// publish date front-and-center.
+import Base from "./Base.astro";
+import { useTranslations, formatDate, type Locale } from "../lib/i18n";
+import { getAllGuides, guideForLocale, guideIndexPath, guidePath } from "../lib/guides";
+import { webPageJsonLd, breadcrumbListJsonLd, pageBreadcrumbs, jsonLdScript, SITE_URL, type JsonLdObject } from "../lib/seo";
+
+interface Props {
+  lang: Locale;
+}
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+
+const allGuides = await getAllGuides();
+const isProd = import.meta.env.PROD;
+const guides = allGuides
+  .map((g) => ({ slug: g.slug, entry: guideForLocale(g, lang) }))
+  .filter((g): g is { slug: string; entry: NonNullable<(typeof g)["entry"]> } => Boolean(g.entry))
+  .filter((g) => !(isProd && g.entry.data.draft));
+
+const pagePath = guideIndexPath(lang);
+const title = lang === "no" ? "Claude Code guider på norsk" : "Claude Code guides";
+const description = lang === "no"
+  ? "Praktiske norske guider til Claude Code — startguide, CLI, CLAUDE.md, MCP, hooks, agents og vanlige feil forklart enkelt."
+  : "Practical guides to Claude Code — the start guide, CLI, CLAUDE.md, MCP, hooks, agents, and common mistakes explained simply.";
+
+// BLUEPRINT §9 — نفس نمط catalog.astro: WebPage مع mainEntity من نوع ItemList.
+const guideItemList: JsonLdObject = {
+  "@context": "https://schema.org",
+  "@type": "ItemList",
+  name: title,
+  inLanguage: lang,
+  numberOfItems: guides.length,
+  itemListElement: guides.map((g, i) => ({
+    "@type": "ListItem",
+    position: i + 1,
+    name: g.entry.data.title,
+    url: `${SITE_URL}${guidePath(g.slug, lang)}`,
+  })),
+};
+
+const webPage = webPageJsonLd({
+  name: title,
+  description,
+  lang,
+  path: pagePath,
+  mainEntity: { type: "ItemList", data: guideItemList },
+});
+const crumbs = breadcrumbListJsonLd(pageBreadcrumbs(lang === "no" ? "Guider" : "Guides", pagePath, lang));
+const jsonLd = jsonLdScript([webPage, crumbs]);
+---
+
+<Base lang={lang} title={title} description={description}>
+  <Fragment slot="head">
+    <Fragment set:html={jsonLd} />
+  </Fragment>
+  <main class="guides">
+    <header class="guides__header">
+      <p class="guides__eyebrow">{lang === "no" ? "Guider" : "Guides"}</p>
+      <h1>{title}</h1>
+      <p class="guides__lede">{description}</p>
+    </header>
+
+    {guides.length === 0 ? (
+      <p class="guides__empty">
+        {lang === "no"
+          ? "Ingen guider ennå."
+          : "No English guides yet — the Norwegian guides are available now."}
+      </p>
+    ) : (
+      <ol class="guides__list">
+        {guides.map(({ slug, entry }) => (
+          <li class="guides__card">
+            <a class="guides__cardLink" href={guidePath(slug, lang)}>
+              <h2 class="guides__title">{entry.data.title}</h2>
+              <p class="guides__excerpt">{entry.data.description}</p>
+              <p class="guides__updated">
+                {lang === "no" ? "Oppdatert" : "Updated"} {formatDate(new Date(entry.data.updatedDate), lang)}
+              </p>
+            </a>
+          </li>
+        ))}
+      </ol>
+    )}
+
+    <nav class="guides__related" aria-label={lang === "no" ? "Utforsk mer" : "Explore more"}>
+      <a href={`/${lang}/learn/`}>{t("nav.learn")}</a>
+      <a href={`/${lang}/playground/`}>{t("nav.playground")}</a>
+      <a href={`/${lang}/reference/`}>{t("nav.reference")}</a>
+      <a href={`/${lang}/blog/`}>{t("nav.blog")}</a>
+      <a href={`/${lang}/quiz/`}>{t("nav.quiz")}</a>
+    </nav>
+  </main>
+</Base>
+
+<style>
+  .guides {
+    max-width: 44rem;
+    margin: 0 auto;
+    padding: var(--space-12) var(--space-6) var(--space-16);
+  }
+  .guides__header {
+    margin-bottom: var(--space-10);
+  }
+  .guides__eyebrow {
+    margin: 0 0 var(--space-2);
+    color: var(--accent);
+    font-size: 0.8125rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+  .guides__header h1 {
+    margin: 0 0 var(--space-3);
+    font-size: clamp(1.75rem, 4vw, 2.5rem);
+  }
+  .guides__lede {
+    max-width: 34rem;
+    color: var(--fg-muted);
+    font-size: 1.0625rem;
+    line-height: 1.6;
+    margin: 0;
+  }
+  .guides__list {
+    list-style: none;
+    margin: 0 0 var(--space-10);
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-5);
+  }
+  .guides__card {
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    background: var(--bg-elev);
+    transition: border-color 0.15s ease;
+  }
+  .guides__card:hover {
+    border-color: var(--accent);
+  }
+  .guides__cardLink {
+    display: block;
+    padding: var(--space-5);
+    text-decoration: none;
+    color: inherit;
+  }
+  .guides__title {
+    font-size: 1.25rem;
+    line-height: 1.3;
+    margin: 0 0 var(--space-2);
+    color: var(--fg);
+  }
+  .guides__excerpt {
+    margin: 0 0 var(--space-3);
+    color: var(--fg-muted);
+    font-size: 0.9375rem;
+    line-height: 1.5;
+  }
+  .guides__updated {
+    margin: 0;
+    font-size: 0.8125rem;
+    color: var(--fg-muted);
+    font-family: var(--font-mono);
+  }
+  .guides__empty {
+    color: var(--fg-muted);
+    font-style: italic;
+    margin-bottom: var(--space-10);
+  }
+  .guides__related {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2) var(--space-4);
+    padding-top: var(--space-6);
+    border-top: 1px solid var(--border);
+    font-size: 0.875rem;
+  }
+  .guides__related a {
+    color: var(--fg-muted);
+    text-decoration: none;
+  }
+  .guides__related a:hover {
+    color: var(--accent);
+  }
+</style>

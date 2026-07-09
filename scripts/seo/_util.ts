@@ -61,6 +61,15 @@ export function extractAllTags(html: string, re: RegExp): string[] {
   return [...html.matchAll(re)].map((m) => m[1]);
 }
 
+/** Does a site-relative URL path (or a full https://SITE_URL/... URL) resolve to a real file in dist/? */
+export function resolvesToPage(pathnameOrUrl: string, siteUrl = "https://claude.mutaz.no"): boolean {
+  const pathname = pathnameOrUrl.startsWith(siteUrl) ? pathnameOrUrl.slice(siteUrl.length) || "/" : pathnameOrUrl;
+  const clean = pathname.split("#")[0].split("?")[0];
+  if (clean === "/") return existsSync(join(DIST, "index.html"));
+  if (clean.endsWith("/")) return existsSync(join(DIST, clean.slice(1), "index.html"));
+  return existsSync(join(DIST, clean.slice(1)));
+}
+
 export const TITLE_RE = /<title>([^<]*)<\/title>/;
 export const DESCRIPTION_RE = /<meta\s+name="description"\s+content="([^"]*)"/;
 export const CANONICAL_RE = /<link\s+rel="canonical"\s+href="([^"]*)"/;

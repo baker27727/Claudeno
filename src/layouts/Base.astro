@@ -1,7 +1,7 @@
 ---
 import "../styles/global.css";
 import { ClientRouter } from "astro:transitions";
-import { isLocale, switchLocalePath, DEFAULT_LOCALE } from "../lib/i18n";
+import { isLocale, switchLocalePath, DEFAULT_LOCALE, type Locale } from "../lib/i18n";
 import { resolveOgImage } from "../lib/og";
 import Nav from "../components/Nav.astro";
 import Footer from "../components/Footer.astro";
@@ -22,6 +22,12 @@ interface Props {
    * مرّر قيمة هنا لتجاوز الاشتقاق (مثل صورة مدوّنة مختلفة).
    */
   ogImage?: string;
+  /**
+   * القيمة الافتراضية: كلا اللغتين متاحتان (كل صفحات الموقع تقريبًا). مرّرها
+   * صراحة عندما لا يوجد مقابل مترجم بعد — مثل أدلة SEO المنشورة بالنرويجية
+   * فقط حاليًا — لتفادي وسم hreflang يُشير إلى صفحة غير موجودة أصلًا.
+   */
+  availableLocales?: Locale[];
 }
 
 const {
@@ -31,13 +37,19 @@ const {
   nav = true,
   ogType = "website",
   ogImage,
+  availableLocales = ["en", "no"],
 } = Astro.props;
 const lang = isLocale(langProp) ? langProp : DEFAULT_LOCALE;
 
-// hreflang تلقائي لكل صفحة (BLUEPRINT §4).
+// hreflang تلقائي لكل صفحة (BLUEPRINT §4) — فقط للغات المتاحة فعليًا
+// (availableLocales)، حتى لا نُشير إلى صفحة شقيقة غير منشورة بعد.
 const path = Astro.url.pathname;
 const enHref = new URL(switchLocalePath(path, "en"), Astro.site).href;
 const noHref = new URL(switchLocalePath(path, "no"), Astro.site).href;
+const hasEn = availableLocales.includes("en");
+const hasNo = availableLocales.includes("no");
+// x-default -> النرويجية إن وُجدت (هي DEFAULT_LOCALE)، وإلا الإنجليزية.
+const defaultHref = hasNo ? noHref : enHref;
 
 // OG image ديناميكي (BLUEPRINT §9) — يُشتق من المسار عند عدم تمرير ogImage.
 const resolvedOg = resolveOgImage(path, ogImage);
@@ -87,12 +99,13 @@ const og = openGraphMeta({
       />
     </noscript>
 
-    {/* hreflang تلقائي (BLUEPRINT §4) */}
-    <link rel="alternate" hreflang="en" href={enHref} />
-    <link rel="alternate" hreflang="no" href={noHref} />
-    {/* x-default -> Norwegian: NO is DEFAULT_LOCALE (src/lib/i18n.ts) and the
-        site's own routing/sitemap i18n config also default to "no". */}
-    <link rel="alternate" hreflang="x-default" href={noHref} />
+    {/* hreflang تلقائي (BLUEPRINT §4) — فقط للغات availableLocales */}
+    {hasEn && <link rel="alternate" hreflang="en" href={enHref} />}
+    {hasNo && <link rel="alternate" hreflang="no" href={noHref} />}
+    {/* x-default -> Norwegian when available: NO is DEFAULT_LOCALE
+        (src/lib/i18n.ts) and the site's own routing/sitemap i18n config also
+        default to "no"; falls back to English if a page is EN-only. */}
+    <link rel="alternate" hreflang="x-default" href={defaultHref} />
 
     {/* Open Graph (BLUEPRINT §9) — على جميع الصفحات */}
     <meta property="og:type" content={og.ogType} />
@@ -121,7 +134,7 @@ const og = openGraphMeta({
     </script>
   </head>
   <body>
-    {nav && <Nav lang={lang} />}
+    {nav && <Nav lang={lang} availableLocales={availableLocales} />}
     <div class="page-content"><slot /></div>
     {nav && <Footer lang={lang} />}
   </body>

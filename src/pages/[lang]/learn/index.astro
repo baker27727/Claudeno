@@ -50,6 +50,13 @@ const jsonLd = jsonLdScript([webPage, crumbs]);
       <h1>{t("nav.learn")}</h1>
     </header>
 
+    {lang === "no" && (
+      <p class="learn__guide-hint">
+        Ny av Claude Code? <a href="/no/guider/claude-code-pa-norsk/">Les startguiden</a> for
+        en rask oversikt før du hopper inn i modulene.
+      </p>
+    )}
+
     <div class="learn__layout">
       <ol class="learn__path">
         {modules.map((m, i) => (
@@ -102,6 +109,14 @@ const jsonLd = jsonLdScript([webPage, crumbs]);
   .learn__head h1 {
     margin: 0;
     font-size: clamp(2rem, 4vw, 2.75rem);
+  }
+  .learn__guide-hint {
+    margin: 0 0 var(--space-8);
+    color: var(--fg-muted);
+    font-size: 0.9375rem;
+  }
+  .learn__guide-hint a {
+    color: var(--accent);
   }
   .learn__layout {
     display: grid;

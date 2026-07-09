@@ -2,18 +2,12 @@
 // production domain, resolves to a real built page, has no duplicates, and
 // the noindex root "/" is correctly excluded.
 
-import { existsSync, readdirSync, readFileSync } from "node:fs";
+import { readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
-import { DIST, printReport, type Finding } from "./_util.ts";
+import { DIST, resolvesToPage, printReport, type Finding } from "./_util.ts";
 
 const SITE_URL = "https://claude.mutaz.no";
 const LOC_RE = /<loc>([^<]+)<\/loc>/g;
-
-function resolves(pathname: string): boolean {
-  if (pathname === "/") return existsSync(join(DIST, "index.html"));
-  if (pathname.endsWith("/")) return existsSync(join(DIST, pathname.slice(1), "index.html"));
-  return existsSync(join(DIST, pathname.slice(1)));
-}
 
 export function run(): Finding[] {
   const findings: Finding[] = [];
@@ -43,7 +37,7 @@ export function run(): Finding[] {
       const pathname = loc.startsWith(SITE_URL) ? loc.slice(SITE_URL.length) || "/" : loc;
       if (pathname === "/") {
         findings.push({ page: file, issue: `noindex root "/" must not appear in sitemap: ${loc}` });
-      } else if (!resolves(pathname)) {
+      } else if (!resolvesToPage(loc, SITE_URL)) {
         findings.push({ page: file, issue: `sitemap entry has no matching built page: ${loc}` });
       }
 

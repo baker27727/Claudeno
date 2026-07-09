@@ -1,0 +1,323 @@
+---
+// Shared rendering for /no/guider/[slug].astro and /en/guides/[slug].astro.
+// A guide may exist in only one locale for now (NO-first rollout — see
+// content/guides/); availableLocales is computed here and passed to Base so
+// hreflang never points at a page that doesn't exist yet.
+import { render } from "astro:content";
+import Base from "./Base.astro";
+import { formatDate, type Locale } from "../lib/i18n";
+import { getAllGuides, guideForLocale, guidePath, guideIndexPath, type GuideData } from "../lib/guides";
+import { getAllModules } from "../lib/modules";
+import { guideArticleJsonLd, guideBreadcrumbs, breadcrumbListJsonLd, jsonLdScript } from "../lib/seo";
+
+interface Props {
+  lang: Locale;
+  guideGroup: GuideData;
+}
+const { lang, guideGroup } = Astro.props;
+const entry = guideForLocale(guideGroup, lang);
+if (!entry) {
+  throw new Error(`GuideDetailLayout: no "${lang}" entry for guide "${guideGroup.slug}"`);
+}
+
+const { Content } = await render(entry);
+
+// Prev/next within guides that exist in *this* locale, ordered by `order`
+// (getAllGuides already sorts by order) — not by date, guides aren't news.
+const allGuides = await getAllGuides();
+const localeGuides = allGuides.filter((g) => guideForLocale(g, lang));
+const currentIndex = localeGuides.findIndex((g) => g.slug === guideGroup.slug);
+const prevGuide = currentIndex > 0 ? localeGuides[currentIndex - 1] : undefined;
+const nextGuide = currentIndex >= 0 && currentIndex < localeGuides.length - 1 ? localeGuides[currentIndex + 1] : undefined;
+
+const availableLocales: Locale[] = (["en", "no"] as const).filter((l) => guideForLocale(guideGroup, l));
+
+const path = guidePath(guideGroup.slug, lang);
+const article = guideArticleJsonLd({
+  title: entry.data.title,
+  description: entry.data.description,
+  lang,
+  path,
+  updatedDate: entry.data.updatedDate,
+  author: entry.data.author,
+  tags: entry.data.tags,
+});
+const crumbs = breadcrumbListJsonLd(guideBreadcrumbs(entry.data.title, path, lang));
+const jsonLd = jsonLdScript([article, crumbs]);
+
+// Related modules — resolved against the real module list, so a typo'd id
+// in frontmatter silently disappears instead of linking to a 404.
+const allModules = await getAllModules();
+const relatedModules = entry.data.relatedModules
+  .map((id) => allModules.find((m) => m.id === id))
+  .filter((m): m is NonNullable<typeof m> => Boolean(m));
+
+const TOOL_META: Record<string, { title: Record<Locale, string>; href: string }> = {
+  playground: { title: { en: "Playground", no: "Lekeplass" }, href: "playground" },
+  build: { title: { en: "Config Builder", no: "Konfigbygger" }, href: "build" },
+  reference: { title: { en: "Reference", no: "Referanse" }, href: "reference" },
+  quiz: { title: { en: "Level check", no: "Nivåtest" }, href: "quiz" },
+};
+const relatedTools = entry.data.relatedTools
+  .map((id) => TOOL_META[id])
+  .filter((tool): tool is NonNullable<typeof tool> => Boolean(tool));
+---
+
+<Base
+  lang={lang}
+  title={`${entry.data.title} — Claude Code Learn`}
+  description={entry.data.description}
+  ogType="article"
+  availableLocales={availableLocales}
+>
+  <Fragment slot="head">
+    <Fragment set:html={jsonLd} />
+  </Fragment>
+
+  <main class="guide">
+    <nav class="guide__breadcrumb" aria-label="Breadcrumb">
+      <a href={`/${lang}/`}>Claude Code Learn</a>
+      <span aria-hidden="true">/</span>
+      <a href={guideIndexPath(lang)}>{lang === "no" ? "Guider" : "Guides"}</a>
+      <span aria-hidden="true">/</span>
+      <span aria-current="page">{entry.data.title}</span>
+    </nav>
+
+    <article class="guide__article">
+      <header class="guide__header">
+        <h1 class="guide__title">{entry.data.title}</h1>
+        <p class="guide__updated">
+          {lang === "no" ? "Oppdatert" : "Updated"} {formatDate(new Date(entry.data.updatedDate), lang)}
+        </p>
+        {entry.data.tags.length > 0 && (
+          <ul class="guide__tags">
+            {entry.data.tags.map((tag) => (
+              <li class="guide__tag">{tag}</li>
+            ))}
+          </ul>
+        )}
+      </header>
+
+      <div class="guide__body">
+        <Content />
+      </div>
+
+      {entry.data.sources.length > 0 && (
+        <footer class="guide__sources">
+          <p class="guide__sources-label">{lang === "no" ? "Kilder" : "Sources"}</p>
+          <ul>
+            {entry.data.sources.map((src) => (
+              <li><a href={src} target="_blank" rel="noopener noreferrer">{src}</a></li>
+            ))}
+          </ul>
+        </footer>
+      )}
+
+      {(relatedModules.length > 0 || relatedTools.length > 0) && (
+        <section class="guide__related" aria-label={lang === "no" ? "Relatert" : "Related"}>
+          <p class="guide__related-label">{lang === "no" ? "Gå videre" : "Go further"}</p>
+          <ul class="guide__related-list">
+            {relatedModules.map((m) => (
+              <li>
+                <a href={`/${lang}/learn/${m.id}/`}>{m.meta.title[lang]}</a>
+              </li>
+            ))}
+            {relatedTools.map((tool) => (
+              <li>
+                <a href={`/${lang}/${tool.href}/`}>{tool.title[lang]}</a>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
+
+      {(prevGuide || nextGuide) && (
+        <div class="guide__footer-nav">
+          {prevGuide && (
+            <a class="guide__nav-link guide__nav-link--prev" href={guidePath(prevGuide.slug, lang)}>
+              <span class="guide__nav-label">{lang === "no" ? "Forrige guide" : "Previous guide"}</span>
+              <span class="guide__nav-title">&larr; {guideForLocale(prevGuide, lang)?.data.title}</span>
+            </a>
+          )}
+          {nextGuide && (
+            <a class="guide__nav-link guide__nav-link--next" href={guidePath(nextGuide.slug, lang)}>
+              <span class="guide__nav-label">{lang === "no" ? "Neste guide" : "Next guide"}</span>
+              <span class="guide__nav-title">{guideForLocale(nextGuide, lang)?.data.title} &rarr;</span>
+            </a>
+          )}
+        </div>
+      )}
+    </article>
+  </main>
+</Base>
+
+<style>
+  .guide {
+    max-width: 44rem;
+    margin: 0 auto;
+    padding: var(--space-8) var(--space-6) var(--space-16);
+  }
+  .guide__breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    margin-bottom: var(--space-6);
+    font-size: 0.8125rem;
+    color: var(--fg-muted);
+    flex-wrap: wrap;
+  }
+  .guide__breadcrumb a {
+    color: var(--fg-muted);
+    text-decoration: none;
+  }
+  .guide__breadcrumb a:hover {
+    color: var(--accent);
+  }
+  .guide__breadcrumb [aria-current="page"] {
+    color: var(--fg);
+  }
+  .guide__header {
+    margin-bottom: var(--space-8);
+    padding-bottom: var(--space-5);
+    border-bottom: 1px solid var(--border);
+  }
+  .guide__title {
+    font-size: clamp(1.75rem, 4vw, 2.5rem);
+    line-height: 1.15;
+    margin: 0 0 var(--space-3);
+  }
+  .guide__updated {
+    margin: 0;
+    color: var(--fg-muted);
+    font-size: 0.8125rem;
+    font-family: var(--font-mono);
+  }
+  .guide__tags {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    margin: var(--space-3) 0 0;
+    padding: 0;
+  }
+  .guide__tag {
+    font-size: 0.75rem;
+    color: var(--fg-muted);
+    background: var(--bg-elev);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-full);
+    padding: 0.1rem 0.6rem;
+  }
+  .guide__body :global(h2) {
+    margin-top: var(--space-8);
+  }
+  .guide__body :global(p) {
+    line-height: 1.7;
+    margin: 0 0 var(--space-4);
+  }
+  .guide__body :global(pre) {
+    background: var(--bg-elev);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: var(--space-4);
+    overflow-x: auto;
+  }
+  .guide__body :global(code) {
+    font-family: var(--font-mono);
+  }
+  .guide__body :global(:not(pre) > code) {
+    background: var(--bg-elev);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 0.1rem 0.4rem;
+    font-size: 0.875em;
+    color: var(--accent);
+  }
+  .guide__body :global(ul),
+  .guide__body :global(ol) {
+    line-height: 1.7;
+  }
+  .guide__sources {
+    margin-top: var(--space-10);
+    padding-top: var(--space-5);
+    border-top: 1px solid var(--border);
+  }
+  .guide__sources-label,
+  .guide__related-label {
+    margin: 0 0 var(--space-2);
+    color: var(--fg-muted);
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+  .guide__sources ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+    font-size: 0.8125rem;
+  }
+  .guide__related {
+    margin-top: var(--space-8);
+    padding-top: var(--space-5);
+    border-top: 1px solid var(--border);
+  }
+  .guide__related-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+  }
+  .guide__related-list a {
+    display: inline-block;
+    font-size: 0.8125rem;
+    color: var(--accent);
+    background: var(--bg-elev);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-full);
+    padding: 0.25rem 0.75rem;
+    text-decoration: none;
+  }
+  .guide__related-list a:hover {
+    border-color: var(--accent);
+  }
+  .guide__footer-nav {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--space-4);
+    margin-top: var(--space-10);
+    padding-top: var(--space-6);
+    border-top: 1px solid var(--border);
+    flex-wrap: wrap;
+  }
+  .guide__nav-link {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+    text-decoration: none;
+    color: var(--fg);
+    max-width: 20rem;
+  }
+  .guide__nav-link--next {
+    text-align: right;
+    margin-left: auto;
+  }
+  .guide__nav-label {
+    color: var(--fg-muted);
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+  .guide__nav-title {
+    font-family: var(--font-display);
+    font-size: 1.0625rem;
+    font-weight: 600;
+  }
+  .guide__nav-link:hover .guide__nav-title {
+    color: var(--accent);
+  }
+</style>

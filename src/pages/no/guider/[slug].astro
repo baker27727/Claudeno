@@ -1,0 +1,17 @@
+---
+import GuideDetailLayout from "../../../layouts/GuideDetailLayout.astro";
+import { getAllGuides, guideForLocale } from "../../../lib/guides";
+
+export async function getStaticPaths() {
+  const allGuides = await getAllGuides();
+  const isProd = import.meta.env.PROD;
+  return allGuides
+    .filter((g) => guideForLocale(g, "no")) // only guides actually translated to NO
+    .filter((g) => !(isProd && guideForLocale(g, "no")!.data.draft))
+    .map((g) => ({ params: { slug: g.slug }, props: { guideGroup: g } }));
+}
+
+const { guideGroup } = Astro.props;
+---
+
+<GuideDetailLayout lang="no" guideGroup={guideGroup} />
