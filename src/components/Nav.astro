@@ -22,16 +22,23 @@ const otherPath = availableLocales.includes(otherLocale)
 // Guider/Guides is deliberately kept out of the top nav — at common laptop
 // widths (~1280px) a 9th item pushed the language switcher off-screen.
 // Discoverable instead via the homepage, /learn/, and the footer.
-const links: Array<{ href: string; label: string }> = [
+//
+// The remaining 8 were still too many words for one bar. Split into the
+// core product surfaces (always visible) and secondary/meta pages (tucked
+// into a "More" dropdown) — same idea, taken one step further.
+const primaryLinks: Array<{ href: string; label: string }> = [
   { href: `/${lang}/learn/`, label: t("nav.learn") },
   { href: `/${lang}/playground/`, label: t("nav.playground") },
   { href: `/${lang}/build/`, label: t("nav.build") },
   { href: `/${lang}/reference/`, label: t("nav.reference") },
-  { href: `/${lang}/blog/`, label: t("nav.blog") },
+];
+const secondaryLinks: Array<{ href: string; label: string }> = [
   { href: `/${lang}/quiz/`, label: t("nav.quiz") },
+  { href: `/${lang}/blog/`, label: t("nav.blog") },
   { href: `/${lang}/changelog/`, label: t("nav.changelog") },
   { href: `/${lang}/feedback/`, label: t("nav.feedback") },
 ];
+const links = [...primaryLinks, ...secondaryLinks];
 
 const searchLabel = lang === "no" ? "Søk" : "Search";
 ---
@@ -42,12 +49,25 @@ const searchLabel = lang === "no" ? "Søk" : "Search";
       <img src="/favicon.svg" alt="" width="24" height="24" />
       <span>Claude Code Learn</span>
     </a>
-    <nav aria-label="Primary">
+    <nav aria-label="Primary" class="site-nav__primary">
       <ul class="site-nav__links">
-        {links.map((link) => (
+        {primaryLinks.map((link) => (
           <li><a href={link.href}>{link.label}</a></li>
         ))}
       </ul>
+      <details class="site-nav__more">
+        <summary>
+          {t("nav.more")}
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M6 9l6 6 6-6" />
+          </svg>
+        </summary>
+        <ul class="site-nav__more-list">
+          {secondaryLinks.map((link) => (
+            <li><a href={link.href}>{link.label}</a></li>
+          ))}
+        </ul>
+      </details>
     </nav>
     <div class="site-nav__actions">
       <SearchPalette client:idle locale={lang} showButton buttonLabel={searchLabel} />
@@ -106,13 +126,19 @@ const searchLabel = lang === "no" ? "Søk" : "Search";
   .site-nav__brand img {
     border-radius: var(--radius-sm);
   }
+  .site-nav__primary {
+    display: flex;
+    align-items: center;
+    gap: var(--space-6);
+    flex: 1;
+    min-width: 0;
+  }
   .site-nav__links {
     list-style: none;
     display: flex;
     gap: var(--space-6);
     margin: 0;
     padding: 0;
-    flex: 1;
     overflow-x: auto;
   }
   .site-nav__links a {
@@ -123,6 +149,62 @@ const searchLabel = lang === "no" ? "Søk" : "Search";
   }
   .site-nav__links a:hover {
     color: var(--fg);
+  }
+  .site-nav__more {
+    position: relative;
+  }
+  .site-nav__more summary {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1);
+    color: var(--fg-muted);
+    font-size: 0.9375rem;
+    white-space: nowrap;
+    cursor: pointer;
+    list-style: none;
+  }
+  .site-nav__more summary::-webkit-details-marker {
+    display: none;
+  }
+  .site-nav__more summary:hover,
+  .site-nav__more[open] summary {
+    color: var(--fg);
+  }
+  .site-nav__more[open] summary svg {
+    transform: rotate(180deg);
+  }
+  .site-nav__more summary svg {
+    transition: transform var(--dur) var(--ease);
+  }
+  .site-nav__more-list {
+    position: absolute;
+    top: calc(100% + var(--space-3));
+    left: 0;
+    z-index: 50;
+    list-style: none;
+    margin: 0;
+    padding: var(--space-2);
+    min-width: 10rem;
+    background: var(--bg-elev);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-md);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+  }
+  .site-nav__more-list a {
+    display: block;
+    padding: var(--space-2) var(--space-3);
+    border-radius: var(--radius-sm);
+    color: var(--fg);
+    text-decoration: none;
+    font-size: 0.9375rem;
+    white-space: nowrap;
+  }
+  .site-nav__more-list a:hover {
+    background: var(--bg);
+    color: var(--accent);
   }
   .site-nav__actions {
     display: flex;
@@ -197,7 +279,7 @@ const searchLabel = lang === "no" ? "Søk" : "Search";
     color: var(--accent);
   }
   @media (max-width: 640px) {
-    .site-nav__links {
+    .site-nav__primary {
       display: none;
     }
     .site-nav__mobile {
