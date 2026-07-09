@@ -70,3 +70,7 @@ leser ved starten av hver økt.
 ## Nytt i v2.1.204
 
 **Hva er nytt (2.1.204):** Rettet en feil i hodeløse økter der hook-hendelser (f.eks. `SessionStart`-hooks) ikke strømmet riktig, noe som kunne føre til at eksterne arbeidsprosesser ble avsluttet som inaktive mens en hook fortsatt kjørte. Ingen endringer i innstillinger kreves for å dra nytte av denne rettelsen.
+
+## Nytt i v2.1.205
+
+Fra versjon 2.1.200 er "default"-tillatelsesmodus omdøpt til "Manual" i hele CLI-en og innstillinger. Du kan bruke både --permission-mode manual og "defaultMode": "manual" i konfigurasjonen. Et grått ⏸-merke vises nå i bunnteksten når du er i manuell tillatelsesmodus (lagt til i 2.1.203), noe som gjør den aktive modusen alltid synlig.

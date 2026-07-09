@@ -1,3 +1,20 @@
+- id: "2.1.205"
+  version: "2.1.205"
+  date: "2026-07-09"
+  entry:
+    en: "Claude Code now includes an auto mode rule that blocks tampering with
+      session transcript files. The /doctor command is a full setup checkup that
+      can diagnose and fix issues (with /checkup as an alias). Numerous fixes
+      address background agent stability, session linking, worktree handling,
+      and the agent view display. Binary downloads now stream to disk instead of
+      buffering in memory, reducing peak memory usage."
+    no: "Claude Code inkluderer nå en auto-mode-regel som blokkerer manipulering av
+      økt-transkripsjonsfiler. Kommandoen /doctor er en fullstendig
+      oppsettkontroll som kan diagnostisere og fikse problemer (med /checkup som
+      alias). Mange fikser adresserer bakgrunnsagent-stabilitet, økt-lenking,
+      worktree-håndtering og agentvisningen. Binære nedlastinger strømmer nå til
+      disk i stedet for å bufres i minnet, noe som reduserer toppminnbruk."
+  sources: []
 - id: "2.1.204"
   version: "2.1.204"
   date: "2026-07-08"
