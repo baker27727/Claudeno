@@ -1,0 +1,156 @@
+---
+title: "Writing with Claude Code"
+description: "Use Claude Code to draft blog posts, documentation, and emails. Edit tone, structure, and audience with file-based writing workflows."
+updatedDate: "2026-07-09T14:00:00.000Z"
+profession: "writing"
+difficulty: "beginner"
+tools:
+  - "Claude Code"
+  - "Markdown"
+  - "Google Docs"
+tags:
+  - "writing"
+  - "blogging"
+  - "documentation"
+  - "content creation"
+  - "Claude Code"
+sources:
+  - "https://docs.anthropic.com/en/docs/claude-code/overview"
+relatedModules:
+  - "getting-started"
+  - "cli-basics"
+relatedUseCases:
+  - "marketing-with-claude"
+  - "project-management-with-claude"
+  - "social-media-with-claude"
+draft: false
+order: 6
+faq:
+  - question: "Can Claude Code write an entire article for me?"
+    answer: "It can produce a strong first draft, but you should edit for voice, accuracy, originality, and factual correctness before publishing."
+  - question: "Does Claude Code work for non-English writing?"
+    answer: "Yes. Claude understands and writes in many languages, including Norwegian. You can draft in one language and ask it to translate or adapt the tone."
+  - question: "Is Claude Code better than a word processor for writing?"
+    answer: "It depends. Claude Code is ideal for file-based, version-controlled writing where you want to iterate with commands. For WYSIWYG editing, use a word processor or CMS."
+  - question: "Can Claude Code match my brand voice?"
+    answer: "Yes, if you provide clear voice guidelines or examples. The more context you give, the closer the output will match your style."
+---
+
+Writers, bloggers, and technical communicators often struggle with blank-page syndrome, inconsistent tone, and repetitive editing. **Claude Code** helps you move from idea to draft faster by working with files in your terminal.
+
+This guide shows how to use Claude Code for long-form writing, editing, and content repurposing.
+
+## Why writers use Claude Code
+
+Claude Code is not a word processor. It is a writing assistant that helps you:
+
+- Expand outlines into full drafts.
+- Rewrite paragraphs for clarity or a different audience.
+- Convert long-form content into shorter formats.
+- Generate documentation from notes or code comments.
+- Proofread for grammar, tone, and structure.
+- Maintain version control because every file lives in your project.
+
+## Use case 1: outline to blog post
+
+Start with a simple outline and let Claude expand it.
+
+Create `outline.md`:
+
+```markdown
+# Why we switched to Claude Code
+
+- Problem: onboarding new developers was slow
+- Solution: standardised CLAUDE.md + terminal workflow
+- Result: faster code reviews and fewer repeated questions
+```
+
+Run:
+
+```bash
+claude "Read outline.md and write a 400-word blog post in a friendly, professional tone. Include an introduction, one section per bullet, and a conclusion."
+```
+
+You can then iterate:
+
+```bash
+claude "Make the introduction more compelling by starting with a specific example."
+```
+
+## Use case 2: rewrite for a different audience
+
+The same message often needs different versions. Save your draft as `post.md` and ask:
+
+```bash
+claude "Read post.md and rewrite the introduction for a non-technical executive audience. Keep it under 100 words."
+```
+
+Or:
+
+```bash
+claude "Rewrite post.md for beginners who have never used a terminal before. Avoid jargon and explain each concept briefly."
+```
+
+## Use case 3: long-form to social thread
+
+Repurpose a blog post into a social media thread:
+
+```bash
+claude "Read blog-post.md and write a 5-post Twitter thread with a strong hook and a CTA to read the full article."
+```
+
+You can also ask for newsletter versions, LinkedIn posts, or carousel captions.
+
+## Use case 4: documentation from code comments
+
+Developers often need docs but dislike writing them. Point Claude at your code:
+
+```bash
+claude "Read src/lib/auth.ts and write a Markdown usage guide for the authentication functions. Include examples."
+```
+
+Then refine:
+
+```bash
+claude "Add a troubleshooting section for common authentication errors."
+```
+
+## Use case 5: proofreading and tone checks
+
+Before publishing, ask Claude to review your draft:
+
+```bash
+claude "Read draft.md. Suggest 3 improvements for clarity and flag any passive voice or jargon."
+```
+
+This gives you a final polish without hiring an editor.
+
+## Best practices for writing with Claude Code
+
+### 1. Provide a clear voice description
+Instead of "write better", say "write in a friendly, authoritative tone for technical marketers".
+
+### 2. Give examples
+Share a previous article or paragraph that matches the style you want.
+
+### 3. Iterate in small steps
+Change one element at a time: headline, introduction, tone, or length.
+
+### 4. Save versions
+Use Git to track drafts. This makes it easy to compare Claude's revisions.
+
+### 5. Fact-check every claim
+AI can generate plausible but incorrect facts. Verify names, numbers, and references.
+
+## Common writing mistakes with AI
+
+- **Publishing the first draft** — always edit.
+- **Ignoring your audience** — the same draft rarely works for everyone.
+- **Over-editing for SEO** — readability matters more than keyword density.
+- **Losing your voice** — make sure the final text sounds like you or your brand.
+
+## Next steps
+
+- Apply writing to campaigns with [Marketing with Claude Code](/en/use-cases/marketing-with-claude/).
+- Create social content with [Social media with Claude Code](/en/use-cases/social-media-with-claude/).
+- Learn the terminal basics in the [CLI basics module](/en/learn/cli-basics/).

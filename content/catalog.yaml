@@ -59,3 +59,9 @@
     en: "Level check quiz"
     no: "Nivåtest"
   href: "/quiz/"
+- id: use-cases
+  kind: use-case
+  title:
+    en: "Use cases"
+    no: "Fagområder"
+  href: "/use-cases/"

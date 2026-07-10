@@ -1,0 +1,176 @@
+---
+title: "Prosjektledelse med Claude Code"
+description: "Bruk Claude Code til å skrive prosjektfakta, møtenotater, statusoppdateringer, risikoregister og prosjektkommunikasjon."
+updatedDate: "2026-07-09T14:00:00.000Z"
+profession: "project-management"
+difficulty: "beginner"
+tools:
+  - "Claude Code"
+  - "Markdown"
+  - "GitHub"
+  - "Notion"
+tags:
+  - "prosjektledelse"
+  - "planlegging"
+  - "dokumentasjon"
+  - "agile"
+  - "Claude Code"
+sources:
+  - "https://docs.anthropic.com/en/docs/claude-code/overview"
+relatedModules:
+  - "getting-started"
+  - "cli-basics"
+relatedUseCases:
+  - "writing-with-claude"
+  - "research-and-summarization-with-claude"
+  - "customer-support-with-claude"
+draft: false
+order: 5
+faq:
+  - question: "Kan Claude Code erstatte prosjektstyringsprogramvare?"
+    answer: "Nei. Claude Code hjelper til med å utkaste planer, oppdateringer og dokumenter, men du trenger fortsatt et oppgavesystem som Jira, Linear eller Trello for tildelinger, tidslinjer og samarbeid."
+  - question: "Kan Claude Code lese Jira- eller Linear-saker?"
+    answer: "Ikke direkte. Eksporter eller lagre saker som Markdown- eller CSV-filer, og Claude kan analysere og oppsummere dem. Direkte API-tilgang krever eget oppsett."
+  - question: "Er Claude Code nyttig for Agile-prosjektledelse?"
+    answer: "Ja. Det kan utkaste sprintmål, brukerhistorier, retrospektiver og akseptkriterier fra korte notater eller krav."
+  - question: "Hvordan holder jeg prosjektdokumenter oppdatert med Claude Code?"
+    answer: "Lagre dokumentene dine som Markdown-filer i prosjektmappen. Be Claude skrive om seksjoner når kravene endres, og behold versjonshistorikk med Git."
+---
+
+Prosjektledere bruker en betydelig del av tiden sin på å skrive: statusoppdateringer, møtenotater, kravbriefs, risikoregistre og interessentkommunikasjon. **Claude Code** hjelper med å gjøre rå notater om til strukturerte prosjektdokumenter direkte fra terminalen.
+
+Denne guiden dekker praktiske prosjektledelsesarbeidsflyter med Claude Code.
+
+## Hvorfor prosjektledere bruker Claude Code
+
+Claude Code erstatter ikke prosjektstyringsverktøyet ditt, men det fjerner friksjon fra dokumentasjonsarbeid.
+
+Nøkkelfordeler:
+
+- **Utkast statusoppdateringer** fra punktnotater.
+- **Skriv brukerhistorier** og akseptkriterier fra feature-ideer.
+- **Oppsummer møter** til beslutninger og aksjonspunkter.
+- **Sammenlign dokumentversjoner** for å spore endringer.
+- **Generer prosjekt-README-er** og onboardingsdokumenter.
+- **Hold alt i Markdown**, noe som gjør versjonskontroll og overlevering enklere.
+
+## Bruksområde 1: statusoppdatering fra punktnotater
+
+Du har grove notater fra uken og trenger en polert oppdatering.
+
+Lag `weekly-notes.md`:
+
+```markdown
+- Backend API er merget til staging
+- Frontend er blokkert og venter på design tokens
+- QA fant 3 regresjoner i checkout-flyten
+- Neste: produksjonssetting på torsdag
+- Risiko: designer tilgjengelighet neste uke
+```
+
+Spør Claude:
+
+```bash
+claude "Les weekly-notes.md og skriv en konsis prosjektstatusoppdatering for interessenter. Inkluder prestasjoner, blokkeringer, risikoer og neste steg."
+```
+
+Resultatet er et avsnitt du kan lime inn i Slack, Notion, e-post eller en styringspresentasjon.
+
+## Bruksområde 2: brukerhistorier fra en feature-brief
+
+Gjør en feature-idé om til backlog-klare brukerhistorier.
+
+Lag `feature-brief.md`:
+
+```markdown
+# Feature: ett-klikk-rebestilling
+
+Brukere vil bestille sitt forrige kjøp på nytt uten å bla i butikken igjen.
+Krav:
+- Vis siste bestilling på kontodashboard
+- Én knapp for å legge alle varer i handlekurven
+- Tillat fjerning av enkeltvarer før utsjekk
+```
+
+Kjør:
+
+```bash
+claude "Les feature-brief.md og skriv 5 brukerhistorier med akseptkriterier for en utviklerbacklog. Bruk formatet: Som en [rolle], ønsker jeg [mål], slik at [fordel]."
+```
+
+Claude returnerer strukturerte historier du kan lime inn i Jira, Linear eller GitHub Issues.
+
+## Bruksområde 3: møteoppsummering og aksjonspunkter
+
+Lagre møtenotater som `meeting.md`:
+
+```markdown
+Deltakere: Anna, Ben, Clara
+Beslutninger:
+- Migrer auth-tjeneste innen utgangen av Q2
+- Utsett mobil redesign med 2 uker
+Aksjonspunkter:
+- Anna: forberede migreringsplan
+- Ben: oppdatere veikart
+- Clara: kommunisere forsinkelse til kunder
+```
+
+Spør deretter:
+
+```bash
+claude "Les meeting.md og produser et formelt møteoppsummering med beslutninger og en tabell over aksjonspunkter inkludert eier og frist."
+```
+
+## Bruksområde 4: prosjekt-README og onboardingsdokument
+
+En god README hjelper nye teammedlemmer i gang. Peke Claude på prosjektfilene dine:
+
+```bash
+claude "Les filene i dette prosjektet og skriv en README.md som forklarer hva prosjektet gjør, hvordan det settes opp, og hvem du skal kontakte for spørsmål."
+```
+
+Du kan deretter forbedre:
+
+```bash
+claude "Legg til en seksjon for vanlige feilsøkingsproblemer."
+```
+
+## Bruksområde 5: risikoregister fra notater
+
+Gjør identifiserte risikoer om til et strukturert register:
+
+```bash
+claude "Les project-risks.md og formater risikoene som en tabell med kolonnene: Risiko, Konsekvens, Sannsynlighet, Tiltak, Eier."
+```
+
+Dette gjør risikoer enklere å gjennomgå i statusmøter.
+
+## Beste praksis for prosjektledelse med Claude Code
+
+### 1. Hold notater i Markdown-filer
+Filer er enklere å redigere, søke i og versjonere enn chat-tråder.
+
+### 2. Bruk konsistente maler
+Be Claude følge en mal for statusoppdateringer, brukerhistorier eller møtenotater.
+
+### 3. Gå alltid gjennom navn, datoer og avhengigheter
+Claude kan misforstå kontekst. Verifiser faktiske detaljer før du deler.
+
+### 4. Skill utkast fra endelige dokumenter
+Lagre Claudes output i en utkastfil, rediger deretter før publisering.
+
+### 5. Koble til prosjektstyringsverktøyet ditt
+Claude utkaster innhold; oppgavesystemet ditt eier tildelinger og frister.
+
+## Vanlige feil å unngå
+
+- **Bruke Claude som sannhetskilde for frister** — bekreft alltid datoer i kalenderen eller prosjektverktøyet ditt.
+- **Publisere utkast uredigert** — interessentkommunikasjon trenger din dømmekraft.
+- **Stille vage spørsmål** — jo mer kontekst du gir, jo bedre output.
+- **Ignorere konfidensialitet** — unngå å dele sensitive prosjektdata med mindre det er godkjent.
+
+## Neste steg
+
+- Forbedre skrivearbeidsflyten med [Skriving med Claude Code](/no/fagomrader/writing-with-claude/).
+- Lær hvordan du oppsummerer forskning med [Forskning og oppsummering med Claude Code](/no/fagomrader/research-and-summarization-with-claude/).
+- Start med [Kom i gang-modulen](/no/learn/getting-started/) hvis du er ny med Claude Code.

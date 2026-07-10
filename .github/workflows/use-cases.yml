@@ -1,0 +1,40 @@
+name: Use-case content update
+
+# Weekly research and update of professional use-case guides. Fetches curated
+# sources, asks Claude to compare them against existing guides, and publishes
+# automatically if the full verification suite passes.
+
+on:
+  schedule:
+    - cron: "0 5 * * 1" # 05:00 UTC every Monday
+  workflow_dispatch: {}
+
+concurrency:
+  group: use-cases-content
+  cancel-in-progress: false
+
+jobs:
+  use-cases:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: write
+      pull-requests: write
+      # actions: write lets _auto-publish.ts trigger deploy.yml directly — pushes made
+      # with GITHUB_TOKEN don't fire other workflows' `on: push` triggers.
+      actions: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm ci
+      - name: Configure git identity for automated commits
+        run: |
+          git config user.name "claude-code-learn-bot"
+          git config user.email "actions@users.noreply.github.com"
+      - name: Research and update use-cases
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: npx tsx scripts/use-cases/run.ts

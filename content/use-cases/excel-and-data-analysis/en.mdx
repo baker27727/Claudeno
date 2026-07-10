@@ -1,0 +1,184 @@
+---
+title: "Excel and Data Analysis with Claude Code"
+description: "Use Claude Code to clean, analyse, and automate spreadsheets. Convert messy data into reports, write formulas, and document your Excel workflow."
+updatedDate: "2026-07-09T14:00:00.000Z"
+profession: "data-analysis"
+difficulty: "beginner"
+tools:
+  - "Claude Code"
+  - "CSV"
+  - "Excel"
+  - "Python"
+  - "pandas"
+tags:
+  - "excel"
+  - "data analysis"
+  - "csv"
+  - "python"
+  - "automation"
+  - "Claude Code"
+sources:
+  - "https://docs.anthropic.com/en/docs/claude-code/overview"
+relatedModules:
+  - "cli-basics"
+  - "slash-commands"
+relatedUseCases:
+  - "seo-workflow-with-claude"
+  - "statistics-and-reporting"
+  - "research-and-summarization-with-claude"
+draft: false
+order: 3
+faq:
+  - question: "Can Claude Code open Excel files directly?"
+    answer: "Claude Code works best with text-based files. Export or save your data as CSV for the smoothest experience. For complex Excel files, you may need to convert sheets to CSV first."
+  - question: "Can it write Python scripts for analysis?"
+    answer: "Yes. Claude Code can generate Python scripts using pandas, write them to your project, and help you run them. You can then reuse and modify the scripts."
+  - question: "Is Claude Code suitable for large datasets?"
+    answer: "It works well for files that fit in context. For very large datasets, ask Claude to write a script that processes the file in chunks instead of loading everything into the conversation."
+  - question: "Do I need to know Python to use Claude Code for data work?"
+    answer: "No. You can describe what you want in plain language, and Claude will generate the code. Basic understanding helps when debugging or customising scripts."
+---
+
+Data analysis often starts with messy files, vague questions, and a lot of trial and error. **Claude Code** helps analysts and operators clean data, write formulas, and generate reusable scripts without leaving the terminal.
+
+This guide covers practical data workflows: CSV cleaning, Excel formulas, Python analysis, and automation.
+
+## Why use Claude Code for data work
+
+Claude Code is file-aware. That means it can read your data files, understand their structure, and produce code or transformed files you can run again later.
+
+Benefits for data work:
+
+- **Clean data faster** by describing transformations in plain language.
+- **Write Excel formulas** from descriptions instead of memorising syntax.
+- **Generate Python scripts** for analysis, charts, and reports.
+- **Document your workflow** because every command and output lives in your project folder.
+- **Iterate quickly** without switching between spreadsheet apps and code editors.
+
+## Use case 1: clean a CSV file
+
+You have `sales.csv` with inconsistent casing, blank rows, and extra whitespace. Instead of cleaning it manually, ask Claude Code.
+
+First, inspect the file:
+
+```bash
+head sales.csv
+```
+
+Then run:
+
+```bash
+claude "Read sales.csv, normalise the 'product' column to title case, trim whitespace from all text columns, remove blank rows, and save the result as sales-clean.csv."
+```
+
+Claude reads the file, applies the transformations, and writes the cleaned version. You can then verify:
+
+```bash
+head sales-clean.csv
+```
+
+## Use case 2: summarise a dataset
+
+After cleaning, ask for summary statistics:
+
+```bash
+claude "Read sales-clean.csv and report: total revenue, average order value, top 5 products by quantity, and any obvious outliers."
+```
+
+Claude returns a readable summary. For deeper analysis, ask it to generate a Python script.
+
+## Use case 3: write Excel formulas
+
+If you prefer spreadsheets, describe what you need and let Claude write the formula:
+
+```bash
+claude "Write an Excel formula that returns 'Yes' if B2 is greater than 100 and C2 contains 'completed', otherwise 'No'."
+```
+
+Output:
+
+```excel
+=IF(AND(B2>100, C2="completed"), "Yes", "No")
+```
+
+For more complex logic:
+
+```bash
+claude "Write an Excel formula that calculates a 10% discount if quantity is 10 or more, 5% if 5-9, otherwise 0."
+```
+
+## Use case 4: generate a Python analysis script
+
+For reusable analysis, ask Claude to write a script:
+
+```bash
+claude "Write a Python script that reads sales-clean.csv, calculates total revenue and average order value by product, and prints a sorted table. Save it as analyse_sales.py."
+```
+
+Run it:
+
+```bash
+python analyse_sales.py
+```
+
+If the output needs formatting, iterate:
+
+```bash
+claude "Update analyse_sales.py to also save the results to sales-summary.csv."
+```
+
+## Use case 5: create a simple chart
+
+Ask Claude to generate a plotting script:
+
+```bash
+claude "Write a Python script that reads sales-clean.csv and creates a bar chart of total revenue by product. Save it as chart_revenue.py."
+```
+
+Run it:
+
+```bash
+python chart_revenue.py
+```
+
+You now have a script you can rerun whenever the data updates.
+
+## Use case 6: combine multiple CSV files
+
+If you have monthly reports in separate files:
+
+```bash
+claude "Combine all CSV files matching sales-2026-*.csv into one file called sales-2026-combined.csv. Add a 'month' column based on the filename."
+```
+
+This saves manual copy-paste work and reduces errors.
+
+## Best practices for data analysis with Claude Code
+
+### 1. Start with a small sample
+Test your transformations on a few rows before applying them to the full dataset.
+
+### 2. Keep raw data untouched
+Always write transformations to new files. Never overwrite your original data.
+
+### 3. Ask Claude to explain the code
+Before running a generated script, ask for a brief explanation of what it does.
+
+### 4. Save reusable scripts
+If you expect to repeat the analysis, save the script instead of just reading the output.
+
+### 5. Check data types
+Dates, numbers stored as text, and mixed formats are common sources of errors. Ask Claude to validate types.
+
+## Common mistakes to avoid
+
+- **Overwriting source files** — always preserve the original.
+- **Trusting summaries blindly** — spot-check numbers against the raw data.
+- **Ignoring data types** — a column that looks numeric might be stored as text.
+- **Generating scripts you do not understand** — ask for explanations until the logic is clear.
+
+## Next steps
+
+- Move from summaries to reports with [Statistics and reporting with Claude Code](/en/use-cases/statistics-and-reporting/).
+- Learn how to research and summarise sources with [Research and summarisation with Claude Code](/en/use-cases/research-and-summarization-with-claude/).
+- Master Claude Code commands in the [CLI basics module](/en/learn/cli-basics/).

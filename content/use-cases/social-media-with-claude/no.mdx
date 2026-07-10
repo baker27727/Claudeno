@@ -1,0 +1,146 @@
+---
+title: "Sosiale medier med Claude Code"
+description: "Bruk Claude Code til å planlegge sosiale innlegg, skrive tekster og tråder, bygge innholdskalendere og gjøre langt innhold om."
+updatedDate: "2026-07-09T14:00:00.000Z"
+profession: "social-media"
+difficulty: "beginner"
+tools:
+  - "Claude Code"
+  - "Markdown"
+  - "CSV"
+tags:
+  - "sosiale medier"
+  - "innholdskalender"
+  - "tekster"
+  - "tråder"
+  - "Claude Code"
+sources:
+  - "https://docs.anthropic.com/en/docs/claude-code/overview"
+relatedModules:
+  - "getting-started"
+  - "cli-basics"
+relatedUseCases:
+  - "marketing-with-claude"
+  - "writing-with-claude"
+  - "customer-support-with-claude"
+draft: false
+order: 8
+faq:
+  - question: "Kan Claude Code legge ut innhold direkte på sosiale plattformer?"
+    answer: "Nei. Claude Code utkaster innhold til filer. Du limer fortsatt teksten inn i din planlegger eller plattform."
+  - question: "Kan det skrive i ulike merkestemmer?"
+    answer: "Ja. Gi eksempler på tidligere innlegg og en stemmebeskrivelse, så vil Claude matche tonen."
+  - question: "Hvordan holder jeg innholdet friskt og ikke generisk?"
+    answer: "Gi Claude spesifikke innsikter, kundesitater eller data fra prosjektet ditt. Generiske prompter produserer generisk output."
+  - question: "Fungerer det for norsk innhold på sosiale medier?"
+    answer: "Ja. Claude kan utkaste på norsk og tilpasse seg ulike plattformer og toner."
+---
+
+Sosiale-medier-ansvarlige trenger en konstant strøm av ideer, tekster og innholdskalendere. **Claude Code** hjelper deg med å planlegge og utkaste sosialt innhold fra filer, noe som gjør det enkelt å iterere og gjenbruke på tvers av plattformer.
+
+Denne guiden viser hvordan du lager tekster, tråder, innholdskalendere og omarbeidede innlegg med Claude Code.
+
+## Hvorfor sosiale-medier-ansvarlige bruker Claude Code
+
+Claude Code er ideelt for filbasert innholdsplanlegging. Fordeler inkluderer:
+
+- Utkaste flere tekstvarianter raskt.
+- Generere plattformspesifikke versjoner fra én idé.
+- Bygge gjenbrukbare innholdskalendere i Markdown eller CSV.
+- Gjøre blogginnlegg eller guider om til korte innlegg.
+- Opprettholde et søkbart bibliotek av innleggsmaler.
+- Justere innlegg med kampanjemeldinger.
+
+## Bruksområde 1: tekstvarianter fra én idé
+
+Lag `post-brief.md`:
+
+```markdown
+Tema: Hvordan vi reduserte deploy-tid med Claude Code
+Tone: Vennlig og praktisk
+Plattform: LinkedIn
+Målgruppe: Engineering managers
+Call to action: Les hele casestudien
+```
+
+Kjør:
+
+```bash
+claude "Les post-brief.md og skriv 3 tekstvarianter, hver under 150 ord. Inkluder en hook i første linje."
+```
+
+Du har nå alternativer å teste eller rotere.
+
+## Bruksområde 2: Twitter/X-tråd fra et blogginnlegg
+
+Lagre et blogginnlegg som `blog-post.md` og spør:
+
+```bash
+claude "Les blog-post.md og skriv en 6-dels Twitter-tråd. Start med en sterk hook, bruk én innsikt per innlegg, og avslutt med en CTA."
+```
+
+Juster lengde eller tone:
+
+```bash
+claude "Gjør tråden mer uformell og tilføy emojier sparsomt."
+```
+
+## Bruksområde 3: ukentlig innholdskalender
+
+Lag en brief og generer en kalender:
+
+```bash
+claude "Jeg trenger en 7-dagers LinkedIn-innholdskalender for et SaaS-selskap som lærer bort Claude Code. Formater output som en Markdown-tabell med Dato, Tema, Innleggstype og Tekst-sammendrag."
+```
+
+Lagre output som `content-calendar.md` og gjenbruk den neste måned.
+
+## Bruksområde 4: gjør ett innlegg om til mange formater
+
+Gjør en lang guide om til flere sosiale ressurser:
+
+```bash
+claude "Les guide.md og lag: (1) et LinkedIn-innlegg, (2) en Twitter-tråd, (3) en Instagram-tekst, og (4) 5 korte sitat-snutter."
+```
+
+Dette multipliserer verdien av hver innholdsdel du produserer.
+
+## Bruksområde 5: hashtag- og vinkelideer
+
+Fastlåst for vinkler? Spør:
+
+```bash
+claude "Gi meg 10 innholdsvinkler og 3 hashtag-alternativer for hver, for et selskap som hjelper norske fagfolk med å lære Claude Code."
+```
+
+Lagre de beste ideene i en `ideas.md`-fil.
+
+## Beste praksis for sosiale medier med Claude Code
+
+### 1. Definer plattformregler
+Fortell Claude ideell lengde, tone og CTA-stil for hver plattform.
+
+### 2. Gi det reell input
+De beste innleggene kommer fra ekte kundespørsmål, prosjektsuksesser eller teaminnsikter.
+
+### 3. Bygg et malbibliotek
+Lagre tekstmaler og briefs i `social/` slik at teamet ditt kan gjenbruke dem.
+
+### 4. Iterer før planlegging
+Generer flere versjoner, velg den beste, og finjuster manuelt.
+
+### 5. Spor ytelse
+Noter hvilke innlegg som fungerer godt, og mat mønstrene tilbake i fremtidige prompter.
+
+## Vanlige feil å unngå
+
+- **Høres for bedriftsmessig ut** — rediger for personlighet.
+- **For mange generiske tips** — koble innhold til din spesifikke erfaring.
+- **Ignorere plattformgrenser** — sjekk alltid tegnbegrensninger.
+- **Hoppe over CTA** — hvert innlegg bør ha et formål.
+
+## Neste steg
+
+- Skaler innholdet ditt med [Markedsføring med Claude Code](/no/fagomrader/marketing-with-claude/).
+- Forbedre skrivearbeidsflyter med [Skriving med Claude Code](/no/fagomrader/writing-with-claude/).
+- Lær prompt-teknikker i [Kom i gang-modulen](/no/learn/getting-started/).

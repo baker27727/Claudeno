@@ -1,0 +1,435 @@
+---
+// Shared rendering for /no/fagomrader/[slug].astro and /en/use-cases/[slug].astro.
+import { render } from "astro:content";
+import Base from "./Base.astro";
+import { formatDate, type Locale } from "../lib/i18n";
+import {
+  getAllUseCases,
+  useCaseForLocale,
+  useCasePath,
+  useCaseIndexPath,
+  professionLabel,
+  type UseCaseData,
+} from "../lib/use-cases";
+import { getAllModules } from "../lib/modules";
+import { guideArticleJsonLd, useCaseBreadcrumbs, breadcrumbListJsonLd, jsonLdScript } from "../lib/seo";
+
+interface Props {
+  lang: Locale;
+  useCaseGroup: UseCaseData;
+}
+const { lang, useCaseGroup } = Astro.props;
+const entry = useCaseForLocale(useCaseGroup, lang);
+if (!entry) {
+  throw new Error(`UseCaseDetailLayout: no "${lang}" entry for use-case "${useCaseGroup.slug}"`);
+}
+
+const { Content } = await render(entry);
+
+const allUseCases = await getAllUseCases();
+const localeUseCases = allUseCases.filter((uc) => useCaseForLocale(uc, lang));
+const currentIndex = localeUseCases.findIndex((uc) => uc.slug === useCaseGroup.slug);
+const prevUseCase = currentIndex > 0 ? localeUseCases[currentIndex - 1] : undefined;
+const nextUseCase = currentIndex >= 0 && currentIndex < localeUseCases.length - 1 ? localeUseCases[currentIndex + 1] : undefined;
+
+const availableLocales: Locale[] = (["en", "no"] as const).filter((l) => useCaseForLocale(useCaseGroup, l));
+
+const path = useCasePath(useCaseGroup.slug, lang);
+const article = guideArticleJsonLd({
+  title: entry.data.title,
+  description: entry.data.description,
+  lang,
+  path,
+  updatedDate: entry.data.updatedDate,
+  author: entry.data.author,
+  tags: [...entry.data.tags, entry.data.profession],
+});
+const crumbs = breadcrumbListJsonLd(useCaseBreadcrumbs(entry.data.title, path, lang));
+
+// FAQ schema when present
+const faqJsonLd = entry.data.faq.length > 0
+  ? {
+      "@context": "https://schema.org" as const,
+      "@type": "FAQPage" as const,
+      name: entry.data.title,
+      inLanguage: lang,
+      mainEntity: entry.data.faq.map((q) => ({
+        "@type": "Question" as const,
+        name: q.question,
+        acceptedAnswer: {
+          "@type": "Answer" as const,
+          text: q.answer,
+        },
+      })),
+    }
+  : null;
+
+const jsonLd = jsonLdScript(faqJsonLd ? [article, crumbs, faqJsonLd] : [article, crumbs]);
+
+const allModules = await getAllModules();
+const relatedModules = entry.data.relatedModules
+  .map((id) => allModules.find((m) => m.id === id))
+  .filter((m): m is NonNullable<typeof m> => Boolean(m));
+
+const relatedUseCases = entry.data.relatedUseCases
+  .map((slug) => localeUseCases.find((uc) => uc.slug === slug))
+  .filter((uc): uc is NonNullable<typeof uc> => Boolean(uc));
+
+function difficultyLabel(difficulty: string, locale: Locale): string {
+  if (difficulty === "beginner") return locale === "no" ? "Nybegynner" : "Beginner";
+  if (difficulty === "intermediate") return locale === "no" ? "Middels" : "Intermediate";
+  return locale === "no" ? "Avansert" : "Advanced";
+}
+---
+
+<Base
+  lang={lang}
+  title={`${entry.data.title} — Claude Code Learn`}
+  description={entry.data.description}
+  ogType="article"
+  availableLocales={availableLocales}
+>
+  <Fragment slot="head">
+    <Fragment set:html={jsonLd} />
+  </Fragment>
+
+  <main class="use-case">
+    <nav class="use-case__breadcrumb" aria-label="Breadcrumb">
+      <a href={`/${lang}/`}>Claude Code Learn</a>
+      <span aria-hidden="true">/</span>
+      <a href={useCaseIndexPath(lang)}>{lang === "no" ? "Fagområder" : "Use cases"}</a>
+      <span aria-hidden="true">/</span>
+      <span aria-current="page">{entry.data.title}</span>
+    </nav>
+
+    <article class="use-case__article">
+      <header class="use-case__header">
+        <div class="use-case__meta">
+          <span class={`use-case__profession use-case__profession--${entry.data.profession}`}>
+            {professionLabel(entry.data.profession, lang)}
+          </span>
+          <span class={`use-case__difficulty use-case__difficulty--${entry.data.difficulty}`}>
+            {difficultyLabel(entry.data.difficulty, lang)}
+          </span>
+          {entry.data.tools.length > 0 && (
+            <span class="use-case__tools">{entry.data.tools.join(" · ")}</span>
+          )}
+        </div>
+        <h1 class="use-case__title">{entry.data.title}</h1>
+        <p class="use-case__updated">
+          {lang === "no" ? "Oppdatert" : "Updated"} {formatDate(new Date(entry.data.updatedDate), lang)}
+        </p>
+        {entry.data.tags.length > 0 && (
+          <ul class="use-case__tags">
+            {entry.data.tags.map((tag) => (
+              <li class="use-case__tag">{tag}</li>
+            ))}
+          </ul>
+        )}
+      </header>
+
+      <div class="use-case__body">
+        <Content />
+      </div>
+
+      {entry.data.faq.length > 0 && (
+        <section class="use-case__faq" aria-labelledby="use-case-faq-heading">
+          <h2 id="use-case-faq-heading">{lang === "no" ? "Ofte stilte spørsmål" : "Frequently asked questions"}</h2>
+          <dl>
+            {entry.data.faq.map((item) => (
+              <>
+                <dt>{item.question}</dt>
+                <dd>{item.answer}</dd>
+              </>
+            ))}
+          </dl>
+        </section>
+      )}
+
+      {entry.data.sources.length > 0 && (
+        <footer class="use-case__sources">
+          <p class="use-case__sources-label">{lang === "no" ? "Kilder" : "Sources"}</p>
+          <ul>
+            {entry.data.sources.map((src) => (
+              <li><a href={src} target="_blank" rel="noopener noreferrer">{src}</a></li>
+            ))}
+          </ul>
+        </footer>
+      )}
+
+      {(relatedModules.length > 0 || relatedUseCases.length > 0) && (
+        <section class="use-case__related" aria-label={lang === "no" ? "Relatert" : "Related"}>
+          <p class="use-case__related-label">{lang === "no" ? "Gå videre" : "Go further"}</p>
+          <ul class="use-case__related-list">
+            {relatedModules.map((m) => (
+              <li>
+                <a href={`/${lang}/learn/${m.id}/`}>{m.meta.title[lang]}</a>
+              </li>
+            ))}
+            {relatedUseCases.map((uc) => (
+              <li>
+                <a href={useCasePath(uc.slug, lang)}>{useCaseForLocale(uc, lang)?.data.title}</a>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
+
+      {(prevUseCase || nextUseCase) && (
+        <div class="use-case__footer-nav">
+          {prevUseCase && (
+            <a class="use-case__nav-link use-case__nav-link--prev" href={useCasePath(prevUseCase.slug, lang)}>
+              <span class="use-case__nav-label">{lang === "no" ? "Forrige" : "Previous"}</span>
+              <span class="use-case__nav-title">&larr; {useCaseForLocale(prevUseCase, lang)?.data.title}</span>
+            </a>
+          )}
+          {nextUseCase && (
+            <a class="use-case__nav-link use-case__nav-link--next" href={useCasePath(nextUseCase.slug, lang)}>
+              <span class="use-case__nav-label">{lang === "no" ? "Neste" : "Next"}</span>
+              <span class="use-case__nav-title">{useCaseForLocale(nextUseCase, lang)?.data.title} &rarr;</span>
+            </a>
+          )}
+        </div>
+      )}
+    </article>
+  </main>
+</Base>
+
+<style>
+  .use-case {
+    max-width: 46rem;
+    margin: 0 auto;
+    padding: var(--space-8) var(--space-6) var(--space-16);
+  }
+  .use-case__breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    margin-bottom: var(--space-6);
+    font-size: 0.8125rem;
+    color: var(--fg-muted);
+    flex-wrap: wrap;
+  }
+  .use-case__breadcrumb a {
+    color: var(--fg-muted);
+    text-decoration: none;
+  }
+  .use-case__breadcrumb a:hover {
+    color: var(--accent);
+  }
+  .use-case__breadcrumb [aria-current="page"] {
+    color: var(--fg);
+  }
+  .use-case__article {
+    margin: 0;
+  }
+  .use-case__header {
+    margin-bottom: var(--space-8);
+    padding-bottom: var(--space-5);
+    border-bottom: 1px solid var(--border);
+  }
+  .use-case__meta {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    margin-bottom: var(--space-4);
+    flex-wrap: wrap;
+  }
+  .use-case__profession,
+  .use-case__difficulty {
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 0.15rem 0.6rem;
+    border-radius: var(--radius-full);
+  }
+  .use-case__profession {
+    background: color-mix(in srgb, var(--accent) 15%, transparent);
+    color: var(--accent);
+  }
+  .use-case__difficulty--beginner {
+    background: color-mix(in srgb, var(--ok) 15%, transparent);
+    color: var(--ok);
+  }
+  .use-case__difficulty--intermediate {
+    background: color-mix(in srgb, var(--warn) 15%, transparent);
+    color: var(--warn);
+  }
+  .use-case__difficulty--advanced {
+    background: color-mix(in srgb, var(--err) 15%, transparent);
+    color: var(--err);
+  }
+  .use-case__tools {
+    font-size: 0.8125rem;
+    color: var(--fg-muted);
+  }
+  .use-case__title {
+    font-size: clamp(1.75rem, 4vw, 2.5rem);
+    line-height: 1.15;
+    margin: 0 0 var(--space-3);
+  }
+  .use-case__updated {
+    margin: 0 0 var(--space-3);
+    color: var(--fg-muted);
+    font-size: 0.8125rem;
+    font-family: var(--font-mono);
+  }
+  .use-case__tags {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    margin: 0;
+    padding: 0;
+  }
+  .use-case__tag {
+    font-size: 0.75rem;
+    color: var(--fg-muted);
+    background: var(--bg-elev);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-full);
+    padding: 0.1rem 0.6rem;
+  }
+  .use-case__body :global(h2) {
+    margin-top: var(--space-8);
+  }
+  .use-case__body :global(p) {
+    line-height: 1.7;
+    margin: 0 0 var(--space-4);
+  }
+  .use-case__body :global(pre) {
+    background: var(--bg-elev);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: var(--space-4);
+    overflow-x: auto;
+  }
+  .use-case__body :global(code) {
+    font-family: var(--font-mono);
+  }
+  .use-case__body :global(:not(pre) > code) {
+    background: var(--bg-elev);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 0.1rem 0.4rem;
+    font-size: 0.875em;
+    color: var(--accent);
+  }
+  .use-case__body :global(ul),
+  .use-case__body :global(ol) {
+    line-height: 1.7;
+  }
+  .use-case__faq {
+    margin-top: var(--space-10);
+    padding-top: var(--space-5);
+    border-top: 1px solid var(--border);
+  }
+  .use-case__faq h2 {
+    font-size: 1.25rem;
+    margin: 0 0 var(--space-4);
+  }
+  .use-case__faq dl {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+  }
+  .use-case__faq dt {
+    font-weight: 600;
+    color: var(--fg);
+  }
+  .use-case__faq dd {
+    margin: 0;
+    color: var(--fg-muted);
+    line-height: 1.6;
+  }
+  .use-case__sources {
+    margin-top: var(--space-10);
+    padding-top: var(--space-5);
+    border-top: 1px solid var(--border);
+  }
+  .use-case__sources-label,
+  .use-case__related-label {
+    margin: 0 0 var(--space-2);
+    color: var(--fg-muted);
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+  .use-case__sources ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+    font-size: 0.8125rem;
+  }
+  .use-case__sources a {
+    color: var(--accent);
+    word-break: break-all;
+  }
+  .use-case__related {
+    margin-top: var(--space-8);
+    padding-top: var(--space-5);
+    border-top: 1px solid var(--border);
+  }
+  .use-case__related-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+  }
+  .use-case__related-list a {
+    display: inline-block;
+    font-size: 0.8125rem;
+    color: var(--accent);
+    background: var(--bg-elev);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-full);
+    padding: 0.25rem 0.75rem;
+    text-decoration: none;
+  }
+  .use-case__related-list a:hover {
+    border-color: var(--accent);
+  }
+  .use-case__footer-nav {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--space-4);
+    margin-top: var(--space-10);
+    padding-top: var(--space-6);
+    border-top: 1px solid var(--border);
+    flex-wrap: wrap;
+  }
+  .use-case__nav-link {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+    text-decoration: none;
+    color: var(--fg);
+    max-width: 20rem;
+  }
+  .use-case__nav-link--next {
+    text-align: right;
+    margin-left: auto;
+  }
+  .use-case__nav-label {
+    color: var(--fg-muted);
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+  .use-case__nav-title {
+    font-family: var(--font-display);
+    font-size: 1.0625rem;
+    font-weight: 600;
+  }
+  .use-case__nav-link:hover .use-case__nav-title {
+    color: var(--accent);
+  }
+</style>

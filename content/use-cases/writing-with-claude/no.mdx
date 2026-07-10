@@ -1,0 +1,156 @@
+---
+title: "Skriving med Claude Code"
+description: "Bruk Claude Code til å utkaste blogginnlegg, dokumentasjon og e-poster. Rediger tone, struktur og målgruppe med filbaserte arbeidsflyter."
+updatedDate: "2026-07-09T14:00:00.000Z"
+profession: "writing"
+difficulty: "beginner"
+tools:
+  - "Claude Code"
+  - "Markdown"
+  - "Google Docs"
+tags:
+  - "skriving"
+  - "blogging"
+  - "dokumentasjon"
+  - "innholdsproduksjon"
+  - "Claude Code"
+sources:
+  - "https://docs.anthropic.com/en/docs/claude-code/overview"
+relatedModules:
+  - "getting-started"
+  - "cli-basics"
+relatedUseCases:
+  - "marketing-with-claude"
+  - "project-management-with-claude"
+  - "social-media-with-claude"
+draft: false
+order: 6
+faq:
+  - question: "Kan Claude Code skrive en hel artikkel for meg?"
+    answer: "Det kan produsere et sterkt førsteutkast, men du bør redigere for stemme, nøyaktighet, originalitet og faktisk korrekthet før publisering."
+  - question: "Fungerer Claude Code for ikke-engelsk skriving?"
+    answer: "Ja. Claude forstår og skriver på mange språk, inkludert norsk. Du kan utkaste på ett språk og be det oversette eller tilpasse tonen."
+  - question: "Er Claude Code bedre enn en tekstbehandler for skriving?"
+    answer: "Det avhenger. Claude Code er ideelt for filbasert, versjonskontrollert skriving der du vil iterere med kommandoer. For WYSIWYG-redigering, bruk en tekstbehandler eller CMS."
+  - question: "Kan Claude Code matche min merkestemme?"
+    answer: "Ja, hvis du gir tydelige stemmeretningslinjer eller eksempler. Jo mer kontekst du gir, jo nærmere output vil matche stilen din."
+---
+
+Forfattere, bloggere og tekniske kommunikatøre sliter ofte med blank-side-syndrom, inkonsistent tone og repeterende redigering. **Claude Code** hjelper deg med å gå fra idé til utkast raskere ved å arbeide med filer i terminalen.
+
+Denne guiden viser hvordan du bruker Claude Code til langformet skriving, redigering og omformatering av innhold.
+
+## Hvorfor forfattere bruker Claude Code
+
+Claude Code er ikke en tekstbehandler. Det er en skriveassistent som hjelper deg med å:
+
+- Utvide disposisjoner til fullstendige utkast.
+- Skrive om avsnitt for tydelighet eller en annen målgruppe.
+- Gjøre langformet innhold om til kortere formater.
+- Generere dokumentasjon fra notater eller kodekommentarer.
+- Korrekturlese for grammatikk, tone og struktur.
+- Opprettholde versjonskontroll fordi hver fil lever i prosjektet ditt.
+
+## Bruksområde 1: disposisjon til blogginnlegg
+
+Start med en enkel disposisjon og la Claude utvide den.
+
+Lag `outline.md`:
+
+```markdown
+# Hvorfor vi byttet til Claude Code
+
+- Problem: onboarding av nye utviklere var tregt
+- Løsning: standardisert CLAUDE.md + terminal-arbeidsflyt
+- Resultat: raskere code reviews og færre gjentatte spørsmål
+```
+
+Kjør:
+
+```bash
+claude "Les outline.md og skriv et 400-ords blogginnlegg i en vennlig, profesjonell tone. Inkluder introduksjon, én seksjon per punkt og en konklusjon."
+```
+
+Du kan deretter iterere:
+
+```bash
+claude "Gjør introduksjonen mer engasjerende ved å starte med et konkret eksempel."
+```
+
+## Bruksområde 2: skriv om for en annen målgruppe
+
+Samme melding trenger ofte ulike versjoner. Lagre utkastet ditt som `post.md` og spør:
+
+```bash
+claude "Les post.md og skriv om introduksjonen for et ikke-teknisk lederpublikum. Hold den under 100 ord."
+```
+
+Eller:
+
+```bash
+claude "Skriv om post.md for nybegynnere som aldri har brukt terminalen før. Unngå fagspråk og forklar hvert koncept kort."
+```
+
+## Bruksområde 3: langformet til sosial tråd
+
+Gjør et blogginnlegg om til en sosiale-medier-tråd:
+
+```bash
+claude "Les blog-post.md og skriv en 5-dels Twitter-tråd med en sterk hook og en CTA til å lese hele artikkelen."
+```
+
+Du kan også be om nyhetsbrevversjoner, LinkedIn-innlegg eller karuselltekster.
+
+## Bruksområde 4: dokumentasjon fra kodekommentarer
+
+Utviklere trenger ofte docs, men liker ikke å skrive dem. Peke Claude på koden din:
+
+```bash
+claude "Les src/lib/auth.ts og skriv en Markdown-bruksveiledning for autentiseringsfunksjonene. Inkluder eksempler."
+```
+
+Forbedre deretter:
+
+```bash
+claude "Legg til en feilsøkingsseksjon for vanlige autentiseringsfeil."
+```
+
+## Bruksområde 5: korrekturlesing og tonekontroll
+
+Før publisering, be Claude gjennomgå utkastet ditt:
+
+```bash
+claude "Les draft.md. Foreslå 3 forbedringer for tydelighet og marker passiv form eller fagspråk."
+```
+
+Dette gir deg en siste finpuss uten å ansette en redaktør.
+
+## Beste praksis for skriving med Claude Code
+
+### 1. Oppgi en tydelig stemmebeskrivelse
+I stedet for "skriv bedre", si "skriv i en vennlig, autoritativ tone for tekniske markedsførere".
+
+### 2. Gi eksempler
+Del en tidligere artikkel eller et avsnitt som matcher stilen du ønsker.
+
+### 3. Iterer i små steg
+Endre ett element av gangen: overskrift, introduksjon, tone eller lengde.
+
+### 4. Lagre versjoner
+Bruk Git til å spore utkast. Dette gjør det enkelt å sammenligne Claudes revisjoner.
+
+### 5. Faktagransk hver påstand
+AI kan generere plausible men feilaktige fakta. Verifiser navn, tall og referanser.
+
+## Vanlige skrivefeil med AI
+
+- **Publisere førsteutkastet** — alltid rediger.
+- **Ignorere målgruppen** — samme utkast fungerer sjelden for alle.
+- **Over-redigere for SEO** — lesbarhet betyr mer enn keyword-tetthet.
+- **Miste din egen stemme** — sørg for at den endelige teksten høres ut som deg eller merket ditt.
+
+## Neste steg
+
+- Bruk skriving i kampanjer med [Markedsføring med Claude Code](/no/fagomrader/marketing-with-claude/).
+- Lag sosialt innhold med [Sosiale medier med Claude Code](/no/fagomrader/social-media-with-claude/).
+- Lær terminalgrunnlaget i [CLI-grunnleggende-modulen](/no/learn/cli-basics/).

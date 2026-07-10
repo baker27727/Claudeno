@@ -1,0 +1,186 @@
+---
+title: "SEO-arbeidsflyt med Claude Code"
+description: "Bruk Claude Code til keyword research, innholdsbriefs, on-page-optimalisering, tekniske SEO-audits og søkeytelsesrapportering."
+updatedDate: "2026-07-09T14:00:00.000Z"
+profession: "seo"
+difficulty: "intermediate"
+tools:
+  - "Claude Code"
+  - "curl"
+  - "Markdown"
+  - "CSV"
+tags:
+  - "seo"
+  - "innhold"
+  - "audit"
+  - "keyword research"
+  - "on-page seo"
+  - "Claude Code"
+sources:
+  - "https://docs.anthropic.com/en/docs/claude-code/overview"
+  - "https://developers.google.com/search/docs/fundamentals/seo-starter-guide"
+relatedModules:
+  - "cli-basics"
+  - "slash-commands"
+relatedUseCases:
+  - "marketing-with-claude"
+  - "excel-and-data-analysis"
+  - "writing-with-claude"
+draft: false
+order: 2
+faq:
+  - question: "Kan Claude Code erstatte SEO-verktøy som Ahrefs eller SEMrush?"
+    answer: "Nei. Claude Code kan ikke hente live ranking, søkevolum eller backlink-data. Det er best egnet til å tolke data du eksporterer fra disse verktøyene og til å utforme SEO-innhold."
+  - question: "Hvordan auditorer jeg en side med Claude Code?"
+    answer: "Hent eller lagre sidens HTML som en fil, og be Claude Code om å analysere tittel, metabeskrivelse, overskrifter, interne lenker og innholdskvalitet."
+  - question: "Kan Claude Code hjelpe med keyword research?"
+    answer: "Det kan klynge nøkkelord, foreslå relaterte temaer og bygge innholdsbriefs fra en nøkkelordliste. For søkevolum og vanskelighetsgrad, bruk et dedikert SEO-verktøy."
+  - question: "Er output SEO-vennlig som standard?"
+    answer: "Claude Code følger instruksjonene dine. Hvis du ber om SEO-vennlig output med overskrifter, metabeskrivelser og interne lenker, vil det strukturere innholdet deretter."
+---
+
+Søkemotoroptimalisering innebærer en blanding av tekniske sjekker, innholdsplanlegging og konkurranseanalyse. Selv om Claude Code ikke kan erstatte SEO-plattformen din, kan det akselerere SEO-delene som handler om lesing, strukturering og skriving.
+
+Denne guiden dekker en praktisk SEO-arbeidsflyt med Claude Code: keyword-clustering, innholdsbriefs, on-page-audits, metabeskrivelser i større volum og konkurrentanalyse.
+
+## Hva Claude Code kan og ikke kan gjøre for SEO
+
+### Hva det kan gjøre
+- Utkaste SEO-vennlige titler og metabeskrivelser.
+- Klynge nøkkelord i emnegrupper.
+- Bygge innholdsbriefs fra et målnøkkelord.
+- Auditere on-page-elementer fra lagret HTML.
+- Oppsummere konkurrentinnhold.
+- Generere forslag til interne lenker.
+
+### Hva det ikke kan gjøre
+- Hente live søkevolum, keyword difficulty eller rangeringer.
+- Crawle nettsteder i stort volum.
+- Gi backlink-data.
+- Erstatte verktøy som Ahrefs, SEMrush, Screaming Frog eller Google Search Console.
+
+Bruk Claude Code som en skrive- og analyseassistent ved siden av SEO-stakken din.
+
+## Bruksområde 1: lag en innholdsbrief fra et nøkkelord
+
+En sterk innholdsbrief sparer tid for skribenter og forbedrer rangeringspotensialet.
+
+Lag `target-keyword.md`:
+
+```markdown
+# Målnøkkelord
+
+Nøkkelord: gjenbrukbart kaffefilter
+Søkeintensjon: informasjonell/kommersiell undersøkelse
+Målgruppe: Hjemmebryggere interessert i bærekraft
+Mål: Rangere på side 1 og opplyse leserne nok til å vurdere et kjøp
+```
+
+Spør deretter:
+
+```bash
+claude "Les target-keyword.md og lag en innholdsbrief. Inkluder: tittelforslag, metabeskrivelse, mål-ordtelling, H2-disposisjon, 3 undertemaer å dekke og 2-3 ideer til interne lenker."
+```
+
+Claude returnerer en brief du kan gi til en skribent eller bruke som din egen disposisjon.
+
+## Bruksområde 2: generer metabeskrivelser i bulk
+
+Hvis du administrerer mange sider, er det kjedelig å skrive unike metabeskrivelser. Claude Code kan håndtere batch-arbeid fra en CSV.
+
+Lag `pages.csv`:
+
+```csv
+url,title
+/blog/post-1,Hvordan brygge bedre kaffe hjemme
+/blog/post-2,Gjenbrukbare kaffefiltre forklart
+/blog/post-3,Beste kaffekverner for nybegynnere
+```
+
+Kjør:
+
+```bash
+claude "Les pages.csv og skriv en metabeskrivelse for hver rad. Hold hver under 160 tegn og inkluder målnøkkelordet naturlig."
+```
+
+Du kan deretter lagre output tilbake til en CSV eller direkte i CMS-importfilen din.
+
+## Bruksområde 3: on-page SEO-audit fra HTML
+
+Hent en side og lagre den lokalt:
+
+```bash
+curl -s https://example.com/page > page.html
+```
+
+Spør Claude om å auditere den:
+
+```bash
+claude "Les page.html og utfør en on-page SEO-audit. Sjekk: tittel-tag, metabeskrivelse, H1, overskriftsstruktur, alt-tekst for bilder, interne lenker og én forbedringsanbefaling for innholdet."
+```
+
+For en dypere audit, legg til flere krav:
+
+```bash
+claude "Sjekk også om siden har schema markup, canonical tag og Open Graph-tags. List opp eventuelle mangler."
+```
+
+## Bruksområde 4: keyword-clustering
+
+Gi Claude en rå liste over nøkkelord og be det gruppere dem etter tema:
+
+```bash
+claude "Klyng disse nøkkelordene i emnegrupper og foreslå én pillar-side og støttesider for hver gruppe: gjenbrukbart kaffefilter, papir kaffefilter, øko kaffefilter, rustfritt stål kaffefilter, beste gjenbrukbare filter, kaffefilter miljøpåvirkning."
+```
+
+Dette hjelper deg med å planlegge et innholdshub i stedet for å skrive isolerte innlegg.
+
+## Bruksområde 5: analyse av konkurrentinnhold
+
+Lagre en konkurrentartikkel som `competitor-post.md` og spør:
+
+```bash
+claude "Les competitor-post.md. Hvilke overskrifter bruker de? Hvilke spørsmål besvarer de? Hva mangler som vi kan dekke bedre?"
+```
+
+Bruk output til å lage en mer omfattende versjon av ditt eget innhold.
+
+## Bruksområde 6: forslag til interne lenker
+
+Gitt en liste over eksisterende sider, kan Claude foreslå logiske interne lenker:
+
+```bash
+claude "Her er en liste over sidene mine: [lim inn liste]. Foreslå 3 interne lenker for en ny artikkel om gjenbrukbare kaffefiltre."
+```
+
+Sterk internlenking hjelper brukere og søkemotorer med å oppdage relatert innhold.
+
+## SEO-beste praksis når du bruker Claude Code
+
+### 1. Oppgi søkeintensjon
+Fortell Claude alltid om nøkkelordet er informasjonelt, transaksjonelt eller navigasjonelt.
+
+### 2. Spesifiser lengdebegrensninger
+Be om metabeskrivelser under 160 tegn, titler under 60 tegn og introduksjoner på rundt 150 ord.
+
+### 3. Be om strukturert output
+Bruk Markdown-overskrifter, tabeller og lister slik at innholdet er lett å overføre til CMS-et ditt.
+
+### 4. Faktagransk hver påstand
+SEO-innhold inneholder ofte statistikk og anbefalinger. Verifiser disse mot pålitelige kilder.
+
+### 5. Unngå keyword stuffing
+Be Claude om å bruke nøkkelord naturlig og inkludere semantiske variasjoner.
+
+## Vanlige SEO-feil med AI-generert innhold
+
+- **Publisering uten redigering** — AI-utkast trenger menneskelig gjennomgang for nøyaktighet og merkestemme.
+- **Ignorere søkeintensjon** — et nøkkelord kan ha flere intensjoner; match innholdet ditt til den rette.
+- **Hoppe over interne lenker** — AI kjenner ikke nettstedstrukturen din med mindre du oppgir den.
+- **Glemme E-E-A-T** — legg til forfatterbioer, kilder og signaler på reell erfaring.
+
+## Neste steg
+
+- Kombiner denne arbeidsflyten med [Excel og dataanalyse med Claude Code](/no/fagomrader/excel-and-data-analysis/) for å behandle større nøkkelorddatasett.
+- Forbedre skriveprosessen din med [Skriving med Claude Code](/no/fagomrader/writing-with-claude/).
+- Lær Claude Code-kommandoer i [CLI-grunnleggende-modulen](/no/learn/cli-basics/).

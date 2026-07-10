@@ -2,6 +2,7 @@
 import ThemeToggle from "../islands/ThemeToggle.svelte";
 import SearchPalette from "../islands/SearchPalette.svelte";
 import { useTranslations, switchLocalePath, type Locale } from "../lib/i18n";
+import { useCaseIndexPath } from "../lib/use-cases";
 
 interface Props {
   lang: Locale;
@@ -33,6 +34,7 @@ const primaryLinks: Array<{ href: string; label: string }> = [
   { href: `/${lang}/reference/`, label: t("nav.reference") },
 ];
 const secondaryLinks: Array<{ href: string; label: string }> = [
+  { href: useCaseIndexPath(lang), label: t("nav.useCases") },
   { href: `/${lang}/quiz/`, label: t("nav.quiz") },
   { href: `/${lang}/blog/`, label: t("nav.blog") },
   { href: `/${lang}/changelog/`, label: t("nav.changelog") },

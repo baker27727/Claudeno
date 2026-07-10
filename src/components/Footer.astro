@@ -1,6 +1,7 @@
 ---
 import { useTranslations, type Locale } from "../lib/i18n";
 import { guideIndexPath } from "../lib/guides";
+import { useCaseIndexPath } from "../lib/use-cases";
 
 interface Props {
   lang: Locale;
@@ -13,6 +14,7 @@ const year = new Date().getFullYear();
 const learnLinks = [
   { href: `/${lang}/learn/`, label: t("nav.learn") },
   { href: guideIndexPath(lang), label: t("nav.guides") },
+  { href: useCaseIndexPath(lang), label: t("nav.useCases") },
   { href: `/${lang}/playground/`, label: t("nav.playground") },
   { href: `/${lang}/build/`, label: t("nav.build") },
   { href: `/${lang}/quiz/`, label: t("nav.quiz") },

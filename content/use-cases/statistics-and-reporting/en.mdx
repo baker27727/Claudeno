@@ -1,0 +1,171 @@
+---
+title: "Statistics and Reporting with Claude Code"
+description: "Use Claude Code to interpret statistical output, explain results in plain language, and build reproducible analysis reports."
+updatedDate: "2026-07-09T14:00:00.000Z"
+profession: "statistics"
+difficulty: "intermediate"
+tools:
+  - "Claude Code"
+  - "Python"
+  - "CSV"
+  - "Markdown"
+  - "scipy"
+tags:
+  - "statistics"
+  - "reporting"
+  - "data analysis"
+  - "python"
+  - "Claude Code"
+sources:
+  - "https://docs.anthropic.com/en/docs/claude-code/overview"
+relatedModules:
+  - "cli-basics"
+  - "slash-commands"
+relatedUseCases:
+  - "excel-and-data-analysis"
+  - "marketing-with-claude"
+  - "research-and-summarization-with-claude"
+draft: false
+order: 4
+faq:
+  - question: "Can Claude Code perform statistical tests?"
+    answer: "Claude Code does not compute statistics itself, but it can write Python or R code to run tests. You should always verify results in your own analysis environment."
+  - question: "Is it safe to share sensitive data with Claude Code?"
+    answer: "Treat Claude Code like any external service. Avoid uploading personally identifiable or confidential data unless your organisation approves it. Anonymise data when possible."
+  - question: "Can Claude Code help write research reports?"
+    answer: "Yes. It can draft the narrative sections, explain results in plain language, and structure reports for technical and non-technical audiences."
+  - question: "How do I make my analysis reproducible?"
+    answer: "Ask Claude Code to save every transformation and calculation as a script. Keep raw data separate and document each step in Markdown."
+---
+
+Reports and statistics are only useful when someone can act on them. **Claude Code** bridges the gap between raw numbers and readable conclusions, helping analysts interpret results, draft reports, and communicate findings clearly.
+
+This guide covers practical workflows for statistics and reporting with Claude Code.
+
+## Why Claude Code helps with reporting
+
+Analysts often spend more time explaining results than calculating them. Claude Code can:
+
+- Translate summary statistics into plain-language insights.
+- Draft the narrative sections of a report.
+- Explain what a test result means for decision-makers.
+- Suggest appropriate visualisations.
+- Reformat analysis output into Markdown or slide-ready text.
+- Generate reproducible scripts for calculations.
+
+## Use case 1: explain summary statistics
+
+You have a summary table and need to turn it into insight.
+
+Create `summary.txt`:
+
+```text
+Mean: 142.3
+Median: 138.0
+Standard deviation: 21.4
+Sample size: 250
+```
+
+Ask Claude:
+
+```bash
+claude "Read summary.txt and write 3 sentences a manager could use in a report. Mention what the spread suggests about consistency."
+```
+
+Claude returns wording you can drop directly into a report or presentation.
+
+## Use case 2: calculate a confidence interval
+
+Ask Claude to write a Python snippet:
+
+```bash
+claude "Write a Python script that calculates a 95% confidence interval for a sample mean using scipy. The script should accept a CSV file path as input and print the interval. Save it as confidence_interval.py."
+```
+
+Run it:
+
+```bash
+python confidence_interval.py sample.csv
+```
+
+You now have a reusable, documented script.
+
+## Use case 3: interpret a statistical test
+
+After running a test, paste the output into `test-result.txt`:
+
+```text
+t-statistic: 2.45
+p-value: 0.018
+Sample A mean: 145.2
+Sample B mean: 138.7
+```
+
+Then ask:
+
+```bash
+claude "Read test-result.txt and explain the result in plain language. Is the difference statistically significant? What does it mean practically?"
+```
+
+This helps you communicate results to stakeholders who are not statisticians.
+
+## Use case 4: draft a report outline
+
+Give Claude a dataset topic and audience:
+
+```bash
+claude "I have monthly sales data. Write a 4-section report outline: executive summary, key trends, anomalies, and recommendations. Target audience: non-technical leadership."
+```
+
+You can then ask Claude to fill in each section once your analysis is complete.
+
+## Use case 5: suggest visualisations
+
+Not sure how to present your findings? Ask:
+
+```bash
+claude "I want to show the relationship between marketing spend and revenue over 12 months. Suggest 2 chart types and explain when each is best."
+```
+
+Claude can also generate the Python code to create the chart.
+
+## Use case 6: reproducible reporting workflow
+
+A reproducible workflow might look like this:
+
+1. Save raw data as `data/raw-sales.csv`.
+2. Ask Claude to write `scripts/clean_data.py`.
+3. Ask Claude to write `scripts/analyse_sales.py`.
+4. Ask Claude to draft `reports/sales-report.md` based on the output.
+
+This structure makes your work auditable and reusable.
+
+## Best practices for statistical reporting
+
+### 1. Separate facts from interpretation
+Let Claude draft the explanation, but you decide what it means for the business.
+
+### 2. Keep the raw analysis script
+Always save the code that produced the numbers. Do not rely only on Claude's summary.
+
+### 3. Report uncertainty
+Ask Claude to include confidence intervals, sample sizes, and limitations alongside conclusions.
+
+### 4. Use Markdown for reports
+Markdown is easy to read, version, and convert to PDF or slides.
+
+### 5. Define your audience
+A report for executives needs different language than one for data scientists.
+
+## Common mistakes to avoid
+
+- **Confusing correlation with causation** — ask Claude to flag this distinction.
+- **Reporting p-values without context** — always pair them with effect sizes.
+- **Using jargon for non-technical audiences** — ask for plain-language versions.
+- **Skipping limitations** — every analysis has assumptions; include them.
+
+## Next steps
+
+- Process data more efficiently with [Excel and data analysis with Claude Code](/en/use-cases/excel-and-data-analysis/).
+- Improve your research workflow with [Research and summarisation with Claude Code](/en/use-cases/research-and-summarization-with-claude/).
+- Learn Claude Code fundamentals in the [Getting Started module](/en/learn/getting-started/).

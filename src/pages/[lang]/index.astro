@@ -8,6 +8,7 @@ import {
   organizationJsonLd,
   jsonLdScript,
 } from "../../lib/seo";
+import { useCaseIndexPath } from "../../lib/use-cases";
 
 export function getStaticPaths() {
   return LOCALES.map((lang) => ({ params: { lang } }));
@@ -156,6 +157,22 @@ const c = copy[lang];
         </div>
       </section>
     )}
+
+    <section class="use-cases-promo" aria-labelledby="use-cases-promo-heading">
+      <div class="use-cases-promo__head">
+        <p class="section-eyebrow">{lang === "no" ? "Fagområder" : "Use cases"}</p>
+        <h2 id="use-cases-promo-heading">{lang === "no" ? "Claude Code i jobben din" : "Claude Code at work"}</h2>
+        <p class="use-cases-promo__lede">
+          {lang === "no"
+            ? "Praktiske arbeidsflyter for markedsføring, SEO, Excel, dataanalyse og mer."
+            : "Practical workflows for marketing, SEO, Excel, data analysis, and more."}
+        </p>
+      </div>
+      <a class="use-cases-promo__cta" href={useCaseIndexPath(lang)}>
+        <span>{lang === "no" ? "Se alle fagområder" : "Browse all use cases"}</span>
+        <span aria-hidden="true">&rarr;</span>
+      </a>
+    </section>
 
     <section class="tools" aria-label={c.toolsLabel}>
       <p class="tools__label">{c.toolsLabel}</p>
@@ -449,6 +466,36 @@ const c = copy[lang];
     .guides-promo__links {
       grid-template-columns: 1fr;
     }
+  }
+
+  /* ---------- use-cases promo ---------- */
+  .use-cases-promo {
+    max-width: 44rem;
+    margin: 0 auto;
+    padding: 0 var(--space-6) var(--space-16);
+  }
+  .use-cases-promo__head {
+    margin-bottom: var(--space-5);
+  }
+  .use-cases-promo__head h2 {
+    margin: 0 0 var(--space-2);
+    font-size: clamp(1.5rem, 3vw, 2rem);
+  }
+  .use-cases-promo__lede {
+    color: var(--fg-muted);
+    margin: 0;
+    max-width: 34rem;
+  }
+  .use-cases-promo__cta {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    color: var(--accent);
+    text-decoration: none;
+    font-weight: 600;
+  }
+  .use-cases-promo__cta:hover {
+    text-decoration: underline;
   }
 
   /* ---------- tools: lean inline list, no cards ---------- */

@@ -1,0 +1,182 @@
+---
+title: "Marketing with Claude Code"
+description: "Learn how marketers use Claude Code for campaign planning, audience research, copywriting, A/B tests, and performance reporting."
+updatedDate: "2026-07-09T14:00:00.000Z"
+profession: "marketing"
+difficulty: "beginner"
+tools:
+  - "Claude Code"
+  - "Markdown"
+  - "Spreadsheets"
+  - "Google Docs"
+tags:
+  - "marketing"
+  - "copywriting"
+  - "campaigns"
+  - "content strategy"
+  - "Claude Code"
+sources:
+  - "https://docs.anthropic.com/en/docs/claude-code/overview"
+relatedModules:
+  - "getting-started"
+  - "cli-basics"
+relatedUseCases:
+  - "seo-workflow-with-claude"
+  - "writing-with-claude"
+  - "social-media-with-claude"
+draft: false
+order: 1
+faq:
+  - question: "Can Claude Code write complete marketing campaigns?"
+    answer: "Claude Code can draft campaign copy, structure messaging, and generate multiple variants, but human review is essential for brand voice, factual accuracy, and strategic alignment before publishing."
+  - question: "Is Claude Code useful for SEO content marketing?"
+    answer: "Yes. It helps draft SEO-friendly content, meta descriptions, content briefs, and competitive summaries. Pair it with keyword research tools for best results."
+  - question: "Do I need to install extra software for marketing workflows?"
+    answer: "No. Claude Code runs in your terminal and works with Markdown files, CSVs, and plain text. You only need the files you already use in your workflow."
+  - question: "How does Claude Code compare to ChatGPT for marketing?"
+    answer: "Claude Code is designed for terminal-based, file-aware workflows. It reads and writes project files directly, making it ideal for batch work, documentation, and version-controlled content."
+---
+
+Marketing teams today are expected to produce more campaigns, more variants, and more personalised messages—often with the same resources. **Claude Code** helps marketers move faster by turning briefs, notes, and data into structured marketing content directly from the terminal.
+
+This guide shows practical ways to use Claude Code for marketing work, from ad copy and landing pages to content briefs and competitive analysis.
+
+## Why marketers should learn Claude Code
+
+Claude Code is not a replacement for strategy or creativity. It is a productivity layer that handles repetitive writing tasks so you can focus on decisions that matter.
+
+Key benefits for marketing teams:
+
+- **Speed up first drafts** of ads, emails, landing pages, and social posts.
+- **Generate variants quickly** for A/B testing and audience segmentation.
+- **Repurpose content** across channels without losing core messaging.
+- **Analyse competitors** by feeding their content into Claude for structured summaries.
+- **Keep work file-based**, which makes version control and team handoffs easier.
+
+Because Claude Code works with files in your project folder, every input and output is visible, editable, and reusable.
+
+## Use case 1: write ad copy variants from a brief
+
+One of the most common marketing tasks is turning a brief into multiple ad variants. Claude Code can read the brief and produce ready-to-review copy.
+
+### Step 1: create a brief file
+
+Create `campaign-brief.md`:
+
+```markdown
+# Campaign brief
+
+Product: EcoBean reusable coffee filter
+Target audience: Home baristas aged 25–40
+Tone: Friendly, practical, slightly playful
+Key benefit: Saves money and reduces paper waste
+Channels: Instagram, Google Ads, email
+Constraints: Headline max 30 characters, description max 90 characters
+```
+
+### Step 2: ask Claude Code to generate variants
+
+```bash
+claude "Read campaign-brief.md and write 5 ad variants for Instagram. Include a headline, description, and CTA for each."
+```
+
+Claude reads the brief, respects the constraints, and returns structured variants. You can then ask for refinements:
+
+```bash
+claude "Make variant 3 more urgent. Make variant 5 focus on sustainability."
+```
+
+### Step 3: save the output
+
+```bash
+claude "Read campaign-brief.md and save 10 ad variants to instagram-ads.md."
+```
+
+This keeps your work organised and makes future edits simple.
+
+## Use case 2: build a landing page draft
+
+Landing pages need clarity above all else. Claude Code can turn a product description into a structured page outline.
+
+Create `product-notes.md`:
+
+```markdown
+EcoBean reusable coffee filter
+- Stainless steel mesh, fits most drip brewers
+- Lasts 5+ years with normal use
+- Dishwasher safe
+- Saves ~€50 per year vs paper filters
+- 30-day money-back guarantee
+```
+
+Then run:
+
+```bash
+claude "Read product-notes.md and write a landing page draft with headline, subheadline, 3 benefit sections, social proof placeholder, FAQ, and CTA."
+```
+
+The result gives you a strong starting point. You can then iterate:
+
+```bash
+claude "Rewrite the headline to focus on the 5-year lifespan and cost saving."
+```
+
+## Use case 3: analyse competitor messaging
+
+Save a competitor landing page or ad as `competitor-a.md` and ask:
+
+```bash
+claude "Read competitor-a.md. Summarise their main value proposition, tone, target audience, and 2 weaknesses we could differentiate against."
+```
+
+This is faster than manual note-taking and gives you a structured comparison you can share with your team.
+
+## Use case 4: create a content marketing brief
+
+SEO-driven content starts with a solid brief. Give Claude a keyword and target audience:
+
+```bash
+claude "Create a content brief for 'reusable coffee filter vs paper'. Target audience: environmentally conscious coffee drinkers. Include suggested H2s, word count, key points to cover, and 3 angles to beat competitors."
+```
+
+The brief becomes a blueprint for your writer or for your own draft.
+
+## Use case 5: email sequence from a single idea
+
+Turn a product launch idea into a multi-email sequence:
+
+```bash
+claude "Write a 3-email launch sequence for EcoBean. Email 1: teaser. Email 2: launch with offer. Email 3: last chance. Keep each under 150 words."
+```
+
+You can then adapt each email for different segments.
+
+## Best practices for marketing with Claude Code
+
+### 1. Keep inputs in Markdown files
+Files are easier to edit, version, and reuse than long chat threads.
+
+### 2. Be specific about tone
+Instead of "write an ad", say "write a playful ad for eco-conscious millennials".
+
+### 3. Ask for structured output
+Use formats like tables, numbered lists, or frontmatter when you need reusable content.
+
+### 4. Always review before publishing
+Claude Code drafts fast, but you are responsible for brand accuracy, legal claims, and factual correctness.
+
+### 5. Iterate in small steps
+Refine one element at a time—headline first, then CTA, then body copy.
+
+## Common mistakes to avoid
+
+- **Trusting claims without verification** — always check statistics and product details.
+- **Ignoring brand voice** — edit output to match your guidelines.
+- **Over-relying on generic prompts** — the more context you provide, the better the result.
+- **Skipping the human review** — AI copy can sound plausible but off-brand.
+
+## Next steps
+
+- Try [SEO workflow with Claude Code](/en/use-cases/seo-workflow-with-claude/) to connect your marketing copy with search strategy.
+- Explore [Writing with Claude Code](/en/use-cases/writing-with-claude/) for long-form content and blogging.
+- Learn Claude Code basics in the [Getting Started module](/en/learn/getting-started/).

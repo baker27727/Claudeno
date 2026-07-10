@@ -16,6 +16,7 @@ export const ui = {
   en: {
     "nav.learn": "Learn",
     "nav.guides": "Guides",
+    "nav.useCases": "Use cases",
     "nav.playground": "Playground",
     "nav.build": "Config Builder",
     "nav.reference": "Reference",
@@ -71,6 +72,7 @@ export const ui = {
   no: {
     "nav.learn": "Lær",
     "nav.guides": "Guider",
+    "nav.useCases": "Fagområder",
     "nav.playground": "Lekeplass",
     "nav.build": "Konfigbygger",
     "nav.reference": "Referanse",
@@ -144,8 +146,14 @@ export function formatDate(date: Date, locale: Locale): string {
 // بعض المسارات تختلف تسميتها فعليًا حسب اللغة، وليس فقط بادئة /en|no — مثل
 // أدلة SEO الدائمة: /no/guider/ مقابل /en/guides/ (URL نرويجي طبيعي، وليس
 // ترجمة حرفية لـ "guides"). أي بادئة مسار هنا تُستبدل مع اللغة معًا.
-const LOCALIZED_SEGMENT_TO_LOCALE: Record<string, Locale> = { guider: "no", guides: "en" };
+const LOCALIZED_SEGMENT_TO_LOCALE: Record<string, Locale> = {
+  guider: "no",
+  guides: "en",
+  fagomrader: "no",
+  "use-cases": "en",
+};
 const LOCALE_TO_LOCALIZED_SEGMENT: Record<Locale, string> = { no: "guider", en: "guides" };
+const USE_CASE_SEGMENT: Record<Locale, string> = { no: "fagomrader", en: "use-cases" };
 
 /**
  * يبدّل بين مسارَي اللغة مع الحفاظ على بقية المسار (لروابط hreflang ومبدّل
@@ -158,7 +166,13 @@ export function switchLocalePath(pathname: string, to: Locale): string {
   const firstSegment = segMatch?.[1];
   if (firstSegment && firstSegment in LOCALIZED_SEGMENT_TO_LOCALE) {
     const rest = segMatch?.[2] ?? "";
-    return `/${to}/${LOCALE_TO_LOCALIZED_SEGMENT[to]}${rest}`;
+    // Use the correct localized segment for the target locale. Guides and
+    // use-cases have different slug segments per locale.
+    let targetSegment = LOCALE_TO_LOCALIZED_SEGMENT[to];
+    if (firstSegment === "fagomrader" || firstSegment === "use-cases") {
+      targetSegment = USE_CASE_SEGMENT[to];
+    }
+    return `/${to}/${targetSegment}${rest}`;
   }
   return pathname.replace(/^\/(en|no)(?=\/|$)/, `/${to}`);
 }

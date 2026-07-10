@@ -1,0 +1,134 @@
+---
+title: "Research and Summarization with Claude Code"
+description: "Use Claude Code to read sources, extract findings, compare papers, and generate literature notes or executive summaries."
+updatedDate: "2026-07-09T14:00:00.000Z"
+profession: "research"
+difficulty: "intermediate"
+tools:
+  - "Claude Code"
+  - "Markdown"
+  - "PDF"
+  - "CSV"
+tags:
+  - "research"
+  - "summarization"
+  - "literature review"
+  - "data extraction"
+  - "Claude Code"
+sources:
+  - "https://docs.anthropic.com/en/docs/claude-code/overview"
+relatedModules:
+  - "getting-started"
+  - "cli-basics"
+  - "getting-started"
+relatedUseCases:
+  - "writing-with-claude"
+  - "statistics-and-reporting"
+  - "seo-workflow-with-claude"
+draft: false
+order: 9
+faq:
+  - question: "Can Claude Code read PDFs and web pages?"
+    answer: "Claude Code can read files in your project, including text extracted from PDFs. It cannot browse the live web directly."
+  - question: "How much content can it summarise at once?"
+    answer: "Claude Code can process large files and multiple files in one request, but very long documents may need to be split or summarised in stages."
+  - question: "Can it compare multiple sources?"
+    answer: "Yes. Point Claude at several files and ask it to compare findings, methods, or conclusions."
+  - question: "Is Claude Code suitable for academic literature reviews?"
+    answer: "It is useful for first-pass synthesis and note-taking, but always verify quotes, citations, and interpretations against the original sources."
+---
+
+Researchers, analysts, and students spend hours reading, annotating, and synthesising sources. **Claude Code** helps you extract key information from files and turn it into structured notes, comparisons, and summaries.
+
+This guide shows how to use Claude Code for research, summarisation, and source synthesis.
+
+## Why researchers use Claude Code
+
+Claude Code turns file-based reading into an interactive workflow. You can:
+
+- Summarise long articles or reports in seconds.
+- Extract findings, methods, and limitations from papers.
+- Compare multiple sources side by side.
+- Generate literature notes in Markdown.
+- Identify contradictions or gaps in the literature.
+- Keep your research files under version control.
+
+## Use case 1: article summary
+
+Save an article as `article.txt` and ask:
+
+```bash
+claude "Read article.txt and write a 200-word summary. Include the main research question, methods, key findings, and limitations."
+```
+
+This gives you a quick reference without re-reading the entire paper.
+
+## Use case 2: extract key findings
+
+For a more structured output:
+
+```bash
+claude "Read report.pdf and extract: (1) 3 key findings, (2) 2 surprising statistics, (3) main recommendations, and (4) limitations. Format as Markdown bullet points."
+```
+
+You can save this as `notes.md` and build a research database over time.
+
+## Use case 3: compare multiple sources
+
+Place several files in a `sources/` directory and run:
+
+```bash
+claude "Read all files in sources/ and create a comparison table with columns: Source, Main Claim, Evidence, and Limitations."
+```
+
+This is valuable for literature reviews, competitive analysis, and decision-making.
+
+## Use case 4: generate research questions
+
+After reading several sources, ask:
+
+```bash
+claude "Based on the files in sources/, suggest 5 research questions that are not fully answered by the existing literature."
+```
+
+This helps you identify gaps and plan original work.
+
+## Use case 5: executive summary from multiple reports
+
+Combine several reports into one concise summary:
+
+```bash
+claude "Read report-a.md, report-b.md, and report-c.md. Write a 300-word executive summary for a non-technical leadership audience. Focus on trends, risks, and recommendations."
+```
+
+This saves hours of synthesis work.
+
+## Best practices for research with Claude Code
+
+### 1. Start with clean source files
+Convert PDFs to text or Markdown when possible. Claude reads structured text better than raw PDFs.
+
+### 2. Be specific about output format
+Ask for bullet points, tables, summaries, or questions depending on your goal.
+
+### 3. Process sources in batches
+Summarise each source individually, then ask Claude to synthesise across summaries.
+
+### 4. Track citations
+Ask Claude to note the source file for each claim. Always verify before citing in published work.
+
+### 5. Store notes in version control
+Use Git to track how your understanding evolves.
+
+## Common mistakes to avoid
+
+- **Trusting summaries without verification** — always check against the original.
+- **Ignoring context** — a claim may mean something different in the full paper.
+- **Overloading one prompt** — split very long documents.
+- **Skipping file naming** — consistent names make multi-source prompts easier.
+
+## Next steps
+
+- Use research for content with [Writing with Claude Code](/en/use-cases/writing-with-claude/).
+- Turn findings into reports with [Statistics and reporting with Claude Code](/en/use-cases/statistics-and-reporting/).
+- Learn advanced prompting in the [Getting started module](/en/learn/getting-started/).

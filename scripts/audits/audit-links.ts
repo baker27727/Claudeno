@@ -13,6 +13,7 @@ const EXCEPTIONS = [
   /^https:\/\/learnclaude\.dev/, // alternate domain candidate, not live
   /^https:\/\/mcp\.notion\.com\/mcp/, // authenticated MCP endpoint, 401s without a token (expected, not a dead link)
   /^https:\/\/mcp\.stripe\.com/, // authenticated MCP endpoint, 404s on plain GET/HEAD without an MCP client (expected, not a dead link)
+  /^https:\/\/example\.com/, // reserved example domain used in tutorials
 ];
 
 const URL_RE = /\bhttps?:\/\/[^\s)\]"'>]+/g;

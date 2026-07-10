@@ -1,0 +1,146 @@
+---
+title: "Social Media with Claude Code"
+description: "Use Claude Code to plan social posts, write captions and threads, build content calendars, and repurpose long-form content."
+updatedDate: "2026-07-09T14:00:00.000Z"
+profession: "social-media"
+difficulty: "beginner"
+tools:
+  - "Claude Code"
+  - "Markdown"
+  - "CSV"
+tags:
+  - "social media"
+  - "content calendar"
+  - "captions"
+  - "threads"
+  - "Claude Code"
+sources:
+  - "https://docs.anthropic.com/en/docs/claude-code/overview"
+relatedModules:
+  - "getting-started"
+  - "cli-basics"
+relatedUseCases:
+  - "marketing-with-claude"
+  - "writing-with-claude"
+  - "customer-support-with-claude"
+draft: false
+order: 8
+faq:
+  - question: "Can Claude Code post directly to social platforms?"
+    answer: "No. Claude Code drafts content into files. You still copy the text into your social media scheduler or platform."
+  - question: "Can it write in different brand voices?"
+    answer: "Yes. Provide examples of past posts and a voice description, and Claude will match the tone."
+  - question: "How do I keep content fresh and not generic?"
+    answer: "Feed Claude specific insights, customer quotes, or data from your project. Generic prompts produce generic output."
+  - question: "Does it work for Norwegian social media content?"
+    answer: "Yes. Claude can draft in Norwegian and adapt for different platforms and tones."
+---
+
+Social media managers need a constant flow of ideas, captions, and content calendars. **Claude Code** helps you plan and draft social content from files, making it easy to iterate and reuse across platforms.
+
+This guide shows how to create captions, threads, content calendars, and repurposed posts with Claude Code.
+
+## Why social media managers use Claude Code
+
+Claude Code is ideal for file-based content planning. Benefits include:
+
+- Drafting multiple caption options quickly.
+- Generating platform-specific versions from one idea.
+- Building reusable content calendars in Markdown or CSV.
+- Repurposing blog posts or guides into bite-sized posts.
+- Keeping a searchable library of post templates.
+- Aligning posts with campaign messaging.
+
+## Use case 1: caption variations from a single idea
+
+Create `post-brief.md`:
+
+```markdown
+Topic: How we reduced deployment time with Claude Code
+Tone: Friendly and practical
+Platform: LinkedIn
+Audience: Engineering managers
+Call to action: Read the full case study
+```
+
+Run:
+
+```bash
+claude "Read post-brief.md and write 3 caption variations, each under 150 words. Include a hook in the first line."
+```
+
+You now have options to test or rotate.
+
+## Use case 2: Twitter/X thread from a blog post
+
+Save a blog post as `blog-post.md` and ask:
+
+```bash
+claude "Read blog-post.md and write a 6-post Twitter thread. Start with a strong hook, use one insight per post, and end with a CTA."
+```
+
+Adjust for length or tone:
+
+```bash
+claude "Make the thread more casual and add emojis sparingly."
+```
+
+## Use case 3: weekly content calendar
+
+Create a brief and generate a calendar:
+
+```bash
+claude "I need a 7-day LinkedIn content calendar for a SaaS company that teaches Claude Code. Format the output as a Markdown table with Date, Topic, Post Type, and Caption Summary."
+```
+
+Save the output as `content-calendar.md` and reuse it next month.
+
+## Use case 4: repurpose one piece into many formats
+
+Turn a long guide into several social assets:
+
+```bash
+claude "Read guide.md and create: (1) a LinkedIn post, (2) a Twitter thread, (3) an Instagram caption, and (4) 5 short quote snippets."
+```
+
+This multiplies the value of each piece of content you produce.
+
+## Use case 5: hashtag and angle ideas
+
+Stuck for angles? Ask:
+
+```bash
+claude "Give me 10 content angles and 3 hashtag options for each, for a company that helps Norwegian professionals learn Claude Code."
+```
+
+Save the best ideas into an `ideas.md` file.
+
+## Best practices for social media with Claude Code
+
+### 1. Define platform rules
+Tell Claude the ideal length, tone, and CTA style for each platform.
+
+### 2. Feed it real input
+The best posts come from real customer questions, project wins, or team insights.
+
+### 3. Build a template library
+Store caption templates and briefs in `social/` so your team can reuse them.
+
+### 4. Iterate before scheduling
+Generate several versions, pick the best, and refine manually.
+
+### 5. Track performance
+Note which posts perform well and feed those patterns back into future prompts.
+
+## Common mistakes to avoid
+
+- **Sounding too corporate** — edit for personality.
+- **Overposting generic tips** — tie content to your specific experience.
+- **Ignoring platform limits** — always check character counts.
+- **Skipping the CTA** — every post should have a purpose.
+
+## Next steps
+
+- Scale your content with [Marketing with Claude Code](/en/use-cases/marketing-with-claude/).
+- Improve writing workflows with [Writing with Claude Code](/en/use-cases/writing-with-claude/).
+- Learn prompt techniques in the [Getting started module](/en/learn/getting-started/).

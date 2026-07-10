@@ -1,0 +1,262 @@
+---
+// Shared rendering for both /no/fagomrader/ and /en/use-cases/.
+// Use-cases are evergreen and grouped by profession.
+import Base from "./Base.astro";
+import { useTranslations, formatDate, type Locale } from "../lib/i18n";
+import {
+  getAllUseCases,
+  useCaseForLocale,
+  useCaseIndexPath,
+  useCasePath,
+  useCasesByProfession,
+  professionLabel,
+} from "../lib/use-cases";
+import { webPageJsonLd, breadcrumbListJsonLd, pageBreadcrumbs, jsonLdScript, SITE_URL, type JsonLdObject } from "../lib/seo";
+import { guideIndexPath } from "../lib/guides";
+
+interface Props {
+  lang: Locale;
+}
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+
+const allUseCases = await getAllUseCases();
+const isProd = import.meta.env.PROD;
+const useCases = allUseCases
+  .map((uc) => ({ slug: uc.slug, entry: useCaseForLocale(uc, lang) }))
+  .filter((uc): uc is { slug: string; entry: NonNullable<(typeof uc)["entry"]> } => Boolean(uc.entry))
+  .filter((uc) => !(isProd && uc.entry.data.draft));
+
+const grouped = useCasesByProfession(
+  useCases.map((uc) => ({ slug: uc.slug, en: lang === "en" ? uc.entry : undefined, no: lang === "no" ? uc.entry : undefined })),
+  lang,
+);
+
+const pagePath = useCaseIndexPath(lang);
+const title = lang === "no" ? "Claude Code i praksis" : "Claude Code use cases";
+const description = lang === "no"
+  ? "Se hvordan Claude Code hjelper deg i konkrete fagområder: markedsføring, SEO, Excel, dataanalyse, statistikk og mer."
+  : "See how Claude Code helps in real professional domains: marketing, SEO, Excel, data analysis, statistics, and more.";
+
+const useCaseItemList: JsonLdObject = {
+  "@context": "https://schema.org",
+  "@type": "ItemList",
+  name: title,
+  inLanguage: lang,
+  numberOfItems: useCases.length,
+  itemListElement: useCases.map((uc, i) => ({
+    "@type": "ListItem",
+    position: i + 1,
+    name: uc.entry.data.title,
+    url: `${SITE_URL}${useCasePath(uc.slug, lang)}`,
+  })),
+};
+
+const webPage = webPageJsonLd({
+  name: title,
+  description,
+  lang,
+  path: pagePath,
+  mainEntity: { type: "ItemList", data: useCaseItemList },
+});
+const crumbs = breadcrumbListJsonLd(pageBreadcrumbs(lang === "no" ? "Fagområder" : "Use cases", pagePath, lang));
+const jsonLd = jsonLdScript([webPage, crumbs]);
+
+function difficultyLabel(difficulty: string, locale: Locale): string {
+  if (difficulty === "beginner") return locale === "no" ? "Nybegynner" : "Beginner";
+  if (difficulty === "intermediate") return locale === "no" ? "Middels" : "Intermediate";
+  return locale === "no" ? "Avansert" : "Advanced";
+}
+---
+
+<Base lang={lang} title={title} description={description}>
+  <Fragment slot="head">
+    <Fragment set:html={jsonLd} />
+  </Fragment>
+  <main class="use-cases">
+    <header class="use-cases__header">
+      <p class="use-cases__eyebrow">{lang === "no" ? "Fagområder" : "Use cases"}</p>
+      <h1>{title}</h1>
+      <p class="use-cases__lede">{description}</p>
+    </header>
+
+    {useCases.length === 0 ? (
+      <p class="use-cases__empty">
+        {lang === "no"
+          ? "Ingen fagområder ennå."
+          : "No use cases yet."}
+      </p>
+    ) : (
+      <div class="use-cases__groups">
+        {Object.entries(grouped).map(([profession, items]) => (
+          <section class="use-cases__group" aria-labelledby={`profession-${profession}`}>
+            <h2 id={`profession-${profession}`} class="use-cases__groupTitle">{professionLabel(profession, lang)}</h2>
+            <ol class="use-cases__list">
+              {items.map((uc) => {
+                const entry = useCaseForLocale(uc, lang)!;
+                return (
+                  <li class="use-cases__card" data-pagefind-filter={`profession:${profession}`}>
+                    <a class="use-cases__cardLink" href={useCasePath(uc.slug, lang)}>
+                      <div class="use-cases__meta">
+                        <span class={`use-cases__difficulty use-cases__difficulty--${entry.data.difficulty}`}>
+                          {difficultyLabel(entry.data.difficulty, lang)}
+                        </span>
+                        {entry.data.tools.length > 0 && (
+                          <span class="use-cases__tools">{entry.data.tools.join(" · ")}</span>
+                        )}
+                      </div>
+                      <h3 class="use-cases__title">{entry.data.title}</h3>
+                      <p class="use-cases__excerpt">{entry.data.description}</p>
+                      <p class="use-cases__updated">
+                        {lang === "no" ? "Oppdatert" : "Updated"} {formatDate(new Date(entry.data.updatedDate), lang)}
+                      </p>
+                    </a>
+                  </li>
+                );
+              })}
+            </ol>
+          </section>
+        ))}
+      </div>
+    )}
+
+    <nav class="use-cases__related" aria-label={lang === "no" ? "Utforsk mer" : "Explore more"}>
+      <a href={`/${lang}/learn/`}>{t("nav.learn")}</a>
+      <a href={guideIndexPath(lang)}>{t("nav.guides")}</a>
+      <a href={`/${lang}/playground/`}>{t("nav.playground")}</a>
+      <a href={`/${lang}/blog/`}>{t("nav.blog")}</a>
+    </nav>
+  </main>
+</Base>
+
+<style>
+  .use-cases {
+    max-width: 50rem;
+    margin: 0 auto;
+    padding: var(--space-12) var(--space-6) var(--space-16);
+  }
+  .use-cases__header {
+    margin-bottom: var(--space-10);
+  }
+  .use-cases__eyebrow {
+    margin: 0 0 var(--space-2);
+    color: var(--accent);
+    font-size: 0.8125rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+  .use-cases__header h1 {
+    margin: 0 0 var(--space-3);
+    font-size: clamp(1.75rem, 4vw, 2.5rem);
+  }
+  .use-cases__lede {
+    max-width: 36rem;
+    color: var(--fg-muted);
+    font-size: 1.0625rem;
+    line-height: 1.6;
+    margin: 0;
+  }
+  .use-cases__groups {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-10);
+  }
+  .use-cases__groupTitle {
+    font-size: 1.125rem;
+    margin: 0 0 var(--space-4);
+    color: var(--fg);
+  }
+  .use-cases__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+  }
+  .use-cases__card {
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    background: var(--bg-elev);
+    transition: border-color 0.15s ease;
+  }
+  .use-cases__card:hover {
+    border-color: var(--accent);
+  }
+  .use-cases__cardLink {
+    display: block;
+    padding: var(--space-5);
+    text-decoration: none;
+    color: inherit;
+  }
+  .use-cases__meta {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    margin-bottom: var(--space-3);
+    flex-wrap: wrap;
+  }
+  .use-cases__difficulty {
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 0.15rem 0.5rem;
+    border-radius: var(--radius-full);
+  }
+  .use-cases__difficulty--beginner {
+    background: color-mix(in srgb, var(--ok) 15%, transparent);
+    color: var(--ok);
+  }
+  .use-cases__difficulty--intermediate {
+    background: color-mix(in srgb, var(--warn) 15%, transparent);
+    color: var(--warn);
+  }
+  .use-cases__difficulty--advanced {
+    background: color-mix(in srgb, var(--err) 15%, transparent);
+    color: var(--err);
+  }
+  .use-cases__tools {
+    font-size: 0.8125rem;
+    color: var(--fg-muted);
+  }
+  .use-cases__title {
+    font-size: 1.25rem;
+    line-height: 1.3;
+    margin: 0 0 var(--space-2);
+    color: var(--fg);
+  }
+  .use-cases__excerpt {
+    margin: 0 0 var(--space-3);
+    color: var(--fg-muted);
+    font-size: 0.9375rem;
+    line-height: 1.5;
+  }
+  .use-cases__updated {
+    margin: 0;
+    font-size: 0.8125rem;
+    color: var(--fg-muted);
+    font-family: var(--font-mono);
+  }
+  .use-cases__empty {
+    color: var(--fg-muted);
+    font-style: italic;
+    margin-bottom: var(--space-10);
+  }
+  .use-cases__related {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2) var(--space-4);
+    padding-top: var(--space-6);
+    border-top: 1px solid var(--border);
+    font-size: 0.875rem;
+  }
+  .use-cases__related a {
+    color: var(--fg-muted);
+    text-decoration: none;
+  }
+  .use-cases__related a:hover {
+    color: var(--accent);
+  }
+</style>

@@ -14,6 +14,7 @@
 
 import type { Locale } from "./i18n";
 import { guideIndexPath } from "./guides";
+import { useCaseIndexPath } from "./use-cases";
 
 // -------------------------------------------------------------------------
 // ثوابت على مستوى الوحدة — مصدر حقيقة واحد لكل ثوابت SEO
@@ -485,6 +486,19 @@ export function guideBreadcrumbs(guideTitle: string, path: string, lang: Locale)
     { name: homeLabel(lang), path: `/${lang}/` },
     { name: guidesLabel, path: guideIndexPath(lang) },
     { name: guideTitle, path },
+  ];
+}
+
+/**
+ * راحة: يولّد BreadcrumbList موحد لصفحة حالة استخدام مهنية:
+ * Home → Fagområder/Use cases → Use case.
+ */
+export function useCaseBreadcrumbs(useCaseTitle: string, path: string, lang: Locale): Crumb[] {
+  const indexLabel = lang === "no" ? "Fagområder" : "Use cases";
+  return [
+    { name: homeLabel(lang), path: `/${lang}/` },
+    { name: indexLabel, path: useCaseIndexPath(lang) },
+    { name: useCaseTitle, path },
   ];
 }
 

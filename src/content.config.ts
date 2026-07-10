@@ -115,7 +115,7 @@ const catalog = defineCollection({
   loader: file("./content/catalog.yaml"),
   schema: z.object({
     id: z.string(),
-    kind: z.enum(["module", "guide", "reference", "tool"]),
+    kind: z.enum(["module", "guide", "reference", "tool", "use-case"]),
     title: bilingual,
     href: z.string(),
   }),
@@ -178,6 +178,37 @@ const guides = defineCollection({
   }),
 });
 
+// -------------------------------------------------------------------------
+// useCases — حالات استخدام Claude Code في مجالات مهنية (marketing, SEO,
+// Excel, statistics, ...). نفس نمط guides: ملف لكل لغة تحت مجلد slug.
+// -------------------------------------------------------------------------
+const useCases = defineCollection({
+  loader: glob({ base: "./content/use-cases", pattern: "**/{en,no}.{md,mdx}" }),
+  schema: z.object({
+    title: z.string(),
+    description: z.string(),
+    updatedDate: z.string().datetime(),
+    author: z.string().default("Claude Code Learn"),
+    profession: z.string(),
+    difficulty: z.enum(["beginner", "intermediate", "advanced"]),
+    tools: z.array(z.string()).default([]),
+    tags: z.array(z.string()).default([]),
+    sources: z.array(z.string().url()).default([]),
+    relatedModules: z.array(z.string()).default([]),
+    relatedUseCases: z.array(z.string()).default([]),
+    faq: z
+      .array(
+        z.object({
+          question: z.string(),
+          answer: z.string(),
+        }),
+      )
+      .default([]),
+    draft: z.boolean().default(true),
+    order: z.number().default(0),
+  }),
+});
+
 export const collections = {
   moduleMeta,
   moduleTerminal,
@@ -188,4 +219,5 @@ export const collections = {
   changelog,
   blog,
   guides,
+  useCases,
 };

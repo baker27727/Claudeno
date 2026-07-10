@@ -1,0 +1,17 @@
+---
+import UseCaseDetailLayout from "../../../layouts/UseCaseDetailLayout.astro";
+import { getAllUseCases, useCaseForLocale } from "../../../lib/use-cases";
+
+export async function getStaticPaths() {
+  const allUseCases = await getAllUseCases();
+  const isProd = import.meta.env.PROD;
+  return allUseCases
+    .filter((uc) => useCaseForLocale(uc, "no"))
+    .filter((uc) => !(isProd && useCaseForLocale(uc, "no")!.data.draft))
+    .map((uc) => ({ params: { slug: uc.slug }, props: { useCaseGroup: uc } }));
+}
+
+const { useCaseGroup } = Astro.props;
+---
+
+<UseCaseDetailLayout lang="no" useCaseGroup={useCaseGroup} />

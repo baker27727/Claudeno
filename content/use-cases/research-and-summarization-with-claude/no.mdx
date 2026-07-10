@@ -1,0 +1,134 @@
+---
+title: "Forskning og oppsummering med Claude Code"
+description: "Bruk Claude Code til å lese kilder, trekke ut funn, sammenligne artikler og generere litteratur-notater eller lederoppsummeringer."
+updatedDate: "2026-07-09T14:00:00.000Z"
+profession: "research"
+difficulty: "intermediate"
+tools:
+  - "Claude Code"
+  - "Markdown"
+  - "PDF"
+  - "CSV"
+tags:
+  - "forskning"
+  - "oppsummering"
+  - "litteraturgjennomgang"
+  - "datauttrekk"
+  - "Claude Code"
+sources:
+  - "https://docs.anthropic.com/en/docs/claude-code/overview"
+relatedModules:
+  - "getting-started"
+  - "cli-basics"
+  - "getting-started"
+relatedUseCases:
+  - "writing-with-claude"
+  - "statistics-and-reporting"
+  - "seo-workflow-with-claude"
+draft: false
+order: 9
+faq:
+  - question: "Kan Claude Code lese PDF-er og nettsider?"
+    answer: "Claude Code kan lese filer i prosjektet ditt, inkludert tekst uttrekt fra PDF-er. Det kan ikke surfe på levende nett direkte."
+  - question: "Hvor mye innhold kan det oppsummere på én gang?"
+    answer: "Claude Code kan behandle store filer og flere filer i én forespørsel, men veldig lange dokumenter kan trenge å deles eller oppsummeres i etapper."
+  - question: "Kan det sammenligne flere kilder?"
+    answer: "Ja. Peke Claude på flere filer og be det sammenligne funn, metoder eller konklusjoner."
+  - question: "Er Claude Code egnet for akademiske litteraturgjennomganger?"
+    answer: "Det er nyttig for første gangs syntese og notat-taking, men verifiser alltid sitater, referanser og tolkninger mot originale kilder."
+---
+
+Forskere, analytikere og studenter bruker timer på å lese, kommentere og syntetisere kilder. **Claude Code** hjelper deg med å trekke ut nøkkelinformasjon fra filer og gjøre den om til strukturerte notater, sammenligninger og oppsummeringer.
+
+Denne guiden viser hvordan du bruker Claude Code til forskning, oppsummering og kildesyntese.
+
+## Hvorfor forskere bruker Claude Code
+
+Claude Code gjør filbasert lesing til en interaktiv arbeidsflyt. Du kan:
+
+- Oppsummere lange artikler eller rapporter på sekunder.
+- Trekke ut funn, metoder og begrensninger fra artikler.
+- Sammenligne flere kilder side om side.
+- Generere litteratur-notater i Markdown.
+- Identifisere motsetninger eller hull i litteraturen.
+- Holde forskningsfilene dine under versjonskontroll.
+
+## Bruksområde 1: artikkeloppsummering
+
+Lagre en artikkel som `article.txt` og spør:
+
+```bash
+claude "Les article.txt og skriv et 200-ords sammendrag. Inkluder hovedforskningsspørsmålet, metoder, nøkkelfunn og begrensninger."
+```
+
+Dette gir deg en rask referanse uten å måtte lese hele artikkelen på nytt.
+
+## Bruksområde 2: trekk ut nøkkelfunn
+
+For en mer strukturert output:
+
+```bash
+claude "Les report.pdf og trekk ut: (1) 3 nøkkelfunn, (2) 2 overraskende statistikker, (3) hovedanbefalinger, og (4) begrensninger. Formater som Markdown punktlister."
+```
+
+Du kan lagre dette som `notes.md` og bygge en forskningsdatabase over tid.
+
+## Bruksområde 3: sammenligne flere kilder
+
+Plasser flere filer i en `sources/`-mappe og kjør:
+
+```bash
+claude "Les alle filer i sources/ og lag en sammenligningstabell med kolonnene: Kilde, Hovedpåstand, Bevis og Begrensninger."
+```
+
+Dette er verdifullt for litteraturgjennomganger, konkurranseanalyse og beslutningstaking.
+
+## Bruksområde 4: generer forskningsspørsmål
+
+Etter å ha lest flere kilder, spør:
+
+```bash
+claude "Basert på filene i sources/, foreslå 5 forskningsspørsmål som ikke er fullt ut besvart av eksisterende litteratur."
+```
+
+Dette hjelper deg med å identifisere hull og planlegge originalt arbeid.
+
+## Bruksområde 5: lederoppsummering fra flere rapporter
+
+Kombiner flere rapporter til én konsis oppsummering:
+
+```bash
+claude "Les report-a.md, report-b.md og report-c.md. Skriv en 300-ords lederoppsummering for et ikke-teknisk lederskapspublikum. Fokuser på trender, risikoer og anbefalinger."
+```
+
+Dette sparer timer med syntesearbeid.
+
+## Beste praksis for forskning med Claude Code
+
+### 1. Start med rene kildefiler
+Konverter PDF-er til tekst eller Markdown når mulig. Claude leser strukturert tekst bedre enn rå PDF-er.
+
+### 2. Vær spesifikk om output-format
+Be om punktlister, tabeller, sammendrag eller spørsmål avhengig av målet ditt.
+
+### 3. Behandle kilder i batcher
+Oppsummer hver kilde individuelt, og be deretter Claude syntetisere på tvers av oppsummeringer.
+
+### 4. Spor sitater
+Be Claude notere kildefilen for hver påstand. Verifiser alltid før du siterer i publisert arbeid.
+
+### 5. Lagre notater i versjonskontroll
+Bruk Git til å spore hvordan forståelsen din utvikler seg.
+
+## Vanlige feil å unngå
+
+- **Stole på oppsummeringer uten verifisering** — sjekk alltid mot originalen.
+- **Ignorere kontekst** — en påstand kan bety noe annet i hele artikkelen.
+- **Overbelaste én prompt** — del veldig lange dokumenter.
+- **Hoppe over filnavngiving** — konsekvente navn gjør multi-kilde-prompter enklere.
+
+## Neste steg
+
+- Bruk forskning til innhold med [Skriving med Claude Code](/no/fagomrader/writing-with-claude/).
+- Gjør funn om til rapporter med [Statistikk og rapportering med Claude Code](/no/fagomrader/statistics-and-reporting/).
+- Lær avansert prompting i [Kom i gang-modulen](/no/learn/getting-started/).
