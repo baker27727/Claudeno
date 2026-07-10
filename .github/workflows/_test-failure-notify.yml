@@ -1,0 +1,30 @@
+name: TEMP test failure notification
+
+on:
+  workflow_dispatch: {}
+
+jobs:
+  fail-on-purpose:
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+    steps:
+      - name: Deliberately fail
+        run: exit 1
+      - name: Open or update a tracking issue on failure
+        if: failure()
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          TITLE="🔴 ${{ github.workflow }} failed"
+          RUN_URL="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          BODY="Run failed: $RUN_URL
+          Commit: ${{ github.sha }}
+          Triggered by: ${{ github.event_name }}"
+          EXISTING=$(gh issue list --label "automation-failure" --state open --json number,title \
+            --jq ".[] | select(.title == \"$TITLE\") | .number" | head -1)
+          if [ -n "$EXISTING" ]; then
+            gh issue comment "$EXISTING" --body "$BODY"
+          else
+            gh issue create --title "$TITLE" --label "automation-failure" --body "$BODY"
+          fi

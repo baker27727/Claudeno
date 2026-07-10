@@ -35,6 +35,11 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    permissions:
+      contents: read
+      # issues: write is for the failure-tracking step at the end of this job —
+      # this is the workflow whose silent failure (2026-07-09) prompted adding it.
+      issues: write
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -84,3 +89,20 @@ jobs:
           DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
           DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
           DEPLOY_PATH: ${{ secrets.DEPLOY_PATH }}
+      - name: Open or update a tracking issue on failure
+        if: failure()
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          TITLE="🔴 ${{ github.workflow }} failed"
+          RUN_URL="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          BODY="Run failed: $RUN_URL
+          Commit: ${{ github.sha }}
+          Triggered by: ${{ github.event_name }}"
+          EXISTING=$(gh issue list --label "automation-failure" --state open --json number,title \
+            --jq ".[] | select(.title == \"$TITLE\") | .number" | head -1)
+          if [ -n "$EXISTING" ]; then
+            gh issue comment "$EXISTING" --body "$BODY"
+          else
+            gh issue create --title "$TITLE" --label "automation-failure" --body "$BODY"
+          fi

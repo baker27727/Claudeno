@@ -24,6 +24,8 @@ jobs:
       # with GITHUB_TOKEN don't fire other workflows' `on: push` triggers, so deploy
       # would otherwise never run after an autonomous content publish.
       actions: write
+      # issues: write is for the failure-tracking step at the end of this job.
+      issues: write
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -44,3 +46,25 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           LATEST_VERSION: ${{ steps.diff.outputs.latest_version }}
         run: npm run generate:update
+      - name: Open or update a tracking issue on failure
+        # This is how you actually find out something broke, beyond GitHub's
+        # own (easy-to-miss) email notifications — a persistent, visible
+        # issue instead of a run that quietly turns red in a tab nobody has
+        # open. Dedupes on title so a recurring daily failure updates one
+        # issue with a new comment instead of opening a new one every day.
+        if: failure()
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          TITLE="🔴 ${{ github.workflow }} failed"
+          RUN_URL="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          BODY="Run failed: $RUN_URL
+          Commit: ${{ github.sha }}
+          Triggered by: ${{ github.event_name }}"
+          EXISTING=$(gh issue list --label "automation-failure" --state open --json number,title \
+            --jq ".[] | select(.title == \"$TITLE\") | .number" | head -1)
+          if [ -n "$EXISTING" ]; then
+            gh issue comment "$EXISTING" --body "$BODY"
+          else
+            gh issue create --title "$TITLE" --label "automation-failure" --body "$BODY"
+          fi
