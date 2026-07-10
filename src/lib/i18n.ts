@@ -68,6 +68,7 @@ export const ui = {
     "footer.links": "Links",
     "footer.docs": "Official docs",
     "footer.builtWith": "Built with Astro & Svelte.",
+    "footer.madeBy": "Made by",
   },
   no: {
     "nav.learn": "Lær",
@@ -124,6 +125,7 @@ export const ui = {
     "footer.links": "Lenker",
     "footer.docs": "Offisiell dokumentasjon",
     "footer.builtWith": "Bygget med Astro og Svelte.",
+    "footer.madeBy": "Laget av",
   },
 } as const satisfies Record<Locale, Record<string, string>>;
 

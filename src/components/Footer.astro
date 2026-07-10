@@ -74,6 +74,11 @@ const externalLinks = [
 
   <div class="site-footer__bottom">
     <p>&copy; {year} Claude Code Learn — {t("footer.builtWith")}</p>
+    <p>
+      {t("footer.madeBy")}
+      {" "}
+      <a href="https://mutaz.no" target="_blank" rel="noopener noreferrer">Mutaz Abubaker</a>
+    </p>
   </div>
 </footer>
 
@@ -143,9 +148,19 @@ const externalLinks = [
   .site-footer__bottom p {
     max-width: 72rem;
     margin: 0 auto;
-    padding: var(--space-4) var(--space-6);
+    padding: 0 var(--space-6);
     color: var(--fg-muted);
     font-size: 0.8125rem;
+  }
+  .site-footer__bottom p:first-child {
+    padding-top: var(--space-4);
+  }
+  .site-footer__bottom p:last-child {
+    padding-bottom: var(--space-4);
+  }
+  .site-footer__bottom a {
+    font-size: inherit;
+    font-weight: 600;
   }
   @media (max-width: 720px) {
     .site-footer__grid {
