@@ -1,0 +1,12 @@
+id: memory
+order: 8
+level: intermediate
+duration_min: 15
+covers_version: "2.1.205"
+title:
+  en: "Memory & CLAUDE.md"
+  no: "Minne og CLAUDE.md"
+description:
+  en: "Give Claude persistent instructions with CLAUDE.md, and understand how auto memory lets it accumulate learnings on its own."
+  no: "Gi Claude varige instruksjoner med CLAUDE.md, og forstå hvordan auto-minne lar den samle læring på egen hånd."
+tags: [memory, claude-md, configuration]

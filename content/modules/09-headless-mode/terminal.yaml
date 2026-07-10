@@ -1,0 +1,49 @@
+steps:
+  - id: step-1
+    command: 'claude -p "What does the auth module do?"'
+    output: |
+      The auth module handles session tokens and OAuth login flow via src/auth/.
+    explain:
+      en: "-p (--print) runs one query non-interactively and exits, instead of opening a session."
+      no: "-p (--print) kjører ett spørsmål ikke-interaktivt og avslutter, i stedet for å åpne en økt."
+    accepts_also: []
+  - id: step-2
+    command: "cat build-error.txt | claude -p 'concisely explain the root cause of this build error' > output.txt"
+    output: |
+      (response written to output.txt)
+    explain:
+      en: "Headless mode reads stdin, so you can pipe data in and redirect the response out like any other CLI tool."
+      no: "Hodeløs modus leser stdin, så du kan sende data inn og omdirigere svaret ut som med ethvert annet CLI-verktøy."
+    accepts_also: []
+  - id: step-3
+    command: 'claude -p "Summarize this project" --output-format json'
+    output: |
+      {"result": "This project is...", "session_id": "abc123", "total_cost_usd": 0.02}
+    explain:
+      en: "--output-format json returns a structured response — the text lands in the result field alongside session metadata and cost."
+      no: "--output-format json returnerer et strukturert svar — teksten havner i result-feltet sammen med øktmetadata og kostnad."
+    accepts_also: []
+  - id: step-4
+    command: 'claude -p "Run the test suite and fix any failures" --allowedTools "Bash,Read,Edit"'
+    output: |
+      Running test suite... 2 failures found and fixed.
+    explain:
+      en: "--allowedTools auto-approves specific tools without prompting — essential in a script where no one is there to click approve."
+      no: "--allowedTools godkjenner bestemte verktøy automatisk uten å spørre — nødvendig i et skript der ingen er der til å klikke godkjenn."
+    accepts_also: []
+  - id: step-5
+    command: 'claude -p "Now focus on the database queries" --continue'
+    output: |
+      Reviewing database queries in src/db/...
+    explain:
+      en: "--continue picks up the most recent conversation, letting you chain non-interactive calls into a multi-step script."
+      no: "--continue plukker opp den siste samtalen, slik at du kan kjede sammen ikke-interaktive kall til et flertrinns skript."
+    accepts_also: []
+  - id: step-6
+    command: 'claude --bare -p "Summarize this file" --allowedTools "Read"'
+    output: |
+      (runs with only explicitly passed flags — no local hooks, skills, plugins, MCP servers, or CLAUDE.md)
+    explain:
+      en: "--bare skips auto-discovery of hooks, skills, plugins, MCP servers, and CLAUDE.md, making CI runs reproducible across machines."
+      no: "--bare hopper over automatisk oppdagelse av hooks, skills, plugins, MCP-tjenere og CLAUDE.md, noe som gjør CI-kjøringer reproduserbare på tvers av maskiner."
+    accepts_also: []

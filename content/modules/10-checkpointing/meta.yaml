@@ -1,0 +1,12 @@
+id: checkpointing
+order: 10
+level: beginner
+duration_min: 10
+covers_version: "2.1.205"
+title:
+  en: "Checkpointing & Rewind"
+  no: "Sjekkpunkter og tilbakespoling"
+description:
+  en: "Claude Code tracks your code as you go, so you can always rewind — restore or summarize code and conversation from an earlier point."
+  no: "Claude Code sporer koden din underveis, slik at du alltid kan spole tilbake — gjenopprette eller oppsummere kode og samtale fra et tidligere punkt."
+tags: [checkpointing, rewind, beginner]

@@ -1,0 +1,49 @@
+questions:
+  - id: q1
+    prompt:
+      en: "When does Claude Code create a new checkpoint?"
+      no: "Når lager Claude Code et nytt sjekkpunkt?"
+    options:
+      - { id: a, en: "Only when you run /rewind", no: "Kun når du kjører /rewind" }
+      - { id: b, en: "Every prompt you send", no: "Ved hver ledetekst du sender" }
+      - { id: c, en: "Only at the start of a session", no: "Kun ved starten av en økt" }
+    correct: b
+    explain:
+      en: "Every user prompt creates a new checkpoint automatically, with no setup required."
+      no: "Hver brukerledetekst lager automatisk et nytt sjekkpunkt, uten at noe oppsett kreves."
+  - id: q2
+    prompt:
+      en: "What's the difference between \"Restore code\" and \"Restore code and conversation\"?"
+      no: "Hva er forskjellen mellom «Gjenopprett kode» og «Gjenopprett kode og samtale»?"
+    options:
+      - { id: a, en: "Restore code also reverts the conversation; the other doesn't", no: "Gjenopprett kode tilbakestiller også samtalen; den andre gjør det ikke" }
+      - { id: b, en: "Restore code keeps the conversation intact and only reverts files", no: "Gjenopprett kode beholder samtalen intakt og tilbakestiller kun filer" }
+      - { id: c, en: "They're identical", no: "De er identiske" }
+    correct: b
+    explain:
+      en: "\"Restore code\" reverts file changes while keeping the full conversation intact. \"Restore code and conversation\" reverts both."
+      no: "«Gjenopprett kode» tilbakestiller filendringer mens hele samtalen beholdes intakt. «Gjenopprett kode og samtale» tilbakestiller begge deler."
+  - id: q3
+    prompt:
+      en: "Which file changes does checkpointing NOT track?"
+      no: "Hvilke filendringer sporer sjekkpunkter IKKE?"
+    options:
+      - { id: a, en: "Edits made through Claude's Edit and Write tools", no: "Redigeringer gjort via Claudes Edit- og Write-verktøy" }
+      - { id: b, en: "Files modified by a Bash command Claude runs, e.g. rm or mv", no: "Filer endret av en Bash-kommando Claude kjører, f.eks. rm eller mv" }
+      - { id: c, en: "Both of the above equally", no: "Begge deler like mye" }
+    correct: b
+    explain:
+      en: "Checkpointing only tracks direct file edits made through Claude's file-editing tools. Files modified via Bash commands like rm or mv can't be undone through rewind."
+      no: "Sjekkpunkter sporer kun direkte filredigeringer gjort via Claudes filredigeringsverktøy. Filer endret via Bash-kommandoer som rm eller mv kan ikke angres gjennom tilbakespoling."
+  - id: q4
+    prompt:
+      en: "Is checkpointing a replacement for Git?"
+      no: "Er sjekkpunkter en erstatning for Git?"
+    options:
+      - { id: a, en: "Yes, commits are no longer needed", no: "Ja, commits trengs ikke lenger" }
+      - { id: b, en: "No — checkpoints are local, session-level undo; Git remains the permanent history", no: "Nei — sjekkpunkter er lokal angring på øktnivå; Git forblir den varige historikken" }
+      - { id: c, en: "Only for solo projects", no: "Kun for soloprosjekter" }
+    correct: b
+    explain:
+      en: "Checkpoints complement but don't replace version control — think of checkpoints as local undo, and Git as permanent history."
+      no: "Sjekkpunkter er et supplement til versjonskontroll, ikke en erstatning — tenk på sjekkpunkter som lokal angring, og Git som varig historikk."

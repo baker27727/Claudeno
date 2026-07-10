@@ -1,4 +1,5 @@
 ---
+import { getCollection } from "astro:content";
 import Base from "../../layouts/Base.astro";
 import { LOCALES, useTranslations, type Locale } from "../../lib/i18n";
 import {
@@ -16,33 +17,27 @@ export function getStaticPaths() {
 const lang = Astro.params.lang as Locale;
 const t = useTranslations(lang);
 
-// groups of commands keyed by language.
-const groups: Array<{ title: { en: string; no: string }; items: Array<{ cmd: string; desc: { en: string; no: string } }> }> = [
-  {
-    title: { en: "Getting started", no: "Kom i gang" },
-    items: [
-      { cmd: "curl -fsSL https://claude.ai/install.sh | bash", desc: { en: "Install the CLI (macOS/Linux/WSL) — auto-updates in the background.", no: "Installer CLI-en (macOS/Linux/WSL) — oppdaterer seg selv i bakgrunnen." } },
-      { cmd: "claude", desc: { en: "Start an interactive session.", no: "Start en interaktiv økt." } },
-      { cmd: "claude --help", desc: { en: "List available flags and commands.", no: "List tilgjengelige flagg og kommandoer." } },
-    ],
-  },
-  {
-    title: { en: "In-session slash commands", no: "Slash-kommandoer i økten" },
-    items: [
-      { cmd: "/help", desc: { en: "Show help for the current session.", no: "Vis hjelp for gjeldende økt." } },
-      { cmd: "/clear", desc: { en: "Clear the conversation context.", no: "Tøm samtalekonteksten." } },
-      { cmd: "/agents", desc: { en: "Manage configured subagents.", no: "Administrer konfigurerte underagenter." } },
-      { cmd: "/config", desc: { en: "Open configuration settings.", no: "Åpne konfigurasjonsinnstillinger." } },
-    ],
-  },
-  {
-    title: { en: "Configuration", no: "Konfigurasjon" },
-    items: [
-      { cmd: "CLAUDE.md", desc: { en: "Project-level instructions read at session start.", no: "Prosjektinstruksjoner som leses ved oppstart av økt." } },
-      { cmd: ".claude/settings.json", desc: { en: "Permissions, hooks, and tool configuration.", no: "Tillatelser, hooks og verktøykonfigurasjon." } },
-    ],
-  },
+// Section order as authored in content/reference.yaml — kept explicit here
+// rather than relying on loader iteration order.
+const SECTION_ORDER = [
+  "install-update",
+  "cli-commands",
+  "cli-flags",
+  "slash-session",
+  "slash-config",
+  "slash-review",
+  "keyboard-shortcuts",
+  "settings-scopes",
+  "settings-keys",
+  "env-vars",
+  "permission-modes",
+  "checkpointing",
 ];
+
+const entries = await getCollection("reference");
+const groups = SECTION_ORDER.map((id) => entries.find((e) => e.data.id === id)?.data).filter(
+  (g): g is NonNullable<typeof g> => Boolean(g),
+);
 
 // BLUEPRINT §9 §4 — Reference = WebPage مع mainEntity من نوع "ItemList"
 // (ورقة الغش عبارة عن قائمة أوامر، فهي ItemList رسميًّا).
@@ -65,8 +60,8 @@ const pagePath = `/${lang}/reference/`;
 const webPage = webPageJsonLd({
   name: `${t("nav.reference")} — Claude Code Learn`,
   description: lang === "no"
-    ? "Norsk jukselapp med Claude Code-kommandoene du faktisk trenger — CLI, slash-kommandoer og flagg."
-    : "A practical cheat sheet with the Claude Code commands you actually need — CLI, slash commands, and flags.",
+    ? "Full norsk referanse for Claude Code — CLI-kommandoer, flagg, slash-kommandoer, tastatursnarveier, innstillinger, miljøvariabler og tillatelsesmodi."
+    : "The complete Claude Code reference — CLI commands, flags, slash commands, keyboard shortcuts, settings, environment variables, and permission modes.",
   lang,
   path: pagePath,
   mainEntity: { type: "ItemList", data: referenceItemList },
@@ -78,7 +73,7 @@ const jsonLd = jsonLdScript([webPage, crumbs]);
 <Base
   lang={lang}
   title={`${t("nav.reference")} — Claude Code Learn`}
-  description={lang === "no" ? "Norsk jukselapp med Claude Code-kommandoene du faktisk trenger — CLI, slash-kommandoer og flagg." : "A practical cheat sheet with the Claude Code commands you actually need — CLI, slash commands, and flags."}
+  description={lang === "no" ? "Full norsk referanse for Claude Code — CLI-kommandoer, flagg, slash-kommandoer, tastatursnarveier, innstillinger, miljøvariabler og tillatelsesmodi." : "The complete Claude Code reference — CLI commands, flags, slash commands, keyboard shortcuts, settings, environment variables, and permission modes."}
 >
   <Fragment slot="head">
     <Fragment set:html={jsonLd} />
@@ -90,8 +85,8 @@ const jsonLd = jsonLdScript([webPage, crumbs]);
       <h1>{t("nav.reference")}</h1>
       <p class="reference__intro">
         {lang === "no"
-          ? "De kommandoene og filene du faktisk kommer til å bruke — ingen fyllstoff."
-          : "The commands and files you'll actually reach for — no filler."}
+          ? "Kommandoene, flaggene, snarveiene og konfigurasjonsnøklene du faktisk kommer til å bruke — samlet på én side."
+          : "The commands, flags, shortcuts, and config keys you'll actually reach for — all on one page."}
       </p>
     </header>
 

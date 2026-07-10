@@ -1,0 +1,49 @@
+questions:
+  - id: q1
+    prompt:
+      en: "What exit code does a PreToolUse hook use to block the tool call?"
+      no: "Hvilken avslutningskode bruker en PreToolUse-hook for å blokkere verktøykallet?"
+    options:
+      - { id: a, en: "0", no: "0" }
+      - { id: b, en: "1", no: "1" }
+      - { id: c, en: "2", no: "2" }
+    correct: c
+    explain:
+      en: "Exit code 2 blocks the action and sends your stderr message back to Claude as feedback. Exit code 0 means no objection."
+      no: "Avslutningskode 2 blokkerer handlingen og sender stderr-meldingen din tilbake til Claude som tilbakemelding. Avslutningskode 0 betyr ingen innvending."
+  - id: q2
+    prompt:
+      en: "Which field narrows a hook to only fire on Edit or Write tool calls?"
+      no: "Hvilket felt snevrer inn en hook til kun å utløses ved Edit- eller Write-verktøykall?"
+    options:
+      - { id: a, en: "matcher", no: "matcher" }
+      - { id: b, en: "filter", no: "filter" }
+      - { id: c, en: "scope", no: "scope" }
+    correct: a
+    explain:
+      en: "The matcher field, e.g. \"Edit|Write\", narrows which tool calls trigger the hook. An empty matcher fires on every occurrence."
+      no: "Matcher-feltet, f.eks. \"Edit|Write\", snevrer inn hvilke verktøykall som utløser hooken. En tom matcher utløses ved hver forekomst."
+  - id: q3
+    prompt:
+      en: "Why is hooks.PreToolUse considered more reliable than just asking Claude to run a check every time?"
+      no: "Hvorfor regnes hooks.PreToolUse som mer pålitelig enn å bare be Claude kjøre en sjekk hver gang?"
+    options:
+      - { id: a, en: "It's faster to type", no: "Det er raskere å skrive" }
+      - { id: b, en: "It runs deterministically at a fixed lifecycle point, regardless of what the model decides", no: "Den kjører deterministisk på et fast punkt i livssyklusen, uavhengig av hva modellen bestemmer" }
+      - { id: c, en: "It requires no configuration", no: "Den krever ingen konfigurasjon" }
+    correct: b
+    explain:
+      en: "Hooks provide deterministic control — the rule always fires at that lifecycle point instead of depending on the model choosing to act."
+      no: "Hooks gir deterministisk kontroll — regelen utløses alltid på det punktet i livssyklusen, i stedet for å avhenge av at modellen velger å handle."
+  - id: q4
+    prompt:
+      en: "What does the /hooks command let you do?"
+      no: "Hva lar /hooks-kommandoen deg gjøre?"
+    options:
+      - { id: a, en: "Browse all configured hooks, grouped by event (read-only)", no: "Bla gjennom alle konfigurerte hooks, gruppert etter hendelse (skrivebeskyttet)" }
+      - { id: b, en: "Directly edit and save hook configuration from the menu", no: "Redigere og lagre hook-konfigurasjon direkte fra menyen" }
+      - { id: c, en: "Disable all hooks for the session", no: "Deaktivere alle hooks for økten" }
+    correct: a
+    explain:
+      en: "/hooks is read-only. To add, modify, or remove hooks, edit the settings JSON directly (or ask Claude to make the change)."
+      no: "/hooks er skrivebeskyttet. For å legge til, endre eller fjerne hooks redigerer du innstillings-JSON-en direkte (eller ber Claude gjøre endringen)."

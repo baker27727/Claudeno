@@ -1,0 +1,12 @@
+id: headless-mode
+order: 9
+level: advanced
+duration_min: 18
+covers_version: "2.1.205"
+title:
+  en: "Headless Mode & Automation"
+  no: "Hodeløs modus og automatisering"
+description:
+  en: "Run Claude Code non-interactively with claude -p — pipe data in, get structured output, and wire it into scripts and CI."
+  no: "Kjør Claude Code ikke-interaktivt med claude -p — send data inn, få strukturert utdata, og koble det inn i skript og CI."
+tags: [headless, automation, ci, advanced]

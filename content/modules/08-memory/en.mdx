@@ -1,0 +1,103 @@
+---
+title: "Memory & CLAUDE.md"
+description: "Give Claude persistent instructions with CLAUDE.md, and understand how auto memory lets it accumulate learnings on its own."
+---
+import Callout from "../../../src/components/Callout.astro";
+
+# Memory & CLAUDE.md
+
+Every session starts with a fresh context window. Two mechanisms carry knowledge
+across sessions: **CLAUDE.md files**, instructions you write yourself, and **auto
+memory**, notes Claude writes for itself based on your corrections and preferences.
+Both load at the start of every conversation.
+
+## CLAUDE.md vs. auto memory
+
+|  | CLAUDE.md files | Auto memory |
+|---|---|---|
+| Who writes it | You | Claude |
+| Contains | Instructions and rules | Learnings and patterns |
+| Use for | Coding standards, workflows, architecture | Build commands, debugging insights, preferences Claude discovers |
+
+Both are context, not enforced configuration — Claude treats them as guidance, not
+a hard rule it's guaranteed to follow. To block an action regardless of what Claude
+decides, use a `PreToolUse` hook instead (see the Hooks module).
+
+## Where CLAUDE.md files live
+
+Claude Code reads CLAUDE.md files by walking up the directory tree, from broadest
+scope to most specific — a project instruction appears in context after a user
+instruction:
+
+| Scope | Location | Shared with |
+|---|---|---|
+| Managed policy | `/etc/claude-code/CLAUDE.md` (varies by OS) | Everyone in the org |
+| User | `~/.claude/CLAUDE.md` | Just you, all projects |
+| Project | `./CLAUDE.md` or `./.claude/CLAUDE.md` | Team, via version control |
+| Local | `./CLAUDE.local.md` | Just you, this project (gitignored) |
+
+## Generate a starting point
+
+```
+/init
+```
+
+`/init` analyzes your codebase and generates a CLAUDE.md with build commands, test
+instructions, and conventions it discovers. If a CLAUDE.md already exists, `/init`
+suggests improvements instead of overwriting it.
+
+<Callout type="tip" title="Write instructions Claude can verify">
+  Specific, concrete instructions work best: "Use 2-space indentation" beats "format
+  code properly," and "Run `npm test` before committing" beats "test your changes."
+  Target under 200 lines per file — longer files consume more context and reduce
+  adherence.
+</Callout>
+
+## Import other files
+
+CLAUDE.md can pull in other files with `@path/to/file` syntax. Both relative and
+absolute paths work, and imports can recursively import other files up to four hops
+deep:
+
+```text
+See @README for project overview and @package.json for available npm commands.
+```
+
+Wrap a path in backticks (`` `@README` ``) to mention it without importing it.
+
+## View and edit memory
+
+```
+/memory
+```
+
+`/memory` lists every CLAUDE.md, CLAUDE.local.md, and rules file loaded in the
+current session, lets you toggle auto memory on or off, and opens any file you
+select in your editor.
+
+## Auto memory
+
+Auto memory lets Claude accumulate knowledge across sessions without you writing
+anything — build commands, debugging insights, preferences it notices from your
+corrections. It's on by default, stored per-project in a `MEMORY.md` index plus
+topic files. Only the first 200 lines (or 25KB) of `MEMORY.md` load at session
+start; Claude keeps it concise by moving detail into separate topic files it reads
+on demand.
+
+<Callout type="mistake" title="Common mistake">
+  Expecting a nested CLAUDE.md to survive `/compact`. Only the project-root
+  CLAUDE.md is automatically re-read and re-injected after compaction. Nested
+  CLAUDE.md files in subdirectories reload only the next time Claude reads a file
+  in that subdirectory.
+</Callout>
+
+## Summary
+
+- CLAUDE.md is instructions you write; auto memory is notes Claude writes for
+  itself. Both load every session, both are context rather than enforcement.
+- Load order, broadest to narrowest: managed policy → user (`~/.claude/CLAUDE.md`)
+  → project (`./CLAUDE.md`) → local (`./CLAUDE.local.md`).
+- `/init` generates a starting CLAUDE.md from your codebase.
+- `@path` imports pull in other files; wrap a path in backticks to mention it
+  without importing.
+- `/memory` lists and opens every loaded memory file, and toggles auto memory.

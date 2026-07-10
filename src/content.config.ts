@@ -209,6 +209,28 @@ const useCases = defineCollection({
   }),
 });
 
+// -------------------------------------------------------------------------
+// reference.yaml — sections shown on /reference (CLI commands, flags, slash
+// commands, keyboard shortcuts, settings, env vars, permission modes, ...).
+// Same bilingual-everywhere shape as catalog/glossary so audit-parity covers
+// it automatically.
+// -------------------------------------------------------------------------
+const reference = defineCollection({
+  loader: file("./content/reference.yaml"),
+  schema: z.object({
+    id: z.string(),
+    title: bilingual,
+    items: z
+      .array(
+        z.object({
+          cmd: z.string().min(1),
+          desc: bilingual,
+        }),
+      )
+      .min(1),
+  }),
+});
+
 export const collections = {
   moduleMeta,
   moduleTerminal,
@@ -220,4 +242,5 @@ export const collections = {
   blog,
   guides,
   useCases,
+  reference,
 };

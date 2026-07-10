@@ -1,0 +1,12 @@
+steps:
+  - id: step-1
+    command: "/rewind"
+    output: |
+      1. "Add login form"          (3 files changed)
+      2. "Fix validation bug"      (1 file changed)
+      3. "Refactor auth module"    (5 files changed)  ← current
+      Select a point, then choose: restore or summarize.
+    explain:
+      en: "/rewind opens a menu listing every prompt this session. Pick a point, then restore code/conversation/both, or summarize from or up to that point."
+      no: "/rewind åpner en meny som lister opp alle ledetekster denne økten. Velg et punkt, og gjenopprett kode/samtale/begge, eller oppsummer fra eller frem til det punktet."
+    accepts_also: []
