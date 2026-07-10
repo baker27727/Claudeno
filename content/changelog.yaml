@@ -1,3 +1,22 @@
+- id: "2.1.206"
+  version: "2.1.206"
+  date: "2026-07-10"
+  entry:
+    en: "Added directory path suggestions to `/cd` and expanded `/doctor` into a
+      full setup checkup; `/commit-push-pr` now auto-allows git push to the
+      configured push remote; `/login` supports Anthropic-operated gateway
+      endpoints. Background agents now upgrade immediately after Claude Code
+      updates. MCP servers properly respect per-server request timeout settings.
+      Fixed multiple critical issues in subagents, authentication, and MCP
+      server connectivity."
+    no: "La til katalogveistøtte til `/cd` og utvidet `/doctor` til en full
+      oppsettskontroll; `/commit-push-pr` tillater nå automatisk git push til
+      den konfigurerte push-fjernkilden; `/login` støtter Anthropic-drivne
+      gateway-endepunkter. Underagenter oppgraderes nå umiddelbart etter Claude
+      Code-oppdateringer. MCP-tjenere respekterer nå korrekt per-tjener
+      timeout-innstillinger for forespørsler. Fikset flere kritiske problemer i
+      underagenter, autentisering og MCP-tjener-tilkobling."
+  sources: []
 - id: "2.1.205"
   version: "2.1.205"
   date: "2026-07-09"

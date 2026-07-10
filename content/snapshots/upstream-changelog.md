@@ -1,11 +1,41 @@
 # Upstream snapshot — Claude Code CHANGELOG
 
-Last observed version: 2.1.205
+Last observed version: 2.1.206
 
 > This file is maintained automatically by `scripts/watch-upstream.ts`.
 > It stores the last-seen upstream CHANGELOG so daily diffs can be computed.
 
 # Changelog
+
+## 2.1.206
+
+- Added directory path suggestions to `/cd`, matching `/add-dir` behavior
+- Added a `/doctor` check that proposes trimming checked-in `CLAUDE.md` files by cutting content Claude could derive from the codebase
+- `/commit-push-pr` now auto-allows `git push` to the repo's configured push remote (`remote.pushDefault`, or the sole remote when only one is configured) in addition to `origin`
+- Gateway: `/login` now supports Anthropic-operated public gateway endpoints
+- `EnterWorktree` now asks for confirmation before entering a git worktree outside the project's `.claude/worktrees/` directory
+- Background agents now upgrade to a new version in the background right after a Claude Code update, instead of paying a slow stale-session upgrade when you attach
+- Fixed an expired login failing every model with a misleading "There's an issue with the selected model" error instead of prompting to run `/login`
+- Fixed `claude --resume` and `--continue` not responding to keyboard input on startup
+- Fixed MCP servers configured via `--mcp-config` or `.mcp.json` ignoring a per-server `request_timeout_ms`, which caused long-running MCP tool calls to time out at the 60s default in fresh sessions
+- Fixed `CLAUDE_CODE_EXTRA_BODY` being silently ignored by `claude agents` / `--bg` background workers; the shell-exported override now follows the dispatching session
+- Fixed OAuth MCP servers requiring manual re-authentication after a single failed token refresh
+- Fixed `--permission-prompt-tool` pointing at an MCP server crashing with "MCP tool not found" on cold start before the server finishes connecting
+- Fixed `/model` picker rows printing a price for a different model than the row named, and stopped quoting first-party list prices on providers that don't bill them
+- Fixed server-provided model rows being misplaced in the `/model` picker when an entitlement or allowlist restriction drops the row they were positioned against
+- Fixed desktop sessions getting stuck showing "running" after a slash command was sent mid-turn
+- Fixed keyboard input being ignored in the agents view when a setup prompt appeared before a bare `claude --resume` on Windows
+- Fixed `claude rm` leaving the removed job in the daemon roster, causing the row to reappear in `claude agents`
+- Fixed `/remote-control` showing "Unknown command" when logged out — it now explains how to sign in
+- Fixed left arrow not stepping back out of a phase or agent in the workflow detail view
+- Fixed `/status` listing the same broken-install warning twice
+- Fixed false "disused plugin" tips and skewed disuse telemetry for LSP plugins
+- Fixed `/doctor`'s update check to compare Homebrew installs against their cask's channel instead of the settings channel
+- Fixed the fullscreen jump-to-bottom pill suggesting Ctrl+End on macOS, not showing rebound chords, and wrapping over the transcript
+- Bedrock: fixed a multi-minute startup hang when using an `awsCredentialExport` helper on networks with restricted egress
+- Improved `/code-review` findings quality on claude-opus-4-8 across all effort levels
+- Improved agents view: status column now uses full terminal width instead of truncating at 64 characters
+- Changed agents view: Ctrl+X now permanently removes a completed session, and sessions no longer render twice; deleted background jobs stay deleted
 
 ## 2.1.205
 
@@ -86,34 +116,4 @@ Last observed version: 2.1.205
 - Fixed transient mTLS handshake failures when settings were re-applied during an in-place client certificate rotation
 - Fixed commands sent from Remote Control (mobile/web) into an interactive session failing with "Unknown command"
 - Fixed images and files sent from the Remote Control mobile or web app without a caption being silently dropped
-- Fixed the sign-in URL printed by `claude auth login` and `claude mcp login --no-browser` not being reliably clickable when it wraps over SSH — it is now emitted as a single hyperlink
-- Fixed opening a chat from `claude agents` sometimes failing with "currently running as a background agent" followed by a worker crash/respawn loop
-- Fixed workflow scripts with unicode quote escapes in strings being corrupted before parsing; workflow parse errors now show the offending line instead of always blaming TypeScript
-- Fixed voice dictation retrying in an unbounded loop when the microphone or audio recorder fails — repeated capture failures now pause voice input
-- Fixed `/remote-control` sessions showing the wrong permission mode in the mobile and web apps
-- Fixed resuming a session by name, or opening the resume picker, taking minutes and using a large amount of memory in repositories with many git worktrees
-- Fixed installer and updater downloads failing immediately with "aborted" when a proxy or network drops the connection mid-download — transient connection drops now retry
-- Fixed re-invoking an already-loaded skill appending a duplicate copy of its instructions to context
-- Improved `/workflows` agent list layout: wider titles, a dedicated time column, shorter model names, and no per-row tool-call counts
-- Improved MCP error messages: clearer error when a server config has `url` but no `type`, suggesting `"type": "http"` instead of the misleading "command: expected string"
-- Changed `/review <pr>` back to a fast single-pass review; use `/code-review <level> <pr#>` for the multi-agent review at a chosen effort level
-
-## 2.1.201
-
-- Claude Sonnet 5 sessions no longer use the mid-conversation system role for harness reminders
-
-## 2.1.200
-
-- Changed `AskUserQuestion` dialogs to no longer auto-continue by default; opt into an idle timeout via `/config`
-- Changed the "default" permission mode to "Manual" across the CLI, `--help`, VS Code, and JetBrains; `--permission-mode manual` and `"defaultMode": "manual"` are accepted alongside `default`
-- Fixed a crash at startup when `disabledMcpServers` or `enabledMcpServers` in `.claude.json` is set to a non-array value
-- Fixed background sessions silently stopping mid-turn after sleep/wake or when reopening a stalled session
-- Fixed background sessions re-running a turn cancelled with Esc after a stall respawn
-- Fixed background agents never starting again after a crash left a stale `daemon.lock` whose PID the OS reused
-- Fixed background-agent daemon handover so a reinstalled older build can no longer take over the daemon; build recency is now judged by the version's embedded build timestamp
-- Fixed background-agent roster issues: transient corruption permanently disabling orphan cleanup, older binaries not preserving fields written by newer versions, and socket auth tokens being stripped during daemon restarts
-- Fixed subagents cut off by a rate limit before producing any text output returning an empty result instead of failing cleanly
-- Fixed control bytes from background-agent output reaching the terminal in the agent view
-- Fixed `claude agents --plugin-dir <dir>` not showing the plugin's agents and skills in the agent view when the flag is placed after `agents`
-- Fixed project-scoped plugins not loading correctly from git worktrees of the same repository
-- Fixed `/mcp` 
+- Fixed the sign-in URL printed

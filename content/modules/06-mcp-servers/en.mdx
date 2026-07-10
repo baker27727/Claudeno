@@ -72,3 +72,7 @@ server name (or `all`) to change connection state without opening the dialog.
   (`project`), or available everywhere you work (`user`) — pick deliberately for
   anything with credentials.
 - `/mcp` manages connections without leaving your session.
+
+## What's new in v2.1.206
+
+MCP servers configured via `--mcp-config` or `.mcp.json` now properly respect per-server `request_timeout_ms` settings, fixing timeout issues where long-running MCP tool calls would previously time out at the 60-second default in fresh sessions. OAuth MCP servers no longer require manual re-authentication after a single failed token refresh. Additionally, a critical fix addresses `--permission-prompt-tool` pointing at an MCP server crashing with "MCP tool not found" on cold start before the server finishes connecting. The reserved names "Claude Browser" and "Claude Preview" have been reserved for system use; user-configured MCP servers can no longer register under either name.
