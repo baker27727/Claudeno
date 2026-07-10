@@ -22,6 +22,15 @@ on:
     branches: [main]
   workflow_dispatch: {}
 
+concurrency:
+  # A silent-failure incident (2026-07-09) traced back partly to this being
+  # absent: nothing stopped two deploy runs from overlapping and racing each
+  # other's rsync. Only one deploy should ever be in flight at a time, and a
+  # newer push should win over a stale one still running, not queue behind
+  # it — the live site should always end up matching the latest commit.
+  group: deploy-production
+  cancel-in-progress: true
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -32,6 +41,13 @@ jobs:
           node-version: 22
       - run: npm ci
       - run: npm run build
+      - name: Stamp build with the deployed commit SHA
+        # The rsync step below reported "success" once (2026-07-09) without
+        # the live site actually reflecting the new content — rsync/ssh can
+        # exit 0 without the deploy having really landed. This file, plus
+        # the verification step after rsync, turns that failure mode from
+        # silent into a failed, visible workflow run.
+        run: echo "${{ github.sha }}" > dist/deploy-version.txt
       - name: Deploy over rsync/SSH
         env:
           DEPLOY_SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
@@ -44,3 +60,26 @@ jobs:
           chmod 600 ~/.ssh/deploy_key
           ssh-keyscan -H "$DEPLOY_HOST" >> ~/.ssh/known_hosts 2>/dev/null
           rsync -az --delete -e "ssh -i ~/.ssh/deploy_key" dist/ "$DEPLOY_USER@$DEPLOY_HOST:$DEPLOY_PATH"
+      - name: Verify the live site actually updated
+        run: |
+          expected="${{ github.sha }}"
+          ok=""
+          for attempt in 1 2 3 4 5; do
+            actual="$(curl -fsS --max-time 10 "https://claude.mutaz.no/deploy-version.txt?cachebust=$RANDOM" || true)"
+            if [ "$actual" = "$expected" ]; then
+              echo "Verified: live site is at $actual"
+              ok=1
+              break
+            fi
+            echo "Attempt $attempt: live site reports '$actual', expected '$expected' — retrying rsync..."
+            rsync -az --delete -e "ssh -i ~/.ssh/deploy_key" dist/ "$DEPLOY_USER@$DEPLOY_HOST:$DEPLOY_PATH"
+            sleep 5
+          done
+          if [ -z "$ok" ]; then
+            echo "::error::Live site never reflected commit $expected after 5 attempts — deploy did not actually land."
+            exit 1
+          fi
+        env:
+          DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
+          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+          DEPLOY_PATH: ${{ secrets.DEPLOY_PATH }}
