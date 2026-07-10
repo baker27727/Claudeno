@@ -58,10 +58,22 @@ interface FreshnessResult {
   sources: string[];
 }
 
-async function fetchDoc(url: string): Promise<string> {
-  const res = await fetch(url);
-  if (!res.ok) throw new Error(`GET ${url} -> HTTP ${res.status}`);
-  return res.text();
+async function fetchDoc(url: string, attempts = 3): Promise<string> {
+  let lastError: unknown;
+  for (let attempt = 1; attempt <= attempts; attempt++) {
+    try {
+      const res = await fetch(url, { signal: AbortSignal.timeout(15_000) });
+      if (!res.ok) throw new Error(`GET ${url} -> HTTP ${res.status}`);
+      return await res.text();
+    } catch (err) {
+      lastError = err;
+      if (attempt < attempts) {
+        console.warn(`Attempt ${attempt}/${attempts} for ${url} failed: ${(err as Error).message}. Retrying...`);
+        await new Promise((resolve) => setTimeout(resolve, 2000 * attempt));
+      }
+    }
+  }
+  throw lastError;
 }
 
 async function checkModule(slug: string, docUrls: string[], currentEn: string, currentNo: string): Promise<FreshnessResult> {
@@ -130,7 +142,15 @@ async function main() {
     if (!existsSync(enPath) || !existsSync(noPath)) continue;
 
     console.log(`Checking ${mod.slug} against ${docUrls.join(", ")}…`);
-    const result = await checkModule(mod.slug, docUrls, readFileSync(enPath, "utf-8"), readFileSync(noPath, "utf-8"));
+    let result: FreshnessResult;
+    try {
+      result = await checkModule(mod.slug, docUrls, readFileSync(enPath, "utf-8"), readFileSync(noPath, "utf-8"));
+    } catch (err) {
+      // One module's docs being briefly unreachable shouldn't cancel the
+      // audit for every other module — skip it, this runs again next month.
+      console.error(`  ✗ skipping ${mod.slug}: ${(err as Error).message}`);
+      continue;
+    }
 
     if (!result.has_drift) {
       console.log(`  ✓ up to date`);
@@ -166,6 +186,9 @@ async function main() {
     ].join("\n"),
   });
   console.log(result.published ? `✓ Published: ${result.reason}` : `✗ Not published: ${result.reason}`);
+  // A publish that didn't actually trigger a deploy is a failure, not a
+  // success with a footnote — see PublishResult.deployTriggered.
+  if (result.published && !result.deployTriggered) process.exit(1);
 }
 
 main().catch((err) => {

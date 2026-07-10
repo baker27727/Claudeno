@@ -11,9 +11,14 @@ on:
     - cron: "0 7 1 * *" # 07:00 UTC on the 1st of each month
   workflow_dispatch: {}
 
+concurrency:
+  group: content-freshness
+  cancel-in-progress: false
+
 jobs:
   freshness:
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     permissions:
       contents: write
       pull-requests: write

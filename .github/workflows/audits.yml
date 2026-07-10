@@ -3,9 +3,14 @@ name: Audits
 on:
   pull_request: {}
 
+concurrency:
+  group: audits-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   audits:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -17,4 +22,5 @@ jobs:
       - run: npm run audit:quiz
       - run: npm run audit:terminal
       - run: npm run audit:links
+      - run: npm run audit:use-cases
       - run: npm run build

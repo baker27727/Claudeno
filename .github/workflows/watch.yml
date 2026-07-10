@@ -5,9 +5,18 @@ on:
     - cron: "0 6 * * *" # 06:00 UTC daily
   workflow_dispatch: {}
 
+concurrency:
+  # Prevents two runs (e.g. the daily cron firing while someone manually
+  # dispatches) from racing each other's git push/deploy-dispatch — same
+  # class of issue found in deploy.yml. Queue rather than cancel: a
+  # half-finished content generation shouldn't be killed mid-write.
+  group: watch-upstream
+  cancel-in-progress: false
+
 jobs:
   watch:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     permissions:
       contents: write
       pull-requests: write

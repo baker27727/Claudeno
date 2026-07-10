@@ -23,10 +23,22 @@ const CHANGELOG_URL = "https://raw.githubusercontent.com/anthropics/claude-code/
 // would send the entire multi-thousand-line file as API input on every call.
 const MAX_DIFF_CHARS = 12_000;
 
-async function fetchText(url: string): Promise<string> {
-  const res = await fetch(url);
-  if (!res.ok) throw new Error(`GET ${url} -> HTTP ${res.status}`);
-  return res.text();
+async function fetchText(url: string, attempts = 3): Promise<string> {
+  let lastError: unknown;
+  for (let attempt = 1; attempt <= attempts; attempt++) {
+    try {
+      const res = await fetch(url, { signal: AbortSignal.timeout(15_000) });
+      if (!res.ok) throw new Error(`GET ${url} -> HTTP ${res.status}`);
+      return await res.text();
+    } catch (err) {
+      lastError = err;
+      if (attempt < attempts) {
+        console.warn(`Attempt ${attempt}/${attempts} for ${url} failed: ${(err as Error).message}. Retrying...`);
+        await new Promise((resolve) => setTimeout(resolve, 2000 * attempt));
+      }
+    }
+  }
+  throw lastError;
 }
 
 /**

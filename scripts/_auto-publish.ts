@@ -18,6 +18,17 @@ import { execFileSync } from "node:child_process";
 export interface PublishResult {
   published: boolean;
   reason: string;
+  /**
+   * Only meaningful when `published` is true. false means the content
+   * genuinely reached `main` but deploy.yml was never triggered (dispatch
+   * failed after retries) — the live site will NOT reflect this change
+   * until someone manually runs `gh workflow run deploy.yml`, or fixes
+   * whatever's wrong with the dispatch call itself. Callers should treat
+   * this as a failure (non-zero exit), not a quiet warning: a real incident
+   * (2026-07-09) went unnoticed for a full day specifically because this
+   * used to be a console.error that never affected the exit code.
+   */
+  deployTriggered: boolean;
 }
 
 function run(cmd: string, args: string[]): { ok: boolean; output: string } {
@@ -38,6 +49,25 @@ function isGitRepo(): boolean {
   } catch {
     return false;
   }
+}
+
+/**
+ * Dispatches deploy.yml, retrying transient failures (network blips, brief
+ * API rate limits) instead of giving up on the first error. Returns whether
+ * it ultimately succeeded — never throws, so a genuinely broken dispatch
+ * doesn't itself crash the publish flow; the caller decides what a failed
+ * dispatch means for its own exit code.
+ */
+function dispatchDeployWithRetry(attempts = 3): boolean {
+  for (let attempt = 1; attempt <= attempts; attempt++) {
+    const dispatch = run("gh", ["workflow", "run", "deploy.yml", "--ref", "main"]);
+    if (dispatch.ok) return true;
+    console.error(`Attempt ${attempt}/${attempts} to dispatch deploy.yml failed: ${dispatch.output}`);
+    if (attempt < attempts) {
+      execFileSync("sleep", ["5"]);
+    }
+  }
+  return false;
 }
 
 /** Runs the full verification suite. Returns the failing step's output, or null if everything passed. */
@@ -63,7 +93,11 @@ export async function verifyAndPublish(opts: {
   prBody: string;
 }): Promise<PublishResult> {
   if (!isGitRepo()) {
-    return { published: false, reason: "Not a git repository — changes were written to disk but not committed (local dry run)." };
+    return {
+      published: false,
+      deployTriggered: false,
+      reason: "Not a git repository — changes were written to disk but not committed (local dry run).",
+    };
   }
 
   const failure = verify();
@@ -76,12 +110,29 @@ export async function verifyAndPublish(opts: {
       execFileSync("git", ["push", "origin", "HEAD:main"]);
       // GitHub doesn't fire `on: push` workflows for commits made with
       // GITHUB_TOKEN, so deploy.yml would never see this push. Dispatch it
-      // explicitly so the live site actually picks up the change.
-      if (process.env.GH_TOKEN) {
-        const dispatch = run("gh", ["workflow", "run", "deploy.yml", "--ref", "main"]);
-        if (!dispatch.ok) console.error(`Warning: failed to dispatch deploy.yml: ${dispatch.output}`);
+      // explicitly so the live site actually picks up the change. No
+      // GH_TOKEN at all (e.g. a local dry run) is a normal, expected case —
+      // not a failure — so it's tracked separately from a token being
+      // present but the dispatch itself failing.
+      const hasToken = Boolean(process.env.GH_TOKEN);
+      const dispatchSucceeded = hasToken ? dispatchDeployWithRetry() : false;
+      const deployTriggered = !hasToken || dispatchSucceeded;
+      if (hasToken && !dispatchSucceeded) {
+        console.error(
+          "deploy.yml dispatch failed after retries — content is safely on main, but the live site will " +
+            "NOT reflect it until someone runs `gh workflow run deploy.yml` manually or the next scheduled " +
+            "run's deploy dispatch succeeds. Treating this as a failure so it doesn't go unnoticed.",
+        );
       }
-      return { published: true, reason: "Verification passed — pushed directly to main." };
+      return {
+        published: true,
+        deployTriggered,
+        reason: !hasToken
+          ? "Verification passed — pushed directly to main (no GH_TOKEN set, deploy dispatch skipped)."
+          : dispatchSucceeded
+            ? "Verification passed — pushed directly to main and deploy triggered."
+            : "Verification passed and content pushed to main, but deploy.yml dispatch failed after retries.",
+      };
     } catch (err) {
       // Push rejected (e.g. branch protection, someone pushed in the meantime).
       // Fall through to the PR fallback below using the same commit.
@@ -98,7 +149,11 @@ export async function verifyAndPublish(opts: {
           `${opts.prBody}\n\nVerification passed locally, but the direct push to \`main\` was rejected (branch protection or a race). Opened as a PR instead.`,
         ]);
       }
-      return { published: false, reason: `Push to main was rejected: ${(err as Error).message}. Opened branch/PR instead.` };
+      return {
+        published: false,
+        deployTriggered: false,
+        reason: `Push to main was rejected: ${(err as Error).message}. Opened branch/PR instead.`,
+      };
     }
   }
 
@@ -120,5 +175,9 @@ export async function verifyAndPublish(opts: {
       `${opts.prBody}\n\n---\n\n**⚠️ Automated verification failed, so this was NOT published automatically:**\n\n${failure}`,
     ]);
   }
-  return { published: false, reason: "Verification failed — opened a PR for human review instead of publishing." };
+  return {
+    published: false,
+    deployTriggered: false,
+    reason: "Verification failed — opened a PR for human review instead of publishing.",
+  };
 }

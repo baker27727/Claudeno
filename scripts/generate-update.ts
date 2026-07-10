@@ -257,6 +257,9 @@ async function main() {
     ].join("\n"),
   });
   console.log(result.published ? `✓ Published: ${result.reason}` : `✗ Not published: ${result.reason}`);
+  // A publish that didn't actually trigger a deploy is a failure, not a
+  // success with a footnote — see PublishResult.deployTriggered.
+  if (result.published && !result.deployTriggered) process.exit(1);
 }
 
 main().catch((err) => {
