@@ -1,0 +1,49 @@
+questions:
+  - id: q1
+    prompt:
+      en: "Who writes auto memory?"
+      no: "Hvem skriver auto-minne?"
+    options:
+      - { id: a, en: "You, by editing settings.json", no: "Deg, ved å redigere settings.json" }
+      - { id: b, en: "Claude, based on your corrections and preferences during a session", no: "Claude, basert på rettelsene og preferansene dine i en økt" }
+      - { id: c, en: "An admin, via managed policy", no: "En admin, via managed policy" }
+    correct: b
+    explain:
+      en: "Auto memory is notes Claude writes for itself as it works, without you writing anything — the opposite of CLAUDE.md, which you write."
+      no: "Auto-minne er notater Claude skriver for seg selv mens den jobber, uten at du skriver noe — motsatt av CLAUDE.md, som du skriver."
+  - id: q2
+    prompt:
+      en: "Which CLAUDE.md location is shared with your whole team via version control?"
+      no: "Hvilken CLAUDE.md-plassering deles med hele teamet ditt via versjonskontroll?"
+    options:
+      - { id: a, en: "~/.claude/CLAUDE.md", no: "~/.claude/CLAUDE.md" }
+      - { id: b, en: "./CLAUDE.local.md", no: "./CLAUDE.local.md" }
+      - { id: c, en: "./CLAUDE.md", no: "./CLAUDE.md" }
+    correct: c
+    explain:
+      en: "Project-level ./CLAUDE.md (or ./.claude/CLAUDE.md) is committed and shared with the team. ~/.claude/CLAUDE.md is user-only, and CLAUDE.local.md is gitignored."
+      no: "Prosjektnivå ./CLAUDE.md (eller ./.claude/CLAUDE.md) committes og deles med teamet. ~/.claude/CLAUDE.md gjelder kun deg, og CLAUDE.local.md er gitignored."
+  - id: q3
+    prompt:
+      en: "What does /init do if a CLAUDE.md already exists?"
+      no: "Hva gjør /init hvis en CLAUDE.md allerede finnes?"
+    options:
+      - { id: a, en: "Overwrites it silently", no: "Overskriver den stille" }
+      - { id: b, en: "Suggests improvements instead of overwriting it", no: "Foreslår forbedringer i stedet for å overskrive den" }
+      - { id: c, en: "Refuses to run", no: "Nekter å kjøre" }
+    correct: b
+    explain:
+      en: "/init detects an existing CLAUDE.md and suggests improvements rather than replacing it."
+      no: "/init oppdager en eksisterende CLAUDE.md og foreslår forbedringer i stedet for å erstatte den."
+  - id: q4
+    prompt:
+      en: "How much of MEMORY.md loads at the start of every session?"
+      no: "Hvor mye av MEMORY.md lastes ved starten av hver økt?"
+    options:
+      - { id: a, en: "The entire file, however large", no: "Hele filen, uansett størrelse" }
+      - { id: b, en: "The first 200 lines or 25KB, whichever comes first", no: "De første 200 linjene eller 25KB, avhengig av hva som kommer først" }
+      - { id: c, en: "Nothing — topic files load only on demand", no: "Ingenting — temafiler lastes kun ved behov" }
+    correct: b
+    explain:
+      en: "Only the first 200 lines (or 25KB) of MEMORY.md load at session start; Claude keeps it concise by moving detail into separate topic files it reads on demand."
+      no: "Kun de første 200 linjene (eller 25KB) av MEMORY.md lastes ved øktstart; Claude holder den konsis ved å flytte detaljer til separate temafiler den leser ved behov."

@@ -1,0 +1,69 @@
+---
+title: "Checkpointing & Rewind"
+description: "Claude Code tracks your code as you go, so you can always rewind — restore or summarize code and conversation from an earlier point."
+---
+import Callout from "../../../src/components/Callout.astro";
+
+# Checkpointing & Rewind
+
+As you work with Claude, checkpointing automatically captures the state of your
+code before each edit. Every prompt you send creates a new checkpoint. This safety
+net lets you pursue ambitious changes knowing you can always return to a prior
+state — no manual commits required.
+
+## Open the rewind menu
+
+```
+/rewind
+```
+
+You can also press `Esc` twice with an empty prompt input to open the same menu.
+(If the input has text in it, double `Esc` clears the draft instead — press `Up` to
+recall it afterward.) The menu lists every prompt you sent this session; pick one
+to act on.
+
+## Restore vs. summarize
+
+Once you've picked a point, you choose an action:
+
+| Action | What it does |
+|---|---|
+| Restore code and conversation | Reverts both files and chat history to that point |
+| Restore conversation | Rewinds the chat, keeps current code as-is |
+| Restore code | Reverts file changes, keeps the conversation intact |
+| Summarize from here | Compresses the conversation from that point forward |
+| Summarize up to here | Compresses everything before that point, keeps the rest |
+
+Restore options undo state. Summarize options compress part of the conversation
+into an AI-generated summary without touching any files on disk — useful for
+freeing context space after a long debugging detour, without losing your original
+instructions.
+
+<Callout type="tip" title="Good moments to rewind">
+  Exploring an alternative implementation, recovering from a change that broke
+  something, or iterating on a feature — checkpoints let you try things knowing you
+  can always get back to a working state.
+</Callout>
+
+## Limitations
+
+Checkpointing is local undo, not version control:
+
+- **Bash-modified files aren't tracked.** If Claude runs `rm file.txt` or
+  `mv old.txt new.txt` through the Bash tool, those changes can't be undone through
+  rewind — only edits made through Claude's file-editing tools are tracked.
+- **External changes aren't tracked.** Manual edits you make outside Claude Code,
+  or edits from another concurrent session, aren't captured unless they touch the
+  same files as the current session.
+- **It doesn't replace Git.** Checkpoints are for quick, session-level recovery.
+  Keep committing to Git for permanent history and collaboration — think of
+  checkpoints as local undo, and Git as permanent history.
+
+## Summary
+
+- Every prompt creates a checkpoint automatically — no setup required.
+- `/rewind` or `Esc Esc` (with empty input) opens the rewind menu.
+- Restore reverts code, conversation, or both; summarize compresses part of the
+  conversation without touching files.
+- Checkpoints don't track Bash-modified or externally-changed files, and they
+  complement Git rather than replace it.

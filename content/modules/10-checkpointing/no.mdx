@@ -1,0 +1,69 @@
+---
+title: "Sjekkpunkter og tilbakespoling"
+description: "Claude Code sporer koden din underveis, slik at du alltid kan spole tilbake — gjenopprette eller oppsummere kode og samtale fra et tidligere punkt."
+---
+import Callout from "../../../src/components/Callout.astro";
+
+# Sjekkpunkter og tilbakespoling
+
+Mens du jobber med Claude, fanger sjekkpunkter automatisk opp tilstanden til koden
+din før hver redigering. Hver ledetekst du sender lager et nytt sjekkpunkt. Dette
+sikkerhetsnettet lar deg gå løs på ambisiøse endringer i visshet om at du alltid
+kan komme tilbake til en tidligere tilstand — ingen manuelle commits nødvendig.
+
+## Åpne tilbakespolingsmenyen
+
+```
+/rewind
+```
+
+Du kan også trykke `Esc` to ganger med tomt ledetekstfelt for å åpne den samme
+menyen. (Hvis feltet inneholder tekst, tømmer dobbelt `Esc` i stedet utkastet —
+trykk `Up` for å hente det tilbake etterpå.) Menyen lister opp hver ledetekst du
+sendte denne økten; velg én å handle på.
+
+## Gjenopprett vs. oppsummer
+
+Når du har valgt et punkt, velger du en handling:
+
+| Handling | Hva den gjør |
+|---|---|
+| Gjenopprett kode og samtale | Tilbakestiller både filer og samtalehistorikk til det punktet |
+| Gjenopprett samtale | Spoler samtalen tilbake, beholder gjeldende kode som den er |
+| Gjenopprett kode | Tilbakestiller filendringer, beholder samtalen intakt |
+| Oppsummer fra her | Komprimerer samtalen fra det punktet og fremover |
+| Oppsummer frem til her | Komprimerer alt før det punktet, beholder resten |
+
+Gjenopprett-valgene tilbakestiller tilstand. Oppsummer-valgene komprimerer en del
+av samtalen til et AI-generert sammendrag uten å røre noen filer på disk — nyttig
+for å frigjøre kontekstplass etter en lang feilsøkingsavstikker, uten å miste de
+opprinnelige instruksjonene dine.
+
+<Callout type="tip" title="Gode øyeblikk å spole tilbake">
+  Å utforske en alternativ implementasjon, komme seg tilbake fra en endring som
+  ødela noe, eller iterere på en funksjon — sjekkpunkter lar deg prøve ting i
+  visshet om at du alltid kan komme tilbake til en fungerende tilstand.
+</Callout>
+
+## Begrensninger
+
+Sjekkpunkter er lokal angring, ikke versjonskontroll:
+
+- **Filer endret via Bash spores ikke.** Hvis Claude kjører `rm file.txt` eller
+  `mv old.txt new.txt` via Bash-verktøyet, kan de endringene ikke angres gjennom
+  tilbakespoling — kun redigeringer gjort via Claudes filredigeringsverktøy spores.
+- **Eksterne endringer spores ikke.** Manuelle redigeringer du gjør utenfor Claude
+  Code, eller redigeringer fra en annen samtidig økt, fanges ikke opp med mindre de
+  berører de samme filene som gjeldende økt.
+- **Det erstatter ikke Git.** Sjekkpunkter er for rask gjenoppretting på øktnivå.
+  Fortsett å committe til Git for varig historikk og samarbeid — tenk på
+  sjekkpunkter som lokal angring, og Git som varig historikk.
+
+## Oppsummering
+
+- Hver ledetekst lager automatisk et sjekkpunkt — ingen oppsett nødvendig.
+- `/rewind` eller `Esc Esc` (med tomt felt) åpner tilbakespolingsmenyen.
+- Gjenopprett tilbakestiller kode, samtale eller begge; oppsummer komprimerer en
+  del av samtalen uten å røre filer.
+- Sjekkpunkter sporer ikke Bash-endrede eller eksternt endrede filer, og de er et
+  supplement til Git, ikke en erstatning.

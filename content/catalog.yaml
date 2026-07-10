@@ -35,11 +35,35 @@
     en: "MCP Servers"
     no: "MCP-tjenere"
   href: "/learn/mcp-servers/"
+- id: hooks
+  kind: module
+  title:
+    en: "Hooks"
+    no: "Hooks"
+  href: "/learn/hooks/"
+- id: memory
+  kind: module
+  title:
+    en: "Memory & CLAUDE.md"
+    no: "Minne og CLAUDE.md"
+  href: "/learn/memory/"
+- id: headless-mode
+  kind: module
+  title:
+    en: "Headless Mode & Automation"
+    no: "Hodeløs modus og automatisering"
+  href: "/learn/headless-mode/"
+- id: checkpointing
+  kind: module
+  title:
+    en: "Checkpointing & Rewind"
+    no: "Sjekkpunkter og tilbakespoling"
+  href: "/learn/checkpointing/"
 - id: reference-cheatsheet
   kind: reference
   title:
-    en: "Command Cheat Sheet"
-    no: "Kommando-jukselapp"
+    en: "Reference"
+    no: "Referanse"
   href: "/reference/"
 - id: playground
   kind: tool

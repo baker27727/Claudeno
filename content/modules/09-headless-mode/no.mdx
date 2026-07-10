@@ -1,0 +1,97 @@
+---
+title: "Hodeløs modus og automatisering"
+description: "Kjør Claude Code ikke-interaktivt med claude -p — send data inn, få strukturert utdata, og koble det inn i skript og CI."
+---
+import Callout from "../../../src/components/Callout.astro";
+
+# Hodeløs modus og automatisering
+
+Legg til `-p` (eller `--print`) til enhver `claude`-kommando for å kjøre den
+ikke-interaktivt: Claude svarer én gang og avslutter, i stedet for å åpne en økt.
+Dette er flagget bak skripting, CI-pipeliner og enhver arbeidsflyt der ingenting
+skal vente på et menneske.
+
+## Et enkelt spørsmål
+
+```bash
+claude -p "What does the auth module do?"
+```
+
+Alle de vanlige CLI-flaggene fungerer med `-p`, inkludert `--continue`,
+`--allowedTools` og `--output-format`.
+
+## Send data gjennom Claude
+
+Hodeløs modus leser stdin, så du kan sende data inn og omdirigere svaret ut som med
+ethvert annet kommandolinjeverktøy:
+
+```bash
+cat build-error.txt | claude -p 'concisely explain the root cause of this build error' > output.txt
+```
+
+## Få strukturert utdata
+
+Bruk `--output-format json` for å få et strukturert svar — teksten havner i
+`result`-feltet, sammen med øktmetadata og kostnad:
+
+```bash
+claude -p "Summarize this project" --output-format json
+```
+
+<Callout type="tip" title="Hent ut bare teksten">
+  Send JSON-en gjennom et verktøy som `jq` for å hente ut ett enkelt felt:
+
+  ```text
+  claude -p "Summarize this project" --output-format json | jq -r '.result'
+  ```
+</Callout>
+
+## Godkjenn verktøy automatisk
+
+I et skript eller en CI-jobb er det ingen der til å klikke «godkjenn». Bruk
+`--allowedTools` for å la Claude bruke bestemte verktøy uten å spørre:
+
+```bash
+claude -p "Run the test suite and fix any failures" --allowedTools "Bash,Read,Edit"
+```
+
+## Fortsett en samtale på tvers av kall
+
+`--continue` plukker opp den siste samtalen, slik at du kan kjede sammen
+ikke-interaktive kall til et flertrinns skript:
+
+```bash
+claude -p "Now focus on the database queries" --continue
+```
+
+## Start raskere med bare-modus
+
+```bash
+claude --bare -p "Summarize this file" --allowedTools "Read"
+```
+
+`--bare` hopper over automatisk oppdagelse av hooks, skills, plugins, MCP-tjenere,
+auto-minne og CLAUDE.md — kun flagg du sender eksplisitt gjelder. Det gjør en
+kjøring reproduserbar på tvers av maskiner, som er akkurat det du vil ha i CI: en
+kollegas personlige hook eller et prosjekts MCP-tjener endrer ikke resultatet i
+det stille.
+
+<Callout type="mistake" title="Vanlig feil">
+  Å kjøre CI-jobber uten `--bare` og bli overrasket over at utdataen er
+  forskjellig fra maskin til maskin. Uten det laster `claude -p` samme kontekst
+  som en interaktiv økt ville gjort — inkludert alt konfigurert i arbeidsmappen
+  eller `~/.claude`.
+</Callout>
+
+## Oppsummering
+
+- `-p` / `--print` kjører ett spørsmål ikke-interaktivt og avslutter — grunnlaget
+  for skripting og CI-bruk.
+- Hodeløs modus leser stdin, så den fungerer sammen med vanlig shell-piping.
+- `--output-format json` returnerer strukturert utdata med et `result`-felt, klart
+  til å tolkes med `jq` eller lignende.
+- `--allowedTools` godkjenner bestemte verktøy automatisk siden ingen er der til å
+  klikke godkjenn i et skript.
+- `--continue` kjeder sammen ikke-interaktive kall til et flertrinns skript.
+- `--bare` hopper over lokale hooks/skills/plugins/MCP/minne for en reproduserbar
+  CI-kjøring.

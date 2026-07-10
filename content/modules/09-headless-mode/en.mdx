@@ -1,0 +1,94 @@
+---
+title: "Headless Mode & Automation"
+description: "Run Claude Code non-interactively with claude -p — pipe data in, get structured output, and wire it into scripts and CI."
+---
+import Callout from "../../../src/components/Callout.astro";
+
+# Headless Mode & Automation
+
+Add `-p` (or `--print`) to any `claude` command to run it non-interactively: Claude
+answers once and exits, instead of opening a session. This is the flag behind
+scripting, CI pipelines, and any workflow where nothing should wait for a human.
+
+## A basic query
+
+```bash
+claude -p "What does the auth module do?"
+```
+
+All the usual CLI flags work with `-p`, including `--continue`, `--allowedTools`, and
+`--output-format`.
+
+## Pipe data through Claude
+
+Headless mode reads stdin, so you can pipe data in and redirect the response out
+like any other command-line tool:
+
+```bash
+cat build-error.txt | claude -p 'concisely explain the root cause of this build error' > output.txt
+```
+
+## Get structured output
+
+Use `--output-format json` to get a structured response — the text result lands in
+the `result` field, alongside session metadata and cost:
+
+```bash
+claude -p "Summarize this project" --output-format json
+```
+
+<Callout type="tip" title="Extract just the text">
+  Pipe the JSON through a tool like `jq` to pull out a single field:
+
+  ```text
+  claude -p "Summarize this project" --output-format json | jq -r '.result'
+  ```
+</Callout>
+
+## Auto-approve tools
+
+In a script or CI job, no one is there to click "approve." Use `--allowedTools` to
+let Claude use specific tools without prompting:
+
+```bash
+claude -p "Run the test suite and fix any failures" --allowedTools "Bash,Read,Edit"
+```
+
+## Continue a conversation across calls
+
+`--continue` picks up the most recent conversation, so you can chain non-interactive
+calls into a multi-step script:
+
+```bash
+claude -p "Now focus on the database queries" --continue
+```
+
+## Start faster with bare mode
+
+```bash
+claude --bare -p "Summarize this file" --allowedTools "Read"
+```
+
+`--bare` skips auto-discovery of hooks, skills, plugins, MCP servers, auto memory,
+and CLAUDE.md — only flags you pass explicitly take effect. That makes a run
+reproducible across machines, which is exactly what you want in CI: a teammate's
+personal hook or a project's MCP server won't quietly change the result.
+
+<Callout type="mistake" title="Common mistake">
+  Running CI jobs without `--bare` and being surprised the output differs from
+  machine to machine. Without it, `claude -p` loads the same context an interactive
+  session would — including anything configured in the working directory or
+  `~/.claude`.
+</Callout>
+
+## Summary
+
+- `-p` / `--print` runs one query non-interactively and exits — the foundation of
+  scripting and CI use.
+- Headless mode reads stdin, so it composes with standard shell piping.
+- `--output-format json` returns structured output with a `result` field, ready to
+  parse with `jq` or similar.
+- `--allowedTools` auto-approves specific tools since no one is there to click
+  approve in a script.
+- `--continue` chains non-interactive calls into a multi-step script.
+- `--bare` skips local hooks/skills/plugins/MCP/memory for a reproducible CI run.

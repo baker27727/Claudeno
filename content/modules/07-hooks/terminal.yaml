@@ -1,0 +1,36 @@
+steps:
+  - id: step-1
+    command: "chmod +x .claude/hooks/protect-files.sh"
+    output: |
+      (no output — the file is now executable)
+    explain:
+      en: "Hook scripts must be executable, or Claude Code can't run them when the event fires."
+      no: "Hook-skript må være kjørbare, ellers kan ikke Claude Code kjøre dem når hendelsen inntreffer."
+    accepts_also: []
+  - id: step-2
+    command: "echo '{\"tool_input\":{\"command\":\"ls\"}}' | ./my-hook.sh"
+    output: |
+      exit code: 0
+    explain:
+      en: "Pipe sample JSON into a hook script to test its exit code before registering it in settings.json."
+      no: "Send eksempel-JSON inn i et hook-skript for å teste avslutningskoden før du registrerer det i settings.json."
+    accepts_also: []
+  - id: step-3
+    command: "/hooks"
+    output: |
+      PreToolUse       1 hook configured
+      PostToolUse      1 hook configured
+      Notification     0 hooks configured
+      ...
+    explain:
+      en: "/hooks opens a read-only browser of every configured hook, grouped by event. Edit the settings file to make changes."
+      no: "/hooks åpner en skrivebeskyttet oversikt over alle konfigurerte hooks, gruppert etter hendelse. Rediger innstillingsfilen for å gjøre endringer."
+    accepts_also: []
+  - id: step-4
+    command: "claude --debug-file /tmp/claude.log"
+    output: |
+      Debug log: /tmp/claude.log
+    explain:
+      en: "Starts Claude Code writing detailed debug output, including hook execution details, to a known file you can tail."
+      no: "Starter Claude Code med detaljert feilsøkingslogg, inkludert detaljer om hook-utførelse, skrevet til en kjent fil du kan følge med `tail`."
+    accepts_also: []

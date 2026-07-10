@@ -1,0 +1,21 @@
+steps:
+  - id: step-1
+    command: "/init"
+    output: |
+      Analyzing codebase...
+      Generated CLAUDE.md with build commands, test instructions, and conventions.
+    explain:
+      en: "/init analyzes your codebase and generates a starting CLAUDE.md. If one already exists, it suggests improvements instead of overwriting it."
+      no: "/init analyserer kodebasen din og genererer en innledende CLAUDE.md. Hvis en allerede finnes, foreslår den forbedringer i stedet for å overskrive den."
+    accepts_also: []
+  - id: step-2
+    command: "/memory"
+    output: |
+      Loaded memory files:
+        CLAUDE.md (project)
+        ~/.claude/CLAUDE.md (user)
+      Auto memory: enabled
+    explain:
+      en: "/memory lists every CLAUDE.md, CLAUDE.local.md, and rules file loaded this session, lets you toggle auto memory, and opens any file you select."
+      no: "/memory lister opp alle CLAUDE.md-, CLAUDE.local.md- og rules-filer lastet denne økten, lar deg slå av/på auto-minne, og åpner filen du velger."
+    accepts_also: []

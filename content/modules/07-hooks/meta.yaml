@@ -1,0 +1,12 @@
+id: hooks
+order: 7
+level: advanced
+duration_min: 18
+covers_version: "2.1.205"
+title:
+  en: "Hooks"
+  no: "Hooks"
+description:
+  en: "Run shell commands automatically at key points in Claude Code's lifecycle — deterministic control instead of hoping the model remembers."
+  no: "Kjør shell-kommandoer automatisk på faste punkter i Claude Codes livssyklus — deterministisk kontroll i stedet for å håpe at modellen husker det."
+tags: [hooks, automation, advanced]

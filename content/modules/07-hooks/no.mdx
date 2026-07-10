@@ -1,0 +1,142 @@
+---
+title: "Hooks"
+description: "Kjør shell-kommandoer automatisk på faste punkter i Claude Codes livssyklus — deterministisk kontroll i stedet for å håpe at modellen husker det."
+---
+import Callout from "../../../src/components/Callout.astro";
+
+# Hooks
+
+Hooks er shell-kommandoer som kjører automatisk på bestemte punkter i Claude Codes
+livssyklus — før et verktøykall, etter en redigering, når Claude er ferdig med å
+svare, og mer. De gir deg **deterministisk** kontroll: en regel som alltid utløses,
+i stedet for å stole på at modellen husker å kjøre en formatterer eller sjekke en
+policy hver gang.
+
+## Hooks-blokken
+
+Hooks ligger under en `hooks`-nøkkel i en innstillingsfil. Hvert hendelsesnavn er sin
+egen nøkkel inni det objektet, med en liste av matcher-grupper:
+
+```json
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          { "type": "command", "command": "jq -r '.tool_input.file_path' | xargs npx prettier --write" }
+        ]
+      }
+    ]
+  }
+}
+```
+
+`matcher` snevrer inn hvilke verktøykall som utløser hooken — her kjører Prettier kun
+etter `Edit`- eller `Write`-kall. En tom matcher (`""`) utløses ved hver forekomst av
+hendelsen. Hver hook mottar hendelsesdataene som JSON på stdin, og forteller Claude
+Code hva som skal skje videre via avslutningskoden: `0` betyr ingen innvending, `2`
+blokkerer handlingen og sender stderr-meldingen din tilbake til Claude som
+tilbakemelding.
+
+## Vanlige hendelser
+
+| Hendelse | Utløses når |
+|---|---|
+| `SessionStart` | En økt starter eller gjenopptas |
+| `UserPromptSubmit` | Du sender inn en ledetekst, før Claude behandler den |
+| `PreToolUse` | Før et verktøykall utføres — kan blokkere det |
+| `PostToolUse` | Etter at et verktøykall lykkes |
+| `Stop` | Når Claude er ferdig med å svare |
+| `Notification` | Når Claude Code sender et varsel (f.eks. venter på input) |
+
+## Eksempel: blokker redigering av beskyttede filer
+
+En `PreToolUse`-hook kan stoppe en redigering før den skjer. Dette skriptet
+sjekker målstien mot en liste med beskyttede mønstre og avslutter med kode `2` —
+koden som blokkerer verktøykallet — når den matcher:
+
+```shell
+#!/bin/bash
+# .claude/hooks/protect-files.sh
+INPUT=$(cat)
+FILE_PATH=$(echo "$INPUT" | jq -r '.tool_input.file_path // empty')
+
+for pattern in ".env" "package-lock.json" ".git/"; do
+  if [[ "$FILE_PATH" == *"$pattern"* ]]; then
+    echo "Blocked: $FILE_PATH matches protected pattern '$pattern'" >&2
+    exit 2
+  fi
+done
+exit 0
+```
+
+Gjør det kjørbart, og registrer det deretter som en `PreToolUse`-hook som matcher
+`Edit|Write` i `.claude/settings.json`:
+
+```bash
+chmod +x .claude/hooks/protect-files.sh
+```
+
+```json
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          { "type": "command", "command": "\"$CLAUDE_PROJECT_DIR\"/.claude/hooks/protect-files.sh" }
+        ]
+      }
+    ]
+  }
+}
+```
+
+<Callout type="tip" title="Test et hook-skript direkte">
+  Før du registrerer en hook, kan du sende eksempel-JSON inn i det for å sjekke
+  avslutningskoden:
+
+  ```bash
+  echo '{"tool_input":{"command":"ls"}}' | ./my-hook.sh
+  ```
+</Callout>
+
+## Verifiser og feilsøk
+
+```
+/hooks
+```
+
+`/hooks` åpner en skrivebeskyttet oversikt over alle konfigurerte hooks, gruppert
+etter hendelse, med et antall ved siden av hver. For å legge til, endre eller fjerne
+en hook redigerer du innstillings-JSON-en direkte (eller ber Claude gjøre det) —
+selve menyen kan ikke skrive endringer.
+
+<Callout type="mistake" title="Vanlig feil">
+  Å matche for bredt. En `PermissionRequest`-hook med en tom eller `.*`-matcher
+  godkjenner *hver* tillatelsesforespørsel automatisk, inkludert filskriving og
+  shell-kommandoer — ikke bare den du egentlig mente å hoppe over. Hold matchere
+  så smale som verktøynavnet (eller verktøynavn + `if`-mønster) du faktisk vil
+  dekke.
+</Callout>
+
+For dypere feilsøking starter du en økt med en kjent loggsti og følger den i en
+annen terminal:
+
+```bash
+claude --debug-file /tmp/claude.log
+```
+
+## Oppsummering
+
+- Hooks kjører shell-kommandoer deterministisk på livssyklushendelser — de er ikke
+  avhengige av at modellen velger å handle.
+- Formen er alltid `hooks.<Hendelsesnavn>[].{matcher, hooks: [{type: "command",
+  command}]}`.
+- Avslutningskode `0` = ingen innvending, avslutningskode `2` = blokker og send
+  stderr-meldingen din tilbake til Claude som tilbakemelding.
+- `/hooks` er skrivebeskyttet for å bla gjennom; rediger innstillingsfilen for å
+  endre hooks.
+- Hold matchere smale, spesielt ved automatisk godkjenning av
+  `PermissionRequest`-hooks.

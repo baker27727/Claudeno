@@ -1,0 +1,49 @@
+questions:
+  - id: q1
+    prompt:
+      en: "Which flag runs Claude Code non-interactively — answer once and exit?"
+      no: "Hvilket flagg kjører Claude Code ikke-interaktivt — svar én gang og avslutt?"
+    options:
+      - { id: a, en: "--print / -p", no: "--print / -p" }
+      - { id: b, en: "--continue / -c", no: "--continue / -c" }
+      - { id: c, en: "--verbose", no: "--verbose" }
+    correct: a
+    explain:
+      en: "-p (--print) runs one query non-interactively and exits, instead of opening an interactive session."
+      no: "-p (--print) kjører ett spørsmål ikke-interaktivt og avslutter, i stedet for å åpne en interaktiv økt."
+  - id: q2
+    prompt:
+      en: "Which field holds the text result when using --output-format json?"
+      no: "Hvilket felt inneholder tekstresultatet når du bruker --output-format json?"
+    options:
+      - { id: a, en: "text", no: "text" }
+      - { id: b, en: "result", no: "result" }
+      - { id: c, en: "output", no: "output" }
+    correct: b
+    explain:
+      en: "The response payload includes a result field with the text answer, alongside session metadata and cost."
+      no: "Svarpayloaden inneholder et result-felt med tekstsvaret, sammen med øktmetadata og kostnad."
+  - id: q3
+    prompt:
+      en: "Why does a script or CI job typically need --allowedTools?"
+      no: "Hvorfor trenger et skript eller en CI-jobb vanligvis --allowedTools?"
+    options:
+      - { id: a, en: "It makes responses faster", no: "Det gjør svarene raskere" }
+      - { id: b, en: "No one is there to click approve on a permission prompt", no: "Ingen er der til å klikke godkjenn på en tillatelsesforespørsel" }
+      - { id: c, en: "It's required to use --output-format", no: "Det er påkrevd for å bruke --output-format" }
+    correct: b
+    explain:
+      en: "--allowedTools auto-approves specific tools without prompting, which is essential in non-interactive contexts where no human can respond to a prompt."
+      no: "--allowedTools godkjenner bestemte verktøy automatisk uten å spørre, noe som er nødvendig i ikke-interaktive sammenhenger der intet menneske kan svare på en forespørsel."
+  - id: q4
+    prompt:
+      en: "What does --bare skip that makes CI runs more reproducible?"
+      no: "Hva hopper --bare over som gjør CI-kjøringer mer reproduserbare?"
+    options:
+      - { id: a, en: "Auto-discovery of local hooks, skills, plugins, MCP servers, and CLAUDE.md", no: "Automatisk oppdagelse av lokale hooks, skills, plugins, MCP-tjenere og CLAUDE.md" }
+      - { id: b, en: "The --output-format flag", no: "--output-format-flagget" }
+      - { id: c, en: "Reading from stdin", no: "Lesing fra stdin" }
+    correct: a
+    explain:
+      en: "--bare skips auto-discovery of hooks, skills, plugins, MCP servers, auto memory, and CLAUDE.md — only explicitly passed flags take effect, so a run behaves the same on every machine."
+      no: "--bare hopper over automatisk oppdagelse av hooks, skills, plugins, MCP-tjenere, auto-minne og CLAUDE.md — kun eksplisitt sendte flagg gjelder, så en kjøring oppfører seg likt på alle maskiner."

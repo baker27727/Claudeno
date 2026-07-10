@@ -1,0 +1,103 @@
+---
+title: "Minne og CLAUDE.md"
+description: "Gi Claude varige instruksjoner med CLAUDE.md, og forstå hvordan auto-minne lar den samle læring på egen hånd."
+---
+import Callout from "../../../src/components/Callout.astro";
+
+# Minne og CLAUDE.md
+
+Hver økt starter med et blankt kontekstvindu. To mekanismer bringer kunnskap videre
+mellom økter: **CLAUDE.md-filer**, instruksjoner du skriver selv, og **auto-minne**,
+notater Claude skriver for seg selv basert på rettelsene og preferansene dine. Begge
+lastes ved starten av hver samtale.
+
+## CLAUDE.md vs. auto-minne
+
+|  | CLAUDE.md-filer | Auto-minne |
+|---|---|---|
+| Hvem skriver det | Deg | Claude |
+| Inneholder | Instruksjoner og regler | Læring og mønstre |
+| Bruk til | Kodestandarder, arbeidsflyt, arkitektur | Byggekommandoer, feilsøkingsinnsikt, preferanser Claude oppdager |
+
+Begge er kontekst, ikke håndhevet konfigurasjon — Claude behandler dem som
+veiledning, ikke en hard regel den garantert følger. For å blokkere en handling
+uansett hva Claude bestemmer, bruk en `PreToolUse`-hook i stedet (se modulen Hooks).
+
+## Hvor CLAUDE.md-filer ligger
+
+Claude Code leser CLAUDE.md-filer ved å gå oppover i mappestrukturen, fra bredest
+til smalest omfang — en prosjektinstruksjon vises i konteksten etter en
+brukerinstruksjon:
+
+| Nivå | Plassering | Delt med |
+|---|---|---|
+| Managed policy | `/etc/claude-code/CLAUDE.md` (varierer per OS) | Alle i organisasjonen |
+| Bruker | `~/.claude/CLAUDE.md` | Kun deg, alle prosjekter |
+| Prosjekt | `./CLAUDE.md` eller `./.claude/CLAUDE.md` | Team, via versjonskontroll |
+| Lokal | `./CLAUDE.local.md` | Kun deg, dette prosjektet (gitignored) |
+
+## Generer et utgangspunkt
+
+```
+/init
+```
+
+`/init` analyserer kodebasen din og genererer en CLAUDE.md med byggekommandoer,
+testinstruksjoner og konvensjoner den oppdager. Hvis en CLAUDE.md allerede finnes,
+foreslår `/init` forbedringer i stedet for å overskrive den.
+
+<Callout type="tip" title="Skriv instruksjoner Claude kan verifisere">
+  Spesifikke, konkrete instruksjoner fungerer best: «Bruk 2-space innrykk» slår
+  «formatter koden ordentlig», og «Kjør `npm test` før commit» slår «test
+  endringene dine». Sikt mot under 200 linjer per fil — lengre filer bruker mer
+  kontekst og gir svakere etterlevelse.
+</Callout>
+
+## Importer andre filer
+
+CLAUDE.md kan dra inn andre filer med `@sti/til/fil`-syntaks. Både relative og
+absolutte stier fungerer, og imports kan rekursivt importere andre filer opptil
+fire nivåer dypt:
+
+```text
+See @README for project overview and @package.json for available npm commands.
+```
+
+Sett en sti i backticks (`` `@README` ``) for å nevne den uten å importere den.
+
+## Se og rediger minne
+
+```
+/memory
+```
+
+`/memory` lister opp alle CLAUDE.md-, CLAUDE.local.md- og rules-filer som er lastet
+i gjeldende økt, lar deg slå auto-minne av eller på, og åpner filen du velger i
+editoren din.
+
+## Auto-minne
+
+Auto-minne lar Claude samle kunnskap på tvers av økter uten at du skriver noe selv —
+byggekommandoer, feilsøkingsinnsikt, preferanser den legger merke til fra
+rettelsene dine. Det er på som standard, lagret per prosjekt i en `MEMORY.md`-indeks
+pluss temafiler. Kun de første 200 linjene (eller 25KB) av `MEMORY.md` lastes ved
+øktstart; Claude holder den konsis ved å flytte detaljer til separate temafiler den
+leser ved behov.
+
+<Callout type="mistake" title="Vanlig feil">
+  Å forvente at en nøstet CLAUDE.md overlever `/compact`. Kun rot-CLAUDE.md i
+  prosjektet leses automatisk på nytt og settes tilbake i konteksten etter
+  komprimering. Nøstede CLAUDE.md-filer i undermapper lastes på nytt først neste
+  gang Claude leser en fil i den undermappen.
+</Callout>
+
+## Oppsummering
+
+- CLAUDE.md er instruksjoner du skriver; auto-minne er notater Claude skriver for
+  seg selv. Begge lastes hver økt, og begge er kontekst snarere enn håndhevelse.
+- Lasterekkefølge, bredest til smalest: managed policy → bruker
+  (`~/.claude/CLAUDE.md`) → prosjekt (`./CLAUDE.md`) → lokal (`./CLAUDE.local.md`).
+- `/init` genererer en innledende CLAUDE.md fra kodebasen din.
+- `@sti`-imports drar inn andre filer; sett en sti i backticks for å nevne den uten
+  å importere den.
+- `/memory` lister opp og åpner hver lastet minnefil, og slår av/på auto-minne.

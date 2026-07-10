@@ -1,0 +1,471 @@
+# Sections shown on /reference. Each section is a group of {cmd, desc} rows.
+# Schema: src/content.config.ts (`reference` collection). Bilingual parity is
+# enforced by scripts/audits/audit-parity.ts.
+
+- id: install-update
+  title:
+    en: "Install & update"
+    no: "Installasjon og oppdatering"
+  items:
+    - cmd: "curl -fsSL https://claude.ai/install.sh | bash"
+      desc:
+        en: "Install the CLI on macOS, Linux, or WSL. Auto-updates in the background afterward."
+        no: "Installer CLI-en på macOS, Linux eller WSL. Oppdaterer seg selv i bakgrunnen etterpå."
+    - cmd: "claude update"
+      desc:
+        en: "Update to the latest version manually."
+        no: "Oppdater til nyeste versjon manuelt."
+    - cmd: "claude doctor"
+      desc:
+        en: "Print installation and settings diagnostics — the first thing to run when something seems broken."
+        no: "Skriv ut diagnostikk for installasjon og innstillinger — det første du bør kjøre når noe virker ødelagt."
+    - cmd: "claude --version"
+      desc:
+        en: "Show the installed version number."
+        no: "Vis installert versjonsnummer."
+
+- id: cli-commands
+  title:
+    en: "CLI commands"
+    no: "CLI-kommandoer"
+  items:
+    - cmd: "claude"
+      desc:
+        en: "Start an interactive session in the current directory."
+        no: "Start en interaktiv økt i gjeldende mappe."
+    - cmd: 'claude "query"'
+      desc:
+        en: "Start an interactive session with an initial prompt already queued."
+        no: "Start en interaktiv økt med en ledetekst allerede i kø."
+    - cmd: 'claude -p "query"'
+      desc:
+        en: "Print mode — run one query non-interactively and exit. See the Headless Mode module."
+        no: "Print-modus — kjør ett spørsmål ikke-interaktivt og avslutt. Se modulen Hodeløs modus."
+    - cmd: "claude -c"
+      desc:
+        en: "Continue the most recent conversation in the current directory."
+        no: "Fortsett den siste samtalen i gjeldende mappe."
+    - cmd: 'claude -r "<session>" "query"'
+      desc:
+        en: "Resume a specific session by ID or name."
+        no: "Gjenoppta en bestemt økt via ID eller navn."
+    - cmd: "claude mcp"
+      desc:
+        en: "Add, list, and manage MCP server connections."
+        no: "Legg til, list opp og administrer MCP-tjenertilkoblinger."
+    - cmd: "claude agents"
+      desc:
+        en: "Open agent view to monitor and dispatch parallel background sessions."
+        no: "Åpne agentvisning for å overvåke og starte parallelle bakgrunnsøkter."
+    - cmd: "claude auth login"
+      desc:
+        en: "Sign in to your Anthropic account."
+        no: "Logg inn på Anthropic-kontoen din."
+    - cmd: "claude auth status"
+      desc:
+        en: "Show authentication status as JSON."
+        no: "Vis autentiseringsstatus som JSON."
+    - cmd: "claude setup-token"
+      desc:
+        en: "Generate a long-lived OAuth token for CI pipelines and scripts."
+        no: "Generer et langvarig OAuth-token for CI-pipeliner og skript."
+    - cmd: "claude project purge [path]"
+      desc:
+        en: "Delete all local Claude Code state for a project (sessions, caches)."
+        no: "Slett all lokal Claude Code-tilstand for et prosjekt (økter, hurtigbuffer)."
+
+- id: cli-flags
+  title:
+    en: "CLI flags"
+    no: "CLI-flagg"
+  items:
+    - cmd: "--print, -p"
+      desc:
+        en: "Print the response without entering interactive mode — the flag behind headless/scripted use."
+        no: "Skriv ut svaret uten å gå inn i interaktiv modus — flagget bak hodeløs/skriptet bruk."
+    - cmd: "--continue, -c"
+      desc:
+        en: "Load the most recent conversation in the current directory."
+        no: "Last inn den siste samtalen i gjeldende mappe."
+    - cmd: "--resume, -r"
+      desc:
+        en: "Resume a specific session by ID or name."
+        no: "Gjenoppta en bestemt økt via ID eller navn."
+    - cmd: "--permission-mode <mode>"
+      desc:
+        en: "Start in a specific permission mode: default, acceptEdits, plan, auto, dontAsk, or bypassPermissions."
+        no: "Start i en bestemt tillatelsesmodus: default, acceptEdits, plan, auto, dontAsk eller bypassPermissions."
+    - cmd: "--dangerously-skip-permissions"
+      desc:
+        en: "Skip permission prompts entirely — equivalent to --permission-mode bypassPermissions. Use with care."
+        no: "Hopp over tillatelsesdialoger fullstendig — tilsvarer --permission-mode bypassPermissions. Bruk med forsiktighet."
+    - cmd: "--model <alias>"
+      desc:
+        en: "Set the model for this session: sonnet, opus, haiku, fable, or a full model name."
+        no: "Sett modell for denne økten: sonnet, opus, haiku, fable, eller et fullt modellnavn."
+    - cmd: "--effort <level>"
+      desc:
+        en: "Set the effort level: low, medium, high, xhigh, or max."
+        no: "Sett innsatsnivå: low, medium, high, xhigh eller max."
+    - cmd: "--output-format <format>"
+      desc:
+        en: "In print mode: text (default), json, or stream-json for structured/streamed output."
+        no: "I print-modus: text (standard), json eller stream-json for strukturert/strømmet utdata."
+    - cmd: "--allowedTools <list>"
+      desc:
+        en: "Auto-approve specific tools without prompting, e.g. \"Bash,Read,Edit\"."
+        no: "Godkjenn bestemte verktøy automatisk uten å spørre, f.eks. \"Bash,Read,Edit\"."
+    - cmd: "--add-dir <path>"
+      desc:
+        en: "Grant Claude read/write access to an additional working directory."
+        no: "Gi Claude lese-/skrivetilgang til en ekstra arbeidsmappe."
+    - cmd: "--settings <file-or-json>"
+      desc:
+        en: "Load settings from a JSON file path or an inline JSON string."
+        no: "Last inn innstillinger fra en JSON-filsti eller en direkte JSON-streng."
+    - cmd: "--mcp-config <file-or-json>"
+      desc:
+        en: "Load MCP servers from one or more JSON files or strings."
+        no: "Last inn MCP-tjenere fra én eller flere JSON-filer eller strenger."
+    - cmd: "--max-turns <n>"
+      desc:
+        en: "Limit the number of agentic turns. Print mode only."
+        no: "Begrens antall agentiske runder. Kun i print-modus."
+    - cmd: "--verbose"
+      desc:
+        en: "Enable verbose logging — shows full turn-by-turn output."
+        no: "Aktiver detaljert logging — viser fullstendig utdata runde for runde."
+    - cmd: "--worktree, -w"
+      desc:
+        en: "Start Claude in an isolated git worktree."
+        no: "Start Claude i en isolert git-arbeidskatalog (worktree)."
+    - cmd: "--bare"
+      desc:
+        en: "Minimal startup: skip auto-discovery of hooks, skills, plugins, MCP servers, and auto memory. Recommended for CI."
+        no: "Minimal oppstart: hopp over automatisk oppdagelse av hooks, skills, plugins, MCP-tjenere og auto-minne. Anbefalt for CI."
+    - cmd: "--json-schema <schema>"
+      desc:
+        en: "Validate print-mode output against a JSON Schema, combined with --output-format json."
+        no: "Valider utdata i print-modus mot et JSON Schema, kombinert med --output-format json."
+    - cmd: "--append-system-prompt <text>"
+      desc:
+        en: "Append custom text to the end of the default system prompt."
+        no: "Legg til egendefinert tekst på slutten av standard systemledetekst."
+    - cmd: "--fallback-model <model>"
+      desc:
+        en: "Automatically fall back to another model if the primary one is unavailable."
+        no: "Fall automatisk tilbake til en annen modell hvis den primære er utilgjengelig."
+    - cmd: "--background, --bg"
+      desc:
+        en: "Start the session as a background agent and return immediately."
+        no: "Start økten som en bakgrunnsagent og returner umiddelbart."
+
+- id: slash-session
+  title:
+    en: "Session & context"
+    no: "Økt og kontekst"
+  items:
+    - cmd: "/clear [name]"
+      desc:
+        en: "Start a new conversation with an empty context window."
+        no: "Start en ny samtale med et tomt kontekstvindu."
+    - cmd: "/resume [session]"
+      desc:
+        en: "Resume a previous conversation by ID or name."
+        no: "Gjenoppta en tidligere samtale via ID eller navn."
+    - cmd: "/branch [name]"
+      desc:
+        en: "Create a branch of the current conversation to explore an alternative."
+        no: "Lag en gren av gjeldende samtale for å utforske et alternativ."
+    - cmd: "/compact [instructions]"
+      desc:
+        en: "Free up context by summarizing the conversation so far."
+        no: "Frigjør kontekst ved å oppsummere samtalen så langt."
+    - cmd: "/rewind"
+      desc:
+        en: "Open the rewind menu to restore or summarize code and conversation from an earlier point."
+        no: "Åpne tilbakespolingsmenyen for å gjenopprette eller oppsummere kode og samtale fra et tidligere punkt."
+    - cmd: "/context [all]"
+      desc:
+        en: "Visualize current context window usage as a colored grid."
+        no: "Visualiser bruken av kontekstvinduet som et fargekodet rutenett."
+
+- id: slash-config
+  title:
+    en: "Configuration & tools"
+    no: "Konfigurasjon og verktøy"
+  items:
+    - cmd: "/init"
+      desc:
+        en: "Generate a starting CLAUDE.md by analyzing the codebase."
+        no: "Generer en innledende CLAUDE.md ved å analysere kodebasen."
+    - cmd: "/memory"
+      desc:
+        en: "View and edit CLAUDE.md files and auto memory for the current session."
+        no: "Se og rediger CLAUDE.md-filer og auto-minne for gjeldende økt."
+    - cmd: "/permissions"
+      desc:
+        en: "Manage allow, ask, and deny rules for tool permissions."
+        no: "Administrer allow-, ask- og deny-regler for verktøytillatelser."
+    - cmd: "/mcp"
+      desc:
+        en: "Manage MCP server connections and OAuth authentication."
+        no: "Administrer MCP-tjenertilkoblinger og OAuth-autentisering."
+    - cmd: "/model [model]"
+      desc:
+        en: "Switch the active model and save it as the default."
+        no: "Bytt aktiv modell og lagre den som standard."
+    - cmd: "/config"
+      desc:
+        en: "Adjust theme, model, output style, and other preferences."
+        no: "Juster tema, modell, utdatastil og andre preferanser."
+    - cmd: "/hooks"
+      desc:
+        en: "Browse all configured hooks, grouped by event (read-only)."
+        no: "Bla gjennom alle konfigurerte hooks, gruppert etter hendelse (skrivebeskyttet)."
+    - cmd: "/add-dir"
+      desc:
+        en: "Add a working directory for file access during the current session."
+        no: "Legg til en arbeidsmappe for filtilgang i gjeldende økt."
+    - cmd: "/cd"
+      desc:
+        en: "Move the session to a new working directory."
+        no: "Flytt økten til en ny arbeidsmappe."
+
+- id: slash-review
+  title:
+    en: "Review & verification"
+    no: "Gjennomgang og verifisering"
+  items:
+    - cmd: "/code-review [level] [--fix]"
+      desc:
+        en: "Review the current diff for correctness bugs and cleanup opportunities."
+        no: "Gjennomgå gjeldende diff for korrekthetsfeil og opprydningsmuligheter."
+    - cmd: "/security-review"
+      desc:
+        en: "Analyze pending changes for security vulnerabilities."
+        no: "Analyser ventende endringer for sikkerhetssårbarheter."
+    - cmd: "/review [PR]"
+      desc:
+        en: "Fast, single-pass, read-only review of a GitHub pull request."
+        no: "Rask, skrivebeskyttet gjennomgang av en GitHub pull request i én omgang."
+    - cmd: "/diff"
+      desc:
+        en: "Open an interactive diff viewer showing uncommitted changes."
+        no: "Åpne en interaktiv diff-visning som viser ikke-committede endringer."
+    - cmd: "/simplify [target]"
+      desc:
+        en: "Review code for reuse and simplification opportunities, then apply the fixes."
+        no: "Gjennomgå kode for gjenbruk- og forenklingsmuligheter, og bruk deretter rettelsene."
+
+- id: keyboard-shortcuts
+  title:
+    en: "Keyboard shortcuts"
+    no: "Tastatursnarveier"
+  items:
+    - cmd: "Ctrl+C"
+      desc:
+        en: "Interrupt a running operation. If nothing is running, clears the input; a second press exits."
+        no: "Avbryt en pågående operasjon. Hvis ingenting kjører, tømmer den inndata; et andre trykk avslutter."
+    - cmd: "Esc"
+      desc:
+        en: "Interrupt Claude mid-turn so you can redirect, or close an open dialog."
+        no: "Avbryt Claude midt i en runde slik at du kan styre om, eller lukk en åpen dialog."
+    - cmd: "Esc Esc"
+      desc:
+        en: "With empty input: open the rewind menu. With text in the input: clear the draft (saved to history)."
+        no: "Med tomt felt: åpne tilbakespolingsmenyen. Med tekst i feltet: tøm utkastet (lagres i historikken)."
+    - cmd: "Shift+Tab"
+      desc:
+        en: "Cycle through permission modes: default (Manual), acceptEdits, plan, and any enabled extra modes."
+        no: "Bla gjennom tillatelsesmodi: default (Manuell), acceptEdits, plan, og eventuelle aktiverte tilleggsmodi."
+    - cmd: "Ctrl+O"
+      desc:
+        en: "Toggle the transcript viewer, showing detailed tool usage and execution."
+        no: "Slå av/på transkriptvisningen, som viser detaljert verktøybruk og utførelse."
+    - cmd: "Ctrl+R"
+      desc:
+        en: "Reverse search through your prompt history interactively."
+        no: "Søk baklengs interaktivt i ledetekst-historikken din."
+    - cmd: "Ctrl+B"
+      desc:
+        en: "Background the currently running Bash command or agent."
+        no: "Send den kjørende Bash-kommandoen eller agenten til bakgrunnen."
+    - cmd: "Ctrl+T"
+      desc:
+        en: "Toggle Claude's to-do task checklist in the status area."
+        no: "Slå av/på Claudes oppgavesjekkliste i statusområdet."
+    - cmd: "\\ + Enter"
+      desc:
+        en: "Insert a newline for multiline input — works in every terminal."
+        no: "Sett inn linjeskift for flerlinjes inndata — fungerer i alle terminaler."
+    - cmd: "Shift+Enter"
+      desc:
+        en: "Multiline input, native in iTerm2, WezTerm, Ghostty, Kitty, Warp, and Windows Terminal."
+        no: "Flerlinjes inndata, innebygget i iTerm2, WezTerm, Ghostty, Kitty, Warp og Windows Terminal."
+    - cmd: "/ (at start of line)"
+      desc:
+        en: "Trigger a slash command or skill."
+        no: "Utløs en slash-kommando eller skill."
+    - cmd: "! (at start of line)"
+      desc:
+        en: "Shell mode — run a command directly and add its output to the conversation."
+        no: "Skallmodus — kjør en kommando direkte og legg utdataen til i samtalen."
+    - cmd: "@"
+      desc:
+        en: "Trigger file path autocomplete to reference a file or directory."
+        no: "Utløs autofullføring av filsti for å referere til en fil eller mappe."
+
+- id: settings-scopes
+  title:
+    en: "Settings file locations"
+    no: "Plassering av innstillingsfiler"
+  items:
+    - cmd: "Managed policy"
+      desc:
+        en: "Deployed by an organization's IT/DevOps team; cannot be overridden by any other scope."
+        no: "Distribueres av en organisasjons IT/DevOps-team; kan ikke overstyres av noe annet nivå."
+    - cmd: "~/.claude/settings.json"
+      desc:
+        en: "User scope — applies to you, across all your projects. Not shared."
+        no: "Brukernivå — gjelder deg, på tvers av alle prosjektene dine. Ikke delt."
+    - cmd: ".claude/settings.json"
+      desc:
+        en: "Project scope — shared with the team via git."
+        no: "Prosjektnivå — delt med teamet via git."
+    - cmd: ".claude/settings.local.json"
+      desc:
+        en: "Local scope — you, this repo only. Gitignored automatically."
+        no: "Lokalt nivå — kun deg, dette repoet. Legges automatisk i .gitignore."
+    - cmd: "Precedence"
+      desc:
+        en: "Managed > CLI flags > Local > Project > User — a more specific scope wins on conflicting keys."
+        no: "Managed > CLI-flagg > Lokal > Prosjekt > Bruker — et mer spesifikt nivå vinner ved motstridende nøkler."
+
+- id: settings-keys
+  title:
+    en: "Key settings.json options"
+    no: "Viktige nøkler i settings.json"
+  items:
+    - cmd: "permissions"
+      desc:
+        en: "Allow/ask/deny rules for tools and file access, e.g. { \"allow\": [\"Bash(npm run test *)\"] }."
+        no: "Allow-/ask-/deny-regler for verktøy og filtilgang, f.eks. { \"allow\": [\"Bash(npm run test *)\"] }."
+    - cmd: "env"
+      desc:
+        en: "Environment variables applied to every session started from this scope."
+        no: "Miljøvariabler som gjelder for hver økt startet fra dette nivået."
+    - cmd: "model"
+      desc:
+        en: "The default model for sessions in this scope."
+        no: "Standardmodell for økter på dette nivået."
+    - cmd: "hooks"
+      desc:
+        en: "Lifecycle event hooks — see the Hooks module for the full shape."
+        no: "Hooks for livssyklushendelser — se modulen Hooks for hele strukturen."
+    - cmd: "autoMemoryEnabled"
+      desc:
+        en: "Turn Claude's self-written auto memory on or off. Defaults to true."
+        no: "Slå Claudes selvskrevne auto-minne av eller på. Standard er true."
+
+- id: env-vars
+  title:
+    en: "Environment variables"
+    no: "Miljøvariabler"
+  items:
+    - cmd: "ANTHROPIC_API_KEY"
+      desc:
+        en: "API key sent as the X-Api-Key header; overrides a Claude subscription when set."
+        no: "API-nøkkel sendt som X-Api-Key-header; overstyrer et Claude-abonnement når den er satt."
+    - cmd: "ANTHROPIC_MODEL"
+      desc:
+        en: "Name of the model setting to use for the session."
+        no: "Navnet på modellinnstillingen som skal brukes for økten."
+    - cmd: "ANTHROPIC_BASE_URL"
+      desc:
+        en: "Override the API endpoint — used for proxies and gateways."
+        no: "Overstyr API-endepunktet — brukes for proxyer og gatewayer."
+    - cmd: "CLAUDE_CODE_DISABLE_AUTO_MEMORY"
+      desc:
+        en: "Set to 1 to disable auto memory entirely."
+        no: "Sett til 1 for å deaktivere auto-minne fullstendig."
+    - cmd: "CLAUDE_CODE_DISABLE_CLAUDE_MDS"
+      desc:
+        en: "Set to 1 to prevent loading any CLAUDE.md memory files."
+        no: "Sett til 1 for å hindre lasting av alle CLAUDE.md-minnefiler."
+    - cmd: "BASH_DEFAULT_TIMEOUT_MS"
+      desc:
+        en: "Default timeout for long-running bash commands. Defaults to 120000 (2 minutes)."
+        no: "Standard tidsavbrudd for langvarige bash-kommandoer. Standard er 120000 (2 minutter)."
+    - cmd: "API_TIMEOUT_MS"
+      desc:
+        en: "Timeout for API requests in milliseconds. Defaults to 600000 (10 minutes)."
+        no: "Tidsavbrudd for API-forespørsler i millisekunder. Standard er 600000 (10 minutter)."
+    - cmd: "DISABLE_TELEMETRY"
+      desc:
+        en: "Set to disable telemetry collection."
+        no: "Sett for å deaktivere innsamling av telemetri."
+    - cmd: "DO_NOT_TRACK"
+      desc:
+        en: "Standard DNT signal; also disables telemetry when set."
+        no: "Standard DNT-signal; deaktiverer også telemetri når den er satt."
+    - cmd: "CLAUDE_CODE_DISABLE_BACKGROUND_TASKS"
+      desc:
+        en: "Set to 1 to disable background Bash task functionality entirely."
+        no: "Sett til 1 for å deaktivere all funksjonalitet for bakgrunns-Bash-oppgaver."
+
+- id: permission-modes
+  title:
+    en: "Permission modes"
+    no: "Tillatelsesmodi"
+  items:
+    - cmd: "default (Manual)"
+      desc:
+        en: "Prompts for approval on every tool call that isn't already allowed."
+        no: "Ber om godkjenning for hvert verktøykall som ikke allerede er tillatt."
+    - cmd: "acceptEdits"
+      desc:
+        en: "Auto-approves file edits and common filesystem commands (mkdir, touch, mv, cp); other commands still prompt."
+        no: "Godkjenner filredigeringer og vanlige filsystemkommandoer (mkdir, touch, mv, cp) automatisk; andre kommandoer spør fortsatt."
+    - cmd: "plan"
+      desc:
+        en: "Claude researches and proposes a plan before making any changes, for review and approval."
+        no: "Claude undersøker og foreslår en plan før den gjør endringer, til gjennomgang og godkjenning."
+    - cmd: "auto"
+      desc:
+        en: "A classifier auto-approves low-risk actions and blocks or asks about risky ones."
+        no: "En klassifiserer godkjenner lavrisikohandlinger automatisk, og blokkerer eller spør ved risikable handlinger."
+    - cmd: "dontAsk"
+      desc:
+        en: "Only pre-approved tools run; anything else is denied outright instead of prompting. Useful for locked-down CI."
+        no: "Kun forhåndsgodkjente verktøy kjøres; alt annet avvises direkte i stedet for å spørre. Nyttig for låst CI."
+    - cmd: "bypassPermissions"
+      desc:
+        en: "Skips all permission checks. Must be explicitly enabled first; never persisted as the default."
+        no: "Hopper over alle tillatelseskontroller. Må aktiveres eksplisitt først; lagres aldri som standard."
+
+- id: checkpointing
+  title:
+    en: "Checkpointing & rewind"
+    no: "Sjekkpunkter og tilbakespoling"
+  items:
+    - cmd: "Restore code and conversation"
+      desc:
+        en: "Revert both files and chat history to the selected point."
+        no: "Tilbakestill både filer og samtalehistorikk til det valgte punktet."
+    - cmd: "Restore conversation"
+      desc:
+        en: "Rewind the chat to that message while keeping the current code as-is."
+        no: "Spol samtalen tilbake til den meldingen, men behold gjeldende kode som den er."
+    - cmd: "Restore code"
+      desc:
+        en: "Revert file changes while keeping the full conversation intact."
+        no: "Tilbakestill filendringer, men behold hele samtalen intakt."
+    - cmd: "Summarize from here"
+      desc:
+        en: "Compress the conversation from the selected message onward into a summary."
+        no: "Komprimer samtalen fra den valgte meldingen og fremover til et sammendrag."
+    - cmd: "Summarize up to here"
+      desc:
+        en: "Compress everything before the selected message, keeping later messages in full."
+        no: "Komprimer alt før den valgte meldingen, og behold senere meldinger i sin helhet."

@@ -46,3 +46,20 @@
   no: "avsluttet som inaktiv"
   note: "Refers to background workers being terminated automatically after being
     detected as idle."
+- id: "matcher"
+  en: "matcher"
+  no: "matcher"
+  note: "Kept as 'matcher' in Norwegian technical usage — the hooks config field
+    that narrows which tool calls or event types trigger a hook."
+- id: "checkpoint"
+  en: "checkpoint"
+  no: "sjekkpunkt"
+- id: "rewind"
+  en: "rewind"
+  no: "tilbakespoling"
+  note: "Used as both noun ('tilbakespolingsmenyen') and verb ('spole tilbake')."
+- id: "auto-memory"
+  en: "auto memory"
+  no: "auto-minne"
+  note: "Notes Claude writes for itself across sessions, distinct from CLAUDE.md
+    which the user writes."

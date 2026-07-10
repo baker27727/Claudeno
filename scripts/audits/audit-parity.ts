@@ -27,7 +27,7 @@ for (const mod of listModuleDirs()) {
   }
 }
 
-for (const file of ["glossary.yaml", "catalog.yaml", "changelog.yaml"]) {
+for (const file of ["glossary.yaml", "catalog.yaml", "changelog.yaml", "reference.yaml"]) {
   const path = join(CONTENT_ROOT, file);
   if (existsSync(path)) {
     walkBilingualParity(readYaml(path), file, errors);
