@@ -294,6 +294,74 @@ export function breadcrumbListJsonLd(crumbs: Crumb[]): JsonLdObject {
 }
 
 /**
+ * راحة: يولّد BreadcrumbList لصفحة المهارات: Home → Skills.
+ */
+export function skillsIndexBreadcrumbs(lang: Locale): Crumb[] {
+  return [
+    { name: homeLabel(lang), path: `/${lang}/` },
+    { name: lang === "no" ? "Skills" : "Skills", path: `/${lang}/skills/` },
+  ];
+}
+
+/**
+ * راحة: يولّد BreadcrumbList لصفحة تصنيف مهارات: Home → Skills → Category.
+ */
+export function skillsCategoryBreadcrumbs(categoryName: string, categorySlug: string, lang: Locale): Crumb[] {
+  return [
+    { name: homeLabel(lang), path: `/${lang}/` },
+    { name: lang === "no" ? "Skills" : "Skills", path: `/${lang}/skills/` },
+    { name: categoryName, path: `/${lang}/skills/category/${categorySlug}/` },
+  ];
+}
+
+/**
+ * راحة: يولّد BreadcrumbList لصفحة مهارة: Home → Skills → Skill.
+ */
+export function skillBreadcrumbs(skillTitle: string, skillSlug: string, lang: Locale): Crumb[] {
+  return [
+    { name: homeLabel(lang), path: `/${lang}/` },
+    { name: lang === "no" ? "Skills" : "Skills", path: `/${lang}/skills/` },
+    { name: skillTitle, path: `/${lang}/skills/${skillSlug}/` },
+  ];
+}
+
+export interface SkillMetaLike {
+  slug: string;
+  title: { en: string; no: string };
+  summary: { en: string; no: string };
+  categories: string[];
+  lastVerified: string;
+  verifiedVersion: string;
+  rubric: { docs: number; safety: number; reliability: number; focus: number };
+}
+
+/**
+ * schema.org/TechArticle لصفحة مهارة — يعرضها كدرس مصغّر.
+ * يستخدم lastVerified كـ dateModified ويضيف درجات rubric كـ reviewRating.
+ */
+export function skillArticleJsonLd(skill: SkillMetaLike, lang: Locale): JsonLdObject {
+  const url = absoluteUrl(`/${lang}/skills/${skill.slug}/`);
+  return {
+    "@context": "https://schema.org",
+    "@type": "TechArticle",
+    headline: skill.title[lang],
+    description: skill.summary[lang],
+    inLanguage: lang,
+    url,
+    dateModified: skill.lastVerified,
+    author: organizationJsonLd(),
+    publisher: organizationJsonLd(),
+    image: absoluteUrl(defaultOgImage(lang)),
+    keywords: skill.categories.join(", "),
+    about: [`Claude Code ${skill.verifiedVersion}`, ...skill.categories],
+    mainEntityOfPage: {
+      "@type": "WebPage",
+      "@id": url,
+    },
+  };
+}
+
+/**
  * راحة: يولّد BreadcrumbList موحد لصفحة وحدة: Home → Learn → Module.
  */
 export function moduleBreadcrumbs(

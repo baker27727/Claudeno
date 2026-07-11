@@ -1,0 +1,377 @@
+---
+import { render } from "astro:content";
+import Base from "../../../layouts/Base.astro";
+import { LOCALES, useTranslations, type Locale } from "../../../lib/i18n";
+import { getAllSkills, CATEGORY_LABELS, type SkillData } from "../../../lib/skills";
+import { getAllModules } from "../../../lib/modules";
+import {
+  skillArticleJsonLd,
+  breadcrumbListJsonLd,
+  skillBreadcrumbs,
+  jsonLdScript,
+} from "../../../lib/seo";
+
+export async function getStaticPaths() {
+  const skills = await getAllSkills();
+  return LOCALES.flatMap((lang) =>
+    skills.map((skill) => ({ params: { lang, slug: skill.slug }, props: { skill } })),
+  );
+}
+
+const lang = Astro.params.lang as Locale;
+const t = useTranslations(lang);
+const { skill } = Astro.props as { skill: SkillData };
+const meta = skill.meta;
+
+const allSkills = await getAllSkills();
+const allModules = await getAllModules();
+
+const relatedSkills = meta.relatedSkills
+  .map((slug) => allSkills.find((s) => s.slug === slug))
+  .filter((s): s is SkillData => Boolean(s));
+const relatedModules = meta.relatedModules
+  .map((id) => allModules.find((m) => m.id === id))
+  .filter((m): m is (typeof allModules)[number] => Boolean(m));
+
+const { Content } = await render(skill.doc[lang]);
+
+const article = skillArticleJsonLd(meta, lang);
+const crumbs = breadcrumbListJsonLd(skillBreadcrumbs(meta.title[lang], skill.slug, lang));
+const jsonLd = jsonLdScript([article, crumbs]);
+
+const repoUrl = `https://github.com/${meta.source.repo}`;
+const rubricRows = [
+  { key: "docs", label: lang === "no" ? "Dokumentasjon" : "Documentation", score: meta.rubric.docs },
+  { key: "safety", label: lang === "no" ? "Sikkerhet" : "Safety", score: meta.rubric.safety },
+  { key: "reliability", label: lang === "no" ? "Pålitelighet" : "Reliability", score: meta.rubric.reliability },
+  { key: "focus", label: lang === "no" ? "Fokus" : "Focus", score: meta.rubric.focus },
+] as const;
+---
+
+<Base
+  lang={lang}
+  title={`${meta.title[lang]} — Claude Code Learn`}
+  description={meta.summary[lang]}
+  ogType="article"
+>
+  <Fragment slot="head">
+    <Fragment set:html={jsonLd} />
+  </Fragment>
+
+  <main class="skill-page">
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <a href={`/${lang}/`}>Claude Code Learn</a>
+      <span aria-hidden="true">/</span>
+      <a href={`/${lang}/skills/`}>{t("nav.skills")}</a>
+      <span aria-hidden="true">/</span>
+      <span aria-current="page">{meta.title[lang]}</span>
+    </nav>
+
+    {meta.archived && (
+      <p class="skill-page__archived" role="status">
+        {lang === "no"
+          ? "Denne skillen er arkivert — kilden er ikke lenger tilgjengelig. Innholdet beholdes som referanse."
+          : "This skill is archived — its source is no longer available. The page is kept for reference."}
+      </p>
+    )}
+
+    <header class="skill-page__head">
+      <div class="skill-page__badges">
+        <span class={`skill-page__maturity skill-page__maturity--${meta.maturity}`}>
+          {t(`skill.maturity.${meta.maturity}`)}
+        </span>
+        <span class={`skill-page__level skill-page__level--${meta.level}`}>
+          {t(`skill.level.${meta.level}`)}
+        </span>
+        {meta.categories.map((cat) => (
+          <a class="skill-page__category" href={`/${lang}/skills/category/${cat}/`}>
+            {CATEGORY_LABELS[cat]?.[lang] ?? cat}
+          </a>
+        ))}
+      </div>
+      <h1>{meta.title[lang]}</h1>
+      <p class="skill-page__summary">{meta.summary[lang]}</p>
+      <p class="skill-page__verified">
+        {t("skill.verified")}: <time datetime={meta.lastVerified}>{meta.lastVerified}</time>
+        {" · Claude Code "}{meta.verifiedVersion}
+      </p>
+    </header>
+
+    <div class="skill-page__layout">
+      <article class="skill-page__prose">
+        <Content />
+      </article>
+
+      <aside class="skill-page__panel" aria-label={lang === "no" ? "Skill-fakta" : "Skill facts"}>
+        <section class="skill-page__panel-block">
+          <h2>{t("skill.install")}</h2>
+          <pre class="skill-page__install"><code>{meta.install.command}</code></pre>
+        </section>
+
+        <section class="skill-page__panel-block">
+          <h2>{lang === "no" ? "Tillatelser" : "Permissions"}</h2>
+          <ul class="skill-page__permissions">
+            {meta.permissions.map((p) => <li><code>{p}</code></li>)}
+          </ul>
+          {!meta.worksWithout && (
+            <p class="skill-page__note">
+              {lang === "no"
+                ? "Krever eksterne verktøy/avhengigheter — se «Sikkerhet og tillatelser»."
+                : "Requires external tools/dependencies — see “Safety and permissions”."}
+            </p>
+          )}
+        </section>
+
+        <section class="skill-page__panel-block">
+          <h2>{t("skill.rubric")}</h2>
+          <ul class="skill-page__rubric">
+            {rubricRows.map((row) => (
+              <li>
+                <span class="skill-page__rubric-label">{row.label}</span>
+                <meter min="0" max="5" value={row.score}>{row.score}/5</meter>
+                <span class="skill-page__rubric-score">{row.score}/5</span>
+              </li>
+            ))}
+          </ul>
+          {meta.maturity === "experimental" && (
+            <p class="skill-page__note">
+              {lang === "no"
+                ? "Foreløpig vurdering — genereres automatisk for eksperimentelle skills."
+                : "Preliminary score — generated automatically for experimental skills."}
+            </p>
+          )}
+        </section>
+
+        <section class="skill-page__panel-block">
+          <h2>{lang === "no" ? "Kilde" : "Source"}</h2>
+          <p class="skill-page__source">
+            <a href={repoUrl} rel="noopener">{meta.source.repo}</a><br />
+            <span class="skill-page__note">{meta.source.license}</span>
+          </p>
+        </section>
+
+        {relatedSkills.length > 0 && (
+          <section class="skill-page__panel-block">
+            <h2>{t("skills.relatedSkills")}</h2>
+            <ul class="skill-page__related">
+              {relatedSkills.map((s) => (
+                <li><a href={`/${lang}/skills/${s.slug}/`}>{s.meta.title[lang]}</a></li>
+              ))}
+            </ul>
+          </section>
+        )}
+
+        {relatedModules.length > 0 && (
+          <section class="skill-page__panel-block">
+            <h2>{t("skills.relatedModules")}</h2>
+            <ul class="skill-page__related">
+              {relatedModules.map((m) => (
+                <li><a href={`/${lang}/learn/${m.id}/`}>{m.meta.title[lang]}</a></li>
+              ))}
+            </ul>
+          </section>
+        )}
+      </aside>
+    </div>
+
+    <p class="skill-page__back">
+      <a href={`/${lang}/skills/`}>&larr; {t("skills.back")}</a>
+    </p>
+  </main>
+</Base>
+
+<style>
+  .skill-page {
+    max-width: 72rem;
+    margin: 0 auto;
+    padding: var(--space-12) var(--space-6) var(--space-16);
+  }
+  .breadcrumb {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    margin-bottom: var(--space-8);
+    font-size: 0.875rem;
+    color: var(--fg-muted);
+  }
+  .breadcrumb a {
+    color: var(--fg-muted);
+  }
+  .skill-page__archived {
+    margin: 0 0 var(--space-6);
+    padding: var(--space-3) var(--space-4);
+    border: 1px solid var(--warn);
+    border-radius: var(--radius);
+    color: var(--warn);
+    font-size: 0.9375rem;
+  }
+  .skill-page__head {
+    margin-bottom: var(--space-10);
+  }
+  .skill-page__badges {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-2);
+    margin-bottom: var(--space-4);
+  }
+  .skill-page__maturity,
+  .skill-page__level {
+    font-size: 0.6875rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    padding: 0.2rem 0.55rem;
+    border-radius: var(--radius-full);
+    border: 1px solid var(--border);
+    color: var(--fg-muted);
+  }
+  .skill-page__maturity--official { color: var(--accent); border-color: var(--accent); }
+  .skill-page__maturity--community { color: var(--warn); border-color: var(--warn); }
+  .skill-page__level--beginner { color: var(--ok); border-color: var(--ok); }
+  .skill-page__level--intermediate { color: var(--warn); border-color: var(--warn); }
+  .skill-page__level--advanced { color: var(--err); border-color: var(--err); }
+  .skill-page__category {
+    font-size: 0.8125rem;
+    padding: 0.2rem 0.55rem;
+    border-radius: var(--radius-full);
+    background: var(--bg-elev);
+    color: var(--fg-muted);
+    text-decoration: none;
+  }
+  .skill-page__category:hover { color: var(--accent); }
+  .skill-page__head h1 {
+    margin: 0 0 var(--space-3);
+    font-size: clamp(1.75rem, 3.5vw, 2.5rem);
+  }
+  .skill-page__summary {
+    margin: 0 0 var(--space-2);
+    color: var(--fg-muted);
+    font-size: 1.0625rem;
+    line-height: 1.6;
+    max-width: 44rem;
+  }
+  .skill-page__verified {
+    margin: 0;
+    font-size: 0.8125rem;
+    color: var(--fg-muted);
+  }
+  .skill-page__layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 20rem;
+    gap: var(--space-10);
+    align-items: start;
+  }
+  @media (max-width: 860px) {
+    .skill-page__layout { grid-template-columns: 1fr; }
+  }
+  .skill-page__prose :global(h2) {
+    margin-top: var(--space-10);
+    font-size: 1.375rem;
+  }
+  .skill-page__prose :global(pre) {
+    overflow-x: auto;
+    padding: var(--space-4);
+    border-radius: var(--radius);
+    background: var(--bg-elev);
+    border: 1px solid var(--border);
+    font-size: 0.875rem;
+    line-height: 1.55;
+  }
+  .skill-page__panel {
+    position: sticky;
+    top: var(--space-6);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-5);
+    padding: var(--space-5);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    background: var(--bg-elev);
+  }
+  .skill-page__panel-block h2 {
+    margin: 0 0 var(--space-3);
+    font-size: 0.8125rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--fg-muted);
+  }
+  .skill-page__install {
+    margin: 0;
+    padding: var(--space-3);
+    border-radius: var(--radius);
+    background: var(--bg);
+    border: 1px solid var(--border);
+    overflow-x: auto;
+    font-size: 0.8125rem;
+  }
+  .skill-page__permissions {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+  }
+  .skill-page__permissions code {
+    display: inline-block;
+    padding: 0.15rem 0.5rem;
+    border-radius: var(--radius-full);
+    background: var(--bg);
+    border: 1px solid var(--border);
+    font-size: 0.8125rem;
+  }
+  .skill-page__note {
+    margin: var(--space-3) 0 0;
+    font-size: 0.8125rem;
+    color: var(--fg-muted);
+    line-height: 1.5;
+  }
+  .skill-page__rubric {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+  .skill-page__rubric li {
+    display: grid;
+    grid-template-columns: 1fr auto auto;
+    align-items: center;
+    gap: var(--space-3);
+    font-size: 0.875rem;
+  }
+  .skill-page__rubric meter {
+    width: 5.5rem;
+  }
+  .skill-page__rubric-score {
+    color: var(--fg-muted);
+    font-variant-numeric: tabular-nums;
+  }
+  .skill-page__source {
+    margin: 0;
+    font-size: 0.9375rem;
+    line-height: 1.5;
+    overflow-wrap: anywhere;
+  }
+  .skill-page__related {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    font-size: 0.9375rem;
+  }
+  .skill-page__back {
+    margin: var(--space-10) 0 0;
+  }
+  .skill-page__back a {
+    color: var(--accent);
+    text-decoration: none;
+    font-weight: 600;
+  }
+  .skill-page__back a:hover { text-decoration: underline; }
+</style>

@@ -45,6 +45,7 @@ const SITE_NAME = "Claude Code Learn";
 const OG_W = 1200;
 const OG_H = 630;
 const MODULES_ROOT = resolve(process.cwd(), "content/modules");
+const SKILLS_ROOT = resolve(process.cwd(), "content/skills");
 const FONTS_DIR = resolve(process.cwd(), "scripts/assets");
 
 // -------------------------------------------------------------------------
@@ -78,6 +79,7 @@ const LOCALE_BRAND_TAGLINE: LocaleMap<string> = {
   no: "Claude Code læringsplattform",
 };
 const LOCALE_PAGE_KIND: LocaleMap<string> = { en: "Module", no: "Modul" };
+const LOCALE_SKILL_KIND: LocaleMap<string> = { en: "Skill", no: "Skill" };
 const LOCALE_DEFAULT_TITLE: LocaleMap<string> = {
   en: "Learn Claude Code, one module at a time",
   no: "Lær Claude Code, en modul om gangen",
@@ -86,6 +88,12 @@ const LOCALE_DEFAULT_DESC: LocaleMap<string> = {
   en: "Hands-on bilingual lessons covering Claude Code CLI, slash commands, subagents, MCP servers, and more.",
   no: "Praktiske, tospråklige leksjoner om Claude Code CLI, slash-kommandoer, underagenter, MCP-tjenere og mer.",
 };
+
+interface SkillMetaYaml {
+  slug: string;
+  title: BilingualText;
+  summary: BilingualText;
+}
 
 interface BuildOptions {
   outDir: string;
@@ -129,6 +137,21 @@ function listModuleMetas(): ModuleMetaYaml[] {
     out.push(data);
   }
   return out.sort((a, b) => a.order - b.order);
+}
+
+function listSkillMetas(): SkillMetaYaml[] {
+  if (!existsSync(SKILLS_ROOT)) return [];
+  const dirs = readdirSync(SKILLS_ROOT)
+    .filter((name) => statSync(join(SKILLS_ROOT, name)).isDirectory())
+    .sort();
+  const out: SkillMetaYaml[] = [];
+  for (const dir of dirs) {
+    const yaml = join(SKILLS_ROOT, dir, "meta.yaml");
+    if (!existsSync(yaml)) continue;
+    const data = parseYaml(readFileSync(yaml, "utf-8")) as SkillMetaYaml;
+    out.push(data);
+  }
+  return out.sort((a, b) => a.title.en.localeCompare(b.title.en));
 }
 
 // يقطع أي نص طويل جدًا بحد أقصى معقول (OG description) — يحافظ على كلمات كاملة.
@@ -236,6 +259,7 @@ export interface BuildOgResult {
   images: BuiltImage[];
   defaultImage: Record<"en" | "no", string>; // publicPath لكل لغة
   moduleImages: Record<string, Record<"en" | "no", string>>; // id → publicPath
+  skillImages: Record<string, Record<"en" | "no", string>>; // slug → publicPath
 }
 
 export interface BuildOgInput {
@@ -255,9 +279,11 @@ export async function runBuildOg(input: BuildOgInput): Promise<BuildOgResult> {
   const bold = readInterFont(700);
 
   const metas = listModuleMetas();
+  const skillMetas = listSkillMetas();
   const images: BuiltImage[] = [];
   const defaultImage: Record<"en" | "no", string> = { en: "/og/default-en.png", no: "/og/default-no.png" };
   const moduleImages: Record<string, Record<"en" | "no", string>> = {};
+  const skillImages: Record<string, Record<"en" | "no", string>> = {};
 
   // صور افتراضية — لكل لغة.
   for (const lang of ["en", "no"] as const) {
@@ -325,7 +351,42 @@ export async function runBuildOg(input: BuildOgInput): Promise<BuildOgResult> {
     }
   }
 
-  return { images, defaultImage, moduleImages };
+  // صور المهارات — لكل meta.yaml ولغتيها.
+  for (const meta of skillMetas) {
+    skillImages[meta.slug] = { en: "", no: "" };
+    for (const lang of ["en", "no"] as const) {
+      const kindLabel = LOCALE_SKILL_KIND[lang];
+      const svg = await satori(
+        templateMarkup({
+          siteName: SITE_NAME,
+          title: meta.title[lang],
+          description: truncate(meta.summary[lang], 140),
+          kindLabel,
+          url: `${siteUrl}/${lang}/skills/${meta.slug}`,
+          siteUrl,
+          brandKicker: LOCALE_BRAND_TAGLINE[lang],
+        }),
+        {
+          width: OG_W,
+          height: OG_H,
+          fonts: [
+            { name: "Inter", data: regular, weight: 400, style: "normal" },
+            { name: "Inter", data: bold, weight: 700, style: "normal" },
+          ],
+        },
+      );
+      const file = `skill-${meta.slug}-${lang}.png`;
+      if (!manifestOnly) {
+        const r = await renderOne(outDir, file, svg);
+        console.log(`  ✓ ${file}  ${r.bytes}B  ${r.dims.w}×${r.dims.h}`);
+      }
+      const publicPath = `/og/${file}`;
+      images.push({ filename: file, publicPath, bytes: svgToPng(svg).length });
+      skillImages[meta.slug][lang] = publicPath;
+    }
+  }
+
+  return { images, defaultImage, moduleImages, skillImages };
 }
 
 // -------------------------------------------------------------------------
@@ -354,6 +415,7 @@ async function main() {
           height: OG_H,
           defaultImage: result.defaultImage,
           moduleImages: result.moduleImages,
+          skillImages: result.skillImages,
         },
         null,
         2,

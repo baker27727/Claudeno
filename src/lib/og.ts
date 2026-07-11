@@ -40,6 +40,9 @@ const MODULE_PATH_RE = /^\/(en|no)\/learn\/([a-z0-9][a-z0-9-]*)\/?$/i;
 /** نمط المسار للغة — يلتقط أي شيء تحت /<lang>/...  */
 const LOCALE_PATH_RE = /^\/(en|no)(?:\/|$)/;
 
+/** نمط المسار لصفحة مهارة: /en/skills/pdf/ */
+const SKILL_PATH_RE = /^\/(en|no)\/skills\/([a-z0-9][a-z0-9-]*)\/?$/i;
+
 // -------------------------------------------------------------------------
 // واجهات
 // -------------------------------------------------------------------------
@@ -52,7 +55,7 @@ export interface ResolvedOgImage {
   /** مسار صورة OG النهائي (يبدأ بـ /og/…) — جاهز للاستخدام في og:image. */
   image: OgImagePath;
   /** هل اشتُق من المسار أم رجع للافتراضي؟ */
-  source: "module" | "default" | "fallback" | "explicit";
+  source: "module" | "skill" | "default" | "fallback" | "explicit";
 }
 
 // -------------------------------------------------------------------------
@@ -67,6 +70,11 @@ export function moduleOgImage(moduleId: string, lang: Locale): OgImagePath {
 /** يبني مسار صورة OG الافتراضية للغة. */
 export function defaultOgImage(lang: Locale): OgImagePath {
   return `/og/default-${lang}.png`;
+}
+
+/** يبني مسار صورة OG لصفحة مهارة. */
+export function skillOgImage(slug: string, lang: Locale): OgImagePath {
+  return `/og/skill-${slug}-${lang}.png`;
 }
 
 // -------------------------------------------------------------------------
@@ -100,7 +108,15 @@ export function resolveOgImage(
     return { image: moduleOgImage(moduleId, lang), source: "module" };
   }
 
-  // 2) أي مسار تحت لغة معروفة: /en/... أو /no/...
+  // 2) مسار مهارة: /en/skills/pdf/
+  const skillMatch = SKILL_PATH_RE.exec(pathname);
+  if (skillMatch) {
+    const lang = skillMatch[1].toLowerCase() as Locale;
+    const slug = skillMatch[2].toLowerCase();
+    return { image: skillOgImage(slug, lang), source: "skill" };
+  }
+
+  // 3) أي مسار تحت لغة معروفة: /en/... أو /no/...
   const localeMatch = LOCALE_PATH_RE.exec(pathname);
   if (localeMatch) {
     const lang = localeMatch[1].toLowerCase() as Locale;
@@ -130,6 +146,7 @@ export interface OgManifest {
   height: number;
   defaultImage: Record<Locale, string>;
   moduleImages: Record<string, Record<Locale, string>>;
+  skillImages: Record<string, Record<Locale, string>>;
 }
 
 /**

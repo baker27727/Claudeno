@@ -1,0 +1,161 @@
+---
+import Base from "../../../../layouts/Base.astro";
+import SkillCard from "../../../../components/SkillCard.astro";
+import { LOCALES, useTranslations, type Locale } from "../../../../lib/i18n";
+import {
+  webPageJsonLd,
+  breadcrumbListJsonLd,
+  skillsCategoryBreadcrumbs,
+  jsonLdScript,
+  SITE_URL,
+  type JsonLdObject,
+} from "../../../../lib/seo";
+import {
+  getAllSkills,
+  skillsByCategory,
+  CATEGORY_LABELS,
+  SKILL_CATEGORIES,
+  type SkillCategory,
+} from "../../../../lib/skills";
+
+export async function getStaticPaths() {
+  const skills = await getAllSkills();
+  // Only categories that actually contain at least one skill get a page —
+  // empty category pages are thin content and dead ends for crawlers.
+  const nonEmpty = SKILL_CATEGORIES.filter(
+    (cat) => skillsByCategory(skills, cat).length > 0,
+  );
+  return LOCALES.flatMap((lang) =>
+    nonEmpty.map((category) => ({ params: { lang, category } })),
+  );
+}
+
+const lang = Astro.params.lang as Locale;
+const category = Astro.params.category as SkillCategory;
+const t = useTranslations(lang);
+
+const skills = skillsByCategory(await getAllSkills(), category);
+const label = CATEGORY_LABELS[category][lang];
+
+const pagePath = `/${lang}/skills/category/${category}/`;
+const title = lang === "no"
+  ? `${label} — Claude Code-skills`
+  : `${label} — Claude Code skills`;
+const description = lang === "no"
+  ? `Kuraterte Claude Code-skills i kategorien ${label}: hva de gjør, installasjon og tillatelser.`
+  : `Curated Claude Code skills in the ${label} category: what they do, installation, and permissions.`;
+
+const itemList: JsonLdObject = {
+  "@context": "https://schema.org",
+  "@type": "ItemList",
+  name: title,
+  inLanguage: lang,
+  numberOfItems: skills.length,
+  itemListElement: skills.map((skill, i) => ({
+    "@type": "ListItem",
+    position: i + 1,
+    name: skill.meta.title[lang],
+    url: `${SITE_URL}/${lang}/skills/${skill.slug}/`,
+  })),
+};
+
+const webPage = webPageJsonLd({
+  name: title,
+  description,
+  lang,
+  path: pagePath,
+  mainEntity: { type: "ItemList", data: itemList },
+});
+const crumbs = breadcrumbListJsonLd(skillsCategoryBreadcrumbs(label, category, lang));
+const jsonLd = jsonLdScript([webPage, crumbs]);
+---
+
+<Base lang={lang} title={title} description={description}>
+  <Fragment slot="head">
+    <Fragment set:html={jsonLd} />
+  </Fragment>
+
+  <main class="skill-cat">
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <a href={`/${lang}/`}>Claude Code Learn</a>
+      <span aria-hidden="true">/</span>
+      <a href={`/${lang}/skills/`}>{t("nav.skills")}</a>
+      <span aria-hidden="true">/</span>
+      <span aria-current="page">{label}</span>
+    </nav>
+
+    <header class="skill-cat__head">
+      <p class="skill-cat__eyebrow">{t("skills.eyebrow")}</p>
+      <h1>{label}</h1>
+      <p class="skill-cat__lede">{description}</p>
+    </header>
+
+    <div class="skill-cat__grid">
+      {skills.map((skill) => <SkillCard skill={skill} lang={lang} />)}
+    </div>
+
+    <p class="skill-cat__back">
+      <a href={`/${lang}/skills/`}>&larr; {t("skills.back")}</a>
+    </p>
+  </main>
+</Base>
+
+<style>
+  .skill-cat {
+    max-width: 72rem;
+    margin: 0 auto;
+    padding: var(--space-12) var(--space-6) var(--space-16);
+  }
+  .breadcrumb {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    margin-bottom: var(--space-8);
+    font-size: 0.875rem;
+    color: var(--fg-muted);
+  }
+  .breadcrumb a {
+    color: var(--fg-muted);
+  }
+  .skill-cat__head {
+    margin-bottom: var(--space-10);
+  }
+  .skill-cat__eyebrow {
+    margin: 0 0 var(--space-2);
+    color: var(--accent);
+    font-size: 0.8125rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+  .skill-cat__head h1 {
+    margin: 0 0 var(--space-3);
+    font-size: clamp(1.75rem, 3.5vw, 2.5rem);
+  }
+  .skill-cat__lede {
+    margin: 0;
+    color: var(--fg-muted);
+    font-size: 1.0625rem;
+    line-height: 1.6;
+    max-width: 44rem;
+  }
+  .skill-cat__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(18rem, 1fr));
+    gap: var(--space-5);
+  }
+  @media (max-width: 560px) {
+    .skill-cat__grid {
+      grid-template-columns: 1fr;
+    }
+  }
+  .skill-cat__back {
+    margin: var(--space-10) 0 0;
+  }
+  .skill-cat__back a {
+    color: var(--accent);
+    text-decoration: none;
+    font-weight: 600;
+  }
+  .skill-cat__back a:hover { text-decoration: underline; }
+</style>

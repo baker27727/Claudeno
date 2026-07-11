@@ -1,0 +1,128 @@
+---
+// SkillCard — compact preview used on /skills/ index and category pages.
+
+import { useTranslations, type Locale } from "../lib/i18n";
+import { CATEGORY_LABELS, type SkillData } from "../lib/skills";
+
+interface Props {
+  skill: SkillData;
+  lang: Locale;
+}
+
+const { skill, lang } = Astro.props;
+const t = useTranslations(lang);
+const meta = skill.meta;
+
+const maturityKey = `skill.maturity.${meta.maturity}` as const;
+const levelKey = `skill.level.${meta.level}` as const;
+---
+
+<a class="skill-card" href={`/${lang}/skills/${skill.slug}/`}>
+  <div class="skill-card__head">
+    <h2>{meta.title[lang]}</h2>
+    <span class={`skill-card__level skill-card__level--${meta.level}`}>
+      {t(levelKey)}
+    </span>
+  </div>
+  <p class="skill-card__summary">{meta.summary[lang]}</p>
+  <div class="skill-card__footer">
+    <span class={`skill-card__maturity skill-card__maturity--${meta.maturity}`}>
+      {t(maturityKey)}
+    </span>
+    <span class="skill-card__categories">
+      {meta.categories.map((cat) => CATEGORY_LABELS[cat]?.[lang] ?? cat).join(" · ")}
+    </span>
+  </div>
+</a>
+
+<style>
+  .skill-card {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    padding: var(--space-5);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    background: var(--bg-elev);
+    text-decoration: none;
+    color: var(--fg);
+    transition: border-color var(--dur) var(--ease), transform var(--dur) var(--ease);
+  }
+  .skill-card:hover {
+    border-color: var(--accent);
+    transform: translateY(-2px);
+  }
+  .skill-card__head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: var(--space-3);
+  }
+  .skill-card__head h2 {
+    margin: 0;
+    font-size: 1.125rem;
+    font-weight: 600;
+  }
+  .skill-card__level {
+    font-size: 0.6875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    padding: 0.15rem 0.5rem;
+    border-radius: var(--radius-full);
+    border: 1px solid var(--border);
+    color: var(--fg-muted);
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .skill-card__level--beginner {
+    color: var(--ok);
+    border-color: var(--ok);
+  }
+  .skill-card__level--intermediate {
+    color: var(--warn);
+    border-color: var(--warn);
+  }
+  .skill-card__level--advanced {
+    color: var(--err);
+    border-color: var(--err);
+  }
+  .skill-card__summary {
+    margin: 0;
+    color: var(--fg-muted);
+    font-size: 0.9375rem;
+    line-height: 1.5;
+  }
+  .skill-card__footer {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    flex-wrap: wrap;
+    margin-top: auto;
+  }
+  .skill-card__maturity {
+    font-size: 0.6875rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    padding: 0.15rem 0.5rem;
+    border-radius: var(--radius-full);
+    background: var(--bg);
+    color: var(--fg-muted);
+  }
+  .skill-card__maturity--official {
+    color: var(--accent);
+    border: 1px solid var(--accent);
+  }
+  .skill-card__maturity--community {
+    color: var(--warn);
+    border: 1px solid var(--warn);
+  }
+  .skill-card__maturity--experimental {
+    color: var(--fg-muted);
+    border: 1px solid var(--border);
+  }
+  .skill-card__categories {
+    font-size: 0.8125rem;
+    color: var(--fg-muted);
+  }
+</style>
