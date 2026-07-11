@@ -42,23 +42,37 @@ jobs:
           }
 
           check "$BASE_URL/" "homepage"
+          check "$BASE_URL/en/" "EN homepage"
+          check "$BASE_URL/no/" "NO homepage"
           check "$BASE_URL/en/learn/getting-started/" "sample EN lesson"
           check "$BASE_URL/no/learn/getting-started/" "sample NO lesson"
           check "$BASE_URL/sitemap-index.xml" "sitemap"
           check "$BASE_URL/pagefind/pagefind.js" "pagefind"
 
-          # JSON-LD presence on homepage
-          jsonld=$(curl -fsS --max-time 15 "$BASE_URL/" | grep -c 'application/ld+json' || true)
-          if [ "$jsonld" -lt 1 ]; then
-            echo "✗ homepage missing JSON-LD"
-            ERRORS="$ERRORS\n- homepage missing JSON-LD"
-          else
-            echo "✓ homepage JSON-LD present"
-          fi
+          # JSON-LD presence on language homepages (root is a redirect stub)
+          check_jsonld() {
+            local url="$1"
+            local name="$2"
+            local count
+            count=$(curl -fsS --max-time 15 "$url" | grep -c 'application/ld+json' || true)
+            if [ "$count" -lt 1 ]; then
+              echo "✗ $name missing JSON-LD"
+              ERRORS="$ERRORS\n- $name missing JSON-LD ($url)"
+            else
+              echo "✓ $name JSON-LD present"
+            fi
+          }
+
+          check_jsonld "$BASE_URL/en/" "EN homepage"
+          check_jsonld "$BASE_URL/no/" "NO homepage"
 
           if [ -n "$ERRORS" ]; then
             echo -e "::error::Smoke check failed:$ERRORS"
-            echo -e "SMOKE_ERRORS=$ERRORS" >> "$GITHUB_ENV"
+            {
+              echo "SMOKE_ERRORS<<EOF"
+              echo -e "$ERRORS"
+              echo "EOF"
+            } >> "$GITHUB_ENV"
             exit 1
           fi
 
@@ -66,6 +80,7 @@ jobs:
         if: failure()
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
           RUN_URL: ${{ github.event.workflow_run.html_url }}
         run: |
           TITLE="🔴 Production smoke check failed"

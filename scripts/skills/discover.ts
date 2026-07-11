@@ -169,6 +169,26 @@ function openIssue(title: string, body: string) {
   }
 }
 
+function decodeHtmlEntities(text: string): string {
+  return text
+    .replace(/&amp;/g, "&")
+    .replace(/&lt;/g, "<")
+    .replace(/&gt;/g, ">")
+    .replace(/&quot;/g, '"')
+    .replace(/&#39;/g, "'");
+}
+
+function decodeEntitiesInValue(value: unknown): unknown {
+  if (typeof value === "string") return decodeHtmlEntities(value);
+  if (Array.isArray(value)) return value.map(decodeEntitiesInValue);
+  if (value && typeof value === "object") {
+    return Object.fromEntries(
+      Object.entries(value as Record<string, unknown>).map(([k, v]) => [k, decodeEntitiesInValue(v)]),
+    );
+  }
+  return value;
+}
+
 function buildMetaYaml(skill: GeneratedSkill, source: SourceEntry): string {
   const meta = {
     slug: skill.slug,
@@ -324,6 +344,13 @@ async function main() {
     // The model must never choose the slug: it determines the directory, must
     // be stable, and must match the allowlisted path.
     skill.slug = slug;
+
+    // Decode HTML entities the model may have escaped in any text field.
+    skill = decodeEntitiesInValue(skill) as GeneratedSkill;
+
+    // Only keep related skill slugs that actually exist or were generated this run.
+    const allowedRelatedSlugs = new Set([...existing, ...created.map((c) => c.slug)]);
+    skill.related_skills = skill.related_skills.filter((s) => allowedRelatedSlugs.has(s));
 
     const validationError = validateSkill(skill, source);
     if (validationError) {
