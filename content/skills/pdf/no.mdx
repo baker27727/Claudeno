@@ -1,0 +1,46 @@
+---
+title: "PDF-skill for Claude Code"
+description: "Jobb med PDF-filer i Claude Code: trekk ut tekst, slå sammen, del, OCR og mer."
+---
+
+# PDF-skill for Claude Code
+
+Den offisielle `pdf`-skillen lærer Claude hvordan PDF-filer håndteres — lesing, uttrekking av tekst og tabeller, sammenslåing, deling, rotasjon, vannmerking og OCR.
+
+## Hva den gjør og hvorfor den finnes
+
+Å jobbe med PDF-er betyr vanligvis å bytte mellom kommandolinjeverktøy og Python-biblioteker. Denne skillen samler vanlige operasjoner i Claude Code, slik at du kan spørre på vanlig språk og få riktig verktøy for oppgaven.
+
+## Prøv den nå — TerminalSim
+
+Når den er installert, prøv:
+
+```bash
+Trekk ut teksten fra faktura.pdf og oppsummer totalene
+```
+
+Claude bruker skillen til å velge `pdftotext`, `pypdf` eller `pdfplumber` avhengig av filen.
+
+## Installasjon
+
+```bash
+npx skills add anthropics/skills/pdf
+```
+
+Skill-filene plasseres under `~/.claude/skills/anthropics/skills/pdf/`. Start Claude Code på nytt eller start en ny økt for å aktivere den.
+
+## Sikkerhet og tillatelser
+
+Denne skillen leser filer du peker den på, og kjører skallkommandoer som `pdftotext`, `qpdf` og Python-skript med `pypdf`/`pdfplumber`. Den gjør **ikke** nettverkskall. Gå gjennom destruktive kommandoer (overskriving, kryptering, deling) før du bekrefter.
+
+## Praktiske bruksområder
+
+1. **Trekk ut tekst fra en skannet faktura** — Claude bruker OCR via `pytesseract` + `pdf2image`.
+2. **Slå sammen kvartalsrapporter** — bruker `qpdf` eller `pypdf` til å kombinere filer.
+3. **Roter sider i en kontrakt** — én setning roterer de ønskede sidene.
+
+## Begrensninger
+
+- Krever eksterne verktøy (`poppler-utils`, `qpdf`, `pypdf`, `pdfplumber`) installert.
+- OCR-kvaliteten avhenger av `tesseract` og bildeoppløsning.
+- Stor PDF-manipulasjon gjøres best med dedikerte biblioteker; denne skillen er en veiledet snarvei, ikke en erstatning for dem.

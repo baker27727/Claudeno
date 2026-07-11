@@ -94,3 +94,7 @@ want. Aliases: `/checkpoint`, `/undo`.
 ## What's new in v2.1.205
 
 /doctor is now a full setup checkup that can diagnose and fix issues (in version 2.1.205). Use /checkup as an alias. Note that startup warnings like "claude command missing or broken" have moved from initial startup into /doctor and /status output.
+
+## What's new in v2.1.206
+
+The `/cd` command now provides directory path suggestions similar to the `/add-dir` behavior, making it easier to navigate to frequently used directories. Additionally, `/doctor` (aliased as `/checkup`) has been expanded into a full setup checkup tool that can diagnose and fix issues, including a new check that proposes trimming checked-in `CLAUDE.md` files by removing content Claude could derive from the codebase. The `/commit-push-pr` command now auto-allows `git push` to the repository's configured push remote (via `remote.pushDefault`, or the sole remote when only one is configured) in addition to `origin`. The `/login` command on the Gateway now supports Anthropic-operated public gateway endpoints.

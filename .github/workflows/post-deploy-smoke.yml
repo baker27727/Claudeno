@@ -1,0 +1,84 @@
+name: Post-deploy smoke
+
+# Runs after a successful production deploy to verify the live site is healthy.
+# Checks key pages, sitemap, JSON-LD, and Pagefind. On failure it opens an
+# issue with the `production` label. There is no automatic rollback.
+# BLUEPRINT: autonomous-content-ops-blueprint.md §3.5.
+
+on:
+  workflow_run:
+    workflows: ["Deploy"]
+    types: [completed]
+
+concurrency:
+  group: post-deploy-smoke
+  cancel-in-progress: false
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    timeout-minutes: 10
+    permissions:
+      issues: write
+    steps:
+      - name: Smoke check live site
+        env:
+          BASE_URL: "https://claude.mutaz.no"
+        run: |
+          ERRORS=""
+
+          check() {
+            local url="$1"
+            local name="$2"
+            local code
+            code=$(curl -fsS -o /dev/null -w "%{http_code}" --max-time 15 "$url" || true)
+            if [ "$code" != "200" ]; then
+              echo "✗ $name returned $code"
+              ERRORS="$ERRORS\n- $name ($url) -> $code"
+            else
+              echo "✓ $name -> 200"
+            fi
+          }
+
+          check "$BASE_URL/" "homepage"
+          check "$BASE_URL/en/learn/getting-started/" "sample EN lesson"
+          check "$BASE_URL/no/learn/getting-started/" "sample NO lesson"
+          check "$BASE_URL/sitemap-index.xml" "sitemap"
+          check "$BASE_URL/pagefind/pagefind.js" "pagefind"
+
+          # JSON-LD presence on homepage
+          jsonld=$(curl -fsS --max-time 15 "$BASE_URL/" | grep -c 'application/ld+json' || true)
+          if [ "$jsonld" -lt 1 ]; then
+            echo "✗ homepage missing JSON-LD"
+            ERRORS="$ERRORS\n- homepage missing JSON-LD"
+          else
+            echo "✓ homepage JSON-LD present"
+          fi
+
+          if [ -n "$ERRORS" ]; then
+            echo -e "::error::Smoke check failed:$ERRORS"
+            echo -e "SMOKE_ERRORS=$ERRORS" >> "$GITHUB_ENV"
+            exit 1
+          fi
+
+      - name: Open or update a production issue on failure
+        if: failure()
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          RUN_URL: ${{ github.event.workflow_run.html_url }}
+        run: |
+          TITLE="🔴 Production smoke check failed"
+          BODY="Smoke check failed after deploy: $RUN_URL
+
+          Commit: ${{ github.event.workflow_run.head_sha }}
+
+          Details:
+          ${{ env.SMOKE_ERRORS }}"
+          EXISTING=$(gh issue list --label "production" --state open --json number,title \
+            --jq ".[] | select(.title == \"$TITLE\") | .number" | head -1)
+          if [ -n "$EXISTING" ]; then
+            gh issue comment "$EXISTING" --body "$BODY"
+          else
+            gh issue create --title "$TITLE" --label "production" --body "$BODY"
+          fi

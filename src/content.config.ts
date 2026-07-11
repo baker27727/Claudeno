@@ -210,6 +210,77 @@ const useCases = defineCollection({
 });
 
 // -------------------------------------------------------------------------
+// skills — curated skill guides (BLUEPRINT: skills-section-blueprint.md §3).
+// A skill is a mini-lesson: meta.yaml + bilingual mdx. The schema is strict
+// so the autonomous verify/discover scripts cannot publish malformed pages.
+// -------------------------------------------------------------------------
+const SKILL_CATEGORIES = [
+  "documents",
+  "code-quality",
+  "web-frontend",
+  "automation",
+  "data-research",
+  "writing-marketing",
+] as const;
+
+const skillMeta = defineCollection({
+  loader: glob({ base: "./content/skills", pattern: "**/meta.yaml" }),
+  schema: z.object({
+    slug: z.string().regex(/^[a-z0-9-]+$/),
+    title: bilingual,
+    summary: bilingual,
+    categories: z.array(z.enum(SKILL_CATEGORIES)).min(1).max(2),
+    source: z.object({
+      repo: z.string().regex(/^[^/]+\/.+$/),
+      path: z.string().min(1),
+      license: z.string().min(1),
+      branch: z.string().min(1).optional().default("main"),
+    }),
+    install: z.object({ command: z.string().min(1) }),
+    maturity: z.enum(["official", "community", "experimental"]),
+    level: z.enum(["beginner", "intermediate", "advanced"]),
+    worksWithout: z.boolean(),
+    permissions: z.array(z.string()).min(1),
+    relatedSkills: z.array(z.string()).default([]),
+    relatedModules: z.array(z.string()).default([]),
+    lastVerified: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+    verifiedVersion: z.string().min(1),
+    rubric: z.object({
+      docs: z.number().int().min(1).max(5),
+      safety: z.number().int().min(1).max(5),
+      reliability: z.number().int().min(1).max(5),
+      focus: z.number().int().min(1).max(5),
+    }),
+    archived: z.boolean().default(false),
+  }),
+});
+
+const skillDocs = defineCollection({
+  loader: glob({ base: "./content/skills", pattern: "**/{en,no}.mdx" }),
+  schema: z.object({
+    title: z.string().optional(),
+    description: z.string().optional(),
+  }),
+});
+
+// -------------------------------------------------------------------------
+// sources.yaml — allowlist of external skill repositories the automation may
+// read from. BLUEPRINT: autonomous-content-ops-blueprint.md §2.3, §5.
+// -------------------------------------------------------------------------
+const skillSources = defineCollection({
+  loader: file("./content/sources.yaml"),
+  schema: z.object({
+    id: z.string().min(1),
+    repo: z.string().regex(/^[^/]+\/.+$/),
+    path: z.string().min(1),
+    branch: z.string().min(1).optional().default("main"),
+    categories: z.array(z.enum(SKILL_CATEGORIES)).max(2).optional(),
+    discovery: z.boolean().default(true),
+    note: z.string().optional(),
+  }),
+});
+
+// -------------------------------------------------------------------------
 // reference.yaml — sections shown on /reference (CLI commands, flags, slash
 // commands, keyboard shortcuts, settings, env vars, permission modes, ...).
 // Same bilingual-everywhere shape as catalog/glossary so audit-parity covers
@@ -242,5 +313,8 @@ export const collections = {
   blog,
   guides,
   useCases,
+  skillMeta,
+  skillDocs,
+  skillSources,
   reference,
 };

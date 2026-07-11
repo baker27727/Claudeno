@@ -74,3 +74,7 @@ med et tjenernavn (eller `all`) for å endre tilkoblingsstatus uten å åpne dia
   (`project`), eller tilgjengelig overalt du jobber (`user`) — velg bevisst for alt
   med legitimasjon.
 - `/mcp` administrerer tilkoblinger uten å forlate økten din.
+
+## Nytt i v2.1.206
+
+MCP-tjenere konfigurert via `--mcp-config` eller `.mcp.json` respekterer nå korrekt per-tjener `request_timeout_ms`-innstillinger, noe som fikser timeoutproblemer der langvarige MCP-verktøykall tidligere ville tidsavbruddet på 60-sekunders standard i friske økter. OAuth MCP-tjenere krever ikke lenger manuell omautentisering etter ett enkelt mislykket tokenverdier. I tillegg fikser en kritisk retting at `--permission-prompt-tool` som peker på en MCP-tjener som krasjer med "MCP-verktøy ikke funnet" ved kaldstart før tjeneren er ferdig tilkoblet. De reserverte navnene "Claude Browser" og "Claude Preview" er blitt reservert for systembruk; brukerens konfigurerte MCP-tjenere kan ikke lenger registrere seg under noen av navnene.

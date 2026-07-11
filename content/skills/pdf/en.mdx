@@ -1,0 +1,46 @@
+---
+title: "PDF skill for Claude Code"
+description: "Work with PDF files in Claude Code: extract text, merge, split, OCR, and more."
+---
+
+# PDF skill for Claude Code
+
+The official `pdf` skill teaches Claude how to handle PDF files — reading, extracting text and tables, merging, splitting, rotating, watermarking, and OCR.
+
+## What it does and why it exists
+
+Working with PDFs usually means switching between command-line tools and Python libraries. This skill brings the common operations into Claude Code so you can ask in plain language and get the right tool for the job.
+
+## Try it now — TerminalSim
+
+Once installed, try:
+
+```bash
+Extract the text from invoice.pdf and summarize the totals
+```
+
+Claude uses the skill to choose `pdftotext`, `pypdf`, or `pdfplumber` depending on the file.
+
+## Install
+
+```bash
+npx skills add anthropics/skills/pdf
+```
+
+The skill files are placed under `~/.claude/skills/anthropics/skills/pdf/`. Restart Claude Code or start a new session to activate it.
+
+## Safety and permissions
+
+This skill reads files you point it to and runs shell commands such as `pdftotext`, `qpdf`, and Python scripts with `pypdf`/`pdfplumber`. It does **not** make network calls. Review any destructive command (overwrite, encrypt, split) before confirming.
+
+## Practical use cases
+
+1. **Extract text from a scanned invoice** — Claude routes to OCR via `pytesseract` + `pdf2image`.
+2. **Merge quarterly reports** — uses `qpdf` or `pypdf` to combine files.
+3. **Rotate pages in a contract** — one sentence rotates the requested pages.
+
+## Limitations
+
+- Requires external tools (`poppler-utils`, `qpdf`, `pypdf`, `pdfplumber`) to be installed.
+- OCR quality depends on `tesseract` and image resolution.
+- Heavy PDF manipulation is best done with dedicated libraries; this skill is a guided shortcut, not a replacement for them.

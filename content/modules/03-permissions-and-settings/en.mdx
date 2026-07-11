@@ -72,3 +72,7 @@ reads at the start of every session.
 ## What's new in v2.1.205
 
 Starting in version 2.1.200, the "default" permission mode has been renamed to "Manual" across the CLI and settings. You can use both --permission-mode manual and "defaultMode": "manual" in configuration. A grey ⏸ badge now shows in the footer when in manual permission mode (added in 2.1.203), making the active mode always visible.
+
+## What's new in v2.1.207
+
+Auto mode is now available by default on Bedrock, Vertex AI, and Foundry without requiring the `CLAUDE_CODE_ENABLE_AUTO_MODE` opt-in. You can disable it using the `disableAutoMode` setting. Note that auto mode no longer reads from `.claude/settings.local.json` (repo-resident); configure it in `~/.claude/settings.json` instead. Plugin option values (`pluginConfigs`) are also no longer read from project-level settings—use user settings, `--settings`, or managed settings.

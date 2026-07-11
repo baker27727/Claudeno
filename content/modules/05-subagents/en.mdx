@@ -74,3 +74,7 @@ create the subagent for you, or create the markdown file in `.claude/agents/` by
 ## What's new in v2.1.204
 
 **What's new (2.1.204):** In headless sessions, hook events (including `SessionStart` hooks) now stream correctly instead of stalling — this fixes an issue where remote workers could be idle-reaped in the middle of a hook running, which could interrupt subagent startup in background/headless workflows.
+
+## What's new in v2.1.206
+
+Background agents now upgrade to a new version in the background immediately after a Claude Code update, rather than paying a slow stale-session upgrade cost when you attach to them. Additionally, the agents view has been improved: the status column now uses the full terminal width instead of truncating at 64 characters, sessions now display a colored state word and a classifier-written headline instead of raw tool call text, and rows that edit, merge, comment on, or push to an existing PR now link it directly in the session list. Several critical bugs have been fixed, including background agents becoming permanently unresponsive when the daemon's økt token went stale (they now recover automatically), and sessions becoming stuck showing "Needs input" in the agent list after the question was already answered.

@@ -31,6 +31,27 @@ export interface PublishResult {
   deployTriggered: boolean;
 }
 
+export interface TokenUsage {
+  input_tokens: number;
+  output_tokens: number;
+}
+
+/**
+ * Fails fast if an Anthropic API call exceeded the configured token budget.
+ * Set MAX_INPUT_TOKENS / MAX_OUTPUT_TOKENS env vars to enforce hard caps.
+ * BLUEPRINT: autonomous-content-ops-blueprint.md §6 (PR-D).
+ */
+export function assertTokenBudget(usage: TokenUsage): void {
+  const maxInput = parseInt(process.env.MAX_INPUT_TOKENS ?? "0", 10);
+  const maxOutput = parseInt(process.env.MAX_OUTPUT_TOKENS ?? "0", 10);
+  if (maxInput && usage.input_tokens > maxInput) {
+    throw new Error(`Input token budget exceeded: ${usage.input_tokens} > ${maxInput}`);
+  }
+  if (maxOutput && usage.output_tokens > maxOutput) {
+    throw new Error(`Output token budget exceeded: ${usage.output_tokens} > ${maxOutput}`);
+  }
+}
+
 function run(cmd: string, args: string[]): { ok: boolean; output: string } {
   try {
     const output = execFileSync(cmd, args, { encoding: "utf-8", stdio: "pipe" });
@@ -92,6 +113,14 @@ export async function verifyAndPublish(opts: {
   prTitle: string;
   prBody: string;
 }): Promise<PublishResult> {
+  if (process.env.SKIP_PUBLISH === "1") {
+    return {
+      published: false,
+      deployTriggered: false,
+      reason: "SKIP_PUBLISH=1 — dry run: changes written to disk but not committed or pushed.",
+    };
+  }
+
   if (!isGitRepo()) {
     return {
       published: false,

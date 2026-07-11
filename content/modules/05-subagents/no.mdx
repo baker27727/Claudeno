@@ -75,3 +75,7 @@ Claude om å opprette underagenten for deg, eller lag markdown-filen i
 ## Nytt i v2.1.204
 
 **Hva er nytt (2.1.204):** I hodeløse (headless) økter strømmer nå hook-hendelser (inkludert `SessionStart`-hooks) riktig i stedet for å stoppe opp — dette retter en feil der eksterne arbeidsprosesser (remote workers) kunne bli avsluttet som inaktive midt i en hook, noe som kunne avbryte oppstart av underagenter i bakgrunns-/hodeløse arbeidsflyter.
+
+## Nytt i v2.1.206
+
+Underagenter oppgraderes nå til en ny versjon i bakgrunnen umiddelbart etter en Claude Code-oppdatering, i stedet for å betale kostnaden ved en treg utdatert-økt-oppgradering når du kobler til dem. I tillegg er visningen av agenter blitt forbedret: statuskolonnen bruker nå hele terminalbredden i stedet for å kutte av ved 64 tegn, økter viser nå et fargekodet statusord og en klassifiseringsskrevet overskrift i stedet for rå verktøykalltest, og rader som redigerer, slår sammen, kommenterer eller pusher til en eksisterende PR, linker den nå direkte i sesjonslisten. Flere kritiske feil har blitt fikset, inkludert underagenter som blir permanent uresponsive når demonens økt-token ble foreldet (de kommer seg nå automatisk), og økter som blir stuck med "Trenger input" i agentlisten etter at spørsmålet allerede var besvart.

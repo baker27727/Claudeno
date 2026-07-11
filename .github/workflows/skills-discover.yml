@@ -1,30 +1,27 @@
-name: Watch upstream
+name: Skills discover
+
+# Weekly discovery of new skills from the allowlisted sources in
+# content/sources.yaml. Generates full bilingual skill pages with maturity
+# forced to "experimental" and publishes them if all quality gates pass.
+# BLUEPRINT: autonomous-content-ops-blueprint.md §3.2.
 
 on:
   schedule:
-    - cron: "0 6 * * *" # 06:00 UTC daily
+    - cron: "0 5 * * 3" # 05:00 UTC every Wednesday
   workflow_dispatch: {}
 
 concurrency:
-  # Prevents two runs (e.g. the daily cron firing while someone manually
-  # dispatches) from racing each other's git push/deploy-dispatch — same
-  # class of issue found in deploy.yml. Queue rather than cancel: a
-  # half-finished content generation shouldn't be killed mid-write.
-  group: watch-upstream
+  group: skills-discover
   cancel-in-progress: false
 
 jobs:
-  watch:
+  discover:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 30
     permissions:
       contents: write
       pull-requests: write
-      # actions: write lets _auto-publish.ts trigger deploy.yml directly — pushes made
-      # with GITHUB_TOKEN don't fire other workflows' `on: push` triggers, so deploy
-      # would otherwise never run after an autonomous content publish.
       actions: write
-      # issues: write is for the failure-tracking step at the end of this job.
       issues: write
     steps:
       - uses: actions/checkout@v4
@@ -36,24 +33,14 @@ jobs:
         run: |
           git config user.name "claude-code-learn-bot"
           git config user.email "actions@users.noreply.github.com"
-      - name: Detect upstream changes
-        id: diff
-        run: npm run watch:upstream
-      - name: Generate and publish update
-        if: steps.diff.outputs.changed == 'true'
+      - name: Discover new skills
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          LATEST_VERSION: ${{ steps.diff.outputs.latest_version }}
           MAX_INPUT_TOKENS: "200000"
           MAX_OUTPUT_TOKENS: "8192"
-        run: npm run generate:update
+        run: npm run skills:discover
       - name: Open or update a tracking issue on failure
-        # This is how you actually find out something broke, beyond GitHub's
-        # own (easy-to-miss) email notifications — a persistent, visible
-        # issue instead of a run that quietly turns red in a tab nobody has
-        # open. Dedupes on title so a recurring daily failure updates one
-        # issue with a new comment instead of opening a new one every day.
         if: failure()
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

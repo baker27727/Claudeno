@@ -93,3 +93,7 @@ ville. Aliaser: `/checkpoint`, `/undo`.
 ## Nytt i v2.1.205
 
 /doctor er nå en fullstendig oppsettkontroll som kan diagnostisere og fikse problemer (i versjon 2.1.205). Bruk /checkup som alias. Merk at oppstartskvareringar som "claude command missing or broken" er nå flyttet fra oppstart til /doctor og /status-utdata.
+
+## Nytt i v2.1.206
+
+Kommandoen `/cd` tilbyr nå katalogveistøtte som ligner på atferden til `/add-dir`, noe som gjør det enklere å navigere til ofte brukte kataloger. I tillegg er `/doctor` (med alias `/checkup`) blitt utvidet til et fullt oppsettskontrollverktøy som kan diagnostisere og fikse problemer, inkludert en ny kontroll som foreslår å trimme innsjekket `CLAUDE.md`-filer ved å fjerne innhold som Claude kan utlede fra kodekallet. Kommandoen `/commit-push-pr` tillater nå automatisk `git push` til kodelajers konfigurerte push-fjernkilde (via `remote.pushDefault`, eller den eneste fjernkilden når bare én er konfigurert) i tillegg til `origin`. Kommandoen `/login` på Gateway støtter nå Anthropic-drivne offentlige gatewayslutpunkter.

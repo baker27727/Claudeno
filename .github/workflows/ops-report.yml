@@ -1,32 +1,26 @@
-name: Content freshness heal
+name: Operations report
 
-# Monthly deep accuracy check — independent of version bumps. Re-fetches the
-# live docs pages each module teaches from, plus sources for stale guides and
-# use-cases, and asks Claude to fix anything that's drifted. Publishes
-# automatically if the fix passes the full verification suite; otherwise opens
-# a PR explaining what failed.
+# Monthly self-monitoring report. Summarises the previous month's autonomous
+# runs, issues, PRs, and skill discoveries, then opens an informational issue
+# and a draft blog post.
+# BLUEPRINT: autonomous-content-ops-blueprint.md §3.6.
 
 on:
   schedule:
-    - cron: "0 7 1 * *" # 07:00 UTC on the 1st of each month
+    - cron: "0 9 1 * *" # 09:00 UTC on the 1st of each month
   workflow_dispatch: {}
 
 concurrency:
-  group: content-freshness
+  group: ops-report
   cancel-in-progress: false
 
 jobs:
-  freshness:
+  report:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 10
     permissions:
       contents: write
-      pull-requests: write
-      # actions: write lets _auto-publish.ts trigger deploy.yml directly — pushes made
-      # with GITHUB_TOKEN don't fire other workflows' `on: push` triggers, so deploy
-      # would otherwise never run after an autonomous content publish.
-      actions: write
-      # issues: write is for the failure-tracking step at the end of this job.
+      pull-requests: read
       issues: write
     steps:
       - uses: actions/checkout@v4
@@ -38,13 +32,11 @@ jobs:
         run: |
           git config user.name "claude-code-learn-bot"
           git config user.email "actions@users.noreply.github.com"
-      - name: Audit content against live docs
+      - name: Generate operations report
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          MAX_INPUT_TOKENS: "200000"
-          MAX_OUTPUT_TOKENS: "8192"
-        run: npm run audit:freshness
+        run: npx tsx scripts/ops-report.ts
       - name: Open or update a tracking issue on failure
         if: failure()
         env:

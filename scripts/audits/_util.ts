@@ -34,6 +34,15 @@ export function tryReadFile(path: string): string | undefined {
 }
 
 /**
+ * Reads the site's tracked Claude Code version from the upstream-version
+ * snapshot. This is the single source of truth for `verifiedVersion` on skills
+ * and freshness updates so the automation never hallucinates a version string.
+ */
+export function readVerifiedVersion(): string {
+  return readFileSync(join(process.cwd(), "content/snapshots/upstream-version.txt"), "utf-8").trim();
+}
+
+/**
  * Recursively walks a parsed YAML/JSON value and flags any object that has
  * an "en" key without a matching "no" key (or vice versa) — the core EN/NO
  * parity rule (BLUEPRINT §4).

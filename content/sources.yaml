@@ -1,0 +1,29 @@
+# Allowlist of external skill sources for autonomous discovery/verification.
+# Only repos listed here may be fetched by scripts/skills/*.ts.
+# BLUEPRINT: autonomous-content-ops-blueprint.md §2.3, §5.
+
+- id: anthropics-skills-pdf
+  repo: anthropics/skills
+  path: skills/pdf/SKILL.md
+  branch: main
+  categories: [documents]
+  discovery: false
+  note: "Covered already as the sample skill. Kept for verification only."
+
+- id: anthropics-skills-docx
+  repo: anthropics/skills
+  path: skills/docx/SKILL.md
+  categories: [documents]
+  discovery: true
+
+- id: anthropics-skills-pptx
+  repo: anthropics/skills
+  path: skills/pptx/SKILL.md
+  categories: [documents]
+  discovery: true
+
+- id: anthropics-skills-xlsx
+  repo: anthropics/skills
+  path: skills/xlsx/SKILL.md
+  categories: [documents]
+  discovery: true
