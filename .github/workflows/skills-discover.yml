@@ -8,7 +8,12 @@ name: Skills discover
 on:
   schedule:
     - cron: "0 5 * * 3" # 05:00 UTC every Wednesday
-  workflow_dispatch: {}
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Dry run (gate B): generate pages but do not commit or publish; upload them as an artifact for review."
+        type: boolean
+        default: false
 
 concurrency:
   group: skills-discover
@@ -39,7 +44,20 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           MAX_INPUT_TOKENS: "200000"
           MAX_OUTPUT_TOKENS: "8192"
+          # Empty on scheduled runs (inputs context is unset there), "1" only
+          # when a human dispatches with dry_run — verifyAndPublish then skips
+          # every git/PR/deploy step and leaves the files on disk.
+          SKIP_PUBLISH: ${{ inputs.dry_run == true && '1' || '' }}
         run: npm run skills:discover
+      - name: Upload generated skills (dry run only)
+        if: ${{ inputs.dry_run == true }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: skills-discover-dry-run
+          path: |
+            content/skills/
+            content/snapshots/skills/
+          if-no-files-found: warn
       - name: Open or update a tracking issue on failure
         if: failure()
         env:
