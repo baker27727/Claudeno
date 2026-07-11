@@ -133,3 +133,7 @@ claude --debug-file /tmp/claude.log
   back to Claude as feedback.
 - `/hooks` is read-only for browsing; edit the settings file to change hooks.
 - Keep matchers narrow, especially for auto-approving `PermissionRequest` hooks.
+
+## What's new in v2.1.207
+
+Plugin hooks now reject `${user_config.*}` in shell-form commands as a shell-injection security fix. Use exec form (`args` array) or the `$CLAUDE_PLUGIN_OPTION_<KEY>` environment variable instead. Monitors and headersHelper should read config values inside the script rather than via command interpolation.

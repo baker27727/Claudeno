@@ -140,3 +140,7 @@ claude --debug-file /tmp/claude.log
   endre hooks.
 - Hold matchere smale, spesielt ved automatisk godkjenning av
   `PermissionRequest`-hooks.
+
+## Nytt i v2.1.207
+
+Plugin-hooks avviser nå `${user_config.*}` i shell-form-kommandoer som en shell-injeksjonssikkerhetsfiks. Bruk exec-form (`args`-matrise) eller miljøvariabelen `$CLAUDE_PLUGIN_OPTION_<KEY>` i stedet. Monitorer og headersHelper bør lese konfigverdier inne i skriptet i stedet for via kommandointerpolasjon.

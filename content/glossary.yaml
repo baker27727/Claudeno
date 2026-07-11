@@ -63,3 +63,7 @@
   no: "auto-minne"
   note: "Notes Claude writes for itself across sessions, distinct from CLAUDE.md
     which the user writes."
+- id: "disableautomode"
+  en: "disableAutoMode"
+  no: "disableAutoMode"
+  note: "Settings key to disable auto mode on Bedrock, Vertex AI, and Foundry."

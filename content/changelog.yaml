@@ -1,3 +1,20 @@
+- id: "2.1.207"
+  version: "2.1.207"
+  date: "2026-07-11"
+  entry:
+    en: "Auto mode is now available by default on Bedrock, Vertex AI, and Foundry
+      (disable via `disableAutoMode` in settings). Fixed multiple issues
+      including terminal responsiveness with long outputs, auto-updater
+      conflicts with custom launchers, transcript scrolling glitches, and
+      security issues with malformed glob patterns and shell injection
+      vulnerabilities in plugin hooks."
+    no: "Automodus er nå tilgjengelig som standard på Bedrock, Vertex AI og Foundry
+      (deaktiver via `disableAutoMode` i innstillinger). Fikset flere problemer
+      inkludert terminalresponsivitet med lange resultater, konflikter mellom
+      auto-oppdaterer og egendefinerte startere, glitcher i avskriftsrulling, og
+      sikkerhetsproblemer med malformerte glob-mønster og
+      shell-injeksjonssårbarheter i plugin-hooks."
+  sources: []
 - id: "2.1.206"
   version: "2.1.206"
   date: "2026-07-10"

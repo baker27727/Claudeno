@@ -74,3 +74,7 @@ leser ved starten av hver økt.
 ## Nytt i v2.1.205
 
 Fra versjon 2.1.200 er "default"-tillatelsesmodus omdøpt til "Manual" i hele CLI-en og innstillinger. Du kan bruke både --permission-mode manual og "defaultMode": "manual" i konfigurasjonen. Et grått ⏸-merke vises nå i bunnteksten når du er i manuell tillatelsesmodus (lagt til i 2.1.203), noe som gjør den aktive modusen alltid synlig.
+
+## Nytt i v2.1.207
+
+Automodus er nå tilgjengelig som standard på Bedrock, Vertex AI og Foundry uten å kreve `CLAUDE_CODE_ENABLE_AUTO_MODE`-godkjenning. Du kan deaktivere det med innstillingen `disableAutoMode`. Merk at automodus ikke lenger leser fra `.claude/settings.local.json` (kodelager-resident); konfigurer det i `~/.claude/settings.json` i stedet. Plugin-alternativverdier (`pluginConfigs`) leses heller ikke lenger fra prosjektnivå-innstillinger—bruk brukerinnstillinger, `--settings` eller administrerte innstillinger.
