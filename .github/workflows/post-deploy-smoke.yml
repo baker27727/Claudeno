@@ -46,6 +46,8 @@ jobs:
           check "$BASE_URL/no/" "NO homepage"
           check "$BASE_URL/en/learn/getting-started/" "sample EN lesson"
           check "$BASE_URL/no/learn/getting-started/" "sample NO lesson"
+          check "$BASE_URL/en/skills/" "EN skills index"
+          check "$BASE_URL/no/skills/" "NO skills index"
           check "$BASE_URL/sitemap-index.xml" "sitemap"
           check "$BASE_URL/pagefind/pagefind.js" "pagefind"
 

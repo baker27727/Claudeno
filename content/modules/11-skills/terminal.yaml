@@ -1,0 +1,39 @@
+steps:
+  - id: step-1
+    command: "ls ~/.claude/skills/"
+    output: |
+      commit-helper/
+      pdf/
+    explain:
+      en: "Personal skills live in ~/.claude/skills/ — one folder per skill. Project skills live in .claude/skills/ inside the repo and are shared with your team."
+      no: "Personlige skills bor i ~/.claude/skills/ — én mappe per skill. Prosjekt-skills bor i .claude/skills/ i repoet og deles med teamet ditt."
+    accepts_also: ["ls .claude/skills/"]
+  - id: step-2
+    command: "cat ~/.claude/skills/commit-helper/SKILL.md"
+    output: |
+      ---
+      name: commit-helper
+      description: Writes conventional commit messages from staged changes.
+        Use when the user asks for a commit message.
+      ---
+
+      Read the staged diff with `git diff --cached`, then write a
+      conventional commit message: type(scope): summary. Keep the
+      subject under 72 characters and explain the why in the body.
+    explain:
+      en: "A skill is just a folder with a SKILL.md. The frontmatter name and description tell Claude when to load it; the body tells Claude what to do once loaded."
+      no: "En skill er bare en mappe med en SKILL.md. Frontmatter-feltene name og description forteller Claude når den skal lastes; brødteksten forteller Claude hva den skal gjøre når den er lastet."
+    accepts_also: []
+  - id: step-3
+    command: "/commit-helper"
+    output: |
+      ⚡ Skill: commit-helper
+      Reading staged changes… found 3 files.
+      feat(auth): add session refresh on token expiry
+
+      Tokens silently expired after 24h, logging users out mid-task.
+      Refresh the session in the background instead.
+    explain:
+      en: "Skills trigger two ways: automatically, when your request matches the description — or explicitly, by typing /skill-name. Either way Claude loads the instructions and follows them."
+      no: "Skills utløses på to måter: automatisk, når forespørselen din matcher beskrivelsen — eller eksplisitt, ved å skrive /skill-navn. Uansett laster Claude instruksjonene og følger dem."
+    accepts_also: []

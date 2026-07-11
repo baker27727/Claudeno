@@ -91,6 +91,10 @@ want. Aliases: `/checkpoint`, `/undo`.
 - `/model` switches models without restarting the session.
 - `/rewind` is the real "undo" for code changes, not `/clear`.
 
+## Related skills
+
+A skill behaves like a slash command that can also trigger itself: `/name` works exactly like a custom command, but Claude also loads it automatically when your request matches its description. Learn how in [Skills & SKILL.md](/en/learn/skills/), or [browse the curated skills catalog](/en/skills/).
+
 ## What's new in v2.1.205
 
 /doctor is now a full setup checkup that can diagnose and fix issues (in version 2.1.205). Use /checkup as an alias. Note that startup warnings like "claude command missing or broken" have moved from initial startup into /doctor and /status output.

@@ -2,6 +2,7 @@
 import { getCollection } from "astro:content";
 import Base from "../../layouts/Base.astro";
 import { LOCALES, useTranslations, type Locale } from "../../lib/i18n";
+import { getAllSkills } from "../../lib/skills";
 import {
   webPageJsonLd,
   breadcrumbListJsonLd,
@@ -17,7 +18,23 @@ export function getStaticPaths() {
 
 const lang = Astro.params.lang as Locale;
 const t = useTranslations(lang);
-const entries = await getCollection("catalog");
+const catalogEntries = await getCollection("catalog");
+
+// Skills are appended dynamically from the content collection rather than
+// listed in catalog.yaml — autonomously discovered skills would otherwise
+// never show up here.
+const skills = (await getAllSkills()).filter((s) => !s.meta.archived);
+const entries = [
+  ...catalogEntries,
+  ...skills.map((s) => ({
+    data: {
+      id: `skill-${s.slug}`,
+      kind: "skill",
+      title: s.meta.title,
+      href: `/skills/${s.slug}/`,
+    },
+  })),
+];
 
 // BLUEPRINT §9 §4 — Catalog = WebPage مع mainEntity من نوع "ItemList"
 // (الفهرس نفسه ItemList من بنود الكتالوج).
@@ -51,6 +68,7 @@ const jsonLd = jsonLdScript([webPage, crumbs]);
 
 const kindLabel: Record<string, { en: string; no: string }> = {
   module: { en: "Module", no: "Modul" },
+  skill: { en: "Skill", no: "Skill" },
   guide: { en: "Guide", no: "Guide" },
   reference: { en: "Reference", no: "Referanse" },
   tool: { en: "Tool", no: "Verktøy" },
@@ -72,7 +90,7 @@ const kindLabel: Record<string, { en: string; no: string }> = {
       <h1>{t("nav.catalog")}</h1>
     </header>
 
-    {(["module", "guide", "reference", "tool"] as const)
+    {(["module", "skill", "guide", "reference", "tool"] as const)
       .map((kind) => ({ kind, items: entries.filter((e) => e.data.kind === kind) }))
       .filter((group) => group.items.length > 0)
       .map((group) => (

@@ -59,6 +59,12 @@
     en: "Checkpointing & Rewind"
     no: "Sjekkpunkter og tilbakespoling"
   href: "/learn/checkpointing/"
+- id: skills
+  kind: module
+  title:
+    en: "Skills & SKILL.md"
+    no: "Skills og SKILL.md"
+  href: "/learn/skills/"
 - id: reference-cheatsheet
   kind: reference
   title:

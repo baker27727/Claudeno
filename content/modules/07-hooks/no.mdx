@@ -141,6 +141,10 @@ claude --debug-file /tmp/claude.log
 - Hold matchere smale, spesielt ved automatisk godkjenning av
   `PermissionRequest`-hooks.
 
+## Relaterte skills
+
+Hooks håndhever; skills instruerer. Hvis noe *aldri* må glemmes, bruk en hook — hvis Claude skal vite *hvordan* noe gjøres, bruk en skill. Se [Skills og SKILL.md](/no/learn/skills/) og [skills-katalogen](/no/skills/).
+
 ## Nytt i v2.1.207
 
 Plugin-hooks avviser nå `${user_config.*}` i shell-form-kommandoer som en shell-injeksjonssikkerhetsfiks. Bruk exec-form (`args`-matrise) eller miljøvariabelen `$CLAUDE_PLUGIN_OPTION_<KEY>` i stedet. Monitorer og headersHelper bør lese konfigverdier inne i skriptet i stedet for via kommandointerpolasjon.

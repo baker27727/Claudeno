@@ -1,0 +1,105 @@
+---
+title: "Skills og SKILL.md"
+description: "Utvid Claude Code med gjenbrukbare skills — forstå hvordan SKILL.md fungerer, hvor skills bor, hvordan de utløses, og hvordan du installerer dem trygt."
+---
+import Callout from "../../../src/components/Callout.astro";
+
+# Skills og SKILL.md
+
+Slash-kommandoer, hooks og MCP-tjenere utvider alle Claude Code — men **skills**
+er den enkleste måten å lære Claude en ny ferdighet på. En skill er ikke mer enn
+en mappe med en `SKILL.md`-fil: instruksjoner Claude laster *ved behov*, kun når
+de er relevante for det du spurte om.
+
+## Hvor skills bor
+
+```bash
+ls ~/.claude/skills/
+```
+
+To plasseringer, samme idé som innstillinger og slash-kommandoer:
+
+- `~/.claude/skills/` — **personlige** skills, tilgjengelige i alle prosjekter.
+- `.claude/skills/` — **prosjekt**-skills, committet til repoet slik at hele
+  teamet får dem ved kloning.
+
+Skills kan også komme via plugins, som pakker flere sammen.
+
+## Anatomien til en SKILL.md
+
+```bash
+cat ~/.claude/skills/commit-helper/SKILL.md
+```
+
+Alle skills har samme form — YAML-frontmatter pluss markdown-instruksjoner:
+
+```yaml
+---
+name: commit-helper
+description: Writes conventional commit messages from staged changes.
+  Use when the user asks for a commit message.
+---
+```
+
+De to frontmatter-feltene gjør hele rutingjobben:
+
+- **name** — identifikatoren, og slash-kommandoen (`/commit-helper`).
+- **description** — utløseren. Claude ser beskrivelsen til alle skills i hver
+  samtale; når forespørselen din matcher én, lastes hele SKILL.md.
+
+Brødteksten under frontmatteren er det Claude faktisk følger når den er lastet.
+Skriv den som instruksjoner til en dyktig kollega: konkrete steg, ekte
+kommandoer, hvordan godt resultat ser ut.
+
+<Callout type="tip">
+  Beskrivelsen er den viktigste linjen. «Hjelper med dokumenter» utløses aldri
+  eller alltid; «Oppretter og redigerer Word-filer (.docx) — bruk når en
+  .docx-fil er input eller output» utløses akkurat når den skal.
+</Callout>
+
+## Utløse en skill
+
+```
+/commit-helper
+```
+
+Skills utløses på to måter:
+
+1. **Automatisk** — du ber om «skriv en commit-melding», og Claude matcher
+   beskrivelsen, laster skillen og følger den.
+2. **Eksplisitt** — du skriver `/skill-navn`, akkurat som en innebygd
+   slash-kommando.
+
+Fordi skills lastes ved behov, koster de ingenting når de ikke brukes — i
+motsetning til en lang CLAUDE.md, som opptar kontekst i hver samtale.
+
+## Skills mot de andre utvidelsespunktene
+
+| Mekanisme | Hva det er | Når du bør velge den |
+| --- | --- | --- |
+| **Skill** | Instruksjoner lastet ved behov | Lære Claude en gjenbrukbar ferdighet eller arbeidsflyt |
+| **Slash-kommando** | En lagret ledetekst du kaller ved navn | Snarveier du alltid utløser selv |
+| **Hook** | En kommando *rammeverket* kjører ved hendelser | Håndheving som aldri må glemmes |
+| **MCP-tjener** | En ekstern verktøy-/datakobling | Tilgang til systemer Claude ikke når alene |
+| **Underagent** | En egen Claude med egen kontekst | Isolere stort eller parallelt arbeid |
+
+## Installere skills trygt
+
+Fellesskaps-skills kan inneholde skript og instruere Claude om å kjøre
+kommandoer. Behandle installasjon som å legge til en avhengighet:
+
+- Les SKILL.md før du installerer — den er kort med vilje.
+- Sjekk hva den kjører (shell? Python?), leser og skriver.
+- Foretrekk kilder du stoler på, og lås til en versjon eller commit når du kan.
+
+<Callout type="warning">
+  En SKILL.md er instruksjoner Claude vil følge på maskinen din. Installer
+  aldri en skill du ikke har skumlest — hele filen er som regel under hundre
+  linjer.
+</Callout>
+
+## Utforsk kuraterte skills
+
+Dette nettstedet vedlikeholder en kuratert, testet katalog — hva hver skill
+gjør, tillatelsene dens, begrensningene, og når du *ikke* bør bruke den:
+[utforsk skills-katalogen](/no/skills/).

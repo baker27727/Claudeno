@@ -134,6 +134,10 @@ claude --debug-file /tmp/claude.log
 - `/hooks` is read-only for browsing; edit the settings file to change hooks.
 - Keep matchers narrow, especially for auto-approving `PermissionRequest` hooks.
 
+## Related skills
+
+Hooks enforce; skills instruct. If something must *never* be forgotten, use a hook — if Claude should know *how* to do something, use a skill. See [Skills & SKILL.md](/en/learn/skills/) and the [skills catalog](/en/skills/).
+
 ## What's new in v2.1.207
 
 Plugin hooks now reject `${user_config.*}` in shell-form commands as a shell-injection security fix. Use exec form (`args` array) or the `$CLAUDE_PLUGIN_OPTION_<KEY>` environment variable instead. Monitors and headersHelper should read config values inside the script rather than via command interpolation.

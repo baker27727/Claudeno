@@ -1,0 +1,49 @@
+questions:
+  - id: q1
+    prompt:
+      en: "What is a Claude Code skill, at its core?"
+      no: "Hva er en Claude Code-skill, i sin kjerne?"
+    options:
+      - { id: a, en: "A compiled plugin binary that patches the CLI", no: "En kompilert plugin-binærfil som endrer CLI-en" }
+      - { id: b, en: "A folder containing a SKILL.md with instructions Claude loads on demand", no: "En mappe med en SKILL.md med instruksjoner som Claude laster ved behov" }
+      - { id: c, en: "A saved conversation Claude replays", no: "En lagret samtale som Claude spiller av på nytt" }
+    correct: b
+    explain:
+      en: "A skill is just a folder with a SKILL.md file (plus optional scripts/resources). Claude reads the instructions when the skill is relevant — nothing is compiled or installed into the CLI itself."
+      no: "En skill er bare en mappe med en SKILL.md-fil (pluss valgfrie skript/ressurser). Claude leser instruksjonene når skillen er relevant — ingenting kompileres eller installeres i selve CLI-en."
+  - id: q2
+    prompt:
+      en: "What decides whether Claude loads a skill automatically?"
+      no: "Hva avgjør om Claude laster en skill automatisk?"
+    options:
+      - { id: a, en: "The description field in the SKILL.md frontmatter matching your request", no: "At description-feltet i SKILL.md-frontmatteren matcher forespørselen din" }
+      - { id: b, en: "The alphabetical order of skill folders", no: "Den alfabetiske rekkefølgen på skill-mappene" }
+      - { id: c, en: "Skills always load into every conversation", no: "Skills lastes alltid inn i alle samtaler" }
+    correct: a
+    explain:
+      en: "Claude sees each skill's name and description. When your request matches a description, the full SKILL.md is loaded. A precise description is what makes a skill trigger reliably — and skills stay out of context until needed."
+      no: "Claude ser hver skills name og description. Når forespørselen din matcher en beskrivelse, lastes hele SKILL.md. En presis beskrivelse er det som gjør at en skill utløses pålitelig — og skills holder seg utenfor konteksten til de trengs."
+  - id: q3
+    prompt:
+      en: "What is the difference between ~/.claude/skills/ and .claude/skills/?"
+      no: "Hva er forskjellen mellom ~/.claude/skills/ og .claude/skills/?"
+    options:
+      - { id: a, en: "The first is for official skills, the second for community skills", no: "Den første er for offisielle skills, den andre for fellesskaps-skills" }
+      - { id: b, en: "The first is personal (all your projects), the second is per-project and shared via git", no: "Den første er personlig (alle prosjektene dine), den andre er per prosjekt og deles via git" }
+      - { id: c, en: "They are the same directory symlinked", no: "De er samme mappe med symlink" }
+    correct: b
+    explain:
+      en: "Personal skills in ~/.claude/skills/ follow you across every project. Project skills in .claude/skills/ live in the repo, so teammates get them when they clone — the same split as settings and slash commands."
+      no: "Personlige skills i ~/.claude/skills/ følger deg i alle prosjekter. Prosjekt-skills i .claude/skills/ bor i repoet, så lagkamerater får dem når de kloner — samme inndeling som innstillinger og slash-kommandoer."
+  - id: q4
+    prompt:
+      en: "Why should you review a skill's contents before installing it from the internet?"
+      no: "Hvorfor bør du gjennomgå innholdet i en skill før du installerer den fra internett?"
+    options:
+      - { id: a, en: "Skills can bundle scripts and instruct Claude to run commands on your machine", no: "Skills kan inneholde skript og instruere Claude om å kjøre kommandoer på maskinen din" }
+      - { id: b, en: "Unreviewed skills run slower", no: "Ugjennomgåtte skills kjører tregere" }
+      - { id: c, en: "There is no reason — skills cannot affect your system", no: "Ingen grunn — skills kan ikke påvirke systemet ditt" }
+    correct: a
+    explain:
+      en: "A SKILL.md is instructions Claude will follow, and skills may ship executable scripts. Treat installing one like adding a dependency: check what it runs, what it reads and writes, and where it comes from."
+      no: "En SKILL.md er instruksjoner Claude vil følge, og skills kan inneholde kjørbare skript. Behandle installasjon som å legge til en avhengighet: sjekk hva den kjører, hva den leser og skriver, og hvor den kommer fra."

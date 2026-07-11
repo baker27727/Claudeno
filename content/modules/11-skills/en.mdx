@@ -1,0 +1,106 @@
+---
+title: "Skills & SKILL.md"
+description: "Extend Claude Code with reusable skills — understand how SKILL.md works, where skills live, how they trigger, and how to install them safely."
+---
+import Callout from "../../../src/components/Callout.astro";
+
+# Skills & SKILL.md
+
+Slash commands, hooks, and MCP servers all extend Claude Code — but **skills**
+are the simplest way to teach Claude a new capability. A skill is nothing more
+than a folder containing a `SKILL.md` file: instructions Claude loads *on
+demand*, only when they are relevant to what you asked.
+
+## Where skills live
+
+```bash
+ls ~/.claude/skills/
+```
+
+Two locations, same idea as settings and slash commands:
+
+- `~/.claude/skills/` — **personal** skills, available in every project.
+- `.claude/skills/` — **project** skills, committed to the repo so your whole
+  team gets them on clone.
+
+Skills can also arrive through plugins, which bundle several at once.
+
+## Anatomy of a SKILL.md
+
+```bash
+cat ~/.claude/skills/commit-helper/SKILL.md
+```
+
+Every skill has the same shape — YAML frontmatter plus markdown instructions:
+
+```yaml
+---
+name: commit-helper
+description: Writes conventional commit messages from staged changes.
+  Use when the user asks for a commit message.
+---
+```
+
+The two frontmatter fields do all the routing work:
+
+- **name** — the identifier, and the slash command (`/commit-helper`).
+- **description** — the trigger. Claude sees every skill's description in each
+  conversation; when your request matches one, the full SKILL.md is loaded.
+
+The body below the frontmatter is what Claude actually follows once loaded.
+Write it like instructions for a competent colleague: concrete steps, real
+commands, what good output looks like.
+
+<Callout type="tip">
+  The description is the single most important line. "Helps with documents"
+  triggers never or always; "Creates and edits Word (.docx) files — use
+  whenever a .docx file is the input or output" triggers exactly when it
+  should.
+</Callout>
+
+## Triggering a skill
+
+```
+/commit-helper
+```
+
+Skills fire two ways:
+
+1. **Automatically** — you ask "write a commit message" and Claude matches the
+   description, loads the skill, and follows it.
+2. **Explicitly** — you type `/skill-name`, exactly like a built-in slash
+   command.
+
+Because skills load on demand, they cost nothing while idle — unlike a long
+CLAUDE.md, which occupies context in every conversation.
+
+## Skills vs. the other extension points
+
+| Mechanism | What it is | When to reach for it |
+| --- | --- | --- |
+| **Skill** | Instructions loaded on demand | Teach Claude a reusable capability or workflow |
+| **Slash command** | A saved prompt you invoke by name | Shortcuts you always trigger yourself |
+| **Hook** | A command the *harness* runs on events | Enforcement that must never be forgotten |
+| **MCP server** | An external tool/data connection | Access to systems Claude can't reach alone |
+| **Subagent** | A separate Claude with its own context | Isolating big or parallel work |
+
+## Installing skills safely
+
+Community skills can bundle scripts and instruct Claude to run commands. Treat
+installing one like adding a dependency:
+
+- Read the SKILL.md before installing — it is short by design.
+- Check what it executes (shell? Python?), reads, and writes.
+- Prefer sources you trust, and pin to a version or commit when you can.
+
+<Callout type="warning">
+  A SKILL.md is instructions Claude will follow on your machine. Never install
+  a skill you haven't skimmed — the whole file is usually under a hundred
+  lines.
+</Callout>
+
+## Browse curated skills
+
+This site maintains a curated, tested catalog — what each skill does, its
+permissions, its limitations, and when *not* to use it:
+[explore the skills catalog](/en/skills/).

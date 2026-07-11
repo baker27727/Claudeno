@@ -72,6 +72,10 @@ Claude om å opprette underagenten for deg, eller lag markdown-filen i
 - Den kjører i sitt eget kontekstvindu og returnerer bare et sammendrag, slik at
   hovedsamtalen din holdes ryddig.
 
+## Relaterte skills
+
+En underagent starter en egen Claude med egen kontekst; en skill lærer den *samme* Claude en ny ferdighet — ofte det lettere valget når du ikke trenger isolasjon. Se [Skills og SKILL.md](/no/learn/skills/) og [skills-katalogen](/no/skills/).
+
 ## Nytt i v2.1.204
 
 **Hva er nytt (2.1.204):** I hodeløse (headless) økter strømmer nå hook-hendelser (inkludert `SessionStart`-hooks) riktig i stedet for å stoppe opp — dette retter en feil der eksterne arbeidsprosesser (remote workers) kunne bli avsluttet som inaktive midt i en hook, noe som kunne avbryte oppstart av underagenter i bakgrunns-/hodeløse arbeidsflyter.

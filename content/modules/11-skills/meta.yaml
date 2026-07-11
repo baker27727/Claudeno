@@ -1,0 +1,12 @@
+id: skills
+order: 11
+level: beginner
+duration_min: 12
+covers_version: "2.1.207"
+title:
+  en: "Skills & SKILL.md"
+  no: "Skills og SKILL.md"
+description:
+  en: "Extend Claude Code with reusable skills — understand how SKILL.md works, where skills live, how they trigger, and how to install them safely."
+  no: "Utvid Claude Code med gjenbrukbare skills — forstå hvordan SKILL.md fungerer, hvor skills bor, hvordan de utløses, og hvordan du installerer dem trygt."
+tags: [skills, skill-md, beginner]
