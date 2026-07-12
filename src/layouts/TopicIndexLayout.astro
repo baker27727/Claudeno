@@ -1,0 +1,239 @@
+---
+// Shared rendering for /no/fagomrader/innsikt/ and /en/use-cases/insights/.
+// Topics are discovered/scored, not hand-picked — sorted by trend strength.
+import Base from "./Base.astro";
+import { formatDate, type Locale } from "../lib/i18n";
+import {
+  getAllTopics,
+  topicForLocale,
+  topicIndexPath,
+  topicPath,
+  trendLabel,
+} from "../lib/topics";
+import { useCaseIndexPath } from "../lib/use-cases";
+import {
+  webPageJsonLd,
+  breadcrumbListJsonLd,
+  topicIndexBreadcrumbs,
+  jsonLdScript,
+  SITE_URL,
+  type JsonLdObject,
+} from "../lib/seo";
+
+interface Props {
+  lang: Locale;
+}
+const { lang } = Astro.props;
+
+const allTopics = await getAllTopics();
+const isProd = import.meta.env.PROD;
+const topics = allTopics
+  .map((t) => ({ slug: t.slug, entry: topicForLocale(t, lang) }))
+  .filter((t): t is { slug: string; entry: NonNullable<(typeof t)["entry"]> } => Boolean(t.entry))
+  .filter((t) => !(isProd && t.entry.data.draft));
+
+const pagePath = topicIndexPath(lang);
+const title = lang === "no" ? "Innsikt — nye AI- og Claude-trender" : "Insights — new AI and Claude trends";
+const description = lang === "no"
+  ? "Ukentlig oppdaget og vurdert: nye måter å bruke Claude og AI mer effektivt på, valgt etter faktisk interesse — ikke en fast liste."
+  : "Discovered and scored weekly: new ways to use Claude and AI more effectively, selected by actual signal — not a fixed list.";
+
+const itemList: JsonLdObject = {
+  "@context": "https://schema.org",
+  "@type": "ItemList",
+  name: title,
+  inLanguage: lang,
+  numberOfItems: topics.length,
+  itemListElement: topics.map((t, i) => ({
+    "@type": "ListItem",
+    position: i + 1,
+    name: t.entry.data.title,
+    url: `${SITE_URL}${topicPath(t.slug, lang)}`,
+  })),
+};
+
+const webPage = webPageJsonLd({
+  name: title,
+  description,
+  lang,
+  path: pagePath,
+  mainEntity: { type: "ItemList", data: itemList },
+});
+const crumbs = breadcrumbListJsonLd(topicIndexBreadcrumbs(lang));
+const jsonLd = jsonLdScript([webPage, crumbs]);
+---
+
+<Base lang={lang} title={title} description={description}>
+  <Fragment slot="head">
+    <Fragment set:html={jsonLd} />
+  </Fragment>
+  <main class="topics">
+    <nav class="topics__breadcrumb" aria-label="Breadcrumb">
+      <a href={`/${lang}/`}>Claude Code Learn</a>
+      <span aria-hidden="true">/</span>
+      <a href={useCaseIndexPath(lang)}>{lang === "no" ? "Fagområder" : "Use cases"}</a>
+      <span aria-hidden="true">/</span>
+      <span aria-current="page">{lang === "no" ? "Innsikt" : "Insights"}</span>
+    </nav>
+
+    <header class="topics__header">
+      <p class="topics__eyebrow">{lang === "no" ? "Oppdaget ukentlig" : "Discovered weekly"}</p>
+      <h1>{title}</h1>
+      <p class="topics__lede">{description}</p>
+    </header>
+
+    {topics.length === 0 ? (
+      <p class="topics__empty">
+        {lang === "no"
+          ? "Ingen artikler ennå — automatikken oppdager og skriver ukentlig når en ny trend krysser terskelen. Kom tilbake snart."
+          : "No articles yet — the automation discovers and writes weekly once a new trend crosses the threshold. Check back soon."}
+      </p>
+    ) : (
+      <ol class="topics__list">
+        {topics.map((t) => (
+          <li class="topics__card">
+            <a class="topics__cardLink" href={topicPath(t.slug, lang)}>
+              <div class="topics__meta">
+                <span class={`topics__trend topics__trend--${t.entry.data.trendScore >= 0.8 ? "strong" : t.entry.data.trendScore >= 0.6 ? "emerging" : "new"}`}>
+                  {trendLabel(t.entry.data.trendScore, lang)}
+                </span>
+                <span class="topics__discovered">
+                  {lang === "no" ? "Oppdaget" : "Discovered"} {formatDate(new Date(t.entry.data.discoveredAt), lang)}
+                </span>
+              </div>
+              <h2 class="topics__title">{t.entry.data.title}</h2>
+              <p class="topics__excerpt">{t.entry.data.description}</p>
+            </a>
+          </li>
+        ))}
+      </ol>
+    )}
+
+    <p class="topics__methodology">
+      {lang === "no"
+        ? "Hvordan velges disse? Hver kandidat vurderes ut fra hvor mange uavhengige kilder som nevner den, hvor fersk den er, hvor mye oppmerksomhet den får, og om vi allerede dekker den — se vurderingen på hver artikkel."
+        : "How are these chosen? Each candidate is scored on how many independent sources mention it, how fresh it is, how much attention it's getting, and whether we already cover it — see the breakdown on every article."}
+    </p>
+  </main>
+</Base>
+
+<style>
+  .topics {
+    max-width: 50rem;
+    margin: 0 auto;
+    padding: var(--space-8) var(--space-6) var(--space-16);
+  }
+  .topics__breadcrumb {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    margin-bottom: var(--space-8);
+    font-size: 0.8125rem;
+    color: var(--fg-muted);
+  }
+  .topics__breadcrumb a {
+    color: var(--fg-muted);
+  }
+  .topics__header {
+    margin-bottom: var(--space-10);
+  }
+  .topics__eyebrow {
+    margin: 0 0 var(--space-2);
+    color: var(--accent);
+    font-size: 0.8125rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+  .topics__header h1 {
+    margin: 0 0 var(--space-3);
+    font-size: clamp(1.75rem, 4vw, 2.5rem);
+  }
+  .topics__lede {
+    max-width: 36rem;
+    color: var(--fg-muted);
+    font-size: 1.0625rem;
+    line-height: 1.6;
+    margin: 0;
+  }
+  .topics__list {
+    list-style: none;
+    margin: 0 0 var(--space-10);
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+  }
+  .topics__card {
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    background: var(--bg-elev);
+    transition: border-color 0.15s ease;
+  }
+  .topics__card:hover {
+    border-color: var(--accent);
+  }
+  .topics__cardLink {
+    display: block;
+    padding: var(--space-5);
+    text-decoration: none;
+    color: inherit;
+  }
+  .topics__meta {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    margin-bottom: var(--space-3);
+    flex-wrap: wrap;
+  }
+  .topics__trend {
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 0.15rem 0.5rem;
+    border-radius: var(--radius-full);
+  }
+  .topics__trend--strong {
+    background: color-mix(in srgb, var(--err) 15%, transparent);
+    color: var(--err);
+  }
+  .topics__trend--emerging {
+    background: color-mix(in srgb, var(--warn) 15%, transparent);
+    color: var(--warn);
+  }
+  .topics__trend--new {
+    background: color-mix(in srgb, var(--accent) 15%, transparent);
+    color: var(--accent);
+  }
+  .topics__discovered {
+    font-size: 0.8125rem;
+    color: var(--fg-muted);
+    font-family: var(--font-mono);
+  }
+  .topics__title {
+    font-size: 1.25rem;
+    line-height: 1.3;
+    margin: 0 0 var(--space-2);
+    color: var(--fg);
+  }
+  .topics__excerpt {
+    margin: 0;
+    color: var(--fg-muted);
+    font-size: 0.9375rem;
+    line-height: 1.5;
+  }
+  .topics__empty {
+    color: var(--fg-muted);
+    font-style: italic;
+    margin-bottom: var(--space-10);
+  }
+  .topics__methodology {
+    padding-top: var(--space-6);
+    border-top: 1px solid var(--border);
+    color: var(--fg-muted);
+    font-size: 0.875rem;
+    line-height: 1.6;
+    margin: 0;
+  }
+</style>

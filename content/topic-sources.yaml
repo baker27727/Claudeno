@@ -1,0 +1,24 @@
+# Allowlist of external endpoints for scripts/topics/discover.ts.
+# Only these exact URLs may be fetched — no arbitrary scraping. Data read
+# from them is treated as text to summarize, never as instructions.
+# BLUEPRINT: ai-topics-discovery-blueprint.md §3.1.
+
+- id: anthropic-changelog
+  type: anthropic_changelog
+  url: "https://docs.anthropic.com/en/release-notes/overview"
+  note: "Official Claude release notes — new capabilities as they ship."
+
+- id: claude-code-docs-map
+  type: docs_map
+  url: "https://code.claude.com/docs/en/claude_code_docs_map.md"
+  note: "Same source watch-upstream.ts already tracks for the changelog module."
+
+- id: hn-claude-search
+  type: hn_search
+  url: "https://hn.algolia.com/api/v1/search_by_date?query=Claude&tags=story&hitsPerPage=30"
+  note: "Free, no key. Points + comment count are the engagement signal."
+
+- id: github-claude-activity
+  type: github_search
+  url: "https://api.github.com/search/repositories?q=claude-code+in%3Aname%2Cdescription&sort=updated&order=desc&per_page=20"
+  note: "Free, unauthenticated (uses GH_TOKEN when present to raise the rate limit). Stars + recent pushes are the engagement signal."

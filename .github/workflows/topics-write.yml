@@ -1,0 +1,77 @@
+name: Topics write
+
+# Weekly writing + publishing of AI/Claude topic articles. Reads the ledger
+# populated by topics-discover.yml (Tuesday), picks up to 2 qualifying
+# candidates (score >= 0.6, >= 2 independent sources — already gated by
+# discover), and asks Claude to write a full bilingual article following the
+# mandatory 6-section beginner+professional template. Publishes if all
+# quality gates pass.
+# BLUEPRINT: ai-topics-discovery-blueprint.md §3.4, §3.5, §5.
+
+on:
+  schedule:
+    - cron: "0 6 * * 4" # 06:00 UTC every Thursday
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Dry run (gate B): write articles but do not commit or publish; upload them as an artifact for review."
+        type: boolean
+        default: false
+
+concurrency:
+  group: topics-write
+  cancel-in-progress: false
+
+jobs:
+  write:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: write
+      pull-requests: write
+      actions: write
+      issues: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm ci
+      - name: Configure git identity for automated commits
+        run: |
+          git config user.name "claude-code-learn-bot"
+          git config user.email "actions@users.noreply.github.com"
+      - name: Write and publish qualifying topic articles
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          MAX_INPUT_TOKENS: "200000"
+          MAX_OUTPUT_TOKENS: "8192"
+          SKIP_PUBLISH: ${{ inputs.dry_run == true && '1' || '' }}
+        run: npm run topics:write
+      - name: Upload generated articles (dry run only)
+        if: ${{ inputs.dry_run == true }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: topics-write-dry-run
+          path: |
+            content/topics/
+            content/snapshots/topics-ledger.json
+          if-no-files-found: warn
+      - name: Open or update a tracking issue on failure
+        if: failure()
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          TITLE="🔴 ${{ github.workflow }} failed"
+          RUN_URL="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          BODY="Run failed: $RUN_URL
+          Commit: ${{ github.sha }}
+          Triggered by: ${{ github.event_name }}"
+          EXISTING=$(gh issue list --label "automation-failure" --state open --json number,title \
+            --jq ".[] | select(.title == \"$TITLE\") | .number" | head -1)
+          if [ -n "$EXISTING" ]; then
+            gh issue comment "$EXISTING" --body "$BODY"
+          else
+            gh issue create --title "$TITLE" --label "automation-failure" --body "$BODY"
+          fi

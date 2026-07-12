@@ -13,6 +13,7 @@ import {
 } from "../lib/use-cases";
 import { webPageJsonLd, breadcrumbListJsonLd, pageBreadcrumbs, jsonLdScript, SITE_URL, type JsonLdObject } from "../lib/seo";
 import { guideIndexPath } from "../lib/guides";
+import { topicIndexPath } from "../lib/topics";
 
 interface Props {
   lang: Locale;
@@ -78,6 +79,11 @@ function difficultyLabel(difficulty: string, locale: Locale): string {
       <p class="use-cases__eyebrow">{lang === "no" ? "Fagområder" : "Use cases"}</p>
       <h1>{title}</h1>
       <p class="use-cases__lede">{description}</p>
+      <p class="use-cases__insights-promo">
+        <a href={topicIndexPath(lang)}>
+          {lang === "no" ? "Nytt: Innsikt — ukentlig oppdagede AI-trender →" : "New: Insights — weekly discovered AI trends →"}
+        </a>
+      </p>
     </header>
 
     {useCases.length === 0 ? (
@@ -149,6 +155,14 @@ function difficultyLabel(difficulty: string, locale: Locale): string {
   .use-cases__header h1 {
     margin: 0 0 var(--space-3);
     font-size: clamp(1.75rem, 4vw, 2.5rem);
+  }
+  .use-cases__insights-promo {
+    margin: var(--space-3) 0 0;
+    font-size: 0.9375rem;
+  }
+  .use-cases__insights-promo a {
+    color: var(--accent);
+    font-weight: 600;
   }
   .use-cases__lede {
     max-width: 36rem;

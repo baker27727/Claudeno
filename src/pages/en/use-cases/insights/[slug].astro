@@ -1,0 +1,17 @@
+---
+import TopicDetailLayout from "../../../../layouts/TopicDetailLayout.astro";
+import { getAllTopics, topicForLocale } from "../../../../lib/topics";
+
+export async function getStaticPaths() {
+  const allTopics = await getAllTopics();
+  const isProd = import.meta.env.PROD;
+  return allTopics
+    .filter((t) => topicForLocale(t, "en"))
+    .filter((t) => !(isProd && topicForLocale(t, "en")!.data.draft))
+    .map((t) => ({ params: { slug: t.slug }, props: { topic: t } }));
+}
+
+const { topic } = Astro.props;
+---
+
+<TopicDetailLayout lang="en" topic={topic} />

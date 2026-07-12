@@ -210,6 +210,53 @@ const useCases = defineCollection({
 });
 
 // -------------------------------------------------------------------------
+// topics — discovered AI/Claude trend articles (BLUEPRINT:
+// ai-topics-discovery-blueprint.md §3). Same file shape as useCases (one
+// frontmatter+prose file per locale), but scored/discovered instead of
+// hand-picked, and carries a transparent scoreBreakdown instead of a
+// profession/difficulty pairing.
+// -------------------------------------------------------------------------
+const topics = defineCollection({
+  loader: glob({ base: "./content/topics", pattern: "**/{en,no}.mdx" }),
+  schema: z.object({
+    title: z.string(),
+    description: z.string(),
+    discoveredAt: z.string().datetime(),
+    updatedDate: z.string().datetime(),
+    author: z.string().default("Claude Code Learn"),
+    trendScore: z.number().min(0).max(1),
+    scoreBreakdown: z.object({
+      frequency: z.number().min(0).max(1),
+      recency: z.number().min(0).max(1),
+      engagement: z.number().min(0).max(1),
+      gap: z.number().min(0).max(1),
+    }),
+    tags: z.array(z.string()).default([]),
+    sources: z.array(z.string().url()).min(1),
+    relatedModules: z.array(z.string()).default([]),
+    relatedUseCases: z.array(z.string()).default([]),
+    relatedSkills: z.array(z.string()).default([]),
+    draft: z.boolean().default(true),
+    order: z.number().default(0),
+  }),
+});
+
+// -------------------------------------------------------------------------
+// topicSources — allowlist of external endpoints scripts/topics/discover.ts
+// may fetch (BLUEPRINT: ai-topics-discovery-blueprint.md §3.1). Same
+// allowlist-as-data principle as skillSources.
+// -------------------------------------------------------------------------
+const topicSources = defineCollection({
+  loader: file("./content/topic-sources.yaml"),
+  schema: z.object({
+    id: z.string().min(1),
+    type: z.enum(["anthropic_changelog", "docs_map", "hn_search", "github_search"]),
+    url: z.string().url(),
+    note: z.string().optional(),
+  }),
+});
+
+// -------------------------------------------------------------------------
 // skills — curated skill guides (BLUEPRINT: skills-section-blueprint.md §3).
 // A skill is a mini-lesson: meta.yaml + bilingual mdx. The schema is strict
 // so the autonomous verify/discover scripts cannot publish malformed pages.
@@ -313,6 +360,8 @@ export const collections = {
   blog,
   guides,
   useCases,
+  topics,
+  topicSources,
   skillMeta,
   skillDocs,
   skillSources,

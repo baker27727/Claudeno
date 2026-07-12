@@ -15,6 +15,7 @@
 import type { Locale } from "./i18n";
 import { guideIndexPath } from "./guides";
 import { useCaseIndexPath } from "./use-cases";
+import { topicIndexPath } from "./topics";
 
 // -------------------------------------------------------------------------
 // ثوابت على مستوى الوحدة — مصدر حقيقة واحد لكل ثوابت SEO
@@ -567,6 +568,32 @@ export function useCaseBreadcrumbs(useCaseTitle: string, path: string, lang: Loc
     { name: homeLabel(lang), path: `/${lang}/` },
     { name: indexLabel, path: useCaseIndexPath(lang) },
     { name: useCaseTitle, path },
+  ];
+}
+
+/**
+ * راحة: يولّد BreadcrumbList لصفحة موضوع مكتشَف:
+ * Home → Fagområder/Use cases → Innsikt/Insights → Topic.
+ */
+export function topicBreadcrumbs(topicTitle: string, path: string, lang: Locale): Crumb[] {
+  const useCaseLabel = lang === "no" ? "Fagområder" : "Use cases";
+  const topicsLabel = lang === "no" ? "Innsikt" : "Insights";
+  return [
+    { name: homeLabel(lang), path: `/${lang}/` },
+    { name: useCaseLabel, path: useCaseIndexPath(lang) },
+    { name: topicsLabel, path: topicIndexPath(lang) },
+    { name: topicTitle, path },
+  ];
+}
+
+/** BreadcrumbList لصفحة فهرس الموضوعات: Home → Fagområder/Use cases → Innsikt/Insights. */
+export function topicIndexBreadcrumbs(lang: Locale): Crumb[] {
+  const useCaseLabel = lang === "no" ? "Fagområder" : "Use cases";
+  const topicsLabel = lang === "no" ? "Innsikt" : "Insights";
+  return [
+    { name: homeLabel(lang), path: `/${lang}/` },
+    { name: useCaseLabel, path: useCaseIndexPath(lang) },
+    { name: topicsLabel, path: topicIndexPath(lang) },
   ];
 }
 

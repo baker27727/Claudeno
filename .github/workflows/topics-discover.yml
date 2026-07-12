@@ -1,0 +1,74 @@
+name: Topics discover
+
+# Weekly discovery + deterministic scoring of AI/Claude topics from the
+# allowlisted sources in content/topic-sources.yaml. Does NOT write any
+# article — only updates the ledger and opens a report issue listing
+# qualifying candidates (score >= 0.6, >= 2 independent sources).
+# topics-write.yml (Thursday) reads the ledger and does the actual writing.
+# BLUEPRINT: ai-topics-discovery-blueprint.md §3.2, §3.3, §5.
+
+on:
+  schedule:
+    - cron: "0 5 * * 2" # 05:00 UTC every Tuesday
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Dry run: score candidates but do not commit the ledger or post the issue."
+        type: boolean
+        default: false
+
+concurrency:
+  group: topics-discover
+  cancel-in-progress: false
+
+jobs:
+  discover:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: write
+      pull-requests: write
+      actions: write
+      issues: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm ci
+      - name: Configure git identity for automated commits
+        run: |
+          git config user.name "claude-code-learn-bot"
+          git config user.email "actions@users.noreply.github.com"
+      - name: Discover and score topic candidates
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          MAX_INPUT_TOKENS: "200000"
+          MAX_OUTPUT_TOKENS: "4096"
+          SKIP_PUBLISH: ${{ inputs.dry_run == true && '1' || '' }}
+        run: npm run topics:discover
+      - name: Upload ledger (dry run only)
+        if: ${{ inputs.dry_run == true }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: topics-discover-dry-run
+          path: content/snapshots/topics-ledger.json
+          if-no-files-found: warn
+      - name: Open or update a tracking issue on failure
+        if: failure()
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          TITLE="🔴 ${{ github.workflow }} failed"
+          RUN_URL="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          BODY="Run failed: $RUN_URL
+          Commit: ${{ github.sha }}
+          Triggered by: ${{ github.event_name }}"
+          EXISTING=$(gh issue list --label "automation-failure" --state open --json number,title \
+            --jq ".[] | select(.title == \"$TITLE\") | .number" | head -1)
+          if [ -n "$EXISTING" ]; then
+            gh issue comment "$EXISTING" --body "$BODY"
+          else
+            gh issue create --title "$TITLE" --label "automation-failure" --body "$BODY"
+          fi

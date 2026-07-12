@@ -1,0 +1,382 @@
+---
+// Shared rendering for /no/fagomrader/innsikt/[slug].astro and
+// /en/use-cases/insights/[slug].astro.
+import { render } from "astro:content";
+import Base from "./Base.astro";
+import { formatDate, type Locale } from "../lib/i18n";
+import {
+  topicForLocale,
+  topicPath,
+  topicIndexPath,
+  trendLabel,
+  type TopicData,
+} from "../lib/topics";
+import { getAllModules } from "../lib/modules";
+import { getAllUseCases, useCaseForLocale, useCasePath } from "../lib/use-cases";
+import { getAllSkills } from "../lib/skills";
+import { guideArticleJsonLd, topicBreadcrumbs, breadcrumbListJsonLd, jsonLdScript } from "../lib/seo";
+
+interface Props {
+  lang: Locale;
+  topic: TopicData;
+}
+const { lang, topic } = Astro.props;
+const entry = topicForLocale(topic, lang);
+if (!entry) {
+  throw new Error(`TopicDetailLayout: no "${lang}" entry for topic "${topic.slug}"`);
+}
+
+const { Content } = await render(entry);
+
+const availableLocales: Locale[] = (["en", "no"] as const).filter((l) => topicForLocale(topic, l));
+
+const path = topicPath(topic.slug, lang);
+const article = guideArticleJsonLd({
+  title: entry.data.title,
+  description: entry.data.description,
+  lang,
+  path,
+  updatedDate: entry.data.updatedDate,
+  author: entry.data.author,
+  tags: entry.data.tags,
+});
+const crumbs = breadcrumbListJsonLd(topicBreadcrumbs(entry.data.title, path, lang));
+const jsonLd = jsonLdScript([article, crumbs]);
+
+const allModules = await getAllModules();
+const relatedModules = entry.data.relatedModules
+  .map((id) => allModules.find((m) => m.id === id))
+  .filter((m): m is NonNullable<typeof m> => Boolean(m));
+
+const allUseCases = await getAllUseCases();
+const relatedUseCases = entry.data.relatedUseCases
+  .map((slug) => allUseCases.find((uc) => uc.slug === slug))
+  .filter((uc): uc is NonNullable<typeof uc> => Boolean(uc));
+
+const allSkills = await getAllSkills();
+const relatedSkills = entry.data.relatedSkills
+  .map((slug) => allSkills.find((s) => s.slug === slug))
+  .filter((s): s is NonNullable<typeof s> => Boolean(s));
+
+const breakdown = entry.data.scoreBreakdown;
+const scoreRows = [
+  { key: "frequency", label: lang === "no" ? "Uavhengige kilder" : "Independent sources", value: breakdown.frequency },
+  { key: "recency", label: lang === "no" ? "Ferskhet" : "Recency", value: breakdown.recency },
+  { key: "engagement", label: lang === "no" ? "Oppmerksomhet" : "Engagement", value: breakdown.engagement },
+  { key: "gap", label: lang === "no" ? "Udekket her" : "Not yet covered", value: breakdown.gap },
+] as const;
+---
+
+<Base
+  lang={lang}
+  title={`${entry.data.title} — Claude Code Learn`}
+  description={entry.data.description}
+  ogType="article"
+  availableLocales={availableLocales}
+>
+  <Fragment slot="head">
+    <Fragment set:html={jsonLd} />
+  </Fragment>
+
+  <main class="topic">
+    <nav class="topic__breadcrumb" aria-label="Breadcrumb">
+      <a href={`/${lang}/`}>Claude Code Learn</a>
+      <span aria-hidden="true">/</span>
+      <a href={topicIndexPath(lang)}>{lang === "no" ? "Innsikt" : "Insights"}</a>
+      <span aria-hidden="true">/</span>
+      <span aria-current="page">{entry.data.title}</span>
+    </nav>
+
+    <div class="topic__layout">
+      <article class="topic__article">
+        <header class="topic__header">
+          <div class="topic__meta">
+            <span class={`topic__trend topic__trend--${entry.data.trendScore >= 0.8 ? "strong" : entry.data.trendScore >= 0.6 ? "emerging" : "new"}`}>
+              {trendLabel(entry.data.trendScore, lang)}
+            </span>
+            <span class="topic__discovered">
+              {lang === "no" ? "Oppdaget" : "Discovered"} {formatDate(new Date(entry.data.discoveredAt), lang)}
+            </span>
+          </div>
+          <h1 class="topic__title">{entry.data.title}</h1>
+          <p class="topic__updated">
+            {lang === "no" ? "Oppdatert" : "Updated"} {formatDate(new Date(entry.data.updatedDate), lang)}
+          </p>
+          {entry.data.tags.length > 0 && (
+            <ul class="topic__tags">
+              {entry.data.tags.map((tag) => (
+                <li class="topic__tag">{tag}</li>
+              ))}
+            </ul>
+          )}
+        </header>
+
+        <div class="topic__body">
+          <Content />
+        </div>
+
+        {(relatedModules.length > 0 || relatedUseCases.length > 0 || relatedSkills.length > 0) && (
+          <section class="topic__related" aria-label={lang === "no" ? "Relatert" : "Related"}>
+            <p class="topic__related-label">{lang === "no" ? "Gå videre" : "Go further"}</p>
+            <ul class="topic__related-list">
+              {relatedModules.map((m) => (
+                <li><a href={`/${lang}/learn/${m.id}/`}>{m.meta.title[lang]}</a></li>
+              ))}
+              {relatedUseCases.map((uc) => (
+                <li><a href={useCasePath(uc.slug, lang)}>{useCaseForLocale(uc, lang)?.data.title}</a></li>
+              ))}
+              {relatedSkills.map((s) => (
+                <li><a href={`/${lang}/skills/${s.slug}/`}>{s.meta.title[lang]}</a></li>
+              ))}
+            </ul>
+          </section>
+        )}
+
+        <p class="topic__back">
+          <a href={topicIndexPath(lang)}>&larr; {lang === "no" ? "Alle innsikter" : "All insights"}</a>
+        </p>
+      </article>
+
+      <aside class="topic__panel" aria-label={lang === "no" ? "Hvorfor dette nå" : "Why this now"}>
+        <section class="topic__panel-block">
+          <h2>{lang === "no" ? "Trendvurdering" : "Trend score"}</h2>
+          <p class="topic__panel-note">
+            {lang === "no"
+              ? "Beregnet automatisk, ikke skjønnsmessig — vekten under er hvordan."
+              : "Computed automatically, not a judgment call — the weights below are how."}
+          </p>
+          <ul class="topic__score">
+            {scoreRows.map((row) => (
+              <li>
+                <span class="topic__score-label">{row.label}</span>
+                <meter min="0" max="1" value={row.value}>{row.value}</meter>
+                <span class="topic__score-value">{Math.round(row.value * 100)}%</span>
+              </li>
+            ))}
+          </ul>
+          <p class="topic__score-total">{lang === "no" ? "Samlet score" : "Overall score"}: <strong>{Math.round(entry.data.trendScore * 100)}%</strong></p>
+        </section>
+      </aside>
+    </div>
+  </main>
+</Base>
+
+<style>
+  .topic {
+    max-width: 72rem;
+    margin: 0 auto;
+    padding: var(--space-8) var(--space-6) var(--space-16);
+  }
+  .topic__breadcrumb {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    margin-bottom: var(--space-8);
+    font-size: 0.8125rem;
+    color: var(--fg-muted);
+  }
+  .topic__breadcrumb a {
+    color: var(--fg-muted);
+  }
+  .topic__layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 18rem;
+    gap: var(--space-10);
+    align-items: start;
+  }
+  @media (max-width: 860px) {
+    .topic__layout {
+      grid-template-columns: 1fr;
+    }
+  }
+  .topic__header {
+    margin-bottom: var(--space-8);
+    padding-bottom: var(--space-5);
+    border-bottom: 1px solid var(--border);
+  }
+  .topic__meta {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    margin-bottom: var(--space-4);
+    flex-wrap: wrap;
+  }
+  .topic__trend {
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 0.15rem 0.6rem;
+    border-radius: var(--radius-full);
+  }
+  .topic__trend--strong {
+    background: color-mix(in srgb, var(--err) 15%, transparent);
+    color: var(--err);
+  }
+  .topic__trend--emerging {
+    background: color-mix(in srgb, var(--warn) 15%, transparent);
+    color: var(--warn);
+  }
+  .topic__trend--new {
+    background: color-mix(in srgb, var(--accent) 15%, transparent);
+    color: var(--accent);
+  }
+  .topic__discovered {
+    font-size: 0.8125rem;
+    color: var(--fg-muted);
+    font-family: var(--font-mono);
+  }
+  .topic__title {
+    font-size: clamp(1.75rem, 4vw, 2.5rem);
+    line-height: 1.15;
+    margin: 0 0 var(--space-3);
+  }
+  .topic__updated {
+    margin: 0 0 var(--space-3);
+    color: var(--fg-muted);
+    font-size: 0.8125rem;
+    font-family: var(--font-mono);
+  }
+  .topic__tags {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    margin: 0;
+    padding: 0;
+  }
+  .topic__tag {
+    font-size: 0.75rem;
+    color: var(--fg-muted);
+    background: var(--bg-elev);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-full);
+    padding: 0.1rem 0.6rem;
+  }
+  .topic__body :global(h2) {
+    margin-top: var(--space-8);
+    font-size: 1.375rem;
+  }
+  .topic__body :global(p) {
+    line-height: 1.7;
+    margin: 0 0 var(--space-4);
+  }
+  .topic__body :global(pre) {
+    background: var(--bg-elev);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: var(--space-4);
+    overflow-x: auto;
+  }
+  .topic__body :global(code) {
+    font-family: var(--font-mono);
+  }
+  .topic__body :global(:not(pre) > code) {
+    background: var(--bg-elev);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 0.1rem 0.4rem;
+    font-size: 0.875em;
+    color: var(--accent);
+  }
+  .topic__body :global(ul),
+  .topic__body :global(ol) {
+    line-height: 1.7;
+  }
+  .topic__related {
+    margin-top: var(--space-8);
+    padding-top: var(--space-5);
+    border-top: 1px solid var(--border);
+  }
+  .topic__related-label {
+    margin: 0 0 var(--space-2);
+    color: var(--fg-muted);
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+  .topic__related-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+  }
+  .topic__related-list a {
+    display: inline-block;
+    font-size: 0.8125rem;
+    color: var(--accent);
+    background: var(--bg-elev);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-full);
+    padding: 0.25rem 0.75rem;
+    text-decoration: none;
+  }
+  .topic__related-list a:hover {
+    border-color: var(--accent);
+  }
+  .topic__back {
+    margin: var(--space-10) 0 0;
+  }
+  .topic__back a {
+    color: var(--accent);
+    text-decoration: none;
+    font-weight: 600;
+  }
+  .topic__back a:hover {
+    text-decoration: underline;
+  }
+  .topic__panel {
+    position: sticky;
+    top: var(--space-6);
+    padding: var(--space-5);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    background: var(--bg-elev);
+  }
+  .topic__panel-block h2 {
+    margin: 0 0 var(--space-2);
+    font-size: 0.8125rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--fg-muted);
+  }
+  .topic__panel-note {
+    margin: 0 0 var(--space-4);
+    font-size: 0.8125rem;
+    color: var(--fg-muted);
+    line-height: 1.5;
+  }
+  .topic__score {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+  .topic__score li {
+    display: grid;
+    grid-template-columns: 1fr auto auto;
+    align-items: center;
+    gap: var(--space-2);
+    font-size: 0.8125rem;
+  }
+  .topic__score meter {
+    width: 4.5rem;
+  }
+  .topic__score-value {
+    color: var(--fg-muted);
+    font-variant-numeric: tabular-nums;
+    min-width: 2.5rem;
+    text-align: right;
+  }
+  .topic__score-total {
+    margin: var(--space-4) 0 0;
+    padding-top: var(--space-3);
+    border-top: 1px solid var(--border);
+    font-size: 0.875rem;
+  }
+</style>
