@@ -76,10 +76,21 @@ function missingRequiredHeadings(source: string, locale: "en" | "no"): string[] 
   return REQUIRED_HEADINGS[locale].filter((phrase) => !text.includes(phrase));
 }
 
-/** Strips whatever frontmatter the model produced — the real one is always rebuilt from code-controlled data. */
+/**
+ * Strips whatever frontmatter the model produced — the real one is always
+ * rebuilt from code-controlled data. Defensive: observed in practice that the
+ * model sometimes leaves a stray extra `---` line right after its own
+ * frontmatter closes (a leftover delimiter or an unwanted thematic break),
+ * which would otherwise render as bare horizontal rules above the H1 — so
+ * strip any leading standalone `---` lines too, not just the first block.
+ */
 function bodyOnly(mdx: string): string {
   const match = mdx.match(/^---\n[\s\S]*?\n---\n?([\s\S]*)$/);
-  return (match ? match[1] : mdx).trimStart();
+  let body = (match ? match[1] : mdx).trimStart();
+  while (/^---\s*\n/.test(body)) {
+    body = body.replace(/^---\s*\n/, "").trimStart();
+  }
+  return body;
 }
 
 interface GeneratedArticle {
@@ -114,8 +125,8 @@ const ARTICLE_TOOL = {
       related_use_cases: { type: "array", items: { type: "string" }, description: "Existing use-case slugs this relates to, empty if none." },
       related_skills: { type: "array", items: { type: "string" }, description: "Existing skill slugs this relates to, empty if none." },
       sources: { type: "array", items: { type: "string" }, description: "URLs actually used/cited while writing, from the provided source excerpts only." },
-      en_mdx: { type: "string", description: "Full en.mdx content including frontmatter --- and all 6 required sections." },
-      no_mdx: { type: "string", description: "Full no.mdx content including frontmatter --- and all 6 required sections." },
+      en_mdx: { type: "string", description: "The article body only, starting with the H1 heading, then all 6 required sections. Do NOT include any frontmatter or '---' delimiter lines — those are added separately." },
+      no_mdx: { type: "string", description: "The article body only, starting with the H1 heading, then all 6 required sections. Do NOT include any frontmatter or '---' delimiter lines — those are added separately." },
     },
     required: [
       "slug", "title_en", "title_no", "description_en", "description_no", "tags",
