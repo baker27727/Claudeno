@@ -1,27 +1,30 @@
-slug: pdf
+slug: "pdf"
 title:
   en: "PDF skill for Claude Code"
   no: "PDF-skill for Claude Code"
 summary:
-  en: "Work with PDF files inside Claude Code: extract text, merge, split, OCR, and more."
-  no: "Jobb med PDF-filer inne i Claude Code: trekk ut tekst, slå sammen, del, OCR og mer."
-categories: [documents]
+  en: "Work with PDF files inside Claude Code: extract text, merge, split, OCR,
+    and more."
+  no: "Jobb med PDF-filer inne i Claude Code: trekk ut tekst, slå sammen, del, OCR
+    og mer."
+categories:
+  - "documents"
 source:
   repo: "anthropics/skills"
   path: "skills/pdf/SKILL.md"
   license: "Proprietary. LICENSE.txt has complete terms"
 install:
   command: "npx skills add anthropics/skills/pdf"
-maturity: official
-level: beginner
+maturity: "official"
+level: "beginner"
 worksWithout: false
 permissions:
-  - file-read
-  - bash
+  - "file-read"
+  - "bash"
 relatedSkills: []
 relatedModules:
-  - getting-started
-lastVerified: "2026-07-11"
+  - "getting-started"
+lastVerified: "2026-07-12"
 verifiedVersion: "2.1.207"
 rubric:
   docs: 5
