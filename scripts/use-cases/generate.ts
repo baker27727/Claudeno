@@ -44,11 +44,13 @@ const RESULT_TOOL = {
   description: "Record the structured content update plan derived from the researched sources.",
   input_schema: {
     type: "object",
+    additionalProperties: false,
     properties: {
       updates: {
         type: "array",
         items: {
           type: "object",
+          additionalProperties: false,
           properties: {
             slug: { type: "string" },
             profession: { type: "string" },
@@ -65,6 +67,7 @@ const RESULT_TOOL = {
         type: "array",
         items: {
           type: "object",
+          additionalProperties: false,
           properties: {
             slug: { type: "string" },
             profession: { type: "string" },
@@ -105,7 +108,23 @@ async function callClaude(prompt: string): Promise<GenerationPlan> {
   const data = (await res.json()) as { content: Array<{ type: string; input?: unknown }> };
   const toolUse = data.content.find((block) => block.type === "tool_use");
   if (!toolUse?.input) throw new Error("Claude API did not return a tool_use block");
-  return toolUse.input as GenerationPlan;
+  return normalizePlan(toolUse.input);
+}
+
+/**
+ * The tool schema marks "updates" and "new_use_cases" as required, but tool
+ * schema `required` is not always enforced strictly on the returned JSON —
+ * a run on 2026-07-13 crashed with "plan.new_use_cases is not iterable"
+ * because the field came back missing. Coerce both to arrays defensively
+ * instead of trusting a raw type assertion, same principle applied to the
+ * newer skills/topics pipelines.
+ */
+function normalizePlan(raw: unknown): GenerationPlan {
+  const obj = (raw && typeof raw === "object" ? raw : {}) as Partial<GenerationPlan>;
+  return {
+    updates: Array.isArray(obj.updates) ? obj.updates : [],
+    new_use_cases: Array.isArray(obj.new_use_cases) ? obj.new_use_cases : [],
+  };
 }
 
 function buildPrompt(
