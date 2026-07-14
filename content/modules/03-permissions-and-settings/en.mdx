@@ -76,3 +76,11 @@ Starting in version 2.1.200, the "default" permission mode has been renamed to "
 ## What's new in v2.1.207
 
 Auto mode is now available by default on Bedrock, Vertex AI, and Foundry without requiring the `CLAUDE_CODE_ENABLE_AUTO_MODE` opt-in. You can disable it using the `disableAutoMode` setting. Note that auto mode no longer reads from `.claude/settings.local.json` (repo-resident); configure it in `~/.claude/settings.json` instead. Plugin option values (`pluginConfigs`) are also no longer read from project-level settings—use user settings, `--settings`, or managed settings.
+
+## What's new in v2.1.209
+
+New accessibility option: screen reader mode provides opt-in plain-text rendering for screen reader users. Enable it by running `claude --ax-screen-reader`, setting `CLAUDE_AX_SCREEN_READER=1` in your environment, or adding `"axScreenReader": true` to your settings.
+
+New setting `vimInsertModeRemaps`: configure two-key insert-mode sequences like `jj` to map to Escape in vim mode.
+
+New environment variable `CLAUDE_CODE_PROCESS_WRAPPER`: corporate launchers can now wrap every Claude Code self-spawn by setting this to a required wrapper executable. The agent view and background service honor this wrapper.

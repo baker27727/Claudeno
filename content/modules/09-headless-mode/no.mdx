@@ -95,3 +95,7 @@ det stille.
 - `--continue` kjeder sammen ikke-interaktive kall til et flertrinns skript.
 - `--bare` hopper over lokale hooks/skills/plugins/MCP/minne for en reproduserbar
   CI-kjøring.
+
+## Nytt i v2.1.209
+
+Fikset bakgrunnsoktor som ble gitt navn automatisk ved å godta en plan som nå viser det navnet på agentvisningsraden. Fikset bakgrunnsokteer som gikk inn i en git worktree som gjenoppta blankt etter en kald åpning fra agentlisten. Bakgrunnsagenter oppgraderer nå til en ny versjon i bakgrunnen rett etter en Claude Code-oppdatering, i stedet for å betale en langsom stale-session-oppgradering når du legger til. Fullførte bakgrunnsagenter forblir nå oppført i `/tasks` til opprydding i stedet for å forsvinne øyeblikkelig når de er ferdige. Tilknytting til en stoppet bakgrunnsagent viser nå transkripsjonens umiddelbart mens økten varmes opp, i stedet for en tom "Økten starter"-skjerm.

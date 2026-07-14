@@ -80,3 +80,7 @@ MCP connects Claude to external systems; skills teach it workflows that often *u
 ## What's new in v2.1.206
 
 MCP servers configured via `--mcp-config` or `.mcp.json` now properly respect per-server `request_timeout_ms` settings, fixing timeout issues where long-running MCP tool calls would previously time out at the 60-second default in fresh sessions. OAuth MCP servers no longer require manual re-authentication after a single failed token refresh. Additionally, a critical fix addresses `--permission-prompt-tool` pointing at an MCP server crashing with "MCP tool not found" on cold start before the server finishes connecting. The reserved names "Claude Browser" and "Claude Preview" have been reserved for system use; user-configured MCP servers can no longer register under either name.
+
+## What's new in v2.1.209
+
+MCP servers configured with an empty URL now show as "not configured" in `/mcp` instead of a config error. Fixed OAuth MCP servers requiring manual re-authentication after a single failed token refresh — they now handle token refresh failures more gracefully. Fixed `--permission-prompt-tool` pointing at an MCP server crashing with "MCP tool not found" on cold start before the server finishes connecting.

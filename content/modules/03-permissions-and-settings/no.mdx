@@ -78,3 +78,11 @@ Fra versjon 2.1.200 er "default"-tillatelsesmodus omdøpt til "Manual" i hele CL
 ## Nytt i v2.1.207
 
 Automodus er nå tilgjengelig som standard på Bedrock, Vertex AI og Foundry uten å kreve `CLAUDE_CODE_ENABLE_AUTO_MODE`-godkjenning. Du kan deaktivere det med innstillingen `disableAutoMode`. Merk at automodus ikke lenger leser fra `.claude/settings.local.json` (kodelager-resident); konfigurer det i `~/.claude/settings.json` i stedet. Plugin-alternativverdier (`pluginConfigs`) leses heller ikke lenger fra prosjektnivå-innstillinger—bruk brukerinnstillinger, `--settings` eller administrerte innstillinger.
+
+## Nytt i v2.1.209
+
+Nytt tilgjengelighetalternativ: skjermleseromodus gir opt-in plain-text-rendering for brukere av skjermlesere. Aktiver det ved å kjøre `claude --ax-screen-reader`, sette `CLAUDE_AX_SCREEN_READER=1` i miljøet ditt, eller legge til `"axScreenReader": true` i innstillingene dine.
+
+Ny innstilling `vimInsertModeRemaps`: konfigurer to-tegns insert-modus-sekvenser som `jj` for å kartlegge til Escape i vim-modus.
+
+Ny miljøvariabel `CLAUDE_CODE_PROCESS_WRAPPER`: bedriftslancere kan nå pakke hver Claude Code-selvsending ved å sette denne til en nødvendig innpakking-executable. Agentvisningen og bakgrunnstjenesten respekterer denne innpakningen.

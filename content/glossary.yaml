@@ -67,3 +67,18 @@
   en: "disableAutoMode"
   no: "disableAutoMode"
   note: "Settings key to disable auto mode on Bedrock, Vertex AI, and Foundry."
+- id: "axscreenreader"
+  en: "axScreenReader"
+  no: "axScreenReader"
+  note: "Settings key for screen reader mode; kept in English as a configuration
+    identifier"
+- id: "viminsertmoderemaps"
+  en: "vimInsertModeRemaps"
+  no: "vimInsertModeRemaps"
+  note: "Settings key for vim insert mode key sequence mapping; kept in English as
+    a configuration identifier"
+- id: "claude_code_process_wrapper"
+  en: "CLAUDE_CODE_PROCESS_WRAPPER"
+  no: "CLAUDE_CODE_PROCESS_WRAPPER"
+  note: "Environment variable for corporate launcher wrapping; kept in English as
+    an environment variable identifier"
