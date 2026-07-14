@@ -1,0 +1,142 @@
+[
+  {
+    "topic": "Using adaptive thinking and extended thinking modes effectively in Claude Fable 5",
+    "status": "candidate",
+    "score": {
+      "frequency": 0.25,
+      "recency": 0,
+      "engagement": 0.5,
+      "gap": 1,
+      "total": 0.363
+    },
+    "matchedSources": [
+      "anthropic_changelog"
+    ],
+    "whyItMatters": "Claude Fable 5 introduces always-on adaptive thinking as the only thinking mode, replacing manual extended thinking budgets. Developers need guidance on leveraging this new default behavior and understanding the behavioral changes when migrating from earlier models.",
+    "firstSeen": "2026-07-14T07:11:43.624Z",
+    "lastSeen": "2026-07-14T07:11:43.624Z"
+  },
+  {
+    "topic": "Managing context efficiently in Claude Code with CLAUDE.md and auto memory",
+    "status": "candidate",
+    "score": {
+      "frequency": 0.25,
+      "recency": 0.979,
+      "engagement": 0.5,
+      "gap": 1,
+      "total": 0.607
+    },
+    "matchedSources": [
+      "docs_map"
+    ],
+    "whyItMatters": "Claude Code's context window management is critical for long sessions. The docs show multiple strategies (CLAUDE.md files, auto memory, subagents, rules organization) that users need to understand and combine effectively to avoid context exhaustion.",
+    "firstSeen": "2026-07-14T07:11:43.624Z",
+    "lastSeen": "2026-07-14T07:11:43.624Z"
+  },
+  {
+    "topic": "Setting up subagents in Claude Code for delegation and investigation",
+    "status": "candidate",
+    "score": {
+      "frequency": 0.75,
+      "recency": 0.907,
+      "engagement": 0.223,
+      "gap": 1,
+      "total": 0.695
+    },
+    "matchedSources": [
+      "docs_map",
+      "github_search",
+      "hn_search"
+    ],
+    "whyItMatters": "The documentation and GitHub activity show growing interest in using subagents to partition work and reduce context pressure. Multiple projects demonstrate this pattern, suggesting it's a valuable technique worth detailed explanation.",
+    "firstSeen": "2026-07-14T07:11:43.624Z",
+    "lastSeen": "2026-07-14T07:11:43.624Z"
+  },
+  {
+    "topic": "Configuring permission modes (plan, auto, dontAsk) for different Claude Code workflows",
+    "status": "candidate",
+    "score": {
+      "frequency": 0.25,
+      "recency": 0.979,
+      "engagement": 0.5,
+      "gap": 1,
+      "total": 0.607
+    },
+    "matchedSources": [
+      "docs_map"
+    ],
+    "whyItMatters": "Claude Code offers multiple permission modes with different trade-offs between safety and autonomy. Developers need clear guidance on choosing the right mode and configuring classifiers/boundaries for their specific use case.",
+    "firstSeen": "2026-07-14T07:11:43.624Z",
+    "lastSeen": "2026-07-14T07:11:43.624Z"
+  },
+  {
+    "topic": "Using Claude Code's scheduled deployments and routines for CI/CD workflows",
+    "status": "candidate",
+    "score": {
+      "frequency": 0.5,
+      "recency": 0,
+      "engagement": 0.5,
+      "gap": 1,
+      "total": 0.45
+    },
+    "matchedSources": [
+      "anthropic_changelog",
+      "docs_map"
+    ],
+    "whyItMatters": "Claude Managed Agents now supports scheduled deployments and routines with GitHub/API triggers. This enables automated code review, testing, and fix workflows—a key pattern for integrating Claude into DevOps pipelines.",
+    "firstSeen": "2026-07-14T07:11:43.624Z",
+    "lastSeen": "2026-07-14T07:11:43.624Z"
+  },
+  {
+    "topic": "Leveraging prompt caching in Claude Code to optimize latency and cost",
+    "status": "candidate",
+    "score": {
+      "frequency": 0.25,
+      "recency": 0.979,
+      "engagement": 0.5,
+      "gap": 1,
+      "total": 0.607
+    },
+    "matchedSources": [
+      "docs_map"
+    ],
+    "whyItMatters": "Claude Code's prompt caching documentation shows actions that invalidate vs. preserve the cache (e.g., file edits preserve it, model switches don't). Understanding these rules is essential for long-running sessions where cache hits save significant cost and latency.",
+    "firstSeen": "2026-07-14T07:11:43.624Z",
+    "lastSeen": "2026-07-14T07:11:43.624Z"
+  },
+  {
+    "topic": "Integrating MCP servers and custom skills into Claude Code for domain-specific tools",
+    "status": "candidate",
+    "score": {
+      "frequency": 0.5,
+      "recency": 0.979,
+      "engagement": 0.223,
+      "gap": 1,
+      "total": 0.626
+    },
+    "matchedSources": [
+      "docs_map",
+      "github_search"
+    ],
+    "whyItMatters": "The documentation and GitHub projects show extensive use of MCP servers, custom skills, and plugins to extend Claude Code's capabilities. A how-to guide on connecting external tools and building custom integrations would help teams maximize Claude's reach.",
+    "firstSeen": "2026-07-14T07:11:43.624Z",
+    "lastSeen": "2026-07-14T07:11:43.624Z"
+  },
+  {
+    "topic": "Handling refusals and fallback models when Claude declines requests",
+    "status": "candidate",
+    "score": {
+      "frequency": 0.25,
+      "recency": 0,
+      "engagement": 0.5,
+      "gap": 1,
+      "total": 0.363
+    },
+    "matchedSources": [
+      "anthropic_changelog"
+    ],
+    "whyItMatters": "Claude Fable 5 introduces refusal handling with stop_reason, stop_details categories, and an opt-in fallbacks parameter. Understanding how to detect and route different classes of refusal is important for building resilient applications.",
+    "firstSeen": "2026-07-14T07:11:43.624Z",
+    "lastSeen": "2026-07-14T07:11:43.624Z"
+  }
+]
