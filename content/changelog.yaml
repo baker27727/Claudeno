@@ -1,3 +1,18 @@
+- id: "2.1.210"
+  version: "2.1.210"
+  date: "2026-07-15"
+  entry:
+    en: "Claude Code 2.1.210 adds a live elapsed-time counter to tool summaries for
+      better visibility of long-running operations, introduces startup warnings
+      for deprecated permission rules, and fixes numerous issues including
+      subagent isolation, session crashes, permission handling, and background
+      worker stability."
+    no: "Claude Code 2.1.210 legger til en live telleren for forløpt tid i
+      verktøysammendrag for bedre synlighet av langvarige operasjoner,
+      introduserer oppstartadvarsler for foreldet tillatelsesamfunger, og fikser
+      mange problemer inkludert underagent-isolering, øktkrasj,
+      tillatelsesbhandling og stabilitet for bakgrunnsarbeidere."
+  sources: []
 - id: "2.1.209"
   version: "2.1.209"
   date: "2026-07-14"

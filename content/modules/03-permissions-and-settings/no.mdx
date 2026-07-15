@@ -86,3 +86,7 @@ Nytt tilgjengelighetalternativ: skjermleseromodus gir opt-in plain-text-renderin
 Ny innstilling `vimInsertModeRemaps`: konfigurer to-tegns insert-modus-sekvenser som `jj` for å kartlegge til Escape i vim-modus.
 
 Ny miljøvariabel `CLAUDE_CODE_PROCESS_WRAPPER`: bedriftslancere kan nå pakke hver Claude Code-selvsending ved å sette denne til en nødvendig innpakking-executable. Agentvisningen og bakgrunnstjenesten respekterer denne innpakningen.
+
+## Nytt i v2.1.210
+
+Claude Code 2.1.210 legger til oppstartadvarsler for `Write(path)`, `NotebookEdit(path)` og `Glob(path)` tillatelsesamfunger — den anbefalte tilnærmingen er å bruke `Edit(path)` eller `Read(path)` i stedet for mer presis tilgangskontroll.

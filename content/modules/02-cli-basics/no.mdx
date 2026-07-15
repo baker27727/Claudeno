@@ -90,3 +90,7 @@ sammenligne modellatferd på samme oppgave uten å endre den globale preferansen
 ## Nytt i v2.1.204
 
 **Hva er nytt (2.1.204):** Denne utgivelsen er en målrettet rettelse for hodeløse økter: hook-hendelser (som `SessionStart`) strømmer nå riktig i stedet for å stoppe opp, noe som forhindrer at eksterne arbeidsprosesser blir avsluttet som inaktive midt i en hook.
+
+## Nytt i v2.1.210
+
+Claude Code 2.1.210 viser nå en live telleren for forløpt tid på den kollapset verktøysammendrag-linjen for langvarige verktøykall, slik at de synlig teller ned i stedet for å virke stoppet. I tillegg er `claude attach`-kommandoen forbedret til å vente på at daemonen skal stabiliseres og anvende terminalendringer når attacheringen er fullført, noe som reduserer "job not found" eller "agent is still starting"-feil under økttransisjoner.

@@ -1,11 +1,47 @@
 # Upstream snapshot — Claude Code CHANGELOG
 
-Last observed version: 2.1.209
+Last observed version: 2.1.210
 
 > This file is maintained automatically by `scripts/watch-upstream.ts`.
 > It stores the last-seen upstream CHANGELOG so daily diffs can be computed.
 
 # Changelog
+
+## 2.1.210
+
+- Added a live elapsed-time counter to the collapsed tool summary line so long-running tool calls visibly tick instead of looking stuck
+- Added a startup warning for `Write(path)`, `NotebookEdit(path)`, and `Glob(path)` permission rules — use `Edit(path)` or `Read(path)` instead
+- Fixed `isolation: 'worktree'` subagents being able to run git-mutating commands against the main repo checkout instead of their own isolated worktree
+- Fixed the `ultracode` keyword opt-in firing on non-human-originated input such as webhook payloads and relayed PR comments
+- Fixed a rendered text fragment leaking into crash telemetry when a UI component returned content outside a styled text element
+- Fixed paste markers leaking into external editors opened from Claude Code, which could appear as stray È/É characters around pasted text
+- Fixed `claude attach` sometimes failing with "job not found" or "agent is still starting" errors during session transitions — attach now waits for the daemon to settle, and terminal resizes during a slow attach are applied once it completes
+- Fixed a session crash when a tool's result renderer returned a numeric bigint value or plain text instead of a UI element
+- Fixed a hook callback timeout being misreported to the model as a user rejection, which made unattended sessions stop and wait
+- Fixed Claude assuming a `cd` took effect after its command was moved to the background; the tool result now states the working directory is unchanged
+- Fixed plugin-provided MCP servers being torn down when MCP servers are re-synced mid-session
+- Fixed plan approvals without edits being labeled "(edited by user)" and overwriting the plan file with a stale snapshot
+- Fixed `/doctor` skipping its auto-mode-default proposal on Bedrock, Vertex, and Foundry, where auto mode no longer needs an opt-in
+- Fixed Grep content mode claiming "No matches found" when paginating past the end of results
+- Fixed unmatched `$1`/`$2` positional placeholders in skills and commands being silently stripped; they are now preserved verbatim
+- Fixed plugin cache writes leaving temp files behind on failure and failing on locked-file renames on Windows and network filesystems
+- Fixed background workers crash-looping when a client resets its connection to the background service
+- Fixed `claude agents --effort ultracode` not reaching dispatched sessions; the value was silently dropped
+- Fixed pressing ← to open the agents view dropping the task tracker when returning to the session
+- Fixed the agents dashboard retaining pasted images from abandoned reply drafts after their session was deleted
+- Fixed killed background sessions leaving a permanent `git worktree lock` behind; the periodic sweep now releases locks whose owning process is gone
+- Fixed SDK MCP servers registered via an `initialize` control request waiting until the next turn to start connecting
+- Fixed returning to the agents view from a session leaving overlapping ghost frames with `CLAUDE_CODE_DISABLE_ALTERNATE_SCREEN=1`
+- Fixed late-appearing `.claude/*` symlinks not being reconciled into the sandbox deny-write list
+- Hardened the Agent tool against indirect prompt injection via content a subagent read
+- Improved the Bash/PowerShell tool message when a command hits its timeout and is auto-backgrounded, so the model can distinguish a hang from an explicit background request
+- Improved auto mode: the permission classifier now defaults to Sonnet 5 for external sessions, validated on the session's first request and pinned for the session
+- Improved the bundled dataviz skill's chart color validation with perceptual OKLab color difference and recalibrated color-blindness thresholds
+- Memory writes that leave a MEMORY.md index over its read limit now produce an explicit error instead of silent truncation
+- Screen reader mode now announces permission mode changes aloud when cycling modes with Shift+Tab
+- The agents footer hint now shows how many background agents are waiting on your input, with a brief color emphasis when the count changes
+- Agent view: the session you pressed ← from stays visibly marked even after mouse hover or arrow keys move the selection
+- Fable temporarily shows as unavailable in the advisor picker while a server-side issue causing Fable advisor failures is fixed
 
 ## 2.1.209
 
@@ -67,37 +103,4 @@ Last observed version: 2.1.209
 - Fixed spurious prompt-injection warnings triggered by benign system-generated conversation updates
 - Fixed the auto-updater overwriting a custom launcher script or symlink at `~/.local/bin/claude` on every release; `/doctor` now reports an externally managed launcher
 - Fixed compound commands with `cd` prompting for permission when the only output redirect was to `/dev/null`
-- Fixed the transcript jumping above the start of the answer when a response finishes streaming
-- Fixed `extensions.worktreeConfig` being left in the repo's `.git/config` (breaking go-git tools like `tea`) after the last `worktree.sparsePaths` worktree was removed
-- Fixed malformed bracket patterns in rules globs, skill paths, `.ignore`, and `.worktreeinclude` breaking file reads, file suggestions, and worktree creation
-- Fixed a crash loop in agent teams where a malformed teammate mailbox message caused repeated errors every second until the mailbox file was manually deleted
-- Fixed background sessions auto-named by accepting a plan not showing that name on their agent-view row
-- Fixed background sessions that entered a git worktree resuming blank after a cold reopen from the agent list
-- Fixed Remote Control task status updates being lost when the connection recovered from a network interruption or credential refresh
-- Fixed Remote Control sessions hosted by the desktop app not showing background agent and workflow progress on mobile and web
-- Fixed Deep research runs labeling every Fetch-phase agent "unknown" — chips now show the source hostname
-- Fixed Bedrock repeatedly requesting fresh AWS SSO credentials from IAM Identity Center on every API request
-- Improved agent view: pasting the same text again now expands the collapsed `[Pasted text #N]` placeholder instead of adding a second one
-- Improved agent view: blocked session peeks now lead with the question and show a worded staleness clock (`waiting 3m`) instead of the same timestamp twice
-- Changed Bedrock, Vertex, and Claude Platform on AWS to default to Claude Opus 4.8
-- Changed auto mode to no longer read `autoMode` from `.claude/settings.local.json` (repo-resident); use `~/.claude/settings.json` instead
-- Fixed an indefinite hang on Windows when AWS credential resolution stalls (e.g. a stuck `credential_process`): the 60-second stall guard now fires instead of waiting forever.
-- Plugin hooks/monitors/MCP headersHelper: `${user_config.*}` in shell-form commands is now rejected (shell-injection fix). Hooks: use exec form (`args` array) or `$CLAUDE_PLUGIN_OPTION_<KEY>`; monitors and headersHelper: read the value inside the script (config file or the server's `env` block).
-- Plugin option values (`pluginConfigs`) are no longer read from project-level `.claude/settings.json`; only user, `--settings`, and managed settings are honored
-- Fixed `/usage-credits` amount inputs silently stripping malformed values (e.g. a pasted timestamp) to digits; malformed amounts are now rejected with an error, and amounts over $1,000 require a typed confirmation
-
-## 2.1.206
-
-- Added directory path suggestions to `/cd`, matching `/add-dir` behavior
-- Added a `/doctor` check that proposes trimming checked-in `CLAUDE.md` files by cutting content Claude could derive from the codebase
-- `/commit-push-pr` now auto-allows `git push` to the repo's configured push remote (`remote.pushDefault`, or the sole remote when only one is configured) in addition to `origin`
-- Gateway: `/login` now supports Anthropic-operated public gateway endpoints
-- `EnterWorktree` now asks for confirmation before entering a git worktree outside the project's `.claude/worktrees/` directory
-- Background agents now upgrade to a new version in the background right after a Claude Code update, instead of paying a slow stale-session upgrade when you attach
-- Fixed an expired login failing every model with a misleading "There's an issue with the selected model" error instead of prompting to run `/login`
-- Fixed `claude --resume` and `--continue` not responding to keyboard input on startup
-- Fixed MCP servers configured via `--mcp-config` or `.mcp.json` ignoring a per-server `request_timeout_ms`, which caused long-running MCP tool calls to time out at the 60s default in fresh sessions
-- Fixed `CLAUDE_CODE_EXTRA_BODY` being silently ignored by `claude agents` / `--bg` background workers; the shell-exported override now follows the dispatching session
-- Fixed OAuth MCP servers requiring manual re-authentication after a single failed token refresh
-- Fixed `--permission-prompt-tool` pointing at an MCP server crashing with "MCP tool not found" on cold start before the server finishes connecting
-- Fixed `/model` picker rows printing a price for a different mode
+- Fixed the transcript jumpin
