@@ -1,0 +1,87 @@
+---
+title: "DOCX Creation, Editing & Analysis"
+description: "Create, read, edit and manipulate Word (.docx) documents — generate new documents with docx-js, or unpack/edit/repack raw XML for tracked changes, comments, images and find-and-replace."
+slug: "docx"
+categories: ["documents", "automation"]
+level: "intermediate"
+license: "Proprietary. LICENSE.txt has complete terms"
+install_command: "npx skills add anthropics/skills/docx"
+works_without: false
+maturity: "experimental"
+permissions: ["bash", "file-read", "file-write"]
+related_skills: []
+related_modules: []
+---
+
+## What it does and why it exists
+
+A `.docx` file is just a ZIP archive of XML files. This skill teaches Claude how to work with that format reliably, in two directions:
+
+- **Creating new documents**: uses the `docx` npm package (docx-js) to programmatically build headers, footers, tables of contents, tables, images, footnotes, columns, and page-numbered layouts — then validates the result.
+- **Editing existing documents**: unpacks a `.docx` into raw XML, edits it directly (tracked changes, comments, find-and-replace, image swaps), and repacks it with auto-repair and validation.
+
+It exists because Word's XML schema is unforgiving — small mistakes (wrong element order, unicode bullets, missing `outlineLevel`, percentage-based table widths) silently break rendering in Word or Google Docs. The skill encodes the specific gotchas (page size defaults to A4, tables need dual widths, PageBreak must live inside a Paragraph, tracked-change paragraph deletion needs `<w:del/>` in `<w:pPr><w:rPr>`) so Claude avoids them by default.
+
+It also covers legacy `.doc` conversion, tracked-changes acceptance, PDF/image export, and text extraction via `pandoc`.
+
+## Try it now — TerminalSim
+
+```
+$ npx skills add anthropics/skills/docx
+Installed skill: docx
+
+$ python scripts/office/unpack.py quarterly-report.docx unpacked/
+Unpacked to unpacked/ (pretty-printed XML, smart quotes preserved)
+
+$ # ...edit unpacked/word/document.xml with tracked changes...
+
+$ python scripts/office/pack.py unpacked/ quarterly-report-edited.docx --original quarterly-report.docx
+Validating XML... OK
+Packed: quarterly-report-edited.docx
+
+$ python scripts/office/validate.py quarterly-report-edited.docx
+Validation passed.
+```
+
+## Install
+
+```
+npx skills add anthropics/skills/docx
+```
+
+Dependencies used by the helper scripts and workflows:
+
+- **pandoc** — text extraction, including tracked changes (`pandoc --track-changes=all doc.docx -o out.md`)
+- **docx** (npm) — `npm install -g docx`, required for creating new documents with docx-js
+- **LibreOffice** — `.doc` → `.docx` conversion and PDF export, via `scripts/office/soffice.py`
+- **Poppler** (`pdftoppm`) — converting PDF pages to images
+
+## Safety and permissions
+
+- Runs local Python scripts (`unpack.py`, `pack.py`, `validate.py`, `comment.py`, `accept_changes.py`, `soffice.py`) and Node (`docx` package) — requires **bash execution** and **file read/write** on the working directory.
+- No network access is required or used; all conversions happen locally via LibreOffice/pandoc/Poppler.
+- Editing existing documents works on unpacked copies (`unpacked/` directory) and repacks with `--original` reference, so the source file isn't modified in place unless you overwrite it yourself.
+- `pack.py` runs auto-repair and validation by default (durable IDs, whitespace preservation) — malformed XML or broken relationships will still fail and must be fixed manually.
+- Tracked changes/comments default to author "Claude" unless the user specifies another name — relevant when producing legally or organizationally attributable redlines.
+
+## Practical use cases
+
+- Generate a polished report, memo, letter, or template as a `.docx` with headings, TOC, tables, headers/footers and page numbers.
+- Insert or replace images in an existing Word document, including alt text.
+- Perform find-and-replace or apply tracked-changes edits (insertions/deletions) across a contract or draft.
+- Add threaded comments and replies to specific ranges of text.
+- Accept all tracked changes to produce a clean final document.
+- Convert legacy `.doc` files to `.docx`, or export a `.docx` to PDF/images for review.
+- Extract text (with or without tracked changes) from a `.docx` for downstream analysis.
+
+## Limitations
+
+- Not for PDFs, spreadsheets, Google Docs, or unrelated coding tasks — scope is strictly Word/.docx.
+- Creating documents requires Node and the `docx` npm package installed globally; editing requires Python and, for `.doc` conversion or PDF export, LibreOffice.
+- Auto-repair on packing fixes only specific known issues (durable IDs, missing `xml:space="preserve"`) — it does not fix malformed XML, invalid nesting, or missing relationships.
+- docx-js defaults to A4 page size and requires explicit US Letter dimensions; table widths must use DXA (not percentage) or rendering breaks in Google Docs.
+- Manual XML editing is required for tracked changes/comments; the skill explicitly discourages writing custom Python scripts for string replacement in favor of direct edits.
+
+## Sources
+
+- https://raw.githubusercontent.com/anthropics/skills/main/docx/SKILL.md

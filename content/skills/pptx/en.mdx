@@ -1,0 +1,84 @@
+---
+title: "PPTX — PowerPoint Creation & Editing"
+description: "Read, create, and edit .pptx presentations — extract text, work from templates, build decks from scratch with pptxgenjs, and apply a strict design and QA workflow."
+categories: ["documents", "writing-marketing"]
+license: "Proprietary. LICENSE.txt has complete terms"
+install_command: "npx skills add anthropics/skills/pptx"
+level: "intermediate"
+works_without: false
+permissions: ["bash", "file-read", "file-write"]
+related_skills: []
+related_modules: []
+maturity: "experimental"
+---
+
+## What it does and why it exists
+
+This skill teaches Claude a complete workflow for any task touching a `.pptx` file — whether reading, creating, or editing one. It covers three core paths:
+
+- **Reading**: extract text with `markitdown`, generate a visual thumbnail overview, or unpack the raw XML for inspection.
+- **Editing**: work from an existing template or reference deck — unpack, manipulate slides, edit content, clean, and repack.
+- **Creating from scratch**: use `pptxgenjs` when no template exists.
+
+Beyond mechanics, the skill embeds a detailed design system (color palettes, layout patterns, typography pairings, spacing rules) so generated decks avoid the "boring AI slide" look — and a mandatory QA loop (content check + visual inspection via rendered images, ideally with subagents) before declaring a deck finished. The skill triggers any time a `.pptx` file is input, output, or mentioned — even if the extracted content is just being reused elsewhere, like in an email.
+
+## Try it now — TerminalSim
+
+```
+$ npx skills add anthropics/skills/pptx
+Installed skill: pptx
+
+$ claude "Summarize the key points from quarterly-report.pptx"
+> Skill "pptx" activated (file extraction path)
+> Running: python -m markitdown quarterly-report.pptx
+> Extracted 14 slides of text — generating summary...
+
+$ claude "Turn this into a 8-slide pitch deck using our template.pptx"
+> Skill "pptx" activated (editing workflow)
+> Running: python scripts/thumbnail.py template.pptx
+> Running: python scripts/office/unpack.py template.pptx unpacked/
+> Editing slide XML, choosing "Ocean Gradient" palette for topic...
+> Packing → pitch-deck.pptx
+> Running QA: markitdown + placeholder grep + soffice render → slide images
+> Recommend reviewing rendered slides in a subagent before finalizing.
+```
+
+## Install
+
+```bash
+npx skills add anthropics/skills/pptx
+```
+
+Requires several external tools to function fully:
+
+```bash
+pip install "markitdown[pptx]"    # text extraction
+pip install Pillow                # thumbnail grids
+npm install -g pptxgenjs           # creating decks from scratch
+# LibreOffice (soffice) — PDF conversion, for visual QA
+# Poppler (pdftoppm)   — PDF to images, for visual QA
+```
+
+Editing and QA scripts (`thumbnail.py`, `unpack.py`, `soffice.py`) ship with the skill under `scripts/`.
+
+## Safety and permissions
+
+- **Executes local scripts and CLI tools** (`markitdown`, `python` helper scripts, `soffice`, `pdftoppm`) — review what commands Claude runs, especially `soffice --headless` conversions.
+- **Reads and writes files** in your project directory — unpacking a `.pptx` creates a working directory of raw XML; packing overwrites/creates output `.pptx` files. Back up originals before large edits.
+- No network access is required by the skill itself; all dependencies are installed once via pip/npm ahead of time.
+- Because unpacking exposes raw slide XML, treat that intermediate directory as sensitive if the presentation contains confidential content — clean it up after use.
+
+## Practical use cases
+
+- Extracting and summarizing text from a `.pptx` for a report or email, without opening PowerPoint.
+- Rebranding a company template into a new pitch deck with consistent colors, fonts, and layouts.
+- Generating a fully new slide deck from scratch (no template) for a talk or investor pitch.
+- Combining or splitting slide files, or updating speaker notes and comments across a deck.
+- Running a rigorous visual QA pass (via rendered slide images) to catch overlapping text, low-contrast elements, or leftover placeholder text before delivery.
+
+## Limitations
+
+- Requires several external dependencies (`markitdown`, `Pillow`, `pptxgenjs`, LibreOffice, Poppler) — not usable out of the box without setup.
+- Visual QA depends on rendering to PDF/images via LibreOffice and Poppler; without these, only content-level (text) QA is possible.
+- The design guidance (palettes, fonts, layouts) is prescriptive advice baked into the skill, not a guarantee of visual perfection — a manual review pass is still recommended.
+- Editing existing templates involves manipulating raw OOXML; complex or unusual template structures may require manual intervention beyond the scripted workflow.

@@ -1,0 +1,38 @@
+slug: "pptx"
+title:
+  en: "PPTX — PowerPoint Creation & Editing"
+  no: "PPTX — Lag og rediger PowerPoint"
+summary:
+  en: "Read, create, and edit .pptx presentations — extract text, work from
+    templates, build decks from scratch with pptxgenjs, and apply a strict
+    design and QA workflow."
+  no: "Les, lag og rediger .pptx-presentasjoner — hent ut tekst, jobb fra maler,
+    bygg presentasjoner fra bunnen med pptxgenjs, og følg en streng design- og
+    QA-prosess."
+categories:
+  - "documents"
+  - "writing-marketing"
+source:
+  repo: "anthropics/skills"
+  path: "skills/pptx/SKILL.md"
+  branch: "main"
+  license: "Proprietary. LICENSE.txt has complete terms"
+install:
+  command: "npx skills add anthropics/skills/pptx"
+maturity: "experimental"
+level: "intermediate"
+worksWithout: false
+permissions:
+  - "bash"
+  - "file-read"
+  - "file-write"
+relatedSkills: []
+relatedModules: []
+lastVerified: "2026-07-15"
+verifiedVersion: "2.1.209"
+rubric:
+  docs: 5
+  safety: 4
+  reliability: 4
+  focus: 5
+archived: false

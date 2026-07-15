@@ -1,0 +1,87 @@
+---
+title: "DOCX-oppretting, redigering og analyse"
+description: "Opprett, les, rediger og manipuler Word-dokumenter (.docx) — generer nye dokumenter med docx-js, eller pakk ut/rediger/pakk inn rå XML for sporede endringer, kommentarer, bilder og søk-og-erstatt."
+slug: "docx"
+categories: ["documents", "automation"]
+level: "intermediate"
+license: "Proprietary. LICENSE.txt has complete terms"
+install_command: "npx skills add anthropics/skills/docx"
+works_without: false
+maturity: "experimental"
+permissions: ["bash", "file-read", "file-write"]
+related_skills: []
+related_modules: []
+---
+
+## Hva den gjør og hvorfor den finnes
+
+En `.docx`-fil er bare et ZIP-arkiv med XML-filer. Denne ferdigheten lærer Claude å jobbe med formatet på en pålitelig måte, i to retninger:
+
+- **Opprette nye dokumenter**: bruker npm-pakken `docx` (docx-js) til å programmatisk bygge topptekster, bunntekster, innholdsfortegnelser, tabeller, bilder, fotnoter, spalter og sidenummererte oppsett — og validerer deretter resultatet.
+- **Redigere eksisterende dokumenter**: pakker ut en `.docx` til rå XML, redigerer den direkte (sporede endringer, kommentarer, søk-og-erstatt, bildeutskifting), og pakker den inn igjen med automatisk reparasjon og validering.
+
+Den finnes fordi Words XML-skjema er lite tilgivende — små feil (feil elementrekkefølge, unicode-punkttegn, manglende `outlineLevel`, prosentbaserte tabellbredder) ødelegger stille visningen i Word eller Google Docs. Ferdigheten dokumenterer de konkrete fallgruvene (sidestørrelse er A4 som standard, tabeller trenger doble breddeangivelser, PageBreak må ligge inne i et Paragraph, sletting av avsnitt med sporede endringer krever `<w:del/>` i `<w:pPr><w:rPr>`) slik at Claude unngår dem som standard.
+
+Den dekker også konvertering av gamle `.doc`-filer, godkjenning av sporede endringer, PDF/bilde-eksport og tekstuttrekk via `pandoc`.
+
+## Prøv den nå — TerminalSim
+
+```
+$ npx skills add anthropics/skills/docx
+Installed skill: docx
+
+$ python scripts/office/unpack.py kvartalsrapport.docx unpacked/
+Unpacked to unpacked/ (pretty-printed XML, smart quotes preserved)
+
+$ # ...rediger unpacked/word/document.xml med sporede endringer...
+
+$ python scripts/office/pack.py unpacked/ kvartalsrapport-redigert.docx --original kvartalsrapport.docx
+Validating XML... OK
+Packed: kvartalsrapport-redigert.docx
+
+$ python scripts/office/validate.py kvartalsrapport-redigert.docx
+Validation passed.
+```
+
+## Installasjon
+
+```
+npx skills add anthropics/skills/docx
+```
+
+Avhengigheter brukt av hjelpeskriptene og arbeidsflytene:
+
+- **pandoc** — tekstuttrekk, inkludert sporede endringer (`pandoc --track-changes=all doc.docx -o out.md`)
+- **docx** (npm) — `npm install -g docx`, kreves for å opprette nye dokumenter med docx-js
+- **LibreOffice** — konvertering `.doc` → `.docx` og PDF-eksport, via `scripts/office/soffice.py`
+- **Poppler** (`pdftoppm`) — konvertere PDF-sider til bilder
+
+## Sikkerhet og tillatelser
+
+- Kjører lokale Python-skript (`unpack.py`, `pack.py`, `validate.py`, `comment.py`, `accept_changes.py`, `soffice.py`) og Node (`docx`-pakken) — krever **bash-kjøring** og **fil-lesing/skriving** i arbeidskatalogen.
+- Ingen nettverkstilgang kreves eller brukes; alle konverteringer skjer lokalt via LibreOffice/pandoc/Poppler.
+- Redigering av eksisterende dokumenter skjer på utpakkede kopier (`unpacked/`-katalogen) og pakkes inn igjen med `--original`-referanse, så kildefilen endres ikke direkte med mindre du overskriver den selv.
+- `pack.py` kjører automatisk reparasjon og validering som standard (durable ID-er, bevaring av whitespace) — feilformet XML eller ødelagte relasjoner vil likevel feile og må rettes manuelt.
+- Sporede endringer/kommentarer bruker forfatternavnet «Claude» som standard med mindre brukeren spesifiserer et annet navn — relevant når du produserer rettslig eller organisatorisk tilskrivbare endringsforslag.
+
+## Praktiske bruksområder
+
+- Generere en polert rapport, memo, brev eller mal som `.docx` med overskrifter, innholdsfortegnelse, tabeller, topp-/bunntekster og sidenumre.
+- Sette inn eller erstatte bilder i et eksisterende Word-dokument, inkludert alt-tekst.
+- Utføre søk-og-erstatt eller anvende sporede endringer (innsettinger/slettinger) i en kontrakt eller et utkast.
+- Legge til trådede kommentarer og svar på bestemte tekstutvalg.
+- Godta alle sporede endringer for å produsere et rent, endelig dokument.
+- Konvertere gamle `.doc`-filer til `.docx`, eller eksportere en `.docx` til PDF/bilder for gjennomgang.
+- Trekke ut tekst (med eller uten sporede endringer) fra en `.docx` for videre analyse.
+
+## Begrensninger
+
+- Ikke ment for PDF-er, regneark, Google Docs eller ubeslektede kodeoppgaver — omfanget er strengt Word/.docx.
+- Å opprette dokumenter krever Node og npm-pakken `docx` installert globalt; redigering krever Python, og for `.doc`-konvertering eller PDF-eksport kreves LibreOffice.
+- Automatisk reparasjon ved pakking retter kun spesifikke kjente problemer (durable ID-er, manglende `xml:space="preserve"`) — den retter ikke feilformet XML, ugyldig nøsting eller manglende relasjoner.
+- docx-js bruker A4 som standard sidestørrelse og krever eksplisitte US Letter-mål; tabellbredder må bruke DXA (ikke prosent), ellers brytes visningen i Google Docs.
+- Manuell XML-redigering kreves for sporede endringer/kommentarer; ferdigheten fraråder eksplisitt å skrive egne Python-skript for strengerstatning til fordel for direkte redigering.
+
+## Kilder
+
+- https://raw.githubusercontent.com/anthropics/skills/main/docx/SKILL.md
