@@ -87,8 +87,8 @@ const RESULT_TOOL = {
         },
         required: ["docs", "safety", "reliability", "focus"],
       },
-      en_mdx: { type: "string", description: "Full en.mdx content including frontmatter ---." },
-      no_mdx: { type: "string", description: "Full no.mdx content including frontmatter ---." },
+      en_mdx: { type: "string", description: "The article body only, starting with the H1 heading. Do NOT include any frontmatter or '---' delimiter lines — those are added separately from the title/summary fields above." },
+      no_mdx: { type: "string", description: "The article body only, starting with the H1 heading. Do NOT include any frontmatter or '---' delimiter lines — those are added separately from the title/summary fields above." },
       sources: { type: "array", items: { type: "string" }, description: "URLs this skill is based on." },
     },
     required: [
@@ -169,6 +169,34 @@ function openIssue(title: string, body: string) {
   }
 }
 
+/**
+ * Strips whatever frontmatter the model wrote in en_mdx/no_mdx — the real
+ * frontmatter is always rebuilt from code-controlled fields below. Without
+ * this, a 2026-07-15 run wrote a stray `slug: "docx"` into BOTH en.mdx and
+ * no.mdx's frontmatter; Astro's content-collection loader uses a frontmatter
+ * `slug` as the entry id when present, so both locale files collided onto
+ * the same id and one silently disappeared from the site until a human
+ * happened to find the "missing en.mdx or no.mdx" crash. Same fix already
+ * applied to topics/write.ts for the same class of bug.
+ */
+function bodyOnly(mdx: string): string {
+  const match = mdx.match(/^---\n[\s\S]*?\n---\n?([\s\S]*)$/);
+  let body = (match ? match[1] : mdx).trimStart();
+  while (/^---\s*\n/.test(body)) {
+    body = body.replace(/^---\s*\n/, "").trimStart();
+  }
+  return body;
+}
+
+function yamlString(s: string): string {
+  return `"${s.replace(/\\/g, "\\\\").replace(/"/g, '\\"')}"`;
+}
+
+/** Rebuilds a minimal, schema-correct frontmatter (title/description only) around the model's body. */
+function buildDocFile(title: string, description: string, mdxBody: string): string {
+  return `---\ntitle: ${yamlString(title)}\ndescription: ${yamlString(description)}\n---\n\n${bodyOnly(mdxBody).trimEnd()}\n`;
+}
+
 function decodeHtmlEntities(text: string): string {
   return text
     .replace(/&amp;/g, "&")
@@ -217,8 +245,8 @@ function buildMetaYaml(skill: GeneratedSkill, source: SourceEntry): string {
 }
 
 function validateSkill(skill: GeneratedSkill, source: SourceEntry): string | undefined {
-  if (!skill.en_mdx.trim().startsWith("---") || !skill.no_mdx.trim().startsWith("---")) {
-    return "missing frontmatter in generated mdx";
+  if (!bodyOnly(skill.en_mdx).trim() || !bodyOnly(skill.no_mdx).trim()) {
+    return "empty mdx body after stripping frontmatter";
   }
   if (!skill.categories.length) return "no categories";
   if (!VALID_CATEGORIES.includes(skill.categories[0] as typeof VALID_CATEGORIES[number])) {
@@ -257,7 +285,7 @@ ${upstream.slice(0, MAX_SOURCE_CHARS)}
    - related_modules: module ids it relates to (empty if none)
    - rubric: score 1-5 for docs, safety, reliability, focus
    - Do NOT return verified_version; the site inserts the current Claude Code version automatically.
-3. Full en.mdx and no.mdx files (with frontmatter). Each MUST contain these sections:
+3. Full en.mdx and no.mdx BODIES ONLY (no frontmatter, start with the H1). Each MUST contain these sections:
    - What it does and why it exists / Hva den gjør og hvorfor den finnes
    - Try it now — TerminalSim / Prøv den nå — TerminalSim
    - Install / Installasjon
@@ -365,8 +393,8 @@ async function main() {
     mkdirSync(SNAPSHOTS_DIR, { recursive: true });
 
     writeFileSync(join(dir, "meta.yaml"), buildMetaYaml(skill, source), "utf-8");
-    writeFileSync(join(dir, "en.mdx"), skill.en_mdx.trimEnd() + "\n", "utf-8");
-    writeFileSync(join(dir, "no.mdx"), skill.no_mdx.trimEnd() + "\n", "utf-8");
+    writeFileSync(join(dir, "en.mdx"), buildDocFile(skill.title_en, skill.summary_en, skill.en_mdx), "utf-8");
+    writeFileSync(join(dir, "no.mdx"), buildDocFile(skill.title_no, skill.summary_no, skill.no_mdx), "utf-8");
     writeFileSync(join(SNAPSHOTS_DIR, `${skill.slug}.hash`), `${sha256(upstream)}\n`, "utf-8");
 
     touchedPaths.push(

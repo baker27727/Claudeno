@@ -1,5 +1,6 @@
 // _auto-publish — shared "verify, then publish without waiting for a human"
-// gate used by generate-update.ts and audit-freshness.ts.
+// gate used by generate-update.ts, audit-freshness.ts, and every scripts/*
+// content pipeline (skills, topics, use-cases).
 //
 // The user explicitly asked for zero-human-intervention publishing. The
 // safety net that makes that responsible is automated, not manual: nothing
@@ -11,7 +12,26 @@
 // Direct-push requires the CI token to have `contents: write` on `main` and
 // no required-review branch protection rule blocking pushes. If the user
 // later adds branch protection, this push simply fails closed (falls back
-// to opening a PR), which is the right behavior.
+// to opening a PR/issue), which is the right behavior.
+//
+// 2026-07-16 incident: two separate scheduled runs (watch-upstream,
+// skills-discover) generated valid content, had their branch pushed
+// successfully after a direct-push race, then crashed uncaught on
+// `gh pr create` failing with "GitHub Actions is not permitted to create or
+// approve pull requests" — a repo permission this automation cannot grant
+// itself (enabling it is an access-control change, out of scope for a
+// script to do unilaterally). The content sat on an orphaned branch,
+// invisible, until a human happened to go looking. Two fixes below close
+// this without depending on that permission ever being granted:
+//   1. Direct push now retries with fetch+rebase a few times before giving
+//      up — the actual root cause both times was a same-minute push race
+//      between parallel automation runs, not a real conflict, so most
+//      "failures" now just self-heal instead of ever reaching the fallback.
+//   2. PR creation is no longer allowed to crash the run. If it fails for
+//      any reason (including the missing permission), the branch is already
+//      pushed — we fall back to opening/updating an Issue (issues:write is
+//      always granted) with a compare link, so the content stays
+//      discoverable and mergeable by hand instead of silently orphaned.
 
 import { execFileSync } from "node:child_process";
 
@@ -72,6 +92,11 @@ function isGitRepo(): boolean {
   }
 }
 
+function currentRepoSlug(): string | undefined {
+  const result = run("gh", ["repo", "view", "--json", "nameWithOwner", "-q", ".nameWithOwner"]);
+  return result.ok ? result.output.trim() : undefined;
+}
+
 /**
  * Dispatches deploy.yml, retrying transient failures (network blips, brief
  * API rate limits) instead of giving up on the first error. Returns whether
@@ -106,6 +131,77 @@ export function verify(): string | null {
   return null;
 }
 
+/**
+ * Commits and pushes straight to main, retrying on push rejection by
+ * fetching + rebasing onto the new tip first. Most rejections here are a
+ * same-minute race between two parallel automation runs touching different
+ * files, not a real conflict — rebase resolves those cleanly. A genuine
+ * conflict (rebase fails) or repeated rejection past `attempts` is reported
+ * back so the caller can fall through to the branch/issue fallback.
+ */
+function commitAndPushWithRetry(paths: string[], commitMessage: string, attempts = 3): { ok: true } | { ok: false; error: string } {
+  try {
+    execFileSync("git", ["add", ...paths]);
+    execFileSync("git", ["commit", "-m", commitMessage]);
+  } catch (err) {
+    return { ok: false, error: `commit failed: ${(err as Error).message}` };
+  }
+
+  for (let attempt = 1; attempt <= attempts; attempt++) {
+    try {
+      execFileSync("git", ["push", "origin", "HEAD:main"]);
+      return { ok: true };
+    } catch (pushErr) {
+      if (attempt === attempts) {
+        return { ok: false, error: (pushErr as Error).message };
+      }
+      console.warn(`Push attempt ${attempt}/${attempts} rejected — fetching and rebasing onto origin/main, then retrying.`);
+      try {
+        execFileSync("git", ["fetch", "origin", "main"]);
+        execFileSync("git", ["rebase", "origin/main"]);
+      } catch (rebaseErr) {
+        execFileSync("git", ["rebase", "--abort"], { stdio: "ignore" });
+        return { ok: false, error: `rebase onto origin/main failed after push conflict: ${(rebaseErr as Error).message}` };
+      }
+    }
+  }
+  return { ok: false, error: "unreachable" };
+}
+
+/**
+ * Pushes a fallback branch and tries to open a PR from it. If PR creation
+ * fails for any reason (including the repo not allowing Actions to create
+ * PRs), the failure is caught and an informational Issue is opened instead
+ * — the branch is already safely on GitHub either way, so this never
+ * silently loses content, and never lets `gh pr create` crash the run.
+ */
+function pushBranchAndNotify(branch: string, prTitle: string, prBody: string): void {
+  execFileSync("git", ["push", "-u", "origin", branch]);
+
+  if (!process.env.GH_TOKEN) return;
+
+  const prResult = run("gh", ["pr", "create", "--title", prTitle, "--body", prBody]);
+  if (prResult.ok) return;
+
+  console.error(`gh pr create failed (branch was still pushed successfully): ${prResult.output}`);
+  const repo = currentRepoSlug();
+  const compareUrl = repo ? `https://github.com/${repo}/compare/main...${branch}` : `(compare URL unavailable — branch: ${branch})`;
+  const issueBody = [
+    prBody,
+    "",
+    "---",
+    "",
+    `**PR creation failed**, so this was opened as an issue instead. The branch was pushed successfully — review and merge it by hand:`,
+    compareUrl,
+    "",
+    `\`\`\`\n${prResult.output.slice(-1500)}\n\`\`\``,
+  ].join("\n");
+  const issueResult = run("gh", ["issue", "create", "--title", `⚠️ ${prTitle} (needs manual merge)`, "--label", "automation-failure", "--body", issueBody]);
+  if (!issueResult.ok) {
+    console.error(`Fallback issue creation also failed: ${issueResult.output}`);
+  }
+}
+
 export async function verifyAndPublish(opts: {
   commitMessage: string;
   paths: string[];
@@ -132,11 +228,9 @@ export async function verifyAndPublish(opts: {
   const failure = verify();
 
   if (!failure) {
-    // Everything passed — push straight to main, no PR, no waiting.
-    try {
-      execFileSync("git", ["add", ...opts.paths]);
-      execFileSync("git", ["commit", "-m", opts.commitMessage]);
-      execFileSync("git", ["push", "origin", "HEAD:main"]);
+    const pushResult = commitAndPushWithRetry(opts.paths, opts.commitMessage);
+
+    if (pushResult.ok) {
       // GitHub doesn't fire `on: push` workflows for commits made with
       // GITHUB_TOKEN, so deploy.yml would never see this push. Dispatch it
       // explicitly so the live site actually picks up the change. No
@@ -162,51 +256,42 @@ export async function verifyAndPublish(opts: {
             ? "Verification passed — pushed directly to main and deploy triggered."
             : "Verification passed and content pushed to main, but deploy.yml dispatch failed after retries.",
       };
-    } catch (err) {
-      // Push rejected (e.g. branch protection, someone pushed in the meantime).
-      // Fall through to the PR fallback below using the same commit.
-      const branch = `${opts.fallbackBranchPrefix}-${Date.now()}`;
-      execFileSync("git", ["checkout", "-b", branch]);
-      execFileSync("git", ["push", "-u", "origin", branch]);
-      if (process.env.GH_TOKEN) {
-        execFileSync("gh", [
-          "pr",
-          "create",
-          "--title",
-          opts.prTitle,
-          "--body",
-          `${opts.prBody}\n\nVerification passed locally, but the direct push to \`main\` was rejected (branch protection or a race). Opened as a PR instead.`,
-        ]);
-      }
-      return {
-        published: false,
-        deployTriggered: false,
-        reason: `Push to main was rejected: ${(err as Error).message}. Opened branch/PR instead.`,
-      };
     }
+
+    // Direct push (with retry-via-rebase) still didn't land — fall back to
+    // a branch. The commit already exists locally (commitAndPushWithRetry
+    // committed before attempting to push), so just branch off HEAD and
+    // push that.
+    const branch = `${opts.fallbackBranchPrefix}-${Date.now()}`;
+    execFileSync("git", ["checkout", "-b", branch]);
+    pushBranchAndNotify(
+      branch,
+      opts.prTitle,
+      `${opts.prBody}\n\nVerification passed locally, but the direct push to \`main\` was rejected even after retrying with rebase: ${pushResult.error}`,
+    );
+    return {
+      published: false,
+      deployTriggered: false,
+      reason: `Push to main was rejected after retries: ${pushResult.error}. Opened branch/PR (or issue) instead.`,
+    };
   }
 
-  // Verification failed — never publish unverified content. Open a PR that
-  // clearly explains what failed, so a human (or the next scheduled run,
-  // after a source-side fix) can act on it.
+  // Verification failed — never publish unverified content. Open a PR (or,
+  // if PR creation isn't possible, an issue) that clearly explains what
+  // failed, so a human (or the next scheduled run, after a source-side fix)
+  // can act on it.
   const branch = `${opts.fallbackBranchPrefix}-${Date.now()}`;
   execFileSync("git", ["checkout", "-b", branch]);
   execFileSync("git", ["add", ...opts.paths]);
   execFileSync("git", ["commit", "-m", `${opts.commitMessage} [needs review: verification failed]`]);
-  execFileSync("git", ["push", "-u", "origin", branch]);
-  if (process.env.GH_TOKEN) {
-    execFileSync("gh", [
-      "pr",
-      "create",
-      "--title",
-      `[Needs review] ${opts.prTitle}`,
-      "--body",
-      `${opts.prBody}\n\n---\n\n**⚠️ Automated verification failed, so this was NOT published automatically:**\n\n${failure}`,
-    ]);
-  }
+  pushBranchAndNotify(
+    branch,
+    `[Needs review] ${opts.prTitle}`,
+    `${opts.prBody}\n\n---\n\n**⚠️ Automated verification failed, so this was NOT published automatically:**\n\n${failure}`,
+  );
   return {
     published: false,
     deployTriggered: false,
-    reason: "Verification failed — opened a PR for human review instead of publishing.",
+    reason: "Verification failed — opened a PR (or issue) for human review instead of publishing.",
   };
 }
