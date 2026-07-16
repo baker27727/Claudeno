@@ -1,0 +1,83 @@
+---
+title: "Setting Up Subagents in Claude Code for Delegation and Investigation"
+description: "Subagents let Claude Code delegate research and investigation to separate context windows, keeping your main session focused. Here's how they work and when to use them."
+discoveredAt: "2026-07-14T07:11:43.624Z"
+updatedDate: "2026-07-16T08:01:46.020Z"
+author: "Claude Code Learn"
+trendScore: 0.695
+scoreBreakdown:
+  frequency: 0.75
+  recency: 0.907
+  engagement: 0.223
+  gap: 1
+tags:
+  - "Claude Code"
+  - "subagents"
+  - "context management"
+  - "delegation"
+  - "agentic workflows"
+sources:
+  - "https://code.claude.com/docs/en/how-claude-code-works.md"
+  - "https://code.claude.com/docs/en/common-workflows.md"
+  - "https://code.claude.com/docs/en/best-practices.md"
+  - "https://code.claude.com/docs/en/prompt-caching.md"
+relatedModules:
+  - "subagents"
+  - "cli-basics"
+  - "memory"
+  - "skills"
+  - "hooks"
+relatedUseCases:
+  - "research-and-summarization-with-claude"
+  - "project-management-with-claude"
+relatedSkills: []
+draft: false
+# Verified against Claude Code 2.1.210
+---
+# Setting Up Subagents in Claude Code for Delegation and Investigation
+
+## Quick summary
+
+Subagents are a way to hand off a piece of work — usually research or investigation — to a separate Claude Code instance with its own context window, so the findings come back as a summary instead of filling up your main session. This matters because the single biggest constraint in long agentic sessions is context: once it fills up, Claude loses track of earlier instructions and decisions. Claude Code's own documentation frames subagents, alongside skills, as one of the two primary tools for managing context pressure.
+
+## What's new
+
+Subagents aren't a brand-new feature, but Claude Code's documentation has been consolidating guidance around when and how to use them as part of a broader push on context management. The official docs now explicitly list "manage context with skills and subagents" as a subsection under the context window discussion in `how-claude-code-works`, and `best-practices` calls out "use subagents for investigation" as a named technique under session management, alongside course-correcting early, managing context aggressively, and rewinding with checkpoints. The `common-workflows` page includes a dedicated workflow, "Delegate research to subagents," as a standard prompt recipe alongside things like fixing bugs and refactoring. There's also a related mechanical detail worth knowing: the `prompt-caching` documentation has a section specifically titled "Subagents and the cache," indicating that subagent invocation interacts with how Claude Code's prompt cache is organized — a detail that matters if you're trying to reason about performance and cost in a multi-agent session. Separately, the broader ecosystem shows growing appetite for multi-agent orchestration patterns: GitHub activity includes projects like a "local multi-agent coding orchestrator with 22 pipeline roles" and a "portable multi-agent engineering kit," both built around the idea of splitting work across agent roles rather than doing everything in one session.
+
+## How it works
+
+Mechanically, a subagent in Claude Code is a separate agentic loop instance — it has its own context window, its own turn-by-turn tool use, and its own model calls — that is invoked from your main session to perform a bounded task and return a result.
+
+1. **Delegation point**: From your main session, you (or Claude, acting on your instructions) dispatch a task to a subagent rather than performing it inline. This is typically phrased as an instruction like "use a subagent to investigate X" or is triggered automatically when Claude decides a task is well-suited to isolation.
+2. **Isolated context**: The subagent runs in its own context window. It does not inherit your main session's full conversation history — only the task description and whatever context it's explicitly given. This is the core mechanism that protects your main session from context bloat: exploratory work, wrong turns, and large file reads happen in the subagent's window, not yours.
+3. **Independent tool use and turns**: Inside its own loop, the subagent can read files, run commands, and make its own model calls just like a top-level Claude Code session would, following the same agentic loop (tools + model reasoning) described in Claude Code's core architecture.
+4. **Return of a summary, not a transcript**: When the subagent finishes, it returns a condensed result back to the main session — a summary or answer — rather than dumping its full turn-by-turn history into your context. This is what makes subagents effective for context management: you get the value of extensive investigation without paying its full context cost.
+5. **Cache interaction**: Because subagents are a distinct invocation, they interact with Claude Code's prompt cache differently than in-session turns do — this is documented separately under "Subagents and the cache" in the prompt-caching docs, which is worth checking if you're tuning for cache hit rates in a workflow that relies heavily on subagent delegation.
+
+This pairs with skills as the two main levers Claude Code gives you for managing context: skills load specialized instructions/tools into the *same* context, while subagents push work *out* into a different context entirely and bring back only the result.
+
+## Hands-on example
+
+A common pattern is to explicitly ask for delegation when you want Claude to explore a large or unfamiliar codebase without polluting your main working session:
+
+```
+Use a subagent to investigate how authentication is handled across
+this codebase — trace the flow from the login route through to
+session storage — and report back a summary of the key files,
+functions, and any inconsistencies you find. Don't make any changes.
+```
+
+The subagent reads through the relevant files, follows the call chain, and returns a concise write-up (e.g., "Auth flow: `routes/login.ts` → `services/authService.ts` → `session/store.ts`; note that `store.ts` sets a 24h TTL not documented elsewhere"). Your main session's context only gains that summary, not every file the subagent opened along the way. You can then continue your primary task — say, adding a new auth provider — with a clean context and a trustworthy map of the system, instead of the accumulated noise of manually grepping through the same codebase yourself.
+
+## When to use it (and when not to)
+
+Use a subagent when a task is primarily investigative or exploratory and you don't need the intermediate steps preserved — codebase archaeology, tracing a bug's root cause across many files, or researching an unfamiliar library. It's also a good fit any time your main session is approaching its context limit and you still have substantial work ahead: delegating the next research-heavy chunk keeps the main thread usable longer.
+
+Don't reach for subagents for small, quick lookups where the overhead of dispatching and summarizing isn't worth it, or for tasks where you specifically need to review and steer each intermediate step — subagents return a summary, so fine-grained back-and-forth is harder. They're also not a substitute for skills: if what you need is repeatable domain instructions or tools loaded into your ongoing conversation, a skill is the more direct fit than spinning up a subagent. Finally, keep in mind that subagent invocation has its own interaction with prompt caching, so heavy reliance on subagents in a tight cost-sensitive workflow is worth checking against the caching documentation rather than assuming it behaves identically to normal turns.
+
+## Sources
+
+- https://code.claude.com/docs/en/how-claude-code-works.md
+- https://code.claude.com/docs/en/common-workflows.md
+- https://code.claude.com/docs/en/best-practices.md
+- https://code.claude.com/docs/en/prompt-caching.md

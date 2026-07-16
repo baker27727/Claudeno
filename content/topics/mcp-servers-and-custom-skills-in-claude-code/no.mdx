@@ -1,0 +1,93 @@
+---
+title: "Integrere MCP-servere og egendefinerte skills i Claude Code"
+description: "En praktisk guide til å koble til eksterne verktøy via MCP-servere og pakke domenespesifikke arbeidsflyter som skills, slik at Claude Code kan nå utover kodebasen og inn i verktøykjeden din."
+discoveredAt: "2026-07-14T07:11:43.624Z"
+updatedDate: "2026-07-16T08:03:00.016Z"
+author: "Claude Code Learn"
+trendScore: 0.626
+scoreBreakdown:
+  frequency: 0.5
+  recency: 0.979
+  engagement: 0.223
+  gap: 1
+tags:
+  - "MCP"
+  - "Claude Code"
+  - "skills"
+  - "plugins"
+  - "integrations"
+  - "tooling"
+sources:
+  - "https://code.claude.com/docs/en/best-practices.md"
+  - "https://code.claude.com/docs/en/desktop.md"
+  - "https://code.claude.com/docs/en/prompt-caching.md"
+  - "https://code.claude.com/docs/en/features-overview.md"
+  - "https://code.claude.com/docs/en/how-claude-code-works.md"
+relatedModules:
+  - "mcp-servers"
+  - "skills"
+  - "subagents"
+  - "hooks"
+  - "permissions-and-settings"
+relatedUseCases:
+  - "project-management-with-claude"
+  - "excel-and-data-analysis"
+  - "research-and-summarization-with-claude"
+relatedSkills:
+  - "docx"
+  - "pdf"
+  - "pptx"
+draft: false
+# Verified against Claude Code 2.1.210
+---
+# Integrere MCP-servere og egendefinerte skills i Claude Code
+
+## Kort oppsummert
+
+Claude Codes standardverktøy (filredigering, shell-kommandoer, git) dekker generell koding, men team har ofte behov for å nå interne API-er, databaser, saksbehandlingssystemer og gjenbrukbare domenespesifikke arbeidsflyter. To mekanismer utvider Claude Code til dette: **MCP-servere**, som kobler Claude til eksterne verktøy og datakilder, og **egendefinerte skills**, som pakker gjenbrukbare, domenespesifikke instruksjoner og skript. Sammen med plugins gjør disse en generisk kodeagent til et verktøy skreddersydd for din stack.
+
+## Hva er nytt
+
+Dokumentasjonen og økosystemet rundt Claude Code behandler nå MCP-servere, skills og plugins som sentrale, bærende deler av et oppsett — ikke nisjetillegg. Den offisielle beste-praksis-guiden lister eksplisitt "Koble til MCP-servere", "Lag skills", "Lag egendefinerte subagenter" og "Installer plugins" som steg for å konfigurere miljøet ditt, side om side med CLAUDE.md og tillatelser. Claude Code på desktop har en egen "Utvid Claude Code"-seksjon som dekker "Koble til eksterne verktøy", "Bruk skills" og "Installer plugins" som kjernefunksjonalitet, ikke eksperimentelle funksjoner. Dokumentasjonen om prompt-caching bekrefter at det å koble til eller fra en MCP-server, og å aktivere eller deaktivere en plugin, er handlinger betydelige nok til å ugyldiggjøre prompt-cachen — det betyr at disse integrasjonene behandles som en del av modellens effektive kontekst, ikke som løst tilkoblede sidekanaler. På den bredere Claude-plattformen har MCP også flyttet lenger inn i administrert infrastruktur: MCP-tunneler (forskningsforhåndsvisning) fikk administrasjons-API-et flyttet fra en admin-eksklusiv flate til `/v1/tunnels` på selve Claude API-et, og sesjonsnivå-konfigurasjonsoverstyringer for Managed Agents kan nå erstatte en agents MCP-servere eller skills for en enkelt sesjon uten å endre selve agentdefinisjonen. Det bredere GitHub-økosystemet reflekterer samme trend, med mange aktive fellesskapsprosjekter bygget spesifikt rundt MCP-servere og skill-pakker: eksempler inkluderer et MCP/CLI-verktøy for å øke hastigheten på Claude Code i C#-kodebaser, en oppetidsmonitor som eksponerer en MCP-server slik at brukere kan lage overvåkere ved å be Claude om det, og repositorier med delbare Claude Code-skills for spesialiserte skrive- og sporingsarbeidsflyter.
+
+## Slik fungerer det
+
+**MCP-servere** er tilkoblingslaget. En MCP-server (Model Context Protocol) eksponerer et sett verktøy, ressurser eller datakilder over en standardprotokoll; Claude Code kobler seg til den, og serverens verktøy blir tilgjengelige for Claude i den sesjonen, sammen med de innebygde verktøyene (filoperasjoner, shell osv.). Å koble til en server registreres eksplisitt i oppsettet ditt — Claude Code-dokumentasjonen grupperer dette under "Konfigurer miljøet ditt" ved siden av tillatelser og hooks, noe som betyr at det er et bevisst konfigurasjonssteg per prosjekt eller bruker, ikke automatisk oppdagelse. Fordi tilkobling eller frakobling av en MCP-server ugyldiggjør prompt-cachen, sporer Claude Code settet med aktive MCP-servere som en del av den effektive systemkonteksten for en sesjon — modellen må vite eksakt hvilke verktøy som finnes før den kan bruke dem på en pålitelig måte.
+
+**Egendefinerte skills** fungerer annerledes: de er pakkede instruksjoner (og eventuelt skript) som Claude laster og kaller for en spesifikk oppgave, i stedet for en levende tilkobling til et eksternt system. Veiledningen om å "administrere kontekst med skills og subagenter" i kjernebegrep-dokumentasjonen rammer skills som et kontekst-forvaltningsverktøy: i stedet for å stappe lange domeneinstruksjoner inn i hver prompt eller CLAUDE.md, legger du den kunnskapen i en skill som bare trekkes inn i konteksten når den er relevant. Skills utfyller MCP-servere snarere enn å erstatte dem — en MCP-server gir deg *tilgang* (f.eks. til et saksbehandlings-API), mens en skill gir deg *prosedyre* (f.eks. hvordan man melder en sak på den måten teamet ditt forventer, inkludert obligatoriske felt og konvensjoner).
+
+**Plugins** er pakke- og distribusjonslaget for begge deler. En plugin kan samle MCP-serverkonfigurasjon, skills, hooks og subagenter sammen slik at en hel funksjonalitet — for eksempel en sikkerhetsgjennomgangs-arbeidsflyt — installeres og aktiveres som en enhet. `security-guidance`-pluginen som er dokumentert for Claude Code illustrerer dette: å installere den setter opp kontroller som kjøres ved filredigeringer, ved slutten av hver tur, og ved commits, med regelfiler du kan tilpasse, uten at du må konfigurere hver del manuelt.
+
+I praksis handler integrasjon av et domenespesifikt verktøy om tre spørsmål: (1) Trenger Claude levende lese-/skrivetilgang til et eksternt system? → MCP-server. (2) Trenger Claude å følge en spesifikk, gjenbrukbar prosedyre eller konvensjon? → Skill. (3) Vil du distribuere begge sammen som én installerbar funksjonalitet for teamet ditt? → Plugin.
+
+## Prøv det selv
+
+Et team vil at Claude Code skal melde feil i det interne feilsporingssystemet deres med teamets spesifikke sakformat, samt sjekke hver commit for sikkerhetsproblemer.
+
+```
+# 1. Koble til en MCP-server som eksponerer saksbehandlingsverktøyet
+$ claude mcp add ticketing --transport stdio -- ./mcp-servers/ticketing-server
+
+# 2. Be Claude bruke den, understøttet av en skill som beskriver teamets konvensjoner
+> Bruk MCP-serveren for saksbehandling og meld en feil for null-pointer-
+> unntaket i src/payments/charge.go. Følg vår skill for feilsaker
+> for obligatoriske felt (alvorlighetsgrad, reproduksjonssteg, ansvarlig team).
+
+# 3. Installer en plugin som legger til automatisk sikkerhetsgjennomgang på hver commit
+$ claude plugin install security-guidance
+```
+
+MCP-serveren gir Claude et `create_ticket`-verktøy den faktisk kan kalle; skillen forteller den nøyaktig hvordan saken skal fylles ut korrekt (alvorlighetsgrader, obligatoriske felt); pluginen legger til et uavhengig lag som gjennomgår commitene Claude gjør, uten at noen av de tre må forklares på nytt i hver prompt.
+
+## Når du bør bruke det (og når ikke)
+
+Bruk en MCP-server når Claude reelt trenger å lese eller skrive til et eksternt system i realtid — en database, et API, et saksbehandlingsverktøy, en overvåkningstjeneste. Bruk en egendefinert skill når behovet er prosedyrekunnskap som ellers ville blåst opp CLAUDE.md eller blitt repetert i hver prompt — konvensjoner, sjekklister, domenespesifikke formater. Bruk en plugin når du vil distribuere en kombinasjon av disse konsistent over et team.
+
+Grip ikke til en MCP-server hvis et enkelt CLI-verktøy eller skript allerede gjør jobben — Claude Code kan allerede kalle vilkårlige shell-kommandoer, og å koble til en MCP-server har en reell kostnad: det ugyldiggjør prompt-cachen ved tilkobling/frakobling, og legger til en ekstra komponent teamet ditt må vedlikeholde og betro med legitimasjon. Bygg ikke en skill for engangsoppgaver; skills lønner seg først når de gjenbrukes. Og vær bevisst på at både MCP-servere og plugins kan være bygget av tredjeparter og fellesskapsprosjekter med svært varierende kvalitet og støtte — vurder nøye hva du kobler til, spesielt alt som har tilgang til legitimasjon eller produksjonssystemer.
+
+## Kilder
+
+- https://code.claude.com/docs/en/best-practices.md
+- https://code.claude.com/docs/en/desktop.md
+- https://code.claude.com/docs/en/prompt-caching.md
+- https://code.claude.com/docs/en/how-claude-code-works.md

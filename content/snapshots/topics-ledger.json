@@ -1,5 +1,44 @@
 [
   {
+    "topic": "Integrating MCP servers and custom skills into Claude Code for domain-specific tools",
+    "status": "published",
+    "score": {
+      "frequency": 0.5,
+      "recency": 0.979,
+      "engagement": 0.223,
+      "gap": 1,
+      "total": 0.626
+    },
+    "matchedSources": [
+      "docs_map",
+      "github_search"
+    ],
+    "whyItMatters": "The documentation and GitHub projects show extensive use of MCP servers, custom skills, and plugins to extend Claude Code's capabilities. A how-to guide on connecting external tools and building custom integrations would help teams maximize Claude's reach.",
+    "firstSeen": "2026-07-14T07:11:43.624Z",
+    "lastSeen": "2026-07-16T08:03:00.016Z",
+    "publishedSlug": "mcp-servers-and-custom-skills-in-claude-code"
+  },
+  {
+    "topic": "Setting up subagents in Claude Code for delegation and investigation",
+    "status": "published",
+    "score": {
+      "frequency": 0.75,
+      "recency": 0.907,
+      "engagement": 0.223,
+      "gap": 1,
+      "total": 0.695
+    },
+    "matchedSources": [
+      "docs_map",
+      "github_search",
+      "hn_search"
+    ],
+    "whyItMatters": "The documentation and GitHub activity show growing interest in using subagents to partition work and reduce context pressure. Multiple projects demonstrate this pattern, suggesting it's a valuable technique worth detailed explanation.",
+    "firstSeen": "2026-07-14T07:11:43.624Z",
+    "lastSeen": "2026-07-16T08:01:46.021Z",
+    "publishedSlug": "claude-code-subagents-delegation"
+  },
+  {
     "topic": "Using adaptive thinking and extended thinking modes effectively in Claude Fable 5",
     "status": "candidate",
     "score": {
@@ -30,25 +69,6 @@
       "docs_map"
     ],
     "whyItMatters": "Claude Code's context window management is critical for long sessions. The docs show multiple strategies (CLAUDE.md files, auto memory, subagents, rules organization) that users need to understand and combine effectively to avoid context exhaustion.",
-    "firstSeen": "2026-07-14T07:11:43.624Z",
-    "lastSeen": "2026-07-14T07:11:43.624Z"
-  },
-  {
-    "topic": "Setting up subagents in Claude Code for delegation and investigation",
-    "status": "candidate",
-    "score": {
-      "frequency": 0.75,
-      "recency": 0.907,
-      "engagement": 0.223,
-      "gap": 1,
-      "total": 0.695
-    },
-    "matchedSources": [
-      "docs_map",
-      "github_search",
-      "hn_search"
-    ],
-    "whyItMatters": "The documentation and GitHub activity show growing interest in using subagents to partition work and reduce context pressure. Multiple projects demonstrate this pattern, suggesting it's a valuable technique worth detailed explanation.",
     "firstSeen": "2026-07-14T07:11:43.624Z",
     "lastSeen": "2026-07-14T07:11:43.624Z"
   },
@@ -101,24 +121,6 @@
       "docs_map"
     ],
     "whyItMatters": "Claude Code's prompt caching documentation shows actions that invalidate vs. preserve the cache (e.g., file edits preserve it, model switches don't). Understanding these rules is essential for long-running sessions where cache hits save significant cost and latency.",
-    "firstSeen": "2026-07-14T07:11:43.624Z",
-    "lastSeen": "2026-07-14T07:11:43.624Z"
-  },
-  {
-    "topic": "Integrating MCP servers and custom skills into Claude Code for domain-specific tools",
-    "status": "candidate",
-    "score": {
-      "frequency": 0.5,
-      "recency": 0.979,
-      "engagement": 0.223,
-      "gap": 1,
-      "total": 0.626
-    },
-    "matchedSources": [
-      "docs_map",
-      "github_search"
-    ],
-    "whyItMatters": "The documentation and GitHub projects show extensive use of MCP servers, custom skills, and plugins to extend Claude Code's capabilities. A how-to guide on connecting external tools and building custom integrations would help teams maximize Claude's reach.",
     "firstSeen": "2026-07-14T07:11:43.624Z",
     "lastSeen": "2026-07-14T07:11:43.624Z"
   },

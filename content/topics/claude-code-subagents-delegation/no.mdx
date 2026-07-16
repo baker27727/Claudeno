@@ -1,0 +1,83 @@
+---
+title: "Sette opp subagenter i Claude Code for delegering og undersøkelse"
+description: "Subagenter lar Claude Code delegere research og undersøkelser til separate kontekstvinduer, slik at hovedøkten holder seg fokusert. Her er hvordan de fungerer og når du bør bruke dem."
+discoveredAt: "2026-07-14T07:11:43.624Z"
+updatedDate: "2026-07-16T08:01:46.020Z"
+author: "Claude Code Learn"
+trendScore: 0.695
+scoreBreakdown:
+  frequency: 0.75
+  recency: 0.907
+  engagement: 0.223
+  gap: 1
+tags:
+  - "Claude Code"
+  - "subagents"
+  - "context management"
+  - "delegation"
+  - "agentic workflows"
+sources:
+  - "https://code.claude.com/docs/en/how-claude-code-works.md"
+  - "https://code.claude.com/docs/en/common-workflows.md"
+  - "https://code.claude.com/docs/en/best-practices.md"
+  - "https://code.claude.com/docs/en/prompt-caching.md"
+relatedModules:
+  - "subagents"
+  - "cli-basics"
+  - "memory"
+  - "skills"
+  - "hooks"
+relatedUseCases:
+  - "research-and-summarization-with-claude"
+  - "project-management-with-claude"
+relatedSkills: []
+draft: false
+# Verified against Claude Code 2.1.210
+---
+# Sette opp subagenter i Claude Code for delegering og undersøkelse
+
+## Kort oppsummert
+
+Subagenter er en måte å overlate en del av arbeidet — vanligvis research eller undersøkelser — til en separat Claude Code-instans med sitt eget kontekstvindu, slik at funnene kommer tilbake som et sammendrag i stedet for å fylle opp hovedøkten din. Dette er viktig fordi den største begrensningen i lange agentiske økter er kontekst: når den fylles opp, mister Claude oversikten over tidligere instruksjoner og beslutninger. Claude Codes egen dokumentasjon fremstiller subagenter, sammen med skills, som de to primære verktøyene for å håndtere kontekstpress.
+
+## Hva er nytt
+
+Subagenter er ikke en helt ny funksjon, men Claude Codes dokumentasjon har samlet veiledning om når og hvordan de bør brukes, som del av et bredere fokus på konteksthåndtering. Den offisielle dokumentasjonen lister nå eksplisitt "manage context with skills and subagents" som et underavsnitt under diskusjonen om kontekstvinduet i `how-claude-code-works`, og `best-practices` trekker fram "use subagents for investigation" som en navngitt teknikk under øktstyring, sammen med tidlig kurskorrigering, aktiv konteksthåndtering og tilbakespoling med checkpoints. Siden `common-workflows` inkluderer en egen arbeidsflyt, "Delegate research to subagents," som en standard promptoppskrift på linje med ting som feilretting og refaktorering. Det finnes også et relatert mekanisk detalj verdt å vite: dokumentasjonen for `prompt-caching` har et avsnitt spesifikt kalt "Subagents and the cache," som indikerer at bruk av subagenter påvirker hvordan Claude Codes prompt-cache er organisert — noe som er relevant hvis du vurderer ytelse og kostnad i en økt med flere agenter. Bredere sett i økosystemet ser man også økende interesse for mønstre med flere agenter: GitHub-aktivitet inkluderer prosjekter som en "lokal multi-agent kodeorkestrator med 22 pipeline-roller" og et "portabelt multi-agent ingeniørkit," begge bygget rundt idéen om å dele opp arbeid på tvers av agentroller i stedet for å gjøre alt i én økt.
+
+## Slik fungerer det
+
+Mekanisk sett er en subagent i Claude Code en separat instans av den agentiske løkken — den har sitt eget kontekstvindu, sin egen tur-for-tur verktøybruk, og sine egne modellkall — som blir kalt opp fra hovedøkten din for å utføre en avgrenset oppgave og returnere et resultat.
+
+1. **Delegeringspunkt**: Fra hovedøkten din sender du (eller Claude, på dine instruksjoner) en oppgave til en subagent i stedet for å utføre den direkte. Dette formuleres typisk som en instruks som "bruk en subagent til å undersøke X," eller utløses automatisk når Claude vurderer at en oppgave egner seg for isolasjon.
+2. **Isolert kontekst**: Subagenten kjører i sitt eget kontekstvindu. Den arver ikke hele samtalehistorikken fra hovedøkten din — kun oppgavebeskrivelsen og eventuell kontekst den eksplisitt får. Dette er kjernemekanismen som beskytter hovedøkten din mot kontekstoppblåsing: utforskende arbeid, feilspor og store filutlesninger skjer i subagentens vindu, ikke ditt.
+3. **Uavhengig verktøybruk og turer**: Inne i sin egen løkke kan subagenten lese filer, kjøre kommandoer og gjøre egne modellkall akkurat som en øverste Claude Code-økt ville gjort, etter samme agentiske løkke (verktøy + modellresonnering) som beskrevet i Claude Codes kjernearkitektur.
+4. **Retur av sammendrag, ikke transkript**: Når subagenten er ferdig, returnerer den et komprimert resultat tilbake til hovedøkten — et sammendrag eller svar — i stedet for å dumpe hele sin tur-for-tur-historikk inn i konteksten din. Dette er det som gjør subagenter effektive for konteksthåndtering: du får verdien av omfattende undersøkelser uten å betale hele kontekstkostnaden.
+5. **Cache-interaksjon**: Fordi subagenter er en distinkt påkalling, påvirker de Claude Codes prompt-cache annerledes enn turer i samme økt — dette er dokumentert separat under "Subagents and the cache" i prompt-caching-dokumentasjonen, verdt å sjekke hvis du optimaliserer for cache-treff i en arbeidsflyt som er avhengig av subagentdelegering.
+
+Dette utfyller skills som de to hovedspakene Claude Code gir deg for konteksthåndtering: skills laster spesialiserte instruksjoner/verktøy inn i *samme* kontekst, mens subagenter skyver arbeid *ut* i en helt annen kontekst og bringer kun tilbake resultatet.
+
+## Prøv det selv
+
+Et vanlig mønster er å eksplisitt be om delegering når du vil at Claude skal utforske en stor eller ukjent kodebase uten å forurense hovedøkten din:
+
+```
+Use a subagent to investigate how authentication is handled across
+this codebase — trace the flow from the login route through to
+session storage — and report back a summary of the key files,
+functions, and any inconsistencies you find. Don't make any changes.
+```
+
+Subagenten leser gjennom de relevante filene, følger kallkjeden, og returnerer et konsist sammendrag (f.eks. "Auth-flyt: `routes/login.ts` → `services/authService.ts` → `session/store.ts`; merk at `store.ts` setter en 24-timers TTL som ikke er dokumentert andre steder"). Hovedøktens kontekst får kun dette sammendraget, ikke hver eneste fil subagenten åpnet underveis. Du kan deretter fortsette hovedoppgaven din — for eksempel å legge til en ny autentiseringsleverandør — med en ren kontekst og et pålitelig kart over systemet, i stedet for opphopet støy fra å manuelt grep-søke gjennom samme kodebase selv.
+
+## Når du bør bruke det (og når ikke)
+
+Bruk en subagent når en oppgave primært er undersøkende eller utforskende og du ikke trenger å bevare mellomstegene — kodebase-arkeologi, å spore en feils rotårsak på tvers av mange filer, eller å undersøke et ukjent bibliotek. Det passer også godt når hovedøkten din nærmer seg kontekstgrensen og du fortsatt har mye arbeid igjen: å delegere neste research-tunge bit holder hovedtråden brukbar lenger.
+
+Ikke bruk subagenter for små, raske oppslag der overheaden ved å sende og oppsummere ikke er verdt det, eller for oppgaver der du spesifikt trenger å gjennomgå og styre hvert mellomsteg — subagenter returnerer et sammendrag, så finmasket fram-og-tilbake er vanskeligere. De er heller ikke en erstatning for skills: hvis det du trenger er gjentakbare domenespesifikke instruksjoner eller verktøy lastet inn i den pågående samtalen, er en skill et mer direkte valg enn å sette opp en subagent. Til slutt bør du huske at subagentbruk har sin egen interaksjon med prompt-caching, så tung avhengighet av subagenter i en kostnadssensitiv arbeidsflyt bør sjekkes mot cache-dokumentasjonen fremfor å anta at den oppfører seg identisk med vanlige turer.
+
+## Kilder
+
+- https://code.claude.com/docs/en/how-claude-code-works.md
+- https://code.claude.com/docs/en/common-workflows.md
+- https://code.claude.com/docs/en/best-practices.md
+- https://code.claude.com/docs/en/prompt-caching.md

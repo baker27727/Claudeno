@@ -1,0 +1,93 @@
+---
+title: "Integrating MCP Servers and Custom Skills into Claude Code"
+description: "A practical guide to connecting external tools via MCP servers and packaging domain-specific workflows as skills, so Claude Code can reach beyond the codebase into your real toolchain."
+discoveredAt: "2026-07-14T07:11:43.624Z"
+updatedDate: "2026-07-16T08:03:00.016Z"
+author: "Claude Code Learn"
+trendScore: 0.626
+scoreBreakdown:
+  frequency: 0.5
+  recency: 0.979
+  engagement: 0.223
+  gap: 1
+tags:
+  - "MCP"
+  - "Claude Code"
+  - "skills"
+  - "plugins"
+  - "integrations"
+  - "tooling"
+sources:
+  - "https://code.claude.com/docs/en/best-practices.md"
+  - "https://code.claude.com/docs/en/desktop.md"
+  - "https://code.claude.com/docs/en/prompt-caching.md"
+  - "https://code.claude.com/docs/en/features-overview.md"
+  - "https://code.claude.com/docs/en/how-claude-code-works.md"
+relatedModules:
+  - "mcp-servers"
+  - "skills"
+  - "subagents"
+  - "hooks"
+  - "permissions-and-settings"
+relatedUseCases:
+  - "project-management-with-claude"
+  - "excel-and-data-analysis"
+  - "research-and-summarization-with-claude"
+relatedSkills:
+  - "docx"
+  - "pdf"
+  - "pptx"
+draft: false
+# Verified against Claude Code 2.1.210
+---
+# Integrating MCP Servers and Custom Skills into Claude Code
+
+## Quick summary
+
+Claude Code's default toolset (file editing, shell commands, git) covers general coding, but real teams also need access to internal APIs, databases, ticketing systems, and repeatable domain workflows. Two mechanisms extend Claude Code for this: **MCP servers**, which connect Claude to external tools and data sources, and **custom skills**, which package reusable, domain-specific instructions and scripts. Together with plugins, they turn a generic coding agent into a tool tailored to your stack.
+
+## What's new
+
+The Claude Code documentation and ecosystem now treat MCP servers, skills, and plugins as first-class, load-bearing parts of a setup rather than niche extras. The official best-practices guide explicitly lists "Connect MCP servers," "Create skills," "Create custom subagents," and "Install plugins" as steps for configuring your environment, alongside CLAUDE.md and permissions. Claude Code on desktop has a dedicated "Extend Claude Code" section covering "Connect external tools," "Use skills," and "Install plugins" as core product capabilities, not experimental features. The prompt-caching documentation confirms that connecting or disconnecting an MCP server, and enabling or disabling a plugin, are significant enough actions that they invalidate the prompt cache — meaning these integrations are treated as part of the model's effective context, not bolted-on side channels. On the broader Claude Platform, MCP has also moved further into managed infrastructure: MCP tunnels (research preview) had their management API relocated from an admin-only surface to `/v1/tunnels` on the Claude API itself, and session-level configuration overrides for Managed Agents can now replace an agent's MCP servers or skills for a single session without changing the underlying agent definition. The wider GitHub ecosystem reflects the same trend, with many active community projects built specifically around MCP servers and skill packages: examples include an MCP/CLI tool to speed up Claude Code on C# codebases, an uptime monitor exposing an MCP server so users can create monitors by asking Claude, and repositories of shareable Claude Code skills for specialized writing and tracing workflows.
+
+## How it works
+
+**MCP servers** are the connector layer. An MCP (Model Context Protocol) server exposes a set of tools, resources, or data sources over a standard protocol; Claude Code connects to it and the server's tools become available to Claude in that session, alongside its built-in tools (file operations, shell, etc.). Connecting one is registered explicitly in your setup — the Claude Code docs group this under "Configure your environment" next to permissions and hooks, meaning it's a deliberate, per-project or per-user configuration step, not automatic discovery. Because connecting or disconnecting an MCP server invalidates the prompt cache, Claude Code tracks the set of active MCP servers as part of the effective system context for a session — the model needs to know exactly which tools exist before it can reliably use them.
+
+**Custom skills** work differently: they are packaged instructions (and optionally scripts) that Claude loads and invokes for a specific task, rather than a live connection to an external system. The "Manage context with skills and subagents" guidance in the core-concepts documentation frames skills as a context-management tool: instead of stuffing long domain instructions into every prompt or CLAUDE.md, you push that knowledge into a skill that's only pulled into context when relevant. Skills complement rather than replace MCP servers — an MCP server gets you *access* (e.g., to a ticketing API), while a skill gets you *procedure* (e.g., how to file a ticket the way your team expects, including required fields and conventions).
+
+**Plugins** are the packaging and distribution layer for both. A plugin can bundle MCP server configuration, skills, hooks, and subagents together so a whole capability — for example, a security-review workflow — installs and enables as one unit. The `security-guidance` plugin documented for Claude Code illustrates this: installing it wires up checks that run on file edits, at the end of turns, and on commits, using rule files you can customize, without you having to hand-configure each piece separately.
+
+Practically, integrating a domain-specific tool involves three questions: (1) Does Claude need live read/write access to an external system? → MCP server. (2) Does Claude need to follow a specific, reusable procedure or convention? → Skill. (3) Do you want to distribute both together as a single installable capability for your team? → Plugin.
+
+## Hands-on example
+
+A team wants Claude Code to file bugs in their internal tracker using their team's specific ticket format, plus check every commit for security issues.
+
+```
+# 1. Connect an MCP server exposing the ticketing tool
+$ claude mcp add ticketing --transport stdio -- ./mcp-servers/ticketing-server
+
+# 2. Ask Claude to use it, backed by a skill describing your team's conventions
+> Using the ticketing MCP server, file a bug for the null-pointer
+> exception in src/payments/charge.go. Follow our team's bug-ticket
+> skill for required fields (severity, repro steps, owning team).
+
+# 3. Install a plugin that adds automated security review on every commit
+$ claude plugin install security-guidance
+```
+
+The MCP server gives Claude a `create_ticket` tool it can actually call; the skill tells it exactly how to fill that ticket in correctly (severity levels, required fields); the plugin adds an independent layer that reviews commits Claude makes, without any of the three needing to be re-explained in every prompt.
+
+## When to use it (and when not to)
+
+Use an MCP server when Claude genuinely needs to read or write to an external system in real time — a database, an API, a ticketing tool, a monitoring service. Use a custom skill when the need is procedural knowledge that would otherwise bloat CLAUDE.md or get repeated in every prompt — conventions, checklists, domain-specific formats. Use a plugin when you want to distribute a combination of these consistently across a team.
+
+Don't reach for an MCP server if a simple CLI tool or script already does the job — Claude Code can already call arbitrary shell commands, and connecting an MCP server has a real cost: it invalidates the prompt cache on connect/disconnect, and adds another moving part your team has to maintain and trust with credentials. Don't build a skill for one-off tasks; skills earn their cost only when reused. And be aware that both MCP servers and plugins can be built by third parties and community projects of wildly varying quality and support — vet what you connect, especially anything with access to credentials or production systems.
+
+## Sources
+
+- https://code.claude.com/docs/en/best-practices.md
+- https://code.claude.com/docs/en/desktop.md
+- https://code.claude.com/docs/en/prompt-caching.md
+- https://code.claude.com/docs/en/how-claude-code-works.md
