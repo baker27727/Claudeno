@@ -88,3 +88,7 @@ New environment variable `CLAUDE_CODE_PROCESS_WRAPPER`: corporate launchers can 
 ## What's new in v2.1.210
 
 Claude Code 2.1.210 adds startup warnings for `Write(path)`, `NotebookEdit(path)`, and `Glob(path)` permission rules — the recommended approach is to use `Edit(path)` or `Read(path)` instead for more precise access control.
+
+## What's new in v2.1.211
+
+Permission rules have been improved: when you grant "always allow" permissions within a git worktree, they now save at the repository root and persist across sessions and worktrees. Additionally, permission previews relayed to chat channels now neutralize bidirectional-override, zero-width, and look-alike quote characters to prevent tool inputs from visually altering approval messages.

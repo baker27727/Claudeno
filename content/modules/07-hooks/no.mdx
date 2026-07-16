@@ -148,3 +148,7 @@ Hooks håndhever; skills instruerer. Hvis noe *aldri* må glemmes, bruk en hook 
 ## Nytt i v2.1.207
 
 Plugin-hooks avviser nå `${user_config.*}` i shell-form-kommandoer som en shell-injeksjonssikkerhetsfiks. Bruk exec-form (`args`-matrise) eller miljøvariabelen `$CLAUDE_PLUGIN_OPTION_<KEY>` i stedet. Monitorer og headersHelper bør lese konfigverdier inne i skriptet i stedet for via kommandointerpolasjon.
+
+## Nytt i v2.1.211
+
+Auto-modusoppførselen er blitt raffinert: en PreToolUse-hooks `ask`-beslutning nå setter gulvet for beslutningen ved en ledetekst i stedet for å bli overstyrt av auto-modus for sandkasse-fri Bash, noe som sikrer at hook-utviklere har eksplisitt kontroll over godkjennelsesoppførselen.

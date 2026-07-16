@@ -1,3 +1,18 @@
+- id: "2.1.211"
+  version: "2.1.211"
+  date: "2026-07-16"
+  entry:
+    en: "Claude Code 2.1.211 adds stream-json enhancements with
+      `--forward-subagent-text`, improves accessibility with screen reader mode,
+      hardens permission previews, and fixes numerous issues including hook
+      decision handling, auto-mode behavior, file uploads, subagent resumption,
+      and background session stability."
+    no: "Claude Code 2.1.211 legger til stream-json-forbedringer med
+      `--forward-subagent-text`, forbedrer tilgjengelighet med
+      skjermleser-modus, styrker tillatelsesoversikter, og fikser numerous
+      problemer inkludert hook-beslutningshåndtering, auto-modusoppførselen,
+      filiopplastinger, underagent-gjenopptakelse, og bakgrunnssøkt-stabilitet."
+  sources: []
 - id: "2.1.210"
   version: "2.1.210"
   date: "2026-07-15"

@@ -94,3 +94,7 @@ in-session equivalent is [`/model`](/en/learn/slash-commands).)
 ## What's new in v2.1.210
 
 Claude Code 2.1.210 now shows a live elapsed-time counter in the collapsed tool summary line for long-running tool calls, so they visibly tick instead of appearing stuck. Additionally, the `claude attach` kommando has been improved to wait for the daemon to settle and apply terminal resizes once attachment completes, reducing "job not found" or "agent is still starting" errors during session transitions.
+
+## What's new in v2.1.211
+
+Claude Code 2.1.211 introduces the `--forward-subagent-text` flag and `CLAUDE_CODE_FORWARD_SUBAGENT_TEXT` environment variable. When enabled, subagent text and thinking are included in stream-json output, providing more detailed insight into subagent reasoning during automation.

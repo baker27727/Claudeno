@@ -141,3 +141,7 @@ Hooks enforce; skills instruct. If something must *never* be forgotten, use a ho
 ## What's new in v2.1.207
 
 Plugin hooks now reject `${user_config.*}` in shell-form commands as a shell-injection security fix. Use exec form (`args` array) or the `$CLAUDE_PLUGIN_OPTION_<KEY>` environment variable instead. Monitors and headersHelper should read config values inside the script rather than via command interpolation.
+
+## What's new in v2.1.211
+
+Auto mode behavior has been refined: a PreToolUse hook's `ask` decision now floors the decision at a prompt instead of being overridden by auto mode for unsandboxed Bash, ensuring hook developers have explicit control over approval behavior.

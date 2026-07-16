@@ -96,3 +96,7 @@ personal hook or a project's MCP server won't quietly change the result.
 ## What's new in v2.1.209
 
 Fixed background sessions auto-named by accepting a plan now showing that name on their agent-view row. Fixed background sessions that entered a git worktree resuming blank after a cold reopen from the agent list. Background agents now upgrade to a new version in the background right after a Claude Code update, instead of paying a slow stale-session upgrade when you attach. Completed background agents now stay listed in `/tasks` until cleanup instead of vanishing the moment they finish. Attaching to a stopped background agent now shows its transcript immediately while the session warms up, instead of a blank "Session is starting" screen.
+
+## What's new in v2.1.211
+
+Screen reader mode is now available for accessibility: run `claude --ax-screen-reader`, set `CLAUDE_AX_SCREEN_READER=1`, or add `"axScreenReader": true` to settings. This enables plain-text rendering optimized for screen readers. Additionally, integer environment variables like timeouts and token budgets now accept scientific notation (e.g., `1e6`) and digit separators (e.g., `64_000`).

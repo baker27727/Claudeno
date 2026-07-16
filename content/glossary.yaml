@@ -88,3 +88,14 @@
 - id: "permission-mode"
   en: "permission mode"
   no: "tillatelsesmodus"
+- id: "stream-json-output"
+  en: "stream-json output"
+  no: "stream-json-output"
+  note: "Structured JSON streaming format for automation and programmatic access
+    to Claude Code sessions."
+- id: "screen-reader-mode"
+  en: "screen reader mode"
+  no: "skjermleser-modus"
+  note: "Accessibility feature providing plain-text rendering optimized for screen
+    readers; enabled via --ax-screen-reader flag or CLAUDE_AX_SCREEN_READER
+    environment variable."
