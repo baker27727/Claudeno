@@ -1,0 +1,38 @@
+slug: "docx"
+title:
+  en: "DOCX Creation, Editing & Analysis"
+  no: "DOCX-oppretting, redigering og analyse"
+summary:
+  en: "Create, read, edit and manipulate Word (.docx) documents — generate new
+    documents with docx-js, or unpack/edit/repack raw XML for tracked changes,
+    comments, images and find-and-replace."
+  no: "Opprett, les, rediger og manipuler Word-dokumenter (.docx) — generer nye
+    dokumenter med docx-js, eller pakk ut/rediger/pakk inn rå XML for sporede
+    endringer, kommentarer, bilder og søk-og-erstatt."
+categories:
+  - "documents"
+  - "automation"
+source:
+  repo: "anthropics/skills"
+  path: "skills/docx/SKILL.md"
+  branch: "main"
+  license: "Proprietary. LICENSE.txt has complete terms"
+install:
+  command: "npx skills add anthropics/skills/docx"
+maturity: "experimental"
+level: "intermediate"
+worksWithout: false
+permissions:
+  - "bash"
+  - "file-read"
+  - "file-write"
+relatedSkills: []
+relatedModules: []
+lastVerified: "2026-07-15"
+verifiedVersion: "2.1.209"
+rubric:
+  docs: 5
+  safety: 4
+  reliability: 4
+  focus: 5
+archived: false

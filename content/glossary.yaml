@@ -82,3 +82,9 @@
   no: "CLAUDE_CODE_PROCESS_WRAPPER"
   note: "Environment variable for corporate launcher wrapping; kept in English as
     an environment variable identifier"
+- id: "plan-mode"
+  en: "plan mode"
+  no: "planleggingsmodus"
+- id: "permission-mode"
+  en: "permission mode"
+  no: "tillatelsesmodus"

@@ -1,0 +1,84 @@
+---
+title: "PPTX — Lag og rediger PowerPoint"
+description: "Les, lag og rediger .pptx-presentasjoner — hent ut tekst, jobb fra maler, bygg presentasjoner fra bunnen med pptxgenjs, og følg en streng design- og QA-prosess."
+categories: ["documents", "writing-marketing"]
+license: "Proprietary. LICENSE.txt has complete terms"
+install_command: "npx skills add anthropics/skills/pptx"
+level: "intermediate"
+works_without: false
+permissions: ["bash", "file-read", "file-write"]
+related_skills: []
+related_modules: []
+maturity: "experimental"
+---
+
+## Hva den gjør og hvorfor den finnes
+
+Denne ferdigheten lærer Claude en komplett arbeidsflyt for alt som involverer en `.pptx`-fil — enten det gjelder å lese, lage eller redigere en. Den dekker tre hovedspor:
+
+- **Lesing**: hent ut tekst med `markitdown`, generer en visuell miniatyroversikt, eller pakk ut rå XML for inspeksjon.
+- **Redigering**: jobb fra en eksisterende mal eller referansepresentasjon — pakk ut, manipuler lysbilder, rediger innhold, rydd opp og pakk sammen igjen.
+- **Lage fra bunnen av**: bruk `pptxgenjs` når det ikke finnes noen mal.
+
+Utover mekanikken bygger ferdigheten inn et detaljert designsystem (fargepaletter, layoutmønstre, typografipar, avstandsregler) slik at genererte presentasjoner unngår det "kjedelige AI-lysbilde"-utseendet — samt en obligatorisk QA-løkke (innholdssjekk + visuell inspeksjon via genererte bilder, helst med underagenter) før en presentasjon erklæres ferdig. Ferdigheten utløses hver gang en `.pptx`-fil er input, output, eller nevnes — selv om det uthentede innholdet bare skal brukes andre steder, som i en e-post.
+
+## Prøv den nå — TerminalSim
+
+```
+$ npx skills add anthropics/skills/pptx
+Installed skill: pptx
+
+$ claude "Oppsummer hovedpunktene fra quarterly-report.pptx"
+> Skill "pptx" activated (file extraction path)
+> Running: python -m markitdown quarterly-report.pptx
+> Extracted 14 slides of text — generating summary...
+
+$ claude "Gjør dette til en 8-siders pitch-deck med malen vår template.pptx"
+> Skill "pptx" activated (editing workflow)
+> Running: python scripts/thumbnail.py template.pptx
+> Running: python scripts/office/unpack.py template.pptx unpacked/
+> Editing slide XML, choosing "Ocean Gradient" palette for topic...
+> Packing → pitch-deck.pptx
+> Running QA: markitdown + placeholder grep + soffice render → slide images
+> Recommend reviewing rendered slides in a subagent before finalizing.
+```
+
+## Installasjon
+
+```bash
+npx skills add anthropics/skills/pptx
+```
+
+Krever flere eksterne verktøy for å fungere fullt ut:
+
+```bash
+pip install "markitdown[pptx]"    # tekstuttrekk
+pip install Pillow                # miniatyrgrid
+npm install -g pptxgenjs           # lage presentasjoner fra bunnen av
+# LibreOffice (soffice) — PDF-konvertering, for visuell QA
+# Poppler (pdftoppm)   — PDF til bilder, for visuell QA
+```
+
+Skript for redigering og QA (`thumbnail.py`, `unpack.py`, `soffice.py`) følger med ferdigheten under `scripts/`.
+
+## Sikkerhet og tillatelser
+
+- **Kjører lokale skript og CLI-verktøy** (`markitdown`, python-hjelpeskript, `soffice`, `pdftoppm`) — se over hvilke kommandoer Claude kjører, spesielt `soffice --headless`-konverteringer.
+- **Leser og skriver filer** i prosjektmappen din — utpakking av en `.pptx` oppretter en arbeidsmappe med rå XML; sammenpakking overskriver/oppretter output `.pptx`-filer. Ta sikkerhetskopi av originaler før store endringer.
+- Ferdigheten krever ikke nettverkstilgang selv; alle avhengigheter installeres én gang via pip/npm på forhånd.
+- Fordi utpakking eksponerer rå XML for lysbilder, bør du behandle den midlertidige mappen som sensitiv hvis presentasjonen inneholder konfidensielt innhold — rydd opp etter bruk.
+
+## Praktiske bruksområder
+
+- Uthenting og oppsummering av tekst fra en `.pptx` til en rapport eller e-post, uten å åpne PowerPoint.
+- Rebranding av en firmamal til en ny pitch-deck med konsistente farger, fonter og layout.
+- Generering av en helt ny presentasjon fra bunnen av (uten mal) til et foredrag eller en investorpitch.
+- Kombinering eller splitting av lysbildefiler, eller oppdatering av talenotater og kommentarer på tvers av en presentasjon.
+- Kjøring av en grundig visuell QA-runde (via genererte lysbildebilder) for å fange opp overlappende tekst, lav kontrast eller gjenværende plassholdertekst før levering.
+
+## Begrensninger
+
+- Krever flere eksterne avhengigheter (`markitdown`, `Pillow`, `pptxgenjs`, LibreOffice, Poppler) — ikke klar til bruk uten oppsett.
+- Visuell QA avhenger av rendering til PDF/bilder via LibreOffice og Poppler; uten disse er kun innholdsbasert (tekst) QA mulig.
+- Designveiledningen (paletter, fonter, layout) er foreskrivende råd innebygd i ferdigheten, ikke en garanti for visuell perfeksjon — en manuell gjennomgang anbefales likevel.
+- Redigering av eksisterende maler innebærer manipulering av rå OOXML; komplekse eller uvanlige malstrukturer kan kreve manuell inngripen utover den skriptede arbeidsflyten.
