@@ -112,18 +112,56 @@ async function callClaude(prompt: string): Promise<GenerationPlan> {
 }
 
 /**
- * The tool schema marks "updates" and "new_use_cases" as required, but tool
- * schema `required` is not always enforced strictly on the returned JSON —
- * a run on 2026-07-13 crashed with "plan.new_use_cases is not iterable"
- * because the field came back missing. Coerce both to arrays defensively
- * instead of trusting a raw type assertion, same principle applied to the
- * newer skills/topics pipelines.
+ * The tool schema marks fields as required, but tool schema `required` is
+ * not strictly enforced on the returned JSON — two separate crashes
+ * (2026-07-13: "plan.new_use_cases is not iterable"; 2026-07-13 again,
+ * post-fix: "Cannot read properties of undefined (reading 'join')" on
+ * `f.sources` inside publishUseCases) both came from trusting individual
+ * fields inside array items, not just the arrays' own shape. Normalize
+ * every field defensively — top-level arrays AND each item's fields —
+ * instead of patching one crash site at a time.
  */
+function str(v: unknown): string {
+  return typeof v === "string" ? v : "";
+}
+function strArr(v: unknown): string[] {
+  return Array.isArray(v) ? v.filter((x): x is string => typeof x === "string") : [];
+}
+function bool(v: unknown): boolean {
+  return typeof v === "boolean" ? v : false;
+}
+
+function normalizeUpdate(raw: unknown): UseCaseUpdate {
+  const o = (raw && typeof raw === "object" ? raw : {}) as Partial<UseCaseUpdate>;
+  return {
+    slug: str(o.slug),
+    profession: str(o.profession),
+    has_new_info: bool(o.has_new_info),
+    summary: str(o.summary),
+    corrected_en: str(o.corrected_en),
+    corrected_no: str(o.corrected_no),
+    sources: strArr(o.sources),
+  };
+}
+
+function normalizeNewCase(raw: unknown): NewUseCase {
+  const o = (raw && typeof raw === "object" ? raw : {}) as Partial<NewUseCase>;
+  return {
+    slug: str(o.slug),
+    profession: str(o.profession),
+    en: str(o.en),
+    no: str(o.no),
+    sources: strArr(o.sources),
+  };
+}
+
 function normalizePlan(raw: unknown): GenerationPlan {
   const obj = (raw && typeof raw === "object" ? raw : {}) as Partial<GenerationPlan>;
+  const updates = Array.isArray(obj.updates) ? obj.updates : [];
+  const newCases = Array.isArray(obj.new_use_cases) ? obj.new_use_cases : [];
   return {
-    updates: Array.isArray(obj.updates) ? obj.updates : [],
-    new_use_cases: Array.isArray(obj.new_use_cases) ? obj.new_use_cases : [],
+    updates: updates.map(normalizeUpdate),
+    new_use_cases: newCases.map(normalizeNewCase),
   };
 }
 
