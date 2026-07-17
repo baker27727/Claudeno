@@ -73,3 +73,7 @@ Editing and QA scripts (`thumbnail.py`, `unpack.py`, `soffice.py`) ship with the
 - Visual QA depends on rendering to PDF/images via LibreOffice and Poppler; without these, only content-level (text) QA is possible.
 - The design guidance (palettes, fonts, layouts) is prescriptive advice baked into the skill, not a guarantee of visual perfection — a manual review pass is still recommended.
 - Editing existing templates involves manipulating raw OOXML; complex or unusual template structures may require manual intervention beyond the scripted workflow.
+
+## Source update
+
+The skill now includes a comprehensive design system embedded in the workflow: eleven curated color palettes (Midnight Executive, Forest & Moss, Coral Energy, etc.) indexed by topic, typography pairings using safe fonts (Calibri, Cambria, Arial) with QA reliability notes, standardized spacing rules (0.5" margins, 0.3–0.5" gaps), and layout patterns (two-column, icon + text rows, grid layouts) to avoid generic AI-generated aesthetics. A new "Avoid" section calls out common visual mistakes: accent bars under titles, decorative stripes, cream/beige defaults, and text overflow. The QA section now mandates both content checks (markitdown + placeholder grep) and visual inspection via LibreOffice-rendered slide images, with detailed defect categories (overlap, contrast, alignment, margins).

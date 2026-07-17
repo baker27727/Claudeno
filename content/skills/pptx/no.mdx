@@ -73,3 +73,7 @@ Skript for redigering og QA (`thumbnail.py`, `unpack.py`, `soffice.py`) følger 
 - Visuell QA avhenger av rendering til PDF/bilder via LibreOffice og Poppler; uten disse er kun innholdsbasert (tekst) QA mulig.
 - Designveiledningen (paletter, fonter, layout) er foreskrivende råd innebygd i ferdigheten, ikke en garanti for visuell perfeksjon — en manuell gjennomgang anbefales likevel.
 - Redigering av eksisterende maler innebærer manipulering av rå OOXML; komplekse eller uvanlige malstrukturer kan kreve manuell inngripen utover den skriptede arbeidsflyten.
+
+## Oppdatering fra kilde
+
+Ferdigheten inkluderer nå et omfattende designsystem innebygd i arbeidsflyten: elleve kuraterte fargepaletter (Midnight Executive, Forest & Moss, Coral Energy, osv.) indeksert etter tema, typografipar som bruker sikre fonter (Calibri, Cambria, Arial) med QA-pålitelighetsnotater, standardiserte avstandsregler (0,5" marginer, 0,3–0,5" gap), og layoutmønstre (to kolonner, ikon + tekstrader, gridlayout) for å unngå generisk AI-generert estetikk. En ny "Unngå"-seksjon peker ut vanlige visuelle feil: aksentriadbrytere under titler, dekorative striper, krem/beige standarder og tekstoverflyt. QA-delen krever nå både innholdssjekker (markitdown + plassholdergrepet) og visuell inspeksjon via LibreOffice-genererte lysbildebilder, med detaljerte defektkategorier (overlapping, kontrast, justering, marginer).

@@ -4,11 +4,13 @@ title:
   no: "PPTX — Lag og rediger PowerPoint"
 summary:
   en: "Read, create, and edit .pptx presentations — extract text, work from
-    templates, build decks from scratch with pptxgenjs, and apply a strict
-    design and QA workflow."
+    templates, build decks from scratch with pptxgenjs, choose from a design
+    system of color palettes and layouts, and follow a mandatory QA workflow
+    with visual inspection."
   no: "Les, lag og rediger .pptx-presentasjoner — hent ut tekst, jobb fra maler,
-    bygg presentasjoner fra bunnen med pptxgenjs, og følg en streng design- og
-    QA-prosess."
+    bygg presentasjoner fra bunnen med pptxgenjs, velg fra et designsystem med
+    fargepaletter og layout, og følg en obligatorisk QA-arbeidsflyt med visuell
+    inspeksjon."
 categories:
   - "documents"
   - "writing-marketing"
@@ -28,8 +30,8 @@ permissions:
   - "file-write"
 relatedSkills: []
 relatedModules: []
-lastVerified: "2026-07-15"
-verifiedVersion: "2.1.209"
+lastVerified: "2026-07-17"
+verifiedVersion: "2.1.211"
 rubric:
   docs: 5
   safety: 4

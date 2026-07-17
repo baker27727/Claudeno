@@ -3,12 +3,12 @@ title:
   en: "DOCX Creation, Editing & Analysis"
   no: "DOCX-oppretting, redigering og analyse"
 summary:
-  en: "Create, read, edit and manipulate Word (.docx) documents — generate new
-    documents with docx-js, or unpack/edit/repack raw XML for tracked changes,
-    comments, images and find-and-replace."
-  no: "Opprett, les, rediger og manipuler Word-dokumenter (.docx) — generer nye
-    dokumenter med docx-js, eller pakk ut/rediger/pakk inn rå XML for sporede
-    endringer, kommentarer, bilder og søk-og-erstatt."
+  en: "Create, read, edit and manipulate Word (.docx) and Word template (.dotx)
+    documents — generate new documents with docx-js, or unpack/edit/repack raw
+    XML for tracked changes, comments, images and find-and-replace."
+  no: "Opprett, les, rediger og manipuler Word-dokumenter (.docx) og Word-malene
+    (.dotx) — generer nye dokumenter med docx-js, eller pakk ut/rediger/pakk inn
+    rå XML for sporede endringer, kommentarer, bilder og søk-og-erstatt."
 categories:
   - "documents"
   - "automation"
@@ -28,8 +28,8 @@ permissions:
   - "file-write"
 relatedSkills: []
 relatedModules: []
-lastVerified: "2026-07-15"
-verifiedVersion: "2.1.209"
+lastVerified: "2026-07-17"
+verifiedVersion: "2.1.211"
 rubric:
   docs: 5
   safety: 4
