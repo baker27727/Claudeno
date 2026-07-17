@@ -99,3 +99,13 @@
   note: "Accessibility feature providing plain-text rendering optimized for screen
     readers; enabled via --ax-screen-reader flag or CLAUDE_AX_SCREEN_READER
     environment variable."
+- id: "auto-background"
+  en: "auto-background"
+  no: "auto-bakgrunn"
+  note: "Automatic background shifting of long-running MCP tool calls to keep the
+    session responsive."
+- id: "spawn-cap"
+  en: "spawn cap"
+  no: "spawning-grense"
+  note: "Per-session limit on the number of subagents that can be created to
+    prevent delegation runaway loops."

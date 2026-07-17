@@ -98,3 +98,7 @@ Claude Code 2.1.210 now shows a live elapsed-time counter in the collapsed tool 
 ## What's new in v2.1.211
 
 Claude Code 2.1.211 introduces the `--forward-subagent-text` flag and `CLAUDE_CODE_FORWARD_SUBAGENT_TEXT` environment variable. When enabled, subagent text and thinking are included in stream-json output, providing more detailed insight into subagent reasoning during automation.
+
+## What's new in v2.1.212
+
+**New `claude auto-mode reset` command**: Restore the default auto-mode configuration with a confirmation prompt (pass `--yes` to skip). **MCP tool auto-background**: Tool calls running longer than 2 minutes now move to the background automatically so your session stays usable. Configure the threshold or disable with `CLAUDE_CODE_MCP_AUTO_BACKGROUND_MS`.

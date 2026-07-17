@@ -103,3 +103,7 @@ Fikset bakgrunnsoktor som ble gitt navn automatisk ved å godta en plan som nå 
 ## Nytt i v2.1.211
 
 Skjermleser-modus er nå tilgjengelig for tilgjengelighet: kjør `claude --ax-screen-reader`, sett `CLAUDE_AX_SCREEN_READER=1`, eller legg til `"axScreenReader": true` i innstillinger. Dette aktiverer tekstgjengivelse optimalisert for skjermlesere. I tillegg aksepterer heltallsmiljøvariable som tidsavbrudd og tokenbud-sjekker nå vitenskapelig notasjon (f.eks. `1e6`) og siffer-separatorer (f.eks. `64_000`).
+
+## Nytt i v2.1.212
+
+**WebSearch-ratebegrensning**: En session-bred grense på WebSearch-verktøykall (standard 200) stopper runaway-søkesløyfer. Juster via `CLAUDE_CODE_MAX_WEB_SEARCHES_PER_SESSION`. **Forbedret modellbytting**: Hodeløse/SDK-økter bruker nå en `set_model`-kontrollforespørsel midt i turen; neste modell-rundgang bruker den nye modellen i stedet for å vente på neste tur.

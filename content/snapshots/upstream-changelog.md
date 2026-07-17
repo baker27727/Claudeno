@@ -1,11 +1,62 @@
 # Upstream snapshot — Claude Code CHANGELOG
 
-Last observed version: 2.1.211
+Last observed version: 2.1.212
 
 > This file is maintained automatically by `scripts/watch-upstream.ts`.
 > It stores the last-seen upstream CHANGELOG so daily diffs can be computed.
 
 # Changelog
+
+## 2.1.212
+
+- `/fork` now copies your conversation into a new background session (its own row in `claude agents`) while you keep working; the in-session subagent it used to launch is now `/subtask`
+- Added `claude auto-mode reset` to restore the default auto-mode configuration, with a confirmation prompt (pass `--yes` to skip)
+- Added a session-wide limit on WebSearch tool calls (default 200, tunable via `CLAUDE_CODE_MAX_WEB_SEARCHES_PER_SESSION`) to stop runaway search loops
+- Added a per-session cap on subagent spawns (default 200, override with `CLAUDE_CODE_MAX_SUBAGENTS_PER_SESSION`) to stop runaway delegation loops; `/clear` resets the budget
+- MCP tool calls running longer than 2 minutes now move to the background automatically so the session stays usable; configure the threshold or disable with `CLAUDE_CODE_MCP_AUTO_BACKGROUND_MS`
+- Typing `/resume` in the agent view now opens a picker of past sessions — including sessions deleted from the list — and resumes your pick as a background session
+- Fixed plan mode auto-running file-modifying Bash commands (e.g. `touch`, `rm`) without a permission prompt or SDK `canUseTool` callback
+- Fixed worktree creation following a repository-committed symlink at `.claude/worktrees`, which could create files outside the repository
+- Fixed a `continue:false` hook's halt being dropped when the tool fails or completes mid-stream, and hook infrastructure errors being misreported as user rejections
+- Fixed SIGTERM during a running Bash tool orphaning the command's process tree in print/SDK mode; the CLI now aborts the turn, kills the tree, and exits 143
+- Fixed `/background` and `claude --bg` failing with "EUNKNOWN: unknown error, uv_spawn" on Windows when Group Policy blocks PowerShell 5.1; the daemon now prefers PowerShell 7
+- Fixed shell mode (`!`) not executing commands containing file paths while the path autocomplete popup was open
+- Fixed auto-mode denial notifications rendering broken characters when a long denial reason was truncated mid-emoji
+- Fixed Ctrl+J not inserting a newline in the agent view dispatch input on terminals with extended key reporting, and surfaced the newline shortcut in the `?` help overlay
+- Fixed `/ultrareview` rejecting PR references like `#123`, `PR 123`, and pasted PR URLs; error hints now name the command you actually typed
+- Fixed `/ultrareview <branch>` not fetching the branch from origin when it exists remotely; it now suggests the closest branch name on typos
+- Fixed `/ultrareview` skipping the billing confirmation in a new conversation after `/clear`
+- Fixed `/ultrareview`'s "not a git repository" error on Claude Desktop now suggesting the project's repository folder instead of terminal commands
+- Fixed hosted (host-managed) sessions failing at startup when repository settings configured mTLS certs, extra CA bundles, or OAuth scopes; these transport settings are now ignored with a warning
+- Fixed a spurious "File has not been read yet" error when editing a file that had been read with offset/limit before resuming a session
+- Fixed `ExitWorktree` failing with "no active EnterWorktree session" after resuming a session with `--continue`/`--resume` in print/SDK mode
+- Fixed the workflow agent grid staying empty for Remote Control clients that join a session mid-run
+- Fixed streaming-mode control requests being marked complete before their handler finished, which could lose the request on session restart
+- Fixed background sessions created with `/fork` losing their live-parent protection after a state write failure
+- Fixed reopening a stopped background session from the agent view failing silently — it now resumes the session, or shows why it can't and lets you force a restart
+- Fixed agent teams: a stopping teammate could send the leader duplicate idle notifications when team initialization re-ran within a session
+- Fixed the plan-approval dialog footer splitting "ctrl+g to edit in <editor>" apart when the file path is long
+- Fixed the welcome banner keeping its old panel widths after a combined width+height terminal resize in fullscreen mode
+- Fixed diff previews losing their line numbers and +/- markers in narrow layouts
+- Fixed @-mentions attaching nothing after a partial file read, plugin uninstall targeting the wrong marketplace, and false "Command timed out" on exit code 143
+- Fixed OpenTelemetry HTTP exports being rejected with 411/400 by Azure Monitor and other endpoints that don't accept chunked transfer encoding
+- Fixed OTLP event log records missing `trace_id`/`span_id` when `TRACEPARENT` is set in SDK/headless mode
+- Fixed conversations with many images incorrectly failing with "Request too large" errors, and improved the error message to explain the actual cause
+- Fixed web search and web fetch returning "API Error" text as search results or page content when the API was overloaded
+- Improved web search and web fetch reliability by retrying 529 errors and rate-limited requests with bounded backoff
+- Improved prompt caching: the mid-conversation system block now works behind LLM gateways and custom base URLs (Bedrock, Vertex, 1P)
+- Improved background agent attach: cold-attaching now instantly shows the formatted transcript while the session boots, instead of a blank wait
+- Reduced token usage in inter-agent messaging: `SendMessage` bodies are no longer duplicated into replayed history and tool results
+- Changed `/fork` to name the copy after your prompt when the session has no title, so the row is recognizable in the agent view
+- Changed bare `/btw` to reopen the side-question panel on your most recent exchange so you can browse earlier answers
+- Changed the `←` footer hint to pulse `N done` for a moment when a background agent finishes while nothing needs your input
+- Deprecated the Task tool's `mode` parameter (now ignored); subagents inherit the parent session's permission mode by default
+- Changed Enterprise `forceLoginMethod` to be enforced for VS Code extension, SDK, `setup-token`, and `install-github-app` logins, not just the terminal
+- Changed session transcripts to record the reasoning effort level on each assistant message
+- Changed headless/SDK sessions to apply a `set_model` control request mid-turn; the next model round-trip uses the new model instead of waiting for the next turn
+- Changed agent view / `claude agents --json`: sessions waiting on a sandbox, MCP-input, or managed-settings prompt now show as "Needs input" instead of "Working"
+- Updated the auth status panel title from "Cloud authentication" to "Authentication"
+- Corrected an earlier release note (2.1.200): tmux through the 3.6 series lacks synchronized output; newer tmux with support is detected automatically
 
 ## 2.1.211
 
@@ -55,58 +106,4 @@ Last observed version: 2.1.211
 - Fixed the `ultracode` keyword opt-in firing on non-human-originated input such as webhook payloads and relayed PR comments
 - Fixed a rendered text fragment leaking into crash telemetry when a UI component returned content outside a styled text element
 - Fixed paste markers leaking into external editors opened from Claude Code, which could appear as stray È/É characters around pasted text
-- Fixed `claude attach` sometimes failing with "job not found" or "agent is still starting" errors during session transitions — attach now waits for the daemon to settle, and terminal resizes during a slow attach are applied once it completes
-- Fixed a session crash when a tool's result renderer returned a numeric bigint value or plain text instead of a UI element
-- Fixed a hook callback timeout being misreported to the model as a user rejection, which made unattended sessions stop and wait
-- Fixed Claude assuming a `cd` took effect after its command was moved to the background; the tool result now states the working directory is unchanged
-- Fixed plugin-provided MCP servers being torn down when MCP servers are re-synced mid-session
-- Fixed plan approvals without edits being labeled "(edited by user)" and overwriting the plan file with a stale snapshot
-- Fixed `/doctor` skipping its auto-mode-default proposal on Bedrock, Vertex, and Foundry, where auto mode no longer needs an opt-in
-- Fixed Grep content mode claiming "No matches found" when paginating past the end of results
-- Fixed unmatched `$1`/`$2` positional placeholders in skills and commands being silently stripped; they are now preserved verbatim
-- Fixed plugin cache writes leaving temp files behind on failure and failing on locked-file renames on Windows and network filesystems
-- Fixed background workers crash-looping when a client resets its connection to the background service
-- Fixed `claude agents --effort ultracode` not reaching dispatched sessions; the value was silently dropped
-- Fixed pressing ← to open the agents view dropping the task tracker when returning to the session
-- Fixed the agents dashboard retaining pasted images from abandoned reply drafts after their session was deleted
-- Fixed killed background sessions leaving a permanent `git worktree lock` behind; the periodic sweep now releases locks whose owning process is gone
-- Fixed SDK MCP servers registered via an `initialize` control request waiting until the next turn to start connecting
-- Fixed returning to the agents view from a session leaving overlapping ghost frames with `CLAUDE_CODE_DISABLE_ALTERNATE_SCREEN=1`
-- Fixed late-appearing `.claude/*` symlinks not being reconciled into the sandbox deny-write list
-- Hardened the Agent tool against indirect prompt injection via content a subagent read
-- Improved the Bash/PowerShell tool message when a command hits its timeout and is auto-backgrounded, so the model can distinguish a hang from an explicit background request
-- Improved auto mode: the permission classifier now defaults to Sonnet 5 for external sessions, validated on the session's first request and pinned for the session
-- Improved the bundled dataviz skill's chart color validation with perceptual OKLab color difference and recalibrated color-blindness thresholds
-- Memory writes that leave a MEMORY.md index over its read limit now produce an explicit error instead of silent truncation
-- Screen reader mode now announces permission mode changes aloud when cycling modes with Shift+Tab
-- The agents footer hint now shows how many background agents are waiting on your input, with a brief color emphasis when the count changes
-- Agent view: the session you pressed ← from stays visibly marked even after mouse hover or arrow keys move the selection
-- Fable temporarily shows as unavailable in the advisor picker while a server-side issue causing Fable advisor failures is fixed
-
-## 2.1.209
-
-- Fixed /model and other dialogs being blocked in `claude agents` background sessions (reverts an overly broad guard)
-
-## 2.1.208
-
-- Added screen reader mode: opt-in plain-text rendering for screen reader users. Run `claude --ax-screen-reader`, set CLAUDE_AX_SCREEN_READER=1, or add "axScreenReader": true to settings.
-- Added `vimInsertModeRemaps` setting: map two-key insert-mode sequences like `jj` to Escape in vim mode
-- Added `CLAUDE_CODE_PROCESS_WRAPPER`: agent view and the background service now honor a corporate launcher by running every Claude Code self-spawn through a required wrapper executable
-- Added mouse-click support for multi-select menus and "Other" input rows in fullscreen mode
-- Fixed fast mode staying off after switching back to a model that supports it — it now restores automatically when enabled in settings
-- Fixed replies typed to a background agent being lost when delivery fails — the text is now saved and delivered when the session restarts
-- Fixed background-session attach failing permanently ("Couldn't start the background daemon") after an update replaced the binary a running `claude agents` process was launched from
-- Fixed the context window (and auto-compact indicator) briefly resetting to 200k after the CLI auto-updates, causing a false "100% context used" when resuming long-context sessions
-- Fixed supervised and background sessions crashing when a server closed an HTTP/2 connection with a GOAWAY while requests were in flight
-- Fixed truncated stream-json/JSON output and missing result message when piping large responses from `claude -p`
-- Fixed `CLAUDE_CODE_MAX_OUTPUT_TOKENS` and similar env vars silently using the mantissa of scientific-notation values (`1e6` became `1`)
-- Fixed very large markdown tables stalling rendering or using excessive memory; tables over 200 rows show the first 200 with a "… N more rows" notice
-- Fixed the Edit tool failing on files modified after reading when the target text still matches uniquely
-- Fixed Read reporting empty files as "shorter than offset", Grep silently returning "No files found" for invalid regex patterns, Grep count mode under-reporting totals when paginated, and Glob crashing with an unclear error when the pattern, path, or working directory contained a null byte
-- Fixed `apiKeyHelper` script failures being hidden behind a generic 401 after ~10 silent retries; the script's own error is now shown within 3 attempts
-- Fixed Bedrock streaming requests failing with a misleading "Truncated event message received" when a gateway transforms the response — the error now names the content-type and points at the proxy
-- Fixed `/upgrade` showing a login flow instead of the upgrade URL when the browser fails to open
-- Fixed stream-json input killing the session on blank CRLF or whitespace-only lines from Windows-style SDK hosts
-- Fixed headless stream-json sessions hanging permanently when a `control_request` carried a non-string `set_model` payload; the CLI now answers with an error response
-- Fixed repeated "No completion record was found" notices on session resume — orphaned background tasks now collapse into a single summary
-- Fixed Remote Control clients attaching to a terminal-hosted session not seeing background agents and w
+- Fixed `claude attach` sometimes fa

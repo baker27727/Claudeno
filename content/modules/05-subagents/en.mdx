@@ -82,3 +82,7 @@ A subagent spawns a separate Claude with its own context; a skill teaches the *s
 ## What's new in v2.1.206
 
 Background agents now upgrade to a new version in the background immediately after a Claude Code update, rather than paying a slow stale-session upgrade cost when you attach to them. Additionally, the agents view has been improved: the status column now uses the full terminal width instead of truncating at 64 characters, sessions now display a colored state word and a classifier-written headline instead of raw tool call text, and rows that edit, merge, comment on, or push to an existing PR now link it directly in the session list. Several critical bugs have been fixed, including background agents becoming permanently unresponsive when the daemon's økt token went stale (they now recover automatically), and sessions becoming stuck showing "Needs input" in the agent list after the question was already answered.
+
+## What's new in v2.1.212
+
+**Subagent spawn limits**: A per-session cap (default 200) now prevents runaway delegation loops. Override with `CLAUDE_CODE_MAX_SUBAGENTS_PER_SESSION`. Use `/clear` to reset the budget. **Deprecation**: The Task tool's `mode` parameter is now ignored; subagents inherit the parent session's permission mode by default.

@@ -106,3 +106,7 @@ The `/cd` command now provides directory path suggestions similar to the `/add-d
 ## What's new in v2.1.207
 
 The `/cd` command now provides directory path suggestions matching the behavior of `/add-dir`. The `/doctor` command has been expanded into a full setup checkup that can diagnose and fix issues (alias: `/checkup`), including a check that proposes trimming checked-in `CLAUDE.md` files by cutting content Claude could derive from the codebase.
+
+## What's new in v2.1.212
+
+**New `/fork` behavior**: `/fork` now copies your conversation into a new background session (visible as its own row in `claude agents`) while you continue working in the current session. The in-session subagent it used to launch is now available via `/subtask`. **New `/resume` picker**: Type `/resume` in the agent view to open a picker of past sessions—including deleted ones—and resume your choice as a background session.

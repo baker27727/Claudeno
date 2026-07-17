@@ -100,3 +100,7 @@ Fixed background sessions auto-named by accepting a plan now showing that name o
 ## What's new in v2.1.211
 
 Screen reader mode is now available for accessibility: run `claude --ax-screen-reader`, set `CLAUDE_AX_SCREEN_READER=1`, or add `"axScreenReader": true` to settings. This enables plain-text rendering optimized for screen readers. Additionally, integer environment variables like timeouts and token budgets now accept scientific notation (e.g., `1e6`) and digit separators (e.g., `64_000`).
+
+## What's new in v2.1.212
+
+**WebSearch rate limiting**: A session-wide limit on WebSearch tool calls (default 200) stops runaway search loops. Tune via `CLAUDE_CODE_MAX_WEB_SEARCHES_PER_SESSION`. **Improved model switching**: Headless/SDK sessions now apply a `set_model` control request mid-turn; the next model round-trip uses the new model instead of waiting for the next turn.

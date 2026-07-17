@@ -1,3 +1,23 @@
+- id: "2.1.212"
+  version: "2.1.212"
+  date: "2026-07-17"
+  entry:
+    en: "Slash command changes: `/fork` now creates background sessions, `/resume`
+      opens a session picker, `/subtask` replaces inline subagent launching. New
+      controls: `claude auto-mode reset`, WebSearch rate limiting, MCP
+      auto-background tool handling, per-session subagent spawn caps. Numerous
+      bug fixes including plan mode permission prompts, symlink worktree
+      creation, shell mode autocomplete, `/ultrareview` branch handling, hosted
+      session startup, and streaming-mode request tracking."
+    no: "Slash-kommando-endringer: `/fork` oppretter nå bakgrunnsøkter, `/resume`
+      åpner en session-velger, `/subtask` erstatter inline underagent-oppstart.
+      Nye kontroller: `claude auto-mode reset`, WebSearch-ratebegrensning, MCP
+      auto-bakgrunn-verktøyhåndtering, per-økt subagent-spawning-begrensninger.
+      Flere feilrettinger inkludert planleggingsmodus tillatelser-ledetekster,
+      symlink-worktree-opprettelse, shell-modus autofullføring, `/ultrareview`
+      branch-håndtering, hosted session-oppstart, og
+      streaming-mode-forespørselssporing."
+  sources: []
 - id: "2.1.211"
   version: "2.1.211"
   date: "2026-07-16"

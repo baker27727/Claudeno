@@ -83,3 +83,7 @@ En underagent starter en egen Claude med egen kontekst; en skill lærer den *sam
 ## Nytt i v2.1.206
 
 Underagenter oppgraderes nå til en ny versjon i bakgrunnen umiddelbart etter en Claude Code-oppdatering, i stedet for å betale kostnaden ved en treg utdatert-økt-oppgradering når du kobler til dem. I tillegg er visningen av agenter blitt forbedret: statuskolonnen bruker nå hele terminalbredden i stedet for å kutte av ved 64 tegn, økter viser nå et fargekodet statusord og en klassifiseringsskrevet overskrift i stedet for rå verktøykalltest, og rader som redigerer, slår sammen, kommenterer eller pusher til en eksisterende PR, linker den nå direkte i sesjonslisten. Flere kritiske feil har blitt fikset, inkludert underagenter som blir permanent uresponsive når demonens økt-token ble foreldet (de kommer seg nå automatisk), og økter som blir stuck med "Trenger input" i agentlisten etter at spørsmålet allerede var besvart.
+
+## Nytt i v2.1.212
+
+**Grenser for underagent-spawning**: En per-økt grense (standard 200) forhindrer nå runaway-delegeringssløyfer. Overstyring med `CLAUDE_CODE_MAX_SUBAGENTS_PER_SESSION`. Bruk `/clear` til å tilbakestille budsjettet. **Avskrevet**: Task-verktøyets `mode`-parameter ignoreres nå; underagenter arver tillatelsesmodus fra overordnet økt som standard.
