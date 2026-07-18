@@ -152,3 +152,7 @@ Plugin-hooks avviser nå `${user_config.*}` i shell-form-kommandoer som en shell
 ## Nytt i v2.1.211
 
 Auto-modusoppførselen er blitt raffinert: en PreToolUse-hooks `ask`-beslutning nå setter gulvet for beslutningen ved en ledetekst i stedet for å bli overstyrt av auto-modus for sandkasse-fri Bash, noe som sikrer at hook-utviklere har eksplisitt kontroll over godkjennelsesoppførselen.
+
+## Nytt i v2.1.214
+
+SessionStart-hooks rapporterer nå kilde `"fork"` når en økt begynner som en fork i stedet for `"resume"`. I tillegg har single-segment `dir/**` hook `if:`-betingelser endret seg til å samsvare bare med `<cwd>/dir`; bruk `**/dir/**` for samsvar i alle dybder. Merk at `deny`/`ask`-tillatelsesregler beholder sitt opprinnelige samsvar i alle dybder.

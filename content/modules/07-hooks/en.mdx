@@ -145,3 +145,7 @@ Plugin hooks now reject `${user_config.*}` in shell-form commands as a shell-inj
 ## What's new in v2.1.211
 
 Auto mode behavior has been refined: a PreToolUse hook's `ask` decision now floors the decision at a prompt instead of being overridden by auto mode for unsandboxed Bash, ensuring hook developers have explicit control over approval behavior.
+
+## What's new in v2.1.214
+
+SessionStart hooks now report source `"fork"` when a session begins as a fork instead of `"resume"`. Additionally, single-segment `dir/**` hook `if:` conditions have changed to match only `<cwd>/dir`; use `**/dir/**` for any-depth matching. Note that `deny`/`ask` permission rules retain their original any-depth behavior.

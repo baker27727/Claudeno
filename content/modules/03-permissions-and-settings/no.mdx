@@ -94,3 +94,7 @@ Claude Code 2.1.210 legger til oppstartadvarsler for `Write(path)`, `NotebookEdi
 ## Nytt i v2.1.211
 
 Tillatelelsesregler har blitt forbedret: når du gir "alltid tillat"-tillatelser innen et git-arbeidsteam, lagres de nå i kodelagerets rot og vedvarer på tvers av økter og arbeidsteam. I tillegg nøytraliserer tillatelsesoversikter videresendt til chakanaler nå toveis-overstyring, nullbredde og tilsvarende sitattegn for å forhindre at verktøyinput visuelt endrer godkjenningsmeldinger.
+
+## Nytt i v2.1.214
+
+Tillatelseskontroller er forbedret i Claude Code 2.1.214. Single-segment `dir/**` tillatte regler samsvarer nå bare med `<cwd>/dir` i stedet for `dir/` hvor som helst i treet (skriv `**/dir/**` for samsvar i alle dybder). I tillegg vises tillatelsesmeldinger nå for `docker`-kommandoer som bruker daemon-redirect-flagg (`--url`, `--connection`, `--identity`) som tidligere kjørte uten godkjenning.

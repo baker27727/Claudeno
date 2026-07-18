@@ -109,3 +109,8 @@
   no: "spawning-grense"
   note: "Per-session limit on the number of subagents that can be created to
     prevent delegation runaway loops."
+- id: "endconversation-tool"
+  en: "EndConversation tool"
+  no: "EndConversation-verktøy"
+  note: "Tool allowing Claude to end sessions with highly abusive users or
+    jailbreak attempts; available since 2.1.214 and on claude.ai since 2025"
