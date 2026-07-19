@@ -188,6 +188,10 @@ const LOCALIZED_SEGMENT_TO_LOCALE: Record<string, Locale> = {
 };
 const LOCALE_TO_LOCALIZED_SEGMENT: Record<Locale, string> = { no: "guider", en: "guides" };
 const USE_CASE_SEGMENT: Record<Locale, string> = { no: "fagomrader", en: "use-cases" };
+// Topics ("Insights") live nested one level under the use-case index, and
+// that second segment is also localized (innsikt/insights) — must be swapped
+// too, or hreflang points at a segment that only exists in the source locale.
+const TOPIC_SEGMENT: Record<Locale, string> = { no: "innsikt", en: "insights" };
 
 /**
  * يبدّل بين مسارَي اللغة مع الحفاظ على بقية المسار (لروابط hreflang ومبدّل
@@ -199,12 +203,17 @@ export function switchLocalePath(pathname: string, to: Locale): string {
   const segMatch = stripped.match(/^\/([^/]+)(\/.*)?$/);
   const firstSegment = segMatch?.[1];
   if (firstSegment && firstSegment in LOCALIZED_SEGMENT_TO_LOCALE) {
-    const rest = segMatch?.[2] ?? "";
+    let rest = segMatch?.[2] ?? "";
     // Use the correct localized segment for the target locale. Guides and
     // use-cases have different slug segments per locale.
     let targetSegment = LOCALE_TO_LOCALIZED_SEGMENT[to];
     if (firstSegment === "fagomrader" || firstSegment === "use-cases") {
       targetSegment = USE_CASE_SEGMENT[to];
+      // Swap the nested "insights"/"innsikt" segment too, if present.
+      const restMatch = rest.match(/^\/(insights|innsikt)(\/.*)?$/);
+      if (restMatch) {
+        rest = `/${TOPIC_SEGMENT[to]}${restMatch[2] ?? ""}`;
+      }
     }
     return `/${to}/${targetSegment}${rest}`;
   }
