@@ -1,11 +1,15 @@
 # Upstream snapshot — Claude Code CHANGELOG
 
-Last observed version: 2.1.214
+Last observed version: 2.1.215
 
 > This file is maintained automatically by `scripts/watch-upstream.ts`.
 > It stores the last-seen upstream CHANGELOG so daily diffs can be computed.
 
 # Changelog
+
+## 2.1.215
+
+- Claude no longer runs the `/verify` and `/code-review` skills on its own; invoke them with `/verify` or `/code-review` when you want them
 
 ## 2.1.214
 
@@ -98,5 +102,4 @@ Last observed version: 2.1.214
 - Improved background agent attach: cold-attaching now instantly shows the formatted transcript while the session boots, instead of a blank wait
 - Reduced token usage in inter-agent messaging: `SendMessage` bodies are no longer duplicated into replayed history and tool results
 - Changed `/fork` to name the copy after your prompt when the session has no title, so the row is recognizable in the agent view
-- Changed bare `/btw` to reopen the side-question panel on your most recent exchange so you can browse earlier answers
-- Changed the `←` footer hint to pulse `N done` for a moment when a background agent finishes w
+- Changed bare `/btw` to reopen the side-question panel on yo

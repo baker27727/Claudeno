@@ -1,3 +1,12 @@
+- id: "2.1.215"
+  version: "2.1.215"
+  date: "2026-07-19"
+  entry:
+    en: "Claude no longer runs the `/verify` and `/code-review` skills on its own;
+      invoke them with `/verify` or `/code-review` when you want them"
+    no: "Claude kjører ikke lenger `/verify` og `/code-review` skills automatisk;
+      påkall dem med `/verify` eller `/code-review` når du ønsker det"
+  sources: []
 - id: "2.1.214"
   version: "2.1.214"
   date: "2026-07-18"
