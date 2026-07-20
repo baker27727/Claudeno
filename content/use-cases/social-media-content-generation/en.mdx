@@ -1,0 +1,306 @@
+---
+title: Generate Social Media Content with Claude Code
+description: Use Claude Code to create, optimize, and batch-generate social media posts across multiple platforms with consistent branding and messaging.
+updatedDate: 2025-01-17T00:00:00Z
+author: Claude Code Learn
+profession: social-media-with-claude
+difficulty: beginner
+tools:
+  - Claude Code
+  - Claude API
+  - Python
+Tags:
+  - content creation
+  - automation
+  - social media
+  - batch processing
+sources:
+  - https://docs.anthropic.com/en/docs/claude-code/overview
+  - https://www.anthropic.com/news
+relatedUseCases: []
+faq:
+  - question: Can Claude Code help with multiple social media platforms?
+    answer: Yes, you can use Claude Code to generate platform-specific content (LinkedIn posts, Twitter threads, Instagram captions) from a single brief or topic.
+  - question: How do I ensure brand consistency across posts?
+    answer: Store your brand guidelines in a `.claude` directory file. Reference it in your prompts to maintain consistent tone, style, and messaging across all generated content.
+  - question: What's the best way to batch-generate content?
+    answer: Use Claude Code with Python scripts to iterate over a list of topics or products. Store outputs in organized folders by platform and date for easy management.
+draft: false
+order: 1
+---
+
+## Overview
+
+Social media teams face constant pressure to produce fresh, on-brand content across multiple platforms. Claude Code lets you automate the creation, variation, and optimization of social posts while maintaining your brand voice.
+
+This guide shows how to use Claude Code to:
+
+- Generate multiple post variations for a single topic
+- Create platform-specific content (Twitter, LinkedIn, Instagram, TikTok)
+- Batch-process content calendars
+- Optimize posts for engagement and reach
+- Maintain brand consistency across channels
+
+## Why Use Claude Code for Social Media Content?
+
+**Speed**: Generate dozens of post variations in minutes instead of hours of manual writing.
+
+**Consistency**: Claude maintains your brand guidelines and messaging across all posts.
+
+**Automation**: Batch-process entire content calendars or campaign briefs automatically.
+
+**Variation**: Quickly test different angles, tones, and hooks for the same topic.
+
+**Scalability**: Works for small accounts and enterprise social media teams alike.
+
+## Setting Up Your Project
+
+Create a project structure to organize your social media workflow:
+
+```
+my-social-project/
+├── .claude/
+│   ├── brand-guidelines.md
+│   └── instructions.md
+├── content/
+│   ├── twitter/
+│   ├── linkedin/
+│   ├── instagram/
+│   └── tiktok/
+├── campaigns/
+│   ├── campaign-ideas.csv
+│   └── batch-content.py
+└── outputs/
+    └── generated_posts.json
+```
+
+## Create Brand Guidelines
+
+Store your brand guidelines in `.claude/brand-guidelines.md` so Claude Code references them automatically:
+
+```markdown
+# Brand Guidelines
+
+## Tone
+- Friendly and approachable, but professional
+- Avoid corporate jargon
+- Use conversational language
+
+## Key Messages
+- We empower creators to build amazing things
+- Focus on impact, not features
+- Show real customer success stories
+
+## Hashtag Strategy
+- Primary: #CreatorTools #BuildTogether
+- Secondary: #NoCode #Automation
+- Avoid: overly trendy, unrelated tags
+
+## Content Pillars
+1. Educational tips (40%)
+2. Product updates (30%)
+3. Customer spotlights (20%)
+4. Industry insights (10%)
+```
+
+## Generate Single Posts
+
+Use Claude Code to create a post from a simple idea:
+
+**Prompt to Claude Code:**
+> Write a Twitter post about our latest feature release. Keep it under 280 characters, include a call-to-action, and reference our brand guidelines.
+
+Claude Code will:
+1. Read your brand guidelines
+2. Generate an engaging, on-brand post
+3. Ensure it fits platform constraints
+
+**Output Example:**
+```
+Twitter (280 chars):
+"Just shipped our best feature yet 🚀 AI-powered post optimization that learns YOUR audience. Try it free → [link] #CreatorTools"
+
+LinkedIn (longer, professional):
+"Today we're thrilled to announce a major milestone: our new AI optimization engine is now live. 
+
+We've spent months working with creators to understand what they need most. The result? Smarter insights, better engagement, and more time to focus on what matters.
+
+Read how our customers are already seeing 40% higher engagement → [link]"
+```
+
+## Batch-Generate Content Calendar
+
+Create a Python script to generate a week's worth of posts:
+
+**`batch-content.py`**
+```python
+import json
+from datetime import datetime, timedelta
+
+# Topics for the week
+topics = [
+    {"date": "Monday", "pillar": "Educational", "topic": "Time-saving workflows"},
+    {"date": "Tuesday", "pillar": "Product", "topic": "New AI features"},
+    {"date": "Wednesday", "pillar": "Customer", "topic": "User success story"},
+    {"date": "Thursday", "pillar": "Educational", "topic": "Social strategy tips"},
+    {"date": "Friday", "pillar": "Insight", "topic": "Creator trends"},
+]
+
+posts = []
+
+for item in topics:
+    post_data = {
+        "date": item["date"],
+        "pillar": item["pillar"],
+        "topic": item["topic"],
+        "platforms": {
+            "twitter": "[Generated by Claude Code]",
+            "linkedin": "[Generated by Claude Code]",
+            "instagram": "[Generated by Claude Code]",
+        },
+        "hashtags": "#CreatorTools #BuildTogether",
+    }
+    posts.append(post_data)
+
+with open("outputs/weekly_calendar.json", "w") as f:
+    json.dump(posts, f, indent=2)
+
+print(f"Generated {len(posts)} posts for the week!")
+```
+
+**Use Claude Code to fill in the generated content:**
+> Read the file `batch-content.py`. For each topic in the `topics` list, generate authentic, on-brand social posts for Twitter, LinkedIn, and Instagram. Store all outputs in `outputs/weekly_calendar.json`.
+
+## Generate Multiple Angles for A/B Testing
+
+Test which messaging resonates most with your audience:
+
+**Prompt:**
+> For the topic "Our new API just launched," generate 4 different Twitter posts:
+> 1. Technical angle (for developers)
+> 2. Business benefit angle (for product managers)
+> 3. Customer success angle (social proof)
+> 4. Playful/casual angle (for younger audience)
+>
+> Each should be under 280 characters and on-brand.
+
+**Output:**
+```
+Technical: "New REST API with WebSocket support, rate limiting controls, and full async support. Docs → [link] #Developers #BuildTogether"
+
+Business: "Cut API integration time from weeks to days. 50+ enterprises now ship 10x faster with our platform. [link]"
+
+Social Proof: "'This API saved us 100 engineering hours' – Sarah at TechCorp. See how your team can move faster → [link]"
+
+Casual: "we just made it so easy to integrate our API, even your grandma could do it (jk don't let her try) 😄 [link]"
+```
+
+## Optimize Posts for Engagement
+
+Use Claude Code to refine posts for better performance:
+
+**Prompt:**
+> I have this LinkedIn post. Make it more engaging by:
+> - Adding a compelling opening hook
+> - Including a specific number or metric
+> - Adding a clear CTA
+> - Keeping it scannable with line breaks
+>
+> Original: "We just launched a new feature for social media scheduling."
+
+**Output:**
+```
+Optimized:
+
+You're losing 5 hours a week to manual social scheduling.
+
+We just changed that.
+
+Our new scheduling engine lets you plan an entire month in under 15 minutes. Works across all platforms—Twitter, LinkedIn, Instagram, TikTok—from one dashboard.
+
+✅ Auto-optimize posting times
+✅ Bulk schedule with templates
+✅ Track performance in real-time
+
+Earth to social teams: your time is back.
+
+Try it free → [link]
+```
+
+## Store and Manage Generated Content
+
+Organize outputs for your team:
+
+```json
+{
+  "campaign": "Product Launch Week",
+  "created_date": "2025-01-17",
+  "posts": [
+    {
+      "id": "post_001",
+      "topic": "Feature announcement",
+      "platform": "twitter",
+      "variants": [
+        {
+          "text": "Just shipped...",
+          "engagement_prediction": "high",
+          "status": "ready"
+        }
+      ]
+    }
+  ]
+}
+```
+
+## Best Practices
+
+1. **Always review before posting** – Claude generates great foundations; your human judgment ensures quality and brand fit.
+
+2. **A/B test angles** – Generate 3–4 variants of each post and let your audience tell you what resonates.
+
+3. **Update brand guidelines regularly** – As your voice evolves, update `.claude/brand-guidelines.md` to reflect current messaging.
+
+4. **Use platform constraints** – Have Claude Code tailor content to Twitter's 280 characters, LinkedIn's longer format, or Instagram's caption style.
+
+5. **Build a reusable template library** – Save successful prompts in your `.claude/instructions.md` for recurring content types.
+
+6. **Track what works** – Log which posts perform best and feed that learning back into your brand guidelines.
+
+## Common Workflows
+
+### Weekly Content Calendar
+- Monday: Outline topics for the week
+- Tuesday: Generate all post variations
+- Wednesday: Review, edit, and pick winners
+- Thursday: Schedule posts via your platform
+- Friday: Analyze performance
+
+### Campaign Blitz
+- Create campaign brief (topic, audience, goals)
+- Generate 20+ post variations in minutes
+- Pick your top 10
+- Schedule across all platforms
+
+### Real-Time Response
+- Trending topic pops up
+- Claude Code generates on-brand takes in seconds
+- Review and post if it fits your strategy
+
+## Limitations and When to Add Human Touch
+
+Claude Code excels at generating volume and maintaining consistency, but some content benefits from human creativity:
+
+- **Breaking news or crises**: Always hand-craft sensitive messaging
+- **Highly personal stories**: Authentic customer spotlights work best when written by the customer
+- **Long-form thought leadership**: Claude is great for a first draft, but CEO posts should be personally refined
+- **Community management**: Real conversations require real people
+
+## Next Steps
+
+1. Set up your project structure with brand guidelines
+2. Start with single-post generation to get comfortable
+3. Move to batch content calendars once you find your rhythm
+4. Measure what works and update guidelines accordingly
+5. Scale across more platforms as you see results
+
+**Pro tip**: The best social media strategy combines AI-powered efficiency with human insight. Use Claude Code to handle the volume, and invest your time in strategy, community, and the content that truly moves your business forward.

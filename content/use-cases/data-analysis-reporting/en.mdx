@@ -1,0 +1,127 @@
+---
+title: Data Analysis and Reporting with Claude Code
+description: Use Claude Code to automate data analysis workflows, generate statistical summaries, create visualizations, and produce professional reports from raw data.
+updatedDate: 2026-01-15T00:00:00Z
+author: Claude Code Learn
+profession: statistics-and-reporting
+difficulty: intermediate
+tools: ["Claude Code", "pandas", "SciPy", "Python"]
+tags: ["data-analysis", "statistics", "reporting", "automation", "visualization"]
+sources: [
+  "https://docs.anthropic.com/en/docs/claude-code/overview",
+  "https://docs.scipy.org/doc/scipy/",
+  "https://pandas.pydata.org/docs/"
+]
+relatedModules: []
+relatedUseCases: []
+faq:
+  - question: "Can Claude Code handle large datasets?"
+    answer: "Claude Code can work with datasets through Python libraries like pandas and SciPy. For very large datasets, consider chunking your data or using efficient pandas operations. Claude Code reads your codebase and can edit files, so you can build scalable analysis scripts."
+  - question: "What statistical functions are available?"
+    answer: "Through SciPy and pandas, you have access to comprehensive statistical functions including descriptive statistics, hypothesis testing, probability distributions, and more. Claude Code can help write and optimize these analyses."
+  - question: "How can I automate report generation?"
+    answer: "Claude Code can generate Python scripts that process data, create visualizations, and export results. You can use pandas for data manipulation and matplotlib or similar libraries for charts, then use Claude Code to orchestrate the entire workflow."
+draft: false
+order: 1
+---
+
+## Overview
+
+Data analysts and reporting professionals can use Claude Code to streamline their entire workflow—from data ingestion and cleaning through analysis and report generation. Claude Code's ability to read your codebase, edit files, and run commands makes it ideal for automating repetitive statistical tasks and creating reproducible analyses.
+
+## Key Capabilities
+
+### Data Analysis Automation
+
+Claude Code can help you:
+- **Load and clean data** using pandas DataFrames and Series
+- **Perform exploratory data analysis** with descriptive statistics
+- **Apply statistical tests** and hypothesis testing from SciPy
+- **Generate summary statistics** and aggregate data by groups
+- **Handle missing data** and outlier detection
+
+Example workflow:
+```python
+import pandas as pd
+from scipy import stats
+
+# Load data
+df = pd.read_csv('sales_data.csv')
+
+# Basic analysis
+summary = df.describe()
+grouped_stats = df.groupby('region').agg(['mean', 'std', 'count'])
+
+# Statistical testing
+t_stat, p_value = stats.ttest_ind(df['group_a'], df['group_b'])
+```
+
+### Report Generation
+
+Claude Code excels at creating automated reporting pipelines:
+- **Generate dynamic reports** that update when data changes
+- **Create visualizations** and export them as images
+- **Produce formatted output** in multiple formats
+- **Schedule analyses** through your development workflow
+
+### Statistical Computing
+
+With SciPy integration, you can perform:
+- Probability distribution analysis
+- Curve fitting and optimization
+- Signal processing for time-series data
+- Advanced hypothesis testing
+
+## Typical Workflow
+
+1. **Ask Claude Code** to analyze your data or create a report
+2. **Claude Code reads** your existing data files and analysis scripts
+3. **Claude Code writes/edits** Python analysis scripts
+4. **Claude Code runs** the analysis and shows you results
+5. **Claude Code saves** outputs (reports, charts, summaries)
+
+## Getting Started
+
+### Basic Data Analysis
+
+Start with simple exploratory analysis:
+- Have Claude Code load your CSV or database
+- Request summary statistics and basic visualizations
+- Ask for specific analyses (correlations, trends, comparisons)
+
+### Building Automated Reports
+
+1. Structure your analysis as Python scripts
+2. Use Claude Code to enhance and automate workflows
+3. Let Claude Code run analyses on a schedule or on-demand
+4. Export results in professional formats
+
+## Best Practices
+
+- **Keep data files accessible** to Claude Code in your project structure
+- **Use version control** for your analysis scripts
+- **Document assumptions** in your code and reports
+- **Test analyses** on sample data before running on full datasets
+- **Leverage pandas** for data manipulation and SciPy for statistical testing
+- **Create reusable functions** that Claude Code can call for different datasets
+
+## Common Use Cases
+
+**Monthly Performance Reports**: Automate data collection, analysis, and report generation
+
+**A/B Testing Analysis**: Compare groups statistically and visualize results
+
+**Trend Analysis**: Calculate trends over time and identify patterns
+
+**Cohort Analysis**: Segment data by time periods and analyze behavior
+
+**Quality Metrics**: Track and report on key performance indicators
+
+## Tools and Libraries
+
+- **pandas**: Data manipulation and analysis (DataFrames, grouping, aggregation)
+- **SciPy**: Statistical functions, distributions, and hypothesis tests
+- **matplotlib/seaborn**: Data visualization
+- **Python stdlib**: CSV, JSON, and file handling
+
+Claude Code can integrate all these tools into seamless workflows, turning raw data into actionable insights.

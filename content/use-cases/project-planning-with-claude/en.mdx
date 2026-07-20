@@ -1,0 +1,163 @@
+---
+title: Project Planning with Claude
+description: Use Claude Code to create detailed project plans, break down work into manageable tasks, and establish timelines and dependencies.
+updatedDate: 2025-01-16T00:00:00Z
+author: Claude Code Learn
+profession: project-management-with-claude
+difficulty: beginner
+tools: ["Claude Code", "Claude API"]
+tags: ["planning", "task-breakdown", "timeline", "project-scope", "agile"]
+sources: [
+  "https://docs.anthropic.com/en/docs/claude-code/overview",
+  "https://www.anthropic.com/news"
+]
+relatedModules: []
+relatedUseCases: []
+faq: []
+draft: false
+order: 1
+---
+
+## Overview
+
+Project managers can leverage Claude Code to streamline project planning workflows. Claude helps you break down complex projects into actionable tasks, create work breakdown structures (WBS), establish realistic timelines, and identify dependencies—all while generating documentation that keeps your team aligned.
+
+## Key Benefits
+
+- **Rapid task decomposition**: Transform high-level project goals into detailed, hierarchical task lists
+- **Automated documentation**: Generate project charters, scope statements, and task descriptions
+- **Timeline estimation**: Receive data-driven suggestions for task durations based on project context
+- **Dependency mapping**: Automatically identify task relationships and critical paths
+- **Team alignment**: Create clear, consistent project artifacts that reduce ambiguity
+
+## Getting Started
+
+### 1. Define Your Project Scope
+
+Start by providing Claude with a clear project brief:
+
+```
+Project: E-commerce Platform Redesign
+Goal: Modernize checkout flow to reduce cart abandonment
+Constraints: 12-week timeline, 4-person team, $50k budget
+Stakeholders: Product, Engineering, Design, QA
+```
+
+Claude can then break this into phases, epics, and user stories with realistic effort estimates.
+
+### 2. Generate a Work Breakdown Structure
+
+Ask Claude to create a hierarchical task breakdown:
+
+```
+Analysis Phase
+├── Requirements gathering
+│   ├── Stakeholder interviews
+│   ├── User research synthesis
+│   └── Competitive analysis
+├── Current state assessment
+│   ├── Checkout flow audit
+│   └── Pain point documentation
+└── Success metrics definition
+
+Design Phase
+├── Wireframing
+├── High-fidelity mockups
+└── Accessibility review
+```
+
+Each task can include estimated effort, assigned owner, and acceptance criteria.
+
+### 3. Build Your Timeline
+
+Claude can generate Gantt chart data or timeline specifications:
+
+- Task sequencing (what must happen before what)
+- Critical path identification (tasks that directly impact end date)
+- Buffer allocation for risk mitigation
+- Milestone markers for stakeholder checkpoints
+
+### 4. Create Task Dependencies
+
+Claude identifies logical dependencies:
+
+- **Finish-to-Start**: Design must finish before development starts
+- **Start-to-Start**: User research and competitive analysis can start together
+- **Lead/lag relationships**: Testing can begin before development finishes
+
+## Practical Workflow
+
+### Planning Phase
+
+1. **Upload project brief** (requirements document, stakeholder input, constraints)
+2. **Request WBS generation** with task-level detail
+3. **Specify team structure** (who's available, skill levels)
+4. **Get timeline estimates** based on similar past projects
+5. **Export to project management tool** (Jira, Monday.com, Asana, etc.)
+
+### Execution Phase
+
+As the project progresses:
+
+- **Update Claude** with completed tasks and blockers
+- **Request timeline adjustments** when scope changes
+- **Generate status reports** with progress-to-plan analysis
+- **Identify at-risk tasks** and mitigation strategies
+
+## Example: 8-Week Mobile App Project
+
+```
+Week 1-2: Discovery & Planning
+  ├── Product requirements definition (5d)
+  ├── Technical architecture review (3d)
+  └── Design system setup (5d)
+
+Week 3-5: Core Development
+  ├── Authentication & user management (8d)
+  ├── Core feature development (10d)
+  └── API integration (5d)
+
+Week 6: Testing & QA
+  ├── Functional testing (3d)
+  ├── Performance optimization (2d)
+  └── Security audit (2d)
+
+Week 7-8: Launch Preparation
+  ├── App store submission (2d)
+  ├── Documentation & training (3d)
+  └── Post-launch monitoring setup (2d)
+```
+
+Claude can refine these estimates, flag risks (e.g., "authentication integration often takes 2 weeks longer"), and suggest parallel workstreams.
+
+## Best Practices
+
+1. **Be specific about constraints**: Budget, team size, timeline, tech stack, and organizational constraints help Claude provide realistic planning.
+
+2. **Break work into 3-5 day chunks**: Smaller tasks are easier to estimate, track, and adjust.
+
+3. **Include contingency**: Ask Claude to flag high-risk areas and suggest buffer percentages (typically 10-20%).
+
+4. **Document assumptions**: Ensure Claude's planning reflects your team's velocity, experience level, and context.
+
+5. **Iterate with stakeholders**: Use Claude-generated artifacts to validate scope and timeline with leadership before committing.
+
+6. **Update regularly**: Re-run planning when scope changes or actuals diverge from estimates.
+
+## Integration Tips
+
+- **Export formats**: Request CSV, JSON, or Markdown for easy import into your PM tools
+- **Team assignment**: Include team member names and skills so Claude can suggest balanced workload distribution
+- **Dependency visualization**: Ask for dependency matrices or critical path highlights
+- **Risk registers**: Have Claude generate risk assessments tied to specific tasks
+
+## FAQ
+
+**Q: Can Claude estimate how long tasks will really take?**
+A: Claude provides reasonable estimates based on industry standards and patterns, but should be calibrated with your team's actual velocity. Always retrospect on planning accuracy and adjust.
+
+**Q: How do I handle scope creep mid-project?**
+A: Share updates with Claude ("We added 3 new features, but timeline is fixed"). Claude can help reassess priorities, suggest descoping, or identify parallel work opportunities.
+
+**Q: Can Claude help with Agile vs. Waterfall planning?**
+A: Yes. Specify your methodology (sprints vs. phases) and Claude will tailor task breakdown and timelines accordingly.

@@ -1,0 +1,159 @@
+---
+title: Data Analysis with Claude Code
+description: Use Claude Code to automate data analysis tasks, clean datasets, generate insights, and create visualizations with Python and pandas.
+updatedDate: 2025-01-20T00:00:00Z
+author: Claude Code Learn
+profession: excel-and-data-analysis
+difficulty: beginner
+tools:
+  - Claude Code
+  - Python
+  - pandas
+  - Data visualization
+tags:
+  - data-analysis
+  - automation
+  - python
+  - pandas
+  - data-cleaning
+  - visualization
+sources:
+  - https://docs.anthropic.com/en/docs/claude-code/overview
+  - https://support.microsoft.com/en-us/excel/
+  - https://pandas.pydata.org/docs/
+relatedModules: []
+relatedUseCases: []
+faq: []
+draft: false
+order: 1
+---
+
+## Overview
+
+Claude Code streamlines data analysis workflows by automating tasks that would traditionally require manual spreadsheet work or custom scripts. Whether you're cleaning datasets, performing exploratory analysis, or generating visualizations, Claude Code can read your data, write and execute Python code, and deliver results—all within an integrated environment.
+
+## Common Use Cases
+
+### 1. Automated Data Cleaning
+
+Raw datasets often contain missing values, duplicates, and formatting inconsistencies. Claude Code can:
+
+- **Identify and handle missing data** using pandas' `.fillna()` or `.dropna()` methods
+- **Remove duplicates** with `.drop_duplicates()`
+- **Standardize formats** (dates, currency, text case) across columns
+- **Detect and flag outliers** for review or removal
+
+**Example workflow:**
+1. Upload your CSV or Excel file
+2. Ask Claude Code to "clean this dataset by removing duplicates and handling missing values"
+3. Review the generated Python code before execution
+4. Download the cleaned file
+
+### 2. Exploratory Data Analysis (EDA)
+
+Understand your data quickly without manual calculations:
+
+- **Generate summary statistics** (mean, median, standard deviation, quartiles)
+- **Create pivot tables** to summarize data by categories
+- **Identify correlations** between variables
+- **Analyze distributions** and detect patterns
+
+Claude Code writes the pandas code automatically, saving hours of manual exploration.
+
+### 3. Data Visualization
+
+Transform raw numbers into actionable charts:
+
+- **Line charts** for trends over time
+- **Bar charts** for category comparisons
+- **Scatter plots** to show relationships
+- **Heatmaps** for correlation matrices
+
+Claude Code can generate visualization code using libraries like Matplotlib or Plotly, then execute it to produce export-ready images.
+
+### 4. Batch Data Transformations
+
+Apply consistent transformations across datasets:
+
+- **Normalize or scale numerical columns** for machine learning
+- **Encode categorical variables** (one-hot encoding, label encoding)
+- **Create derived columns** from calculations on existing data
+- **Merge or join multiple datasets** on common keys
+
+### 5. Report Generation
+
+Automate the creation of data-driven reports:
+
+- **Calculate KPIs** and summarize key metrics
+- **Group data by time periods** (weekly, monthly, annual trends)
+- **Export summaries** to Excel or CSV for stakeholders
+- **Combine text and visualizations** for presentation-ready outputs
+
+## Workflow Example: Sales Data Analysis
+
+### Scenario
+You have 12 months of sales data in CSV format and need:
+- Clean data with no missing or duplicate rows
+- Monthly revenue totals
+- Top 5 products by units sold
+- A visualization of revenue trends
+
+### Steps with Claude Code
+
+1. **Upload the file** – Provide your sales CSV
+2. **Request cleaning** – "Clean this dataset: remove any duplicates and fill missing values"
+3. **Ask for analysis** – "Calculate total revenue by month and identify top 5 products"
+4. **Request visualization** – "Create a line chart showing monthly revenue trends"
+5. **Review and export** – Examine the generated code, run it, and download results
+
+All of this happens in minutes instead of hours of manual work in Excel or writing custom scripts from scratch.
+
+## Why Claude Code for Data Analysis
+
+### Time Savings
+- Write analyses in natural language instead of memorizing syntax
+- Eliminate repetitive manual calculations
+- Scale from one dataset to hundreds
+
+### Reduced Errors
+- Code is generated consistently
+- Easy to review and audit before execution
+- Built-in error handling and validation
+
+### Accessibility
+- No need for advanced Python or SQL knowledge
+- Faster onboarding for non-technical team members
+- Clear code comments explain each step
+
+### Integration
+- Works with CSV, Excel, JSON, and database connections
+- Exports results in multiple formats
+- Integrates with your existing data pipeline
+
+## Best Practices
+
+1. **Start with a clear question** – "Show me average order value by region" is better than "analyze the data"
+2. **Check the code** – Always review generated Python before executing on critical data
+3. **Use comments** – Ask Claude Code to add explanatory comments to make analyses reproducible
+4. **Iterate gradually** – Break complex analyses into smaller steps
+5. **Keep backups** – Store original data files separately from processed versions
+
+## Common Challenges and Solutions
+
+| Challenge | Solution |
+|-----------|----------|
+| Large files (>100MB) | Split into chunks or use database queries instead of loading entire CSV |
+| Complex logic needed | Break the task into simpler sub-tasks for Claude Code to handle sequentially |
+| Reproducibility concerns | Request that Claude Code save analysis code as a reusable Python script |
+| Data privacy | Use local Claude Code instances or anonymize sensitive columns before upload |
+
+## Getting Started
+
+1. Prepare your data in a standard format (CSV, Excel, or JSON)
+2. Open Claude Code in your IDE, terminal, or web browser
+3. Upload or reference your data file
+4. Describe your analysis goal in plain language
+5. Review the generated code and run it
+6. Export results or iterate further
+
+Data analysis that once took hours can now be completed in minutes with Claude Code handling the technical details while you focus on insights.

@@ -1,0 +1,156 @@
+---
+title: Code Analysis and Understanding with Claude Code
+description: Use Claude Code to analyze, understand, and summarize complex codebases for research and documentation purposes.
+updatedDate: 2024-01-15T00:00:00Z
+author: Claude Code Learn
+profession: research-and-summarization-with-claude
+difficulty: intermediate
+tools: ["Claude Code CLI", "Claude API"]
+tags: ["code-analysis", "research", "documentation", "codebase-exploration"]
+sources: ["https://docs.anthropic.com/en/docs/claude-code/overview", "https://www.anthropic.com/news"]
+relatedModules: []
+relatedUseCases: []
+draft: false
+order: 1
+faq:
+  - question: Can Claude Code analyze proprietary code?
+    answer: Yes, Claude Code can analyze codebases locally. For security-sensitive code, you can use the desktop or terminal interfaces to keep analysis on your machine.
+  - question: What file types can Claude Code analyze?
+    answer: Claude Code can work with most programming languages including Python, JavaScript, Java, C++, Go, Rust, and more.
+  - question: How does Claude Code help with documentation?
+    answer: Claude Code can read your codebase and generate summaries, create documentation artifacts, and explain complex functions or modules.
+---
+
+## Overview
+
+Claude Code is an agentic coding tool that can read, analyze, and understand entire codebases. This makes it particularly valuable for research tasks like documenting legacy systems, understanding third-party libraries, or summarizing complex projects.
+
+## Key Capabilities for Code Analysis
+
+### Codebase Reading
+
+Claude Code can:
+- Read files across your entire project structure
+- Understand relationships between modules and components
+- Identify patterns, dependencies, and architectural decisions
+- Generate comprehensive summaries of what the code does
+
+### Research and Documentation
+
+Common research use cases include:
+- **Legacy system documentation**: Understand and document older codebases
+- **Third-party library analysis**: Summarize how external dependencies work
+- **Architecture review**: Analyze and document system design
+- **Code quality assessment**: Identify potential improvements and issues
+- **Learning codebases**: Quickly understand new projects when joining teams
+
+## Getting Started
+
+### 1. Set Up Claude Code
+
+Claude Code is available in multiple environments:
+- **Terminal/CLI**: Direct access for analysis tasks
+- **IDE Integration**: VS Code, JetBrains IDEs
+- **Desktop App**: Standalone application
+- **Web Browser**: Claude Code on the web
+
+See the [Claude Code Overview](https://docs.anthropic.com/en/docs/claude-code/overview) for installation instructions.
+
+### 2. Analyze a Codebase
+
+Start with a simple request:
+
+```
+Analyze this codebase and provide:
+1. A high-level overview of the architecture
+2. The main components and their responsibilities
+3. Key dependencies and how they interact
+```
+
+Claude Code will read the files it needs to answer your question.
+
+### 3. Generate Documentation
+
+Request specific documentation outputs:
+
+```
+Create a README for this project that explains:
+- What the project does
+- How to set it up
+- Main modules and their purposes
+- Example usage
+```
+
+Claude Code can generate markdown files or other documentation formats.
+
+## Research Workflows
+
+### Understanding Complex Systems
+
+1. **Ask for an architecture overview**: Get Claude Code to map out the system structure
+2. **Drill into specific components**: Ask follow-up questions about particular modules
+3. **Generate documentation**: Have Claude Code create summary documents
+
+### Comparing Codebases
+
+You can ask Claude Code to:
+- Compare how two projects solve the same problem
+- Identify design pattern differences
+- Summarize design decisions across versions
+
+### Security and Compliance Research
+
+Claude Code can help:
+- Identify potential vulnerabilities
+- Check for compliance with security best practices
+- Document security-relevant code patterns
+
+## Best Practices
+
+### Be Specific with Requests
+
+❌ "Tell me about this code"
+✅ "Analyze the authentication system and document how tokens are generated, validated, and refreshed"
+
+### Provide Context
+
+When analyzing unfamiliar code:
+- Mention the programming language if not obvious
+- Describe what the code should do
+- Ask about specific parts if the codebase is large
+
+### Iterate on Results
+
+Start broad, then get more specific:
+1. First pass: High-level architecture
+2. Second pass: Deep dive into components
+3. Final pass: Generate formatted documentation
+
+### Manage Large Codebases
+
+For very large projects:
+- Ask Claude Code to focus on specific directories
+- Request analysis of individual components first
+- Build up understanding incrementally
+
+## Output Examples
+
+Claude Code can generate:
+- **Architecture diagrams** (as text descriptions or code)
+- **Module documentation** (markdown files)
+- **API documentation** (with examples)
+- **Setup guides** (for onboarding)
+- **Analysis reports** (identifying issues or improvements)
+
+## Tips for Researchers
+
+- **Version comparisons**: Analyze different versions of code to understand evolution
+- **Framework analysis**: Understand how frameworks like React, Django, or Spring work internally
+- **Pattern documentation**: Identify and document common patterns in a codebase
+- **Quality metrics**: Ask Claude Code to assess code quality and identify technical debt
+
+## Next Steps
+
+- Explore the [Claude Code overview](https://docs.anthropic.com/en/docs/claude-code/overview) for more capabilities
+- Try analyzing a project you're familiar with to see what Claude Code discovers
+- Experiment with different analysis prompts to find what works for your research needs

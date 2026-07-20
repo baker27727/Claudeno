@@ -1,0 +1,148 @@
+---
+title: Building Business Intelligence Dashboards with Claude Code
+description: Leverage Claude Code to create automated data pipelines, aggregate business metrics, and generate interactive dashboards for real-time business insights.
+updatedDate: 2026-01-15T00:00:00Z
+author: Claude Code Learn
+profession: statistics-and-reporting
+difficulty: intermediate
+tools: ["Claude Code", "pandas", "Python", "SciPy"]
+tags: ["business-intelligence", "dashboards", "metrics", "automation", "analytics"]
+sources: [
+  "https://docs.anthropic.com/en/docs/claude-code/overview",
+  "https://docs.scipy.org/doc/scipy/",
+  "https://pandas.pydata.org/docs/"
+]
+relatedModules: []
+relatedUseCases: []
+faq:
+  - question: "How do I connect Claude Code to data sources?"
+    answer: "Claude Code can work with files, APIs, and databases through Python. You can write scripts using pandas to read CSV files, query databases, or fetch data from APIs. Claude Code reads your codebase and can help you build and maintain these connections."
+  - question: "Can Claude Code refresh dashboards automatically?"
+    answer: "Yes, Claude Code can create scripts that run on schedules. You can integrate with your deployment environment to trigger analyses at regular intervals, fetching fresh data and updating your dashboards."
+  - question: "What aggregation capabilities does Claude Code provide?"
+    answer: "Through pandas, you can aggregate data by any dimension—time periods, geographic regions, product categories, etc. Claude Code can help you build complex aggregations and group operations efficiently."
+draft: false
+order: 2
+---
+
+## Overview
+
+Business intelligence professionals can use Claude Code to build sophisticated data pipelines and analytics infrastructure. Rather than manual data consolidation, Claude Code automates the collection, transformation, and visualization of business metrics into actionable dashboards.
+
+## Key Capabilities
+
+### Automated Data Pipelines
+
+Claude Code excels at creating end-to-end data workflows:
+- **Extract data** from multiple sources (databases, APIs, files)
+- **Transform and aggregate** business metrics
+- **Calculate KPIs** and derived metrics
+- **Store results** for visualization and reporting
+
+Example pipeline structure:
+```python
+import pandas as pd
+from datetime import datetime, timedelta
+
+# Extract
+sales_data = pd.read_sql("SELECT * FROM sales WHERE date > ?", conn, [yesterday])
+
+# Transform
+daily_metrics = sales_data.groupby('date').agg({
+    'revenue': 'sum',
+    'transactions': 'count',
+    'avg_order_value': 'mean'
+})
+
+# Load
+daily_metrics.to_csv('metrics/daily.csv')
+```
+
+### Metric Calculation and KPIs
+
+Use SciPy and pandas to calculate:
+- **Revenue metrics**: Total, growth, trends
+- **Customer metrics**: Acquisition, retention, lifetime value
+- **Operational metrics**: Efficiency, utilization, throughput
+- **Statistical measures**: Confidence intervals, anomaly detection
+
+### Dashboard Data Preparation
+
+Claude Code prepares data optimized for visualization:
+- **Time-series aggregation** for trend visualization
+- **Dimensional analysis** for drill-down capabilities
+- **Comparison metrics** (YoY, MoM, forecasts)
+- **Data quality scoring** and completeness checks
+
+## Building Your BI System
+
+### Phase 1: Data Collection
+
+Start with reliable data sources:
+1. **Identify** your core data sources
+2. **Create** connection scripts using pandas/Python
+3. **Have Claude Code** optimize and validate the data loading
+
+### Phase 2: Metric Definition
+
+Define your business metrics:
+1. **List** all KPIs and their calculations
+2. **Have Claude Code** implement them in Python
+3. **Validate** calculations against known benchmarks
+
+### Phase 3: Dashboard Data Pipeline
+
+Build the automated workflow:
+1. **Schedule** regular data extractions
+2. **Have Claude Code** manage transformations
+3. **Output** formatted data for your BI tool
+
+## Typical BI Metrics
+
+**Sales Dashboard**
+- Total revenue, transactions, average order value
+- Revenue by product, region, customer segment
+- Growth rates (YoY, MoM)
+- Pipeline metrics and conversion rates
+
+**Customer Dashboard**
+- New customer acquisition
+- Customer retention and churn rates
+- Customer lifetime value
+- Segmentation and cohort analysis
+
+**Operational Dashboard**
+- Process efficiency metrics
+- Resource utilization
+- Cycle times and throughput
+- Quality metrics and defect rates
+
+## Best Practices
+
+- **Separate raw data from processed metrics** for auditability
+- **Version your metric definitions** alongside code
+- **Implement data quality checks** in your pipeline
+- **Use consistent time zones** and date formats
+- **Document metric calculations** thoroughly
+- **Monitor pipeline execution** and alert on failures
+- **Test metric updates** before applying to production dashboards
+
+## Integration Points
+
+Claude Code works with:
+- **BI Tools**: Tableau, Power BI, Looker—any tool that accepts CSV/database input
+- **Data Warehouses**: Aggregate and prepare data from your warehouse
+- **Cloud Storage**: Write metrics to S3, GCS, or Azure for downstream processing
+- **Alerting Systems**: Trigger notifications when metrics exceed thresholds
+
+## Common Patterns
+
+**Daily metric refresh**: Schedule Claude Code to run each morning, pulling overnight data and updating dashboards
+
+**Event-triggered analysis**: When data arrives in your system, have Claude Code process and aggregate it
+
+**Cohort tracking**: Automatically segment customers and track their behavior over time
+
+**Forecast generation**: Use SciPy to fit trend lines and generate simple forecasts
+
+Claude Code transforms raw operational data into the structured insights that drive business decisions.

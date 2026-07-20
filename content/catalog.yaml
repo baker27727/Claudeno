@@ -95,3 +95,64 @@
     en: "Use cases"
     no: "Fagområder"
   href: "/use-cases/"
+- id: marketing-campaign-automation
+  kind: use-case
+  title:
+    en: "marketing-campaign-automation"
+    no: "marketing-campaign-automation"
+  href: "/use-cases/marketing-campaign-automation/"
+- id: seo-workflow-with-claude
+  kind: use-case
+  title:
+    en: "seo-workflow-with-claude"
+    no: "seo-workflow-with-claude"
+  href: "/use-cases/seo-workflow-with-claude/"
+- id: data-analysis-with-claude-code
+  kind: use-case
+  title:
+    en: "data-analysis-with-claude-code"
+    no: "data-analysis-with-claude-code"
+  href: "/use-cases/data-analysis-with-claude-code/"
+- id: data-analysis-reporting
+  kind: use-case
+  title:
+    en: "data-analysis-reporting"
+    no: "data-analysis-reporting"
+  href: "/use-cases/data-analysis-reporting/"
+- id: business-intelligence-dashboards
+  kind: use-case
+  title:
+    en: "business-intelligence-dashboards"
+    no: "business-intelligence-dashboards"
+  href: "/use-cases/business-intelligence-dashboards/"
+- id: project-planning-with-claude
+  kind: use-case
+  title:
+    en: "project-planning-with-claude"
+    no: "project-planning-with-claude"
+  href: "/use-cases/project-planning-with-claude/"
+- id: code-generation-and-editing
+  kind: use-case
+  title:
+    en: "code-generation-and-editing"
+    no: "code-generation-and-editing"
+  href: "/use-cases/code-generation-and-editing/"
+- id: customer-support-with-claude
+  kind: use-case
+  title:
+    en: "Customer Support with Claude"
+    no: "Kundeservice med Claude"
+  href: "/use-cases/customer-support-with-claude/"
+- id: social-media-content-generation
+  kind: use-case
+  title:
+    en: "social-media-content-generation"
+    no: "social-media-content-generation"
+  href: "/use-cases/social-media-content-generation/"
+- id: code-analysis-with-claude-code
+  kind: use-case
+  title:
+    en: "code-analysis-with-claude-code"
+    no: "code-analysis-with-claude-code"
+  href: "/use-cases/code-analysis-with-claude-code/"
+
