@@ -86,3 +86,7 @@ Background agents now upgrade to a new version in the background immediately aft
 ## What's new in v2.1.212
 
 **Subagent spawn limits**: A per-session cap (default 200) now prevents runaway delegation loops. Override with `CLAUDE_CODE_MAX_SUBAGENTS_PER_SESSION`. Use `/clear` to reset the budget. **Deprecation**: The Task tool's `mode` parameter is now ignored; subagents inherit the parent session's permission mode by default.
+
+## What's new in v2.1.216
+
+Claude Code 2.1.216 fixes a race condition where background subagents could be cancelled if a high-priority message arrived during their startup window. Worktree-isolated subagents are now prevented from redirecting git operations into the shared checkout via git flags or environment variables.

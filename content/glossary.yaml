@@ -114,3 +114,8 @@
   no: "EndConversation-verktøy"
   note: "Tool allowing Claude to end sessions with highly abusive users or
     jailbreak attempts; available since 2.1.214 and on claude.ai since 2025"
+- id: "sandbox.filesystem.disabled"
+  en: "sandbox.filesystem.disabled"
+  no: "sandbox.filesystem.disabled"
+  note: "Settings key enabling skipping of filesystem isolation while maintaining
+    network egress control."

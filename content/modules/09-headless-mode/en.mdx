@@ -104,3 +104,7 @@ Screen reader mode is now available for accessibility: run `claude --ax-screen-r
 ## What's new in v2.1.212
 
 **WebSearch rate limiting**: A session-wide limit on WebSearch tool calls (default 200) stops runaway search loops. Tune via `CLAUDE_CODE_MAX_WEB_SEARCHES_PER_SESSION`. **Improved model switching**: Headless/SDK sessions now apply a `set_model` control request mid-turn; the next model round-trip uses the new model instead of waiting for the next turn.
+
+## What's new in v2.1.216
+
+Resumed background agent sessions now correctly restore the agent's full configuration, including its prompt and tool restrictions, instead of reverting to the default agent. This ensures consistent behavior across session checkpoints.

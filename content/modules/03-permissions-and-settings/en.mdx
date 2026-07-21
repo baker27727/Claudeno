@@ -96,3 +96,7 @@ Permission rules have been improved: when you grant "always allow" permissions w
 ## What's new in v2.1.214
 
 Permission checks have been improved in Claude Code 2.1.214. Single-segment `dir/**` allow rules now match only `<cwd>/dir` instead of `dir/` anywhere in the tree (write `**/dir/**` for any-depth matching). Additionally, permission prompts now appear for `docker` commands carrying daemon-redirect flags (`--url`, `--connection`, `--identity`) that previously ran without approval.
+
+## What's new in v2.1.216
+
+Claude Code 2.1.216 introduces the `sandbox.filesystem.disabled` setting, which lets you skip filesystem isolation while maintaining network egress control. This is useful in sandboxed environments where you need fine-grained control over isolation boundaries.

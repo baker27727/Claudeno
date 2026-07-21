@@ -87,3 +87,7 @@ Underagenter oppgraderes nå til en ny versjon i bakgrunnen umiddelbart etter en
 ## Nytt i v2.1.212
 
 **Grenser for underagent-spawning**: En per-økt grense (standard 200) forhindrer nå runaway-delegeringssløyfer. Overstyring med `CLAUDE_CODE_MAX_SUBAGENTS_PER_SESSION`. Bruk `/clear` til å tilbakestille budsjettet. **Avskrevet**: Task-verktøyets `mode`-parameter ignoreres nå; underagenter arver tillatelsesmodus fra overordnet økt som standard.
+
+## Nytt i v2.1.216
+
+Claude Code 2.1.216 fikser en kapløpstilstand der bakgrunds-underagenter kunne bli annullert hvis en høyprioritetsmeldelse ankom under oppstartvinduet. Worktree-isolerte underagenter blir nå hindret fra å omdirigere git-operasjoner til den delte checkoutten via git-flagg eller miljøvariabler.

@@ -107,3 +107,7 @@ Skjermleser-modus er nå tilgjengelig for tilgjengelighet: kjør `claude --ax-sc
 ## Nytt i v2.1.212
 
 **WebSearch-ratebegrensning**: En session-bred grense på WebSearch-verktøykall (standard 200) stopper runaway-søkesløyfer. Juster via `CLAUDE_CODE_MAX_WEB_SEARCHES_PER_SESSION`. **Forbedret modellbytting**: Hodeløse/SDK-økter bruker nå en `set_model`-kontrollforespørsel midt i turen; neste modell-rundgang bruker den nye modellen i stedet for å vente på neste tur.
+
+## Nytt i v2.1.216
+
+Gjenopptatte bakgrunns-agentøkter gjenoppretter nå agentens fullstendige konfigurasjon, inkludert ledeteksten og verktøybegrensninger, i stedet for å tilbakestille til standardagenten. Dette sikrer konsistent oppførsel på tvers av sjekkpunkter.

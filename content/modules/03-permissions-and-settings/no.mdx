@@ -98,3 +98,7 @@ Tillatelelsesregler har blitt forbedret: når du gir "alltid tillat"-tillatelser
 ## Nytt i v2.1.214
 
 Tillatelseskontroller er forbedret i Claude Code 2.1.214. Single-segment `dir/**` tillatte regler samsvarer nå bare med `<cwd>/dir` i stedet for `dir/` hvor som helst i treet (skriv `**/dir/**` for samsvar i alle dybder). I tillegg vises tillatelsesmeldinger nå for `docker`-kommandoer som bruker daemon-redirect-flagg (`--url`, `--connection`, `--identity`) som tidligere kjørte uten godkjenning.
+
+## Nytt i v2.1.216
+
+Claude Code 2.1.216 introduserer innstillingen `sandbox.filesystem.disabled`, som lar deg hoppe over filsystemisolering samtidig som du opprettholder nettverkskontroll. Dette er nyttig i sandkasse-miljøer der du trenger detaljert kontroll over isolasjonsgrenser.
