@@ -1,5 +1,142 @@
 [
   {
+    "topic": "Mid-conversation system messages in Claude API",
+    "status": "candidate",
+    "score": {
+      "frequency": 0.25,
+      "recency": 0.549,
+      "engagement": 0.5,
+      "gap": 1,
+      "total": 0.5
+    },
+    "matchedSources": [
+      "anthropic_changelog"
+    ],
+    "whyItMatters": "Mid-conversation system messages enable dynamic instruction injection without re-prompting, useful for updating behavior mid-stream on Fable 5 and newer models. This is a concrete capability worth documenting for API users.",
+    "firstSeen": "2026-07-21T07:34:40.161Z",
+    "lastSeen": "2026-07-21T07:34:40.161Z"
+  },
+  {
+    "topic": "Handling Claude refusals and implementing fallback models",
+    "status": "candidate",
+    "score": {
+      "frequency": 0.25,
+      "recency": 0,
+      "engagement": 0.5,
+      "gap": 1,
+      "total": 0.363
+    },
+    "matchedSources": [
+      "anthropic_changelog"
+    ],
+    "whyItMatters": "Claude Fable 5 now returns stop_reason 'refusal' before generating output, with opt-in fallbacks for re-running on alternative models. Documenting this pattern helps developers gracefully degrade when safety classifiers decline requests.",
+    "firstSeen": "2026-07-21T07:34:40.161Z",
+    "lastSeen": "2026-07-21T07:34:40.161Z"
+  },
+  {
+    "topic": "Using code_execution_20260120 tool for REPL state persistence",
+    "status": "candidate",
+    "score": {
+      "frequency": 0.25,
+      "recency": 0,
+      "engagement": 0.5,
+      "gap": 1,
+      "total": 0.363
+    },
+    "matchedSources": [
+      "anthropic_changelog"
+    ],
+    "whyItMatters": "The new code execution tool version enables persistent REPL state across multiple code cells, a key feature for stateful workflows. This is now the minimum version for programmatic tool calling across supported models.",
+    "firstSeen": "2026-07-21T07:34:40.161Z",
+    "lastSeen": "2026-07-21T07:34:40.161Z"
+  },
+  {
+    "topic": "Optimizing Claude Code with the 'rtk' skill for token savings",
+    "status": "candidate",
+    "score": {
+      "frequency": 0.25,
+      "recency": 0.906,
+      "engagement": 0.223,
+      "gap": 1,
+      "total": 0.52
+    },
+    "matchedSources": [
+      "hn_search"
+    ],
+    "whyItMatters": "Recent benchmarking shows the 'rtk' skill can cut agent tokens by 60–90%, a significant efficiency gain for cost-sensitive Claude Code workflows. Users need practical guidance on when and how to apply it.",
+    "firstSeen": "2026-07-21T07:34:40.161Z",
+    "lastSeen": "2026-07-21T07:34:40.161Z"
+  },
+  {
+    "topic": "Building autonomous agents with Claude Managed Agents scheduled deployments",
+    "status": "candidate",
+    "score": {
+      "frequency": 0.25,
+      "recency": 0,
+      "engagement": 0.5,
+      "gap": 1,
+      "total": 0.363
+    },
+    "matchedSources": [
+      "anthropic_changelog"
+    ],
+    "whyItMatters": "Claude Managed Agents now support cron-scheduled deployments without external schedulers, enabling unattended periodic code execution. This is a concrete pattern for setting up autonomous CI/CD and data pipeline workflows.",
+    "firstSeen": "2026-07-21T07:34:40.161Z",
+    "lastSeen": "2026-07-21T07:34:40.161Z"
+  },
+  {
+    "topic": "Auditing and preventing drift in Claude Code agent configurations",
+    "status": "candidate",
+    "score": {
+      "frequency": 0.5,
+      "recency": 0.906,
+      "engagement": 0.259,
+      "gap": 1,
+      "total": 0.616
+    },
+    "matchedSources": [
+      "hn_search",
+      "github_search"
+    ],
+    "whyItMatters": "Tools like 'Amnesia' and 'ai-harness-doctor' address the real-world problem of agent config drift across CLAUDE.md, AGENTS.md, and .cursorrules files. This is a mature operational concern for teams scaling Claude Code.",
+    "firstSeen": "2026-07-21T07:34:40.161Z",
+    "lastSeen": "2026-07-21T07:34:40.161Z"
+  },
+  {
+    "topic": "Designing interactive Claude Code workflows with ultrareview and ultraplan",
+    "status": "candidate",
+    "score": {
+      "frequency": 0.25,
+      "recency": 0.5,
+      "engagement": 0.5,
+      "gap": 1,
+      "total": 0.488
+    },
+    "matchedSources": [
+      "docs_map"
+    ],
+    "whyItMatters": "Ultraplan and ultrareview provide rich browser-based review interfaces for plans and code changes, shifting from pure CLI interaction. This enables human-in-the-loop workflows with structured plan review before execution.",
+    "firstSeen": "2026-07-21T07:34:40.161Z",
+    "lastSeen": "2026-07-21T07:34:40.161Z"
+  },
+  {
+    "topic": "Integrating web search and fetch tools with response_inclusion filtering for agents",
+    "status": "candidate",
+    "score": {
+      "frequency": 0.25,
+      "recency": 0,
+      "engagement": 0.5,
+      "gap": 1,
+      "total": 0.363
+    },
+    "matchedSources": [
+      "anthropic_changelog"
+    ],
+    "whyItMatters": "The new response_inclusion parameter lets agents drop consumed result blocks from API responses, reducing context bloat in multi-step agentic workflows. This is a practical optimization for long-running agent loops.",
+    "firstSeen": "2026-07-21T07:34:40.161Z",
+    "lastSeen": "2026-07-21T07:34:40.161Z"
+  },
+  {
     "topic": "Integrating MCP servers and custom skills into Claude Code for domain-specific tools",
     "status": "published",
     "score": {
