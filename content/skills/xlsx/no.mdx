@@ -1,0 +1,68 @@
+---
+title: "XLSX-oppretting, redigering og analyse"
+description: "Opprett, rediger, rett og analyser .xlsx/.xlsm/.csv/.tsv-regneark med openpyxl og pandas, med obligatorisk LibreOffice-basert omregning som garanterer null formelfeil."
+---
+
+# XLSX-oppretting, redigering og analyse
+
+## Hva den gjør og hvorfor den finnes
+
+Denne ferdigheten gjør Claude i stand til å jobbe med regnearkfiler — `.xlsx`, `.xlsm`, `.xltx`, `.csv`, `.tsv` — som primær input eller output for en oppgave. Det dekker å opprette en ny arbeidsbok fra bunnen av, redigere en eksisterende (legge til kolonner, rette formler, omformatere, lage diagrammer), rydde opp i rotete tabelldata, og konvertere mellom tabellformater.
+
+Den finnes fordi regneark har fallgruver som lett går galt uten at man merker det:
+
+- `openpyxl` skriver formler som rene strenger **uten bufrede verdier**, så en nyskrevet fil ser ødelagt ut for alt som leser bufrede verdier (pandas, forhåndsvisere, `data_only=True`-innlasting) helt til den er regnet om.
+- LibreOffice, som brukes til omregning, støtter færre funksjoner enn Excel — enkelte funksjoner fra etter 2007 trenger et `_xlfn.`-prefiks, og noen (som `XLOOKUP`, `FILTER`, `UNIQUE`) kan rett og slett ikke beregnes, og gir stille avkortede eller feilaktige resultater i stedet for en tydelig feil.
+- Finansielle modeller har konvensjoner (fargekoding, tallformater, formelstruktur) som lett brytes ved et uhell.
+
+Ferdigheten bygger inn en arbeidsflyt: bruk riktig verktøy til jobben (openpyxl for formler/formatering, pandas for masse-data, `markitdown` for et raskt skrivebeskyttet blikk), og deretter **obligatorisk omregning** med et medfølgende `recalc.py`-skript som styrer LibreOffice, sjekker for `#NAME?`/`#REF!` osv., og rapporterer JSON med en feiloppsummering. En ren omregning er nødvendig, men ikke tilstrekkelig — Claude er instruert til å stikkprøve noen få formler mot forventede verdier før hele rutenettet bygges ut.
+
+## Prøv den nå — TerminalSim
+
+```bash
+$ npx skills add anthropics/skills/xlsx
+$ python scripts/recalc.py kvartalsrapport.xlsx
+{
+  "status": "success",
+  "total_formulas": 214,
+  "total_errors": 0
+}
+$ # Åpne nå kvartalsrapport.xlsx — hver formelcelle har en bufret verdi
+```
+
+Prøv å be Claude om noe sånt som: "Rydd opp i den rotete CSV-eksporten i ~/Downloads/sales_raw.csv — fiks den feilplasserte overskriftsraden og del den opp i en ordentlig .xlsx med en Summary-fane som summerer omsetning per region med SUMIFS."
+
+## Installasjon
+
+```bash
+npx skills add anthropics/skills/xlsx
+```
+
+Krever `openpyxl`, `pandas` og `markitdown` (Python, normalt forhåndsinstallert — Claude kjører kun `pip install` hvis en import faktisk feiler), samt en LibreOffice-binærfil (`soffice`) for omregning, som ferdigheten auto-konfigurerer for sandkasse-miljøer via `scripts/office/soffice.py`.
+
+## Sikkerhet og tillatelser
+
+- **Fil-lesing/skriving**: leser inn-regnearket og skriver en redigert eller ny fil, vanligvis på samme sted.
+- **Bash-kjøring**: kjører `python scripts/recalc.py output.xlsx [timeout]`, som starter LibreOffice for å skrive filen om igjen på stedet med omregnede verdier.
+- **Ingen nettverkstilgang** kreves eller brukes av ferdighetens egen drift.
+- **Destruktive operasjoner å være obs på**: `data_only=True`-innlasting fjerner formler dersom arbeidsboken deretter lagres — ferdigheten instruerer Claude til aldri å lagre etter en slik innlasting. Å lagre en arbeidsbok som lenker til eksterne filer med openpyxl og deretter regne om, **ødelegger disse eksterne lenkene** (gjør dem om til `#NAME?`) — ferdigheten krever at bufrede verdier kopieres ut først, og `recalc.py` nekter å kjøre i den tilstanden med mindre `--force` brukes.
+- Claude er instruert til aldri å levere en fil mens `recalc.py` rapporterer `errors_found`, og til å skille arvede feil fra nylig introduserte ved å sjekke originalfilens bufrede verdier.
+
+## Praktiske bruksområder
+
+- Bygge en finansiell modell med korrekt fargekodede input/formler/lenker, prosent- og valutaformatering, og siterte kilder for hardkodede forutsetninger.
+- Legge til en beregnet kolonne eller sammendragsfane i et eksisterende regneark med `SUMIFS`/`INDEX`/`MATCH`, uten å røre filens eksisterende formler eller konvensjoner.
+- Rydde opp en rotete CSV/TSV-eksport (feilplasserte overskrifter, søppelrader) til en velstrukturert `.xlsx`.
+- Konvertere mellom tabellformater (CSV ⇄ XLSX) i bulk med pandas.
+- Revidere en eksisterende arbeidsbok for formelfeil og rette dem uten å endre hva en formel beregner.
+- Produsere en utfyllingsmal-arbeidsbok med en forklaring og én eksempelrad.
+
+## Begrensninger
+
+- Kan ikke bruke `XLOOKUP`, `XMATCH`, `SORT`, `FILTER`, `UNIQUE` eller `SEQUENCE` — den medfølgende LibreOffice-versjonen kan ikke beregne dem pålitelig, og openpyxl-skrevne filer mangler spill-metadata, så resultater avkortes stille til én celle i stedet for å feile.
+- Seks nyere funksjoner (`TEXTJOIN`, `CONCAT`, `IFS`, `SWITCH`, `MAXIFS`, `MINIFS`) fungerer kun med et `_xlfn.`-prefiks i den skrevne formelstrengen; skrevet uten prefiks gir de `#NAME?`.
+- En ren omregning beviser kun at formler *beregnes*, ikke at de refererer til riktige celler — områder som er forskjøvet med én rad/kolonne passerer stille.
+- Arbeidsbøker med lenker til eksterne filer mister dem hvis de lagres på nytt med openpyxl og deretter regnes om, med mindre bufrede verdier bevares manuelt først.
+- `.xlsm`-makroer forsvinner ved innlasting med mindre `keep_vba=True` angis eksplisitt.
+- Sammenslåtte celler godtar kun skriving til øverste venstre ankercelle; andre celler i området er skrivebeskyttet.
+- Denne ferdigheten passer ikke når leveransen er et Word-dokument, en HTML-rapport, et frittstående skript, en databasepipeline, eller integrasjon mot Google Sheets API — selv om tabelldata er involvert.

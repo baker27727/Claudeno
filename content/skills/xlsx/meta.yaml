@@ -1,0 +1,38 @@
+slug: "xlsx"
+title:
+  en: "XLSX Creation, Editing, and Analysis"
+  no: "XLSX-oppretting, redigering og analyse"
+summary:
+  en: "Create, edit, fix, and analyze .xlsx/.xlsm/.csv/.tsv spreadsheets with
+    openpyxl and pandas, with mandatory LibreOffice-based recalculation to
+    guarantee zero formula errors."
+  no: "Opprett, rediger, rett og analyser .xlsx/.xlsm/.csv/.tsv-regneark med
+    openpyxl og pandas, med obligatorisk LibreOffice-basert omregning som
+    garanterer null formelfeil."
+categories:
+  - "documents"
+  - "data-research"
+source:
+  repo: "anthropics/skills"
+  path: "skills/xlsx/SKILL.md"
+  branch: "main"
+  license: "Proprietary. LICENSE.txt has complete terms"
+install:
+  command: "npx skills add anthropics/skills/xlsx"
+maturity: "experimental"
+level: "intermediate"
+worksWithout: false
+permissions:
+  - "bash"
+  - "file-read"
+  - "file-write"
+relatedSkills: []
+relatedModules: []
+lastVerified: "2026-07-22"
+verifiedVersion: "2.1.216"
+rubric:
+  docs: 5
+  safety: 4
+  reliability: 4
+  focus: 5
+archived: false

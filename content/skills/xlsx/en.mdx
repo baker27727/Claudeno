@@ -1,0 +1,68 @@
+---
+title: "XLSX Creation, Editing, and Analysis"
+description: "Create, edit, fix, and analyze .xlsx/.xlsm/.csv/.tsv spreadsheets with openpyxl and pandas, with mandatory LibreOffice-based recalculation to guarantee zero formula errors."
+---
+
+# XLSX Creation, Editing, and Analysis
+
+## What it does and why it exists
+
+This skill equips Claude to work with spreadsheet files — `.xlsx`, `.xlsm`, `.xltx`, `.csv`, `.tsv` — as the primary input or output of a task. That covers creating a new workbook from scratch, editing an existing one (adding columns, fixing formulas, reformatting, charting), cleaning up messy tabular data, and converting between tabular formats.
+
+It exists because spreadsheets have sharp edges that are easy to get wrong silently:
+
+- `openpyxl` writes formulas as plain strings with **no cached values**, so a freshly-written file looks broken to anything that reads cached values (pandas, previewers, `data_only=True` loads) until it's recalculated.
+- LibreOffice, used to recalculate, supports fewer functions than Excel — some post-2007 functions need an `_xlfn.` prefix, and a few (like `XLOOKUP`, `FILTER`, `UNIQUE`) simply can't be evaluated and will silently produce truncated or wrong results instead of an obvious error.
+- Financial models have conventions (color coding, number formats, formula structure) that are easy to violate by accident.
+
+The skill bakes in a workflow: use the right tool for the job (openpyxl for formulas/formatting, pandas for bulk data, `markitdown` for a quick read-only look), then **mandatorily recalculate** with a bundled `recalc.py` script that drives LibreOffice, checks for `#NAME?`/`#REF!`/etc., and reports JSON with an error summary. A clean recalc is necessary but not sufficient — Claude is instructed to sanity-check a handful of formulas against expected values before scaling up a whole grid.
+
+## Try it now — TerminalSim
+
+```bash
+$ npx skills add anthropics/skills/xlsx
+$ python scripts/recalc.py quarterly_report.xlsx
+{
+  "status": "success",
+  "total_formulas": 214,
+  "total_errors": 0
+}
+$ # Now open quarterly_report.xlsx — every formula cell has a cached value
+```
+
+Try asking Claude something like: "Clean up the messy CSV export in ~/Downloads/sales_raw.csv — fix the misplaced header row and split it into a proper .xlsx with a Summary tab that totals revenue by region using SUMIFS."
+
+## Install
+
+```bash
+npx skills add anthropics/skills/xlsx
+```
+
+Requires `openpyxl`, `pandas`, and `markitdown` (Python, normally preinstalled — Claude only runs `pip install` if an import actually fails) plus a LibreOffice (`soffice`) binary for recalculation, which the skill auto-configures for sandboxed environments via `scripts/office/soffice.py`.
+
+## Safety and permissions
+
+- **File read/write**: reads the input spreadsheet and writes an edited or new file, generally in place.
+- **Bash execution**: runs `python scripts/recalc.py output.xlsx [timeout]`, which shells out to LibreOffice to rewrite the file in place with recalculated values.
+- **No network access** is required or used by this skill's own operation.
+- **Destructive operations to watch for**: `data_only=True` loads strip formulas if the workbook is then saved — this skill instructs Claude to never save after such a load. Re-saving a workbook that links to external files with openpyxl and then recalculating **destroys those external links** (turns them into `#NAME?`) — the skill requires copying out cached values first, and `recalc.py` refuses to run in that state unless `--force` is passed.
+- Claude is instructed to never ship a file while `recalc.py` reports `errors_found`, and to distinguish inherited errors from newly introduced ones by checking the original file's cached values.
+
+## Practical use cases
+
+- Building a financial model with correctly color-coded inputs/formulas/links, percentage and currency formatting, and cited sources for hardcoded assumptions.
+- Adding a computed column or summary tab to an existing spreadsheet using `SUMIFS`/`INDEX`/`MATCH`, without touching the file's existing formulas or conventions.
+- Cleaning a messy CSV/TSV export (misplaced headers, junk rows) into a well-structured `.xlsx`.
+- Converting between tabular formats (CSV ⇄ XLSX) in bulk with pandas.
+- Auditing an existing workbook for formula errors and fixing them without silently changing what a formula computes.
+- Producing a fill-in-the-blanks template workbook with a legend and one example row.
+
+## Limitations
+
+- Cannot use `XLOOKUP`, `XMATCH`, `SORT`, `FILTER`, `UNIQUE`, or `SEQUENCE` — the bundled LibreOffice can't evaluate them reliably, and openpyxl-written files lack spill metadata, so results silently truncate to a single cell instead of erroring.
+- Six newer functions (`TEXTJOIN`, `CONCAT`, `IFS`, `SWITCH`, `MAXIFS`, `MINIFS`) only work with an `_xlfn.` prefix in the written formula string; written bare they yield `#NAME?`.
+- A clean recalculation only proves formulas *evaluate*, not that they reference the right cells — off-by-one ranges pass silently.
+- Workbooks with external-file links lose them if re-saved with openpyxl and then recalculated, unless cached values are preserved manually first.
+- `.xlsm` macros are dropped on load unless `keep_vba=True` is passed explicitly.
+- Merged cells only accept writes to the top-left anchor cell; other cells in the range are read-only.
+- This skill is not appropriate when the deliverable is a Word document, HTML report, standalone script, database pipeline, or Google Sheets API integration — even if tabular data is involved.
