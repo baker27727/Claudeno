@@ -67,3 +67,7 @@ Sjekkpunkter er lokal angring, ikke versjonskontroll:
   del av samtalen uten å røre filer.
 - Sjekkpunkter sporer ikke Bash-endrede eller eksternt endrede filer, og de er et
   supplement til Git, ikke en erstatning.
+
+## Nytt i v2.1.217
+
+Kommandoen `/rewind` hoppar nå over og rapporterer symlinket eller hardlinket stier på sporede plasseringar i stedet for å gjenopprette eller slette filer gjennom dem, noe som forbedrer sikkerhet og konsistens.

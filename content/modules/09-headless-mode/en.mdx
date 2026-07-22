@@ -108,3 +108,7 @@ Screen reader mode is now available for accessibility: run `claude --ax-screen-r
 ## What's new in v2.1.216
 
 Resumed background agent sessions now correctly restore the agent's full configuration, including its prompt and tool restrictions, instead of reverting to the default agent. This ensures consistent behavior across session checkpoints.
+
+## What's new in v2.1.217
+
+Remote Control sessions now properly display pending permission prompts and dialogs to viewers that connect after they appear. Background shells are more reliable and no longer become impossible to stop after a session is sent to the background or exits on heavily loaded systems. MCP and GitHub app installation commands in headless sessions now queue a "needs input" request in the agent view when no client is attached.

@@ -1,11 +1,34 @@
 # Upstream snapshot — Claude Code CHANGELOG
 
-Last observed version: 2.1.216
+Last observed version: 2.1.217
 
 > This file is maintained automatically by `scripts/watch-upstream.ts`.
 > It stores the last-seen upstream CHANGELOG so daily diffs can be computed.
 
 # Changelog
+
+## 2.1.217
+
+- Added emoji shortcode autocomplete in the prompt input: type `:heart:` to insert ❤️, or `:hea` for suggestions — disable with the `emojiCompletionEnabled` setting
+- Added warnings when transcript writes are failing (e.g. disk full) or when session saving is off due to an inherited environment variable, instead of losing transcripts silently
+- Fixed a memory leak where truncated MCP tool outputs kept the full untruncated result in memory for the rest of the session
+- Fixed Windows auto-update failures that could leave `claude.exe` missing; failed updates now restore the preserved executable automatically
+- Fixed background session isolation not canonicalizing symlinked working directories, which could let sessions escape their workspace folder
+- Fixed auto-compact never triggering for Claude Opus 4.8 on Bedrock and `/compact` failing once over the limit
+- Fixed corporate mTLS, TLS-verify, OAuth scope, and proxy settings being ignored in Claude Desktop sessions
+- Fixed screen reader mode's startup announcement being cut off by the first prompt render, and the thinking status row re-rendering every few seconds to update elapsed time and token counts
+- Fixed managed settings that set `OTEL_EXPORTER_OTLP_ENDPOINT` not governing all signals — lower-scope signal-specific overrides no longer redirect telemetry away from the managed endpoint
+- Fixed `--resume`/`--continue` and `/resume` failing with a TypeError when a transcript has a malformed attachment entry
+- Fixed Remote Control sessions not showing a pending permission prompt or dialog to viewers that connected after it appeared
+- Fixed background shells sometimes becoming impossible to stop after a session is sent to the background (`/background` or `←`) or when the session exits on a heavily loaded machine, most visible on Windows
+- Fixed a `CLAUDE.md` or `SKILL.md` paths frontmatter value with many brace groups OOM-killing or stalling the CLI at startup — brace expansion is now budget-bounded
+- Fixed the transcript preview sitting flush against the input area when attaching to a starting background session; it now leaves the same one-line gap as the live layout, so the transcript no longer shifts when the session takes over
+- Improved footer PR badge links to be clickable hyperlinks even when terminal support can't be detected (e.g. over ssh/tmux); set `FORCE_HYPERLINK=0` to opt out
+- Changed the login-expiry warning to appear 3 days before expiry instead of 5
+- Capped the frontend-design plugin suggestion tip at 3 lifetime impressions instead of repeating indefinitely
+- Added a cap on concurrently-running subagents (default 20, override with `CLAUDE_CODE_MAX_CONCURRENT_SUBAGENTS`) so one message can't fan out unbounded background agents
+- Changed subagents to no longer spawn nested subagents by default; set `CLAUDE_CODE_MAX_SUBAGENT_SPAWN_DEPTH` to allow deeper nesting
+- Fixed `--max-budget-usd` not stopping background subagents: once the cap is reached, new spawns are denied and running background agents are halted
 
 ## 2.1.216
 
@@ -82,31 +105,4 @@ Last observed version: 2.1.216
 - Fixed the PowerShell tool reporting `where.exe`, `fc.exe`, and `diff.exe` as errors when they return a valid negative answer (Windows)
 - Fixed `>` and `>>` under the PowerShell tool on Windows PowerShell 5.1 writing UTF-16LE files that other tools couldn't read as UTF-8
 - Fixed a displaced background daemon deleting its successor's control socket on shutdown, which made the next client kill the healthy replacement daemon
-- Fixed background sessions parked with `←` or `/background` and left idle keeping the background daemon and a worker process alive indefinitely
-- Fixed completed background sessions being impossible to remove via `claude rm` or the agent view once the background service had gone idle
-- Fixed background sessions dispatched from a non-git folder being impossible to delete from the agents view
-- Fixed reopening a stopped background session failing to restore its saved conversation when an unreadable folder exists in the session store
-- Fixed the Remote Control "session ready" push notification firing for sessions where Remote Control was not explicitly enabled
-- Fixed `/install-github-app` and the `/mcp` settings menu being blocked in agent-view sessions — they're now refused only in background sessions with no terminal attached
-- Fixed plugins enabled via the `--settings` CLI flag not loading (regression since v2.1.181)
-- Fixed feature flags going stale in long-running sessions after the OAuth token rotates
-- Fixed `/ultrareview` refusing to run in repos with no merge base — it now offers to review all tracked files
-- Fixed `claude update` and `claude doctor` hanging silently, and the `/status` System diagnostics section going blank, when a shell-config path is a directory
-- Fixed memory frontmatter values being silently truncated at an inline `#` when memory files are saved
-- Fixed session cost and token telemetry double-counting on streams that emit multiple cumulative `message_delta` frames
-- Fixed a spurious "check your network" warning that appeared while the advisor was thinking
-- Fixed hooks with exit code 2 not blocking as documented when the hook's stdout JSON fails schema validation
-- Fixed OTel log events emitted outside the turn's async context missing the interaction span's trace context
-- Fixed MCP transient errors during prompts/resources refresh clearing the server's slash commands and resources
-- Improved the `claude rc` workspace-trust error in the home directory to say trust there is never saved and to suggest running from a project directory
-- Changed single-segment `dir/**` hook `if:` conditions to match only `<cwd>/dir`; write `**/dir/**` for any-depth matching. `deny`/`ask` permission rules keep their any-depth match.
-- Changed `file` commands using `-m`/`--magic-file` or `-f`/`--files-from` to require permission instead of being auto-allowed as read-only
-- Changed keep-alive connection pooling to disable after a stale-connection error, so retries open a fresh socket
-- Changed SessionStart hooks to report source `"fork"` when a session begins as a fork instead of `"resume"`
-
-## 2.1.212
-
-- `/fork` now copies your conversation into a new background session (its own row in `claude agents`) while you keep working; the in-session subagent it used to launch is now `/subtask`
-- Added `claude auto-mode reset` to restore the default auto-mode configuration, with a confirmation prompt (pass `--yes` to skip)
-- Added a session-wide limit on WebSearch tool calls (default 200, tunable via `CLAUDE_CODE_MAX_WEB_SEARCHES_PER_SESSION`) to stop runaway search loops
-- Added a per-session cap on subagent spawn
+- Fixed background sessions parked with `←` or `/background` and left idle keeping the background daemon and a worker process alive

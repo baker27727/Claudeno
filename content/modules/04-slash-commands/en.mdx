@@ -118,3 +118,7 @@ The `/fork` command has been redesigned in version 2.1.212: it now copies your c
 ## What's new in v2.1.215
 
 Claude no longer automatically runs `/verify` and `/code-review` skills. Invoke them explicitly with `/verify` or `/code-review` when you want them to execute.
+
+## What's new in v2.1.217
+
+The `/resume` and `/continue` commands now properly handle malformed attachment entries in transcripts instead of failing with a TypeError. The `/compact` command works correctly for Claude Opus 4.8 on Bedrock and no longer fails once over the limit.

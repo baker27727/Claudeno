@@ -102,3 +102,7 @@ Claude Code 2.1.211 introduserer flagget `--forward-subagent-text` og miljøvari
 ## Nytt i v2.1.212
 
 **Ny `claude auto-mode reset`-kommando**: Gjenopprett standard auto-mode-konfigurasjonen med en bekreftelsesledetekst (send `--yes` for å hoppe over). **MCP-verktøy auto-bakgrunn**: Verktøykall som kjører lenger enn 2 minutter flyttes nå automatisk til bakgrunnen slik at økten din forblir brukbar. Konfigurer grenseverdien eller deaktiver med `CLAUDE_CODE_MCP_AUTO_BACKGROUND_MS`.
+
+## Nytt i v2.1.217
+
+Claude Code støtter nå emoji-forkortelsesautofullføring i ledetekstinntasten — skriv `:heart:` for å sette inn ❤️, eller `:hea` for forslag. Du kan deaktivere dette med innstillingen `emojiCompletionEnabled`. I tillegg varsler CLI-en deg nå når utskriftsskriving mislykkes (f.eks. på grunn av full disk) eller når øktlagring er slått av på grunn av en arvet miljøvariabel, noe som forhindrer stille datatap.

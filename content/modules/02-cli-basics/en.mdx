@@ -102,3 +102,7 @@ Claude Code 2.1.211 introduces the `--forward-subagent-text` flag and `CLAUDE_CO
 ## What's new in v2.1.212
 
 **New `claude auto-mode reset` command**: Restore the default auto-mode configuration with a confirmation prompt (pass `--yes` to skip). **MCP tool auto-background**: Tool calls running longer than 2 minutes now move to the background automatically so your session stays usable. Configure the threshold or disable with `CLAUDE_CODE_MCP_AUTO_BACKGROUND_MS`.
+
+## What's new in v2.1.217
+
+Claude Code now supports emoji shortcode autocomplete in the prompt input — type `:heart:` to insert ❤️, or `:hea` for suggestions. You can disable this with the `emojiCompletionEnabled` setting. Additionally, the CLI now warns you when transcript writes are failing (e.g. due to disk full) or when session saving is off due to an inherited environment variable, preventing silent data loss.

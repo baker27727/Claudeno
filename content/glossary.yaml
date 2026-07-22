@@ -119,3 +119,22 @@
   no: "sandbox.filesystem.disabled"
   note: "Settings key enabling skipping of filesystem isolation while maintaining
     network egress control."
+- id: "emoji-shortcode-autocomplete"
+  en: "emoji shortcode autocomplete"
+  no: "emoji-forkortelsesautofullføring"
+  note: "Feature allowing users to type emoji codes like :heart: for quick emoji
+    insertion in prompts"
+- id: "emojicompletionenabled"
+  en: "emojiCompletionEnabled"
+  no: "emojiCompletionEnabled"
+  note: "Settings key to disable emoji shortcode autocomplete"
+- id: "claude_code_max_concurrent_subagents"
+  en: "CLAUDE_CODE_MAX_CONCURRENT_SUBAGENTS"
+  no: "CLAUDE_CODE_MAX_CONCURRENT_SUBAGENTS"
+  note: "Environment variable to override default spawn cap (20) for concurrent
+    subagents"
+- id: "claude_code_max_subagent_spawn_depth"
+  en: "CLAUDE_CODE_MAX_SUBAGENT_SPAWN_DEPTH"
+  no: "CLAUDE_CODE_MAX_SUBAGENT_SPAWN_DEPTH"
+  note: "Environment variable to allow nested subagent spawning (disabled by
+    default)"

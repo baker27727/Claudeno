@@ -67,3 +67,7 @@ Checkpointing is local undo, not version control:
   conversation without touching files.
 - Checkpoints don't track Bash-modified or externally-changed files, and they
   complement Git rather than replace it.
+
+## What's new in v2.1.217
+
+The `/rewind` command now skips and reports symlinked or hard-linked paths at tracked locations instead of restoring or deleting files through them, improving safety and consistency.

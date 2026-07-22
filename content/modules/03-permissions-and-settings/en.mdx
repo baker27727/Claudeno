@@ -100,3 +100,7 @@ Permission checks have been improved in Claude Code 2.1.214. Single-segment `dir
 ## What's new in v2.1.216
 
 Claude Code 2.1.216 introduces the `sandbox.filesystem.disabled` setting, which lets you skip filesystem isolation while maintaining network egress control. This is useful in sandboxed environments where you need fine-grained control over isolation boundaries.
+
+## What's new in v2.1.217
+
+Corporate mTLS, TLS verification, OAuth scope, and proxy settings are now properly honored in Claude Desktop sessions, fixing a previous issue where these security and connectivity settings were ignored. Screen reader mode's startup announcement no longer gets cut off by the first prompt render.
