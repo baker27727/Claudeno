@@ -1,11 +1,51 @@
 # Upstream snapshot — Claude Code CHANGELOG
 
-Last observed version: 2.1.217
+Last observed version: 2.1.218
 
 > This file is maintained automatically by `scripts/watch-upstream.ts`.
 > It stores the last-seen upstream CHANGELOG so daily diffs can be computed.
 
 # Changelog
+
+## 2.1.218
+
+- Changed `/code-review` to run as a background subagent, so review work no longer fills your conversation and keeps stacked slash commands as its review target
+- Added screen-reader announcements of deleted text for word and line deletions (`Option+Delete`, `Ctrl+W`, `Cmd+Backspace`, `Ctrl+U`, `Ctrl+K`) in `--ax-screen-reader` mode
+- Fixed Windows paths with `\u`-prefixed segments (like `C:\Users\unicorn`) being corrupted into CJK characters in tool inputs, which made those files inaccessible
+- Fixed the left arrow key discarding the conversation with no undo: presses right after editing now ask to confirm, and Esc in the agent view returns to the conversation it backgrounded
+- Added HTTP status and error text to `claude mcp list` and `/mcp` when a server fails to connect, and a warning for MCP config values with hidden leading or trailing whitespace
+- Fixed multi-line paste collapsing into one line with `j` in place of newlines in terminals that encode pasted newlines as Ctrl+J
+- Fixed `/context` reporting stale pre-compact token usage after compacting from the message picker
+- Fixed `/ultrareview` failing on descriptive arguments like "review my auth changes" — they now run a review of your current branch with the text applied as a note to the findings
+- Fixed `/code-review ultra` silently running a local review in non-interactive sessions — it now launches the cloud review
+- Fixed gateway spend metering to price Bedrock application-inference-profile ARNs and other config-mapped upstream model IDs at the configured model's rates
+- Fixed mojibake when a long IDE selection was truncated mid-emoji, and a case where a tool executor error could be silently dropped
+- Fixed an engine teardown race that could start and abandon a phantom turn, and made input pushed after close consistently rejected
+- Fixed spurious "[Request interrupted by user]" messages after interrupted tool calls, and an unpaired `tool_use` block left in the transcript when a tool aborted mid-response
+- Fixed VoiceOver reading "new line" instead of echoing the typed space at the end of the input in `--ax-screen-reader` mode
+- Fixed plugin and settings panels not moving the terminal cursor to the focused row, so screen readers and magnifiers can follow arrow-key navigation
+- Fixed crashes (maximum call stack exceeded) when a deeply nested watched directory tree was deleted or moved, and when rendering deeply nested UI trees
+- Fixed pull request events occasionally being lost when a session exited immediately after creating or linking a PR
+- Fixed the Bedrock setup wizard failing profile verification for assume-role profiles in partitioned AWS regions and on proxy-only networks
+- Fixed rare negative or incorrect turn duration measurements after a system clock adjustment by timing turns with a monotonic clock
+- Fixed the "N MCP servers need authentication" startup notice over-counting claude.ai connectors that aren't connected in claude.ai
+- Fixed prompt history entries being dropped or duplicated when history writes raced or failed
+- Fixed a retry loop that re-sent identical doomed requests after a context-overflow error with a large thinking budget; `Ctrl+B` backgrounding now applies the same background-shell caps as other paths
+- Fixed agent frontmatter hooks running from untrusted folders: hooks now require the agent file's own folder to have accepted workspace trust
+- Fixed fork-session lineage being lost after compaction in headless and SDK sessions
+- Fixed a resumed session failing every turn, or crashing on resume, when its history held a malformed delta attachment
+- Improved `/ultrareview` error feedback so Claude can correct an invalid argument instead of retrying it unchanged
+- Improved auto mode: the dangerous-rm, background-`&`, and suspicious-Windows-path checks no longer open permission dialogs; the auto-mode classifier adjudicates them instead
+- Improved sandbox command restrictions for IDE interactions
+- Improved trust dialogs to name the repository root the grant covers
+- Changed `/deep-research` to start only when invoked manually; Claude no longer launches it on its own
+- Changed plan mode with auto to no longer prompt for Bash commands the static analyzer can't prove read-only; the auto-mode classifier judges them instead
+- Added an announcement when fast mode changes as a result of switching models via `/config model=<x>` or Remote Control
+- Changed server-managed settings so benign feature and cost toggles no longer trigger the settings-approval prompt
+- Changed agent markdown files to reject agent names containing `:`, which is reserved for plugin namespacing
+- Changed skills with `context: fork` to run in the background by default; opt out per skill with `background: false`
+- Added `yes`/`no`/`on`/`off`/`1`/`0` (case-insensitive) as accepted values for skill and plugin frontmatter booleans, alongside `true`/`false`
+- Fixed remote sessions continuing to send heartbeats after their worker was replaced, which left long-lived desktop and IDE processes retrying a rejected request every few seconds forever
 
 ## 2.1.217
 
@@ -63,46 +103,4 @@ Last observed version: 2.1.217
 - Fixed telemetry misreporting permission denials: failed permission-prompt requests no longer count as user rejections, and user interrupts are now reported as user aborts instead of rejections
 - Improved the `/fork` confirmation to one line with the new session's name, `claude attach` id, and a note when the copy shares your checkout
 - Improved validation of `git` and `gh` command arguments in the PowerShell tool
-- Improved the `/ultrareview` diff-too-large error to show configured limits, measured diff size, and largest contributing files
-- Improved `/code-review ultra` empty-diff message to name the exact base ref and suggest passing an explicit base
-- Improved the spend limit adjustment prompt to show the server's reason when a spend limit change is rejected
-- `/context` now shows an explicit warning when the conversation exceeds the context window, and a failed `/compact` displays as an error
-- `/rewind` no longer restores or deletes files through symlinks or hard links at tracked paths and reports how many paths it skipped
-- Background sessions: `/mcp` and `/install-github-app` now park a "needs input" request in the agent view when no client is attached
-- Updated the bundled dataviz skill: reordered the default chart palette and fixed guidance that suggested direct labels for four-series charts
-- [VSCode] Fixed right-to-left text (Arabic, Hebrew, Persian) rendering in the wrong order when mixed with English or code
-- Fixed cloud sessions dropping the in-flight message when the session's container restarts mid-turn — the interrupted turn now re-runs on resume instead of leaving the session unresponsive
-
-## 2.1.215
-
-- Claude no longer runs the `/verify` and `/code-review` skills on its own; invoke them with `/verify` or `/code-review` when you want them
-
-## 2.1.214
-
-- Fixed single-segment `dir/**` allow rules like `Edit(src/**)` auto-approving writes to nested `dir/` directories anywhere in the tree instead of only `<cwd>/dir`
-- Fixed a permission-check bypass affecting commands run in Windows PowerShell 5.1 sessions
-- Fixed Bash permission checks to fail closed on file-descriptor redirect forms that bash parses differently than the permission analyzer
-- Fixed Bash permission checks misjudging very long commands — commands over 10,000 characters now always prompt instead of running automatically
-- Fixed Bash permission checks treating zsh variable subscripts and modifiers in `[[ ]]` comparisons as inert text — these commands now prompt for approval
-- Fixed Bash permission checks to no longer auto-approve certain `help` and `man` commands that could run unsafe options, command substitutions, or backslash paths
-- Fixed permission prompts on remote sessions that could proceed before the local confirmation dialog
-- Added the EndConversation tool: Claude can end sessions with highly abusive users or jailbreak attempts, as on claude.ai since 2025 — see https://www.anthropic.com/research/end-subset-conversations
-- Added a periodic progress heartbeat for long-running tool calls that previously went silent
-- Added an ISO `modified` timestamp to memory file frontmatter
-- Added `message.uuid`, `client_request_id`, and `tool_source` attributes to OpenTelemetry log events for message-level correlation and tool provenance
-- Added `CLAUDE_CODE_OTEL_CONTENT_MAX_LENGTH` to configure the 60 KB truncation limit on OpenTelemetry content attributes
-- Added reasoning effort to the `subagentStatusLine` payload, so custom agent rows can render model and effort
-- Added permission prompts for `docker` commands (including the Podman `docker` shim) carrying daemon-redirect flags (`--url`, `--connection`, `--identity`, and Podman's remote mode) that previously ran without one
-- Fixed a crash when a GrowthBook feature evaluates to null, and a bug where a malformed flag payload could wipe the cached feature flags
-- Fixed Bash tool killing the Claude session when a `pkill -f` pattern accidentally matched the CLI's own process (Linux)
-- Fixed unbounded memory growth when `--settings` points at a device file or multi-GB file; oversized (>2 MiB) settings files now fail at startup with a clear error
-- Fixed streaming turns failing with "Socket is closed" behind corporate proxies on Windows
-- Fixed stream-json output truncation at exit for slow-reading SDK/pipeline consumers; the exit drain now scales with queued bytes instead of a flat 2s cap
-- Fixed scheduled tasks refusing their own configured prompt as untrusted input — the fired prompt is now delivered as the session's assigned task
-- Fixed PowerShell tool commands hanging until timeout when a child process waited on standard input (Windows)
-- Fixed Python scripts under the PowerShell tool crashing with UnicodeDecodeError when reading non-UTF-8 data from standard input (Windows)
-- Fixed Python scripts run via the PowerShell tool crashing with UnicodeEncodeError on non-ASCII output, and PowerShell 7 error messages containing raw ANSI escape sequences (Windows)
-- Fixed the PowerShell tool reporting `where.exe`, `fc.exe`, and `diff.exe` as errors when they return a valid negative answer (Windows)
-- Fixed `>` and `>>` under the PowerShell tool on Windows PowerShell 5.1 writing UTF-16LE files that other tools couldn't read as UTF-8
-- Fixed a displaced background daemon deleting its successor's control socket on shutdown, which made the next client kill the healthy replacement daemon
-- Fixed background sessions parked with `←` or `/background` and left idle keeping the background daemon and a worker process alive
+- Improved the `/ultr

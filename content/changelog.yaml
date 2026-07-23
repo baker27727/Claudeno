@@ -1,3 +1,21 @@
+- id: "2.1.218"
+  version: "2.1.218"
+  date: "2026-07-23"
+  entry:
+    en: "Version 2.1.218 introduces background subagent processing for
+      `/code-review` and new spawn caps for subagent delegation, along with
+      improvements to `/ultrareview` error handling and screen reader
+      accessibility. Added `sandbox.filesystem.disabled` setting and emoji
+      shortcode autocomplete. Fixed multiple bugs including Windows path
+      corruption, stale token reporting, and multi-line paste handling."
+    no: "Versjon 2.1.218 introduserer bakgrunnsprosessering av underagenter for
+      `/code-review` og nye spawning-grenser for underagentdelegering, sammen
+      med forbedringer til `/ultrareview`-feilbehandling og tilgjengelighet for
+      skjermlesere. La til `sandbox.filesystem.disabled`-innstilling og
+      emoji-forkortelsesautofullføring. Fikset flere feil inkludert
+      Windows-stikørrupsjon, foreldet token-rapportering og håndtering av
+      flerlinjepasta."
+  sources: []
 - id: "2.1.217"
   version: "2.1.217"
   date: "2026-07-22"

@@ -121,3 +121,7 @@ Claude kjører ikke lenger `/verify` og `/code-review` skills automatisk. Påkal
 ## Nytt i v2.1.217
 
 Kommandoene `/resume` og `/continue` håndterer nå korrekt malformerte vedleggsoppføringer i utskrifter i stedet for å mislykkes med en TypeError. Kommandoen `/compact` fungerer korrekt for Claude Opus 4.8 på Bedrock og mislykkes ikke lenger når grensen overskrides.
+
+## Nytt i v2.1.218
+
+Kommandoen `/code-review` kjører nå som en underagent i bakgrunnen, slik at konversasjonen din forblir fokusert på annet arbeid mens gjennomganger behandles i bakgrunnen. Tilsvarende starter `/deep-research` nå bare når den påkalles manuelt i stedet for å starte automatisk. Kommandoen `/ultrareview` har forbedret feilbehandling for å hjelpe Claude med å korrigere ugyldige argumenter, og beskrivende argumenter som "review my auth changes" brukes nå som notater til funn på gjeldende gren.

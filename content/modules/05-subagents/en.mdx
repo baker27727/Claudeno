@@ -94,3 +94,7 @@ Claude Code 2.1.216 fixes a race condition where background subagents could be c
 ## What's new in v2.1.217
 
 Subagent spawning is now controlled by two new constraints: a per-session spawn cap (default 20, configurable via `CLAUDE_CODE_MAX_CONCURRENT_SUBAGENTS`) limits concurrent subagents to prevent unbounded fan-out, and nested subagent spawning is disabled by default (enable with `CLAUDE_CODE_MAX_SUBAGENT_SPAWN_DEPTH`). The `--max-budget-usd` flag now correctly stops background subagents — once the cap is reached, new spawns are denied and running agents are halted.
+
+## What's new in v2.1.218
+
+Subagent spawning is now capped at 20 concurrent agents per session (override with `CLAUDE_CODE_MAX_CONCURRENT_SUBAGENTS`) to prevent unbounded delegation loops. By default, subagents can no longer spawn nested subagents; enable deeper nesting with `CLAUDE_CODE_MAX_SUBAGENT_SPAWN_DEPTH`. Skills with `context: fork` now run in the background by default—opt out per skill with `background: false`.

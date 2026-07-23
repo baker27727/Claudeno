@@ -106,3 +106,7 @@ Claude Code 2.1.211 introduserer flagget `--forward-subagent-text` og miljøvari
 ## Nytt i v2.1.217
 
 Claude Code støtter nå emoji-forkortelsesautofullføring i ledetekstinntasten — skriv `:heart:` for å sette inn ❤️, eller `:hea` for forslag. Du kan deaktivere dette med innstillingen `emojiCompletionEnabled`. I tillegg varsler CLI-en deg nå når utskriftsskriving mislykkes (f.eks. på grunn av full disk) eller når øktlagring er slått av på grunn av en arvet miljøvariabel, noe som forhindrer stille datatap.
+
+## Nytt i v2.1.218
+
+Kommandoene `claude mcp list` og `/mcp` viser nå HTTP-status og feiltekst når en tjener ikke kobler til, og viser advarsler for MCP-config-verdier med skjult ledende eller etterfølgende mellomrom. Fikset venstre piltast som diskarderte konversasjoner uten angre—trykk rett etter redigering bekrefter nå først, og Esc returnerer til bakgrunnskonversasjonen.

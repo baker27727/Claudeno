@@ -95,3 +95,7 @@ Claude Code 2.1.216 fikser en kapløpstilstand der bakgrunds-underagenter kunne 
 ## Nytt i v2.1.217
 
 Underagent-spawning kontrolleres nå av to nye begrensninger: en spawning-grense per økt (standard 20, konfigurerbar via `CLAUDE_CODE_MAX_CONCURRENT_SUBAGENTS`) begrenser samtidige underagenter for å forhindre ubegrenset utvidelse, og nestede underagent-spawning er deaktivert som standard (aktiver med `CLAUDE_CODE_MAX_SUBAGENT_SPAWN_DEPTH`). Flagget `--max-budget-usd` stopper nå korrekt bakgrunnsunderagenter — når grensen nås, blir nye spawns nektet og kjørende agenter blir stoppet.
+
+## Nytt i v2.1.218
+
+Underagent-spawning er nå begrenset til 20 samtidige agenter per økt (overstyring med `CLAUDE_CODE_MAX_CONCURRENT_SUBAGENTS`) for å forhindre ubegrensede delegeringssløyfer. Som standard kan underagenter ikke lenger spawne nestede underagenter; aktiver dypere nestling med `CLAUDE_CODE_MAX_SUBAGENT_SPAWN_DEPTH`. Skills med `context: fork` kjører nå i bakgrunnen som standard—velg bort per skill med `background: false`.

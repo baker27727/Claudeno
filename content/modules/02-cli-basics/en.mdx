@@ -106,3 +106,7 @@ Claude Code 2.1.211 introduces the `--forward-subagent-text` flag and `CLAUDE_CO
 ## What's new in v2.1.217
 
 Claude Code now supports emoji shortcode autocomplete in the prompt input — type `:heart:` to insert ❤️, or `:hea` for suggestions. You can disable this with the `emojiCompletionEnabled` setting. Additionally, the CLI now warns you when transcript writes are failing (e.g. due to disk full) or when session saving is off due to an inherited environment variable, preventing silent data loss.
+
+## What's new in v2.1.218
+
+The `claude mcp list` and `/mcp` commands now display HTTP status and error text when a server fails to connect, and show warnings for MCP config values with hidden leading or trailing whitespace. Fixed the left arrow key discarding conversations with no undo—presses right after editing now confirm first, and Esc returns to the backgrounded conversation.
