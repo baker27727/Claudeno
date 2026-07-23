@@ -1,0 +1,85 @@
+---
+title: "Revisjon og forebygging av konfigurasjonsdrift i Claude Code-agenter"
+description: "Når team skalerer Claude Code på tvers av CLAUDE.md, AGENTS.md og regelfiler, blir konfigurasjonsdrift en reell driftsrisiko. Denne artikkelen forklarer hvordan drift oppstår, hvordan den oppdages, og hvordan agentinstruksjoner holdes konsistente over tid."
+discoveredAt: "2026-07-21T07:34:40.161Z"
+updatedDate: "2026-07-23T08:17:31.047Z"
+author: "Claude Code Learn"
+trendScore: 0.616
+scoreBreakdown:
+  frequency: 0.5
+  recency: 0.906
+  engagement: 0.259
+  gap: 1
+tags:
+  - "Claude Code"
+  - "CLAUDE.md"
+  - "agent configuration"
+  - "config drift"
+  - "memory"
+  - "team workflows"
+  - "auditing"
+sources:
+  - "https://code.claude.com/docs/en/memory.md"
+  - "https://code.claude.com/docs/en/claude-directory.md"
+  - "https://code.claude.com/docs/en/prompt-caching.md"
+  - "https://code.claude.com/docs/en/best-practices.md"
+relatedModules:
+  - "memory"
+  - "permissions-and-settings"
+  - "subagents"
+  - "hooks"
+relatedUseCases:
+  - "project-management-with-claude"
+relatedSkills: []
+draft: false
+# Verified against Claude Code 2.1.217
+---
+## Kort oppsummert
+
+Etter hvert som team tar i bruk Claude Code på tvers av mange repositorier, maskiner og verktøy, har instruksjonene som styrer agentatferd — CLAUDE.md, AGENTS.md, `.claude/rules/` og verktøyspesifikke filer som `.cursorrules` — en tendens til å komme ut av synk. Ett repos CLAUDE.md oppdateres etter en hendelse, et annet ikke; en regel som burde gjelde for hele organisasjonen finnes bare i ett prosjekt. Denne driften svekker gradvis konsistens og tillit til agentatferd. En voksende gruppe verktøy fra fellesskapet (f.eks. "Amnesia" og "ai-harness-doctor") og Claude Codes egen dokumentasjon om minne og filstruktur adresserer dette ved å gjøre konfigurasjonstilstand reviderbar og sammenlignbar i stedet for implisitt.
+
+## Hva er nytt
+
+Claude Codes dokumentasjon skiller eksplisitt mellom to minnemekanismer som nå er vanlige driftskilder: **CLAUDE.md-filer** (eksplisitte, versjonerte, menneskeredigerte) og **auto-minne** (Claudes egne lagrede notater, som kan vises og redigeres via `/memory`). Referansen `claude-directory` dokumenterer hele `.claude/`-fillayouten — inkludert `.claude/rules/` for stiavhengige regler, deling av regler mellom prosjekter via symlinker, og presedens mellom bruker- og prosjektnivå — som er akkurat det området hvor drift samler seg opp: team legger til regler ett sted, glemmer å spre dem videre, eller lar utdaterte regler forbli aktive etter at et prosjekts struktur endres. Anthropics egen dokumentasjon anerkjenner også problemer på organisasjonsnivå direkte, med veiledning om hvordan man "distribuerer organisasjonsomfattende CLAUDE.md" og "ekskluderer spesifikke CLAUDE.md-filer" — noe som indikerer at dette er et kjent, adressert problem snarere enn et hypotetisk et. Parallelt reflekterer verktøy i det bredere agent-harness-økosystemet (minne/oppgavesporingslag som "Superbeads", verktøy for legitimasjonsrevisjon som "AgentPass", og sikkerhets-/sikringslag som "intutic") den samme trenden: agentkonfigurasjon og -minne behandles nå som infrastruktur som må revideres, versjoneres og beskyttes — ikke bare som prompttekst.
+
+## Slik fungerer det
+
+Konfigurasjonsdrift i Claude Code har tre hovedkilder, hver med sin egen mekanisme:
+
+1. **Spredning av CLAUDE.md.** CLAUDE.md-filer kan finnes på brukernivå, i prosjektroten og i underkataloger, og lastes etter en definert presedens (prosjektnivåfiler lastes sammen med brukernivåfiler, med ytterligere kataloger som kan importeres via eksplisitte referanser). Når flere filer finnes på tvers av mange repoer uten en felles kilde, avviker de fra hverandre etter hvert som endringer gjøres lokalt ett sted og ikke et annet.
+2. **Fragmentering av `.claude/rules/`.** Regler kan organiseres som stiavhengige filer under `.claude/rules/`, deles mellom prosjekter via symlinker, eller defineres på brukernivå. Symlinkede regler holdes synkronisert per konstruksjon; kopierte regler gjør ikke det — dette er den direkte mekaniske forskjellen mellom driftsresistente og driftsutsatte oppsett.
+3. **Avvik i auto-minne.** Claude Code vedlikeholder også sitt eget auto-minne — notater det lagrer under økter — atskilt fra CLAUDE.md. Dette kan inspiseres og redigeres via kommandoen `/memory`. Fordi auto-minne skrives implisitt under arbeid i stedet for bevisst forfattet, kan det samle opp antakelser som ikke lenger stemmer med CLAUDE.md eller teamets konvensjoner, spesielt etter refaktorering.
+4. **Redigering uten bevissthet om cache eller økt.** CLAUDE.md kan redigeres midt i en økt uten å ugyldiggjøre prompt-cachen, noe som er praktisk, men betyr at en økt kan fortsette å operere på en mental modell av filen som stammer fra før redigeringen din, helt til filen faktisk leses på nytt.
+
+Revisjonsverktøy på dette området fungerer generelt ved å: (a) liste opp hver CLAUDE.md/AGENTS.md/regelfil som er tilgjengelig fra et sett med repositorier, (b) sammenligne dem mot en kanonisk eller tidligere versjon, og (c) flagge filer som refererer til utdaterte verktøy, stier eller konvensjoner. Dette gjenspeiler det Claude Codes egen feilsøkingsveiledning for minne adresserer manuelt — "Claude følger ikke CLAUDE.md-en min", "Jeg vet ikke hva auto-minne lagret", "CLAUDE.md-en min er for stor" — som er driftssymptomer like mye som individuelle feil.
+
+## Prøv det selv
+
+Bruk Claude Codes innebygde kommandoer til å manuelt revidere minne og regler før du tar i bruk tredjepartsverktøy:
+
+```bash
+# Inspiser hva auto-minne har registrert for dette prosjektet
+/memory
+
+# List opp hver CLAUDE.md- og regelfil som lastes for gjeldende økt
+# (sjekk claude-directory-dokumentasjonen for hele fillayouten Claude Code forventer)
+find . -iname "CLAUDE.md" -o -path "*/.claude/rules/*"
+
+# Sammenlign et prosjekts CLAUDE.md mot en kjent god organisasjonsmal
+diff ./CLAUDE.md ./org-templates/CLAUDE.md.canonical
+```
+
+En praktisk driftssjekk for et team med mange repoer: skript `find`-kommandoen ovenfor på tvers av alle repositorier i GitHub-organisasjonen din, samle inn hver CLAUDE.md- og `.claude/rules/*`-fil, og sammenlign dem mot en kanonisk mal lagret sentralt. Flagg ethvert repo hvor CLAUDE.md ikke har vært rørt siden siste organisasjonsomfattende policyendring, og behandle uforklarlig avvik (ikke alt tilsiktet) som et signal om å gjennomgå — ikke nødvendigvis overskrive — ettersom noen lokale regler legitimt er prosjektspesifikke.
+
+## Når du bør bruke det (og når ikke)
+
+Revisjon lønner seg når du har mer enn en håndfull repositorier, eller mer enn ett team som redigerer CLAUDE.md/regelfiler uavhengig av hverandre — da begynner stille avvik å produsere inkonsistent agentatferd på tvers av prosjekter. Det er også verdt å gjøre etter enhver organisasjonsomfattende policyendring, siden Claude Code eksplisitt støtter "distribuer organisasjonsomfattende CLAUDE.md" og "ekskluder spesifikke CLAUDE.md-filer", og disse unntakene er lette å glemme.
+
+Det er overkill for et enkeltutvikler- eller enkeltrepo-oppsett: den innebygde `/memory`-kommandoen og manuell inspeksjon av din ene CLAUDE.md er tilstrekkelig der, og å sette opp driftsdeteksjonsverktøy legger til prosessoverhead uten tilsvarende gevinst. Vær også forsiktig med å behandle alt avvik som en feil — stiavhengige regler under `.claude/rules/` og prosjektspesifikt CLAUDE.md-innhold skal skille seg fra en delt mal; revisjonsverktøy trenger en måte å skille tilsiktet lokal tilpasning fra utilsiktet foreldelse, noe som generelt krever menneskelig gjennomgang fremfor ren automatisering.
+
+## Kilder
+
+- https://code.claude.com/docs/en/memory.md
+- https://code.claude.com/docs/en/claude-directory.md
+- https://code.claude.com/docs/en/prompt-caching.md
+- https://code.claude.com/docs/en/best-practices.md

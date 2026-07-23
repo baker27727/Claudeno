@@ -1,0 +1,85 @@
+---
+title: "Auditing and Preventing Drift in Claude Code Agent Configurations"
+description: "As teams scale Claude Code across CLAUDE.md, AGENTS.md, and rules files, configuration drift becomes a real operational risk. This article explains how drift happens, how it's detected, and how to keep agent instructions consistent over time."
+discoveredAt: "2026-07-21T07:34:40.161Z"
+updatedDate: "2026-07-23T08:17:31.047Z"
+author: "Claude Code Learn"
+trendScore: 0.616
+scoreBreakdown:
+  frequency: 0.5
+  recency: 0.906
+  engagement: 0.259
+  gap: 1
+tags:
+  - "Claude Code"
+  - "CLAUDE.md"
+  - "agent configuration"
+  - "config drift"
+  - "memory"
+  - "team workflows"
+  - "auditing"
+sources:
+  - "https://code.claude.com/docs/en/memory.md"
+  - "https://code.claude.com/docs/en/claude-directory.md"
+  - "https://code.claude.com/docs/en/prompt-caching.md"
+  - "https://code.claude.com/docs/en/best-practices.md"
+relatedModules:
+  - "memory"
+  - "permissions-and-settings"
+  - "subagents"
+  - "hooks"
+relatedUseCases:
+  - "project-management-with-claude"
+relatedSkills: []
+draft: false
+# Verified against Claude Code 2.1.217
+---
+## Quick summary
+
+As teams adopt Claude Code across many repositories, machines, and tools, the instructions that govern agent behavior — CLAUDE.md, AGENTS.md, `.claude/rules/`, and tool-specific files like `.cursorrules` — tend to drift out of sync. One repo's CLAUDE.md gets updated after an incident, another doesn't; a rule that should apply org-wide only lives in one project. This drift quietly degrades consistency and trust in agent behavior. A growing set of community tools (e.g., "Amnesia" and "ai-harness-doctor") and Claude Code's own memory and directory documentation address this by making configuration state auditable and diffable rather than implicit.
+
+## What's new
+
+Claude Code's documentation explicitly separates two memory mechanisms that are now common sources of drift: **CLAUDE.md files** (explicit, versioned, human-edited) and **auto memory** (Claude's own persisted notes, viewable and editable via `/memory`). The `claude-directory` reference documents the full `.claude/` file layout — including `.claude/rules/` for path-specific rules, symlink sharing across projects, and user-level vs. project-level precedence — which is precisely the surface area where drift accumulates: teams add rules in one place, forget to propagate them, or leave stale rules active after a project's structure changes. Anthropic's own docs also acknowledge organization-scale problems directly, with guidance on how to "Deploy organization-wide CLAUDE.md" and "Exclude specific CLAUDE.md files," implying this is a known, addressed pain point rather than a hypothetical one. Separately, community tooling in the broader agent-harness ecosystem (memory/task-tracking layers like "Superbeads," credential auditing tools like "AgentPass," and security/circuit-breaker layers like "intutic") reflects the same trend: agent configuration and memory are now treated as infrastructure that needs auditing, versioning, and guardrails — not just prompt text.
+
+## How it works
+
+Configuration drift in Claude Code has three main sources, each with a different mechanism:
+
+1. **CLAUDE.md sprawl.** CLAUDE.md files can exist at the user level, project root, and in subdirectories, and are loaded according to a defined precedence (project-level files load alongside user-level ones, with additional directories importable via explicit references). When multiple files exist across many repos with no shared source, they diverge as edits happen locally in one place and not another.
+2. **`.claude/rules/` fragmentation.** Rules can be organized as path-specific files under `.claude/rules/`, shared across projects via symlinks, or defined at the user level. Symlinked rules stay in sync by construction; copy-pasted rules do not — this is the direct mechanical difference between drift-resistant and drift-prone setups.
+3. **Auto memory divergence.** Claude Code also maintains its own auto memory — notes it saves during sessions — separate from CLAUDE.md. This is inspectable and editable via the `/memory` command. Because auto memory is written implicitly during work rather than authored deliberately, it can accumulate assumptions that no longer match the CLAUDE.md or team conventions, especially after refactors.
+4. **Editing without cache or session awareness.** CLAUDE.md can be edited mid-session without invalidating the prompt cache, which is convenient but means a session may keep operating on a mental model of the file that predates your edit until the file is actually re-read.
+
+Auditing tooling in this space generally works by: (a) enumerating every CLAUDE.md/AGENTS.md/rules file reachable from a set of repositories, (b) diffing them against a canonical or previous version, and (c) flagging files that reference deprecated tools, paths, or conventions. This mirrors what Claude Code's own troubleshooting guidance for memory addresses manually — "Claude isn't following my CLAUDE.md," "I don't know what auto memory saved," "My CLAUDE.md is too large" — which are drift symptoms as much as they are individual bugs.
+
+## Hands-on example
+
+Use Claude Code's built-in commands to manually audit memory and rules before reaching for third-party tooling:
+
+```bash
+# Inspect what auto memory has recorded for this project
+/memory
+
+# List every CLAUDE.md and rules file loaded for the current session
+# (check claude-directory docs for the full file layout Claude Code expects)
+find . -iname "CLAUDE.md" -o -path "*/.claude/rules/*"
+
+# Compare a project's CLAUDE.md against a known-good org-wide template
+diff ./CLAUDE.md ./org-templates/CLAUDE.md.canonical
+```
+
+A practical drift check for a multi-repo team: script the `find` command above across all repositories in your GitHub org, collect every CLAUDE.md and `.claude/rules/*` file, and diff them against a canonical template stored centrally. Flag any repo whose CLAUDE.md hasn't been touched since the last org-wide policy update, and treat unexplained divergence (not everything intentional) as a signal to review, not necessarily to overwrite — some local rules are legitimately project-specific.
+
+## When to use it (and when not to)
+
+Auditing pays off once you have more than a handful of repositories or more than one team editing CLAUDE.md/rules files independently — that's when silent divergence starts producing inconsistent agent behavior across projects. It's also worth doing after any org-wide policy change, since Claude Code explicitly supports "Deploy organization-wide CLAUDE.md" and "Exclude specific CLAUDE.md files," and those exclusions are easy to forget about.
+
+It's overkill for a single-developer or single-repo setup: the built-in `/memory` command and manual inspection of your one CLAUDE.md are sufficient there, and standing up drift-detection tooling adds process overhead without a matching payoff. Also be cautious about treating all divergence as a bug — path-specific rules under `.claude/rules/` and project-specific CLAUDE.md content are supposed to differ from a shared template; auditing tools need a way to distinguish intentional local customization from accidental staleness, which generally requires human review rather than pure automation.
+
+## Sources
+
+- https://code.claude.com/docs/en/memory.md
+- https://code.claude.com/docs/en/claude-directory.md
+- https://code.claude.com/docs/en/prompt-caching.md
+- https://code.claude.com/docs/en/best-practices.md

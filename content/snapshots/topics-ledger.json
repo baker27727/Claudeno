@@ -1,5 +1,24 @@
 [
   {
+    "topic": "Auditing and preventing drift in Claude Code agent configurations",
+    "status": "published",
+    "score": {
+      "frequency": 0.5,
+      "recency": 0.906,
+      "engagement": 0.259,
+      "gap": 1,
+      "total": 0.616
+    },
+    "matchedSources": [
+      "hn_search",
+      "github_search"
+    ],
+    "whyItMatters": "Tools like 'Amnesia' and 'ai-harness-doctor' address the real-world problem of agent config drift across CLAUDE.md, AGENTS.md, and .cursorrules files. This is a mature operational concern for teams scaling Claude Code.",
+    "firstSeen": "2026-07-21T07:34:40.161Z",
+    "lastSeen": "2026-07-23T08:17:31.048Z",
+    "publishedSlug": "auditing-preventing-agent-config-drift"
+  },
+  {
     "topic": "Mid-conversation system messages in Claude API",
     "status": "candidate",
     "score": {
@@ -81,24 +100,6 @@
       "anthropic_changelog"
     ],
     "whyItMatters": "Claude Managed Agents now support cron-scheduled deployments without external schedulers, enabling unattended periodic code execution. This is a concrete pattern for setting up autonomous CI/CD and data pipeline workflows.",
-    "firstSeen": "2026-07-21T07:34:40.161Z",
-    "lastSeen": "2026-07-21T07:34:40.161Z"
-  },
-  {
-    "topic": "Auditing and preventing drift in Claude Code agent configurations",
-    "status": "candidate",
-    "score": {
-      "frequency": 0.5,
-      "recency": 0.906,
-      "engagement": 0.259,
-      "gap": 1,
-      "total": 0.616
-    },
-    "matchedSources": [
-      "hn_search",
-      "github_search"
-    ],
-    "whyItMatters": "Tools like 'Amnesia' and 'ai-harness-doctor' address the real-world problem of agent config drift across CLAUDE.md, AGENTS.md, and .cursorrules files. This is a mature operational concern for teams scaling Claude Code.",
     "firstSeen": "2026-07-21T07:34:40.161Z",
     "lastSeen": "2026-07-21T07:34:40.161Z"
   },
