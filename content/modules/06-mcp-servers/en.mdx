@@ -84,3 +84,7 @@ MCP servers configured via `--mcp-config` or `.mcp.json` now properly respect pe
 ## What's new in v2.1.209
 
 MCP servers configured with an empty URL now show as "not configured" in `/mcp` instead of a config error. Fixed OAuth MCP servers requiring manual re-authentication after a single failed token refresh — they now handle token refresh failures more gracefully. Fixed `--permission-prompt-tool` pointing at an MCP server crashing with "MCP tool not found" on cold start before the server finishes connecting.
+
+## What's new in v2.1.218
+
+The /mcp command and claude mcp list now display HTTP status and error text when a server fails to connect. A new warning alerts you to MCP config values with hidden leading or trailing whitespace that could cause connection issues.

@@ -86,3 +86,7 @@ MCP-tjenere konfigurert via `--mcp-config` eller `.mcp.json` respekterer nå kor
 ## Nytt i v2.1.209
 
 MCP-tjenere konfigurert med en tom URL vises nå som "ikke konfigurert" i `/mcp` i stedet for en konfigurasjonsfeil. Fikset OAuth MCP-tjenere som krevde manuell re-autentisering etter en enkelt mislykket token-refresh — de håndterer nå token-refresh-feil mer elegantly. Fikset `--permission-prompt-tool` som peker på en MCP-tjener som krasjet med "MCP tool not found" ved kald start før tjeneren er ferdig med tilkoblingen.
+
+## Nytt i v2.1.218
+
+Kommandoen /mcp og claude mcp list viser nå HTTP-status og feilmelding når en tjener ikke klarer å koble til. En ny advarsel varsler deg om MCP-konfigurasjonsverdier med skjult ledende eller etterfølgende mellomrom som kan forårsake tilkoblingsproblemer.

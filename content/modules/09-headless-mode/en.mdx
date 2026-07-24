@@ -112,3 +112,7 @@ Resumed background agent sessions now correctly restore the agent's full configu
 ## What's new in v2.1.217
 
 Remote Control sessions now properly display pending permission prompts and dialogs to viewers that connect after they appear. Background shells are more reliable and no longer become impossible to stop after a session is sent to the background or exits on heavily loaded systems. MCP and GitHub app installation commands in headless sessions now queue a "needs input" request in the agent view when no client is attached.
+
+## What's new in v2.1.218
+
+Headless and SDK sessions now preserve fork-session lineage after compaction, preventing loss of session relationships. When resuming a session with --resume or /resume, malformed delta attachments that previously caused every turn to fail or crash are now handled gracefully.

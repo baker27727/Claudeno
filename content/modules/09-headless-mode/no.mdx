@@ -115,3 +115,7 @@ Gjenopptatte bakgrunns-agentøkter gjenoppretter nå agentens fullstendige konfi
 ## Nytt i v2.1.217
 
 Remote Control-økter viser nå korrekt utestående tillatelsesledetekster og dialoger til visere som kobler til etter at de vises. Bakgrunnsskall er mer pålitelige og blir ikke lenger umulige å stoppe etter at en økt sendes til bakgrunnen eller avsluttes på sterkt belastede systemer. MCP- og GitHub-appinstallasjonskommandoer i hodeløse økter setter nå inn en "trenger inndata"-forespørsel i agentvisningen når ingen klient er koblet til.
+
+## Nytt i v2.1.218
+
+Hodeløse økter og SDK-økter bevarer nå fork-session-avstamning etter komprimering, noe som forhindrer tap av øktforhold. Når du gjenoppretter en økt med --resume eller /resume, håndteres malformerte delta-vedlegg som tidligere forårsaket at hver tur mislyktes eller krakket, nå på en elegant måte.
