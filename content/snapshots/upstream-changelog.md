@@ -1,11 +1,42 @@
 # Upstream snapshot — Claude Code CHANGELOG
 
-Last observed version: 2.1.218
+Last observed version: 2.1.220
 
 > This file is maintained automatically by `scripts/watch-upstream.ts`.
 > It stores the last-seen upstream CHANGELOG so daily diffs can be computed.
 
 # Changelog
+
+## 2.1.220
+
+- Bug fixes and reliability improvements
+
+## 2.1.219
+
+- Added Claude Opus 5 (`claude-opus-5`), now the default Opus model — 1M context, fast mode at $10/$50 per Mtok
+- Added `sandbox.network.strictAllowlist` setting to deny non-allowlisted hosts for sandboxed commands without prompting
+- Added `DirectoryAdded` hook that fires after `/add-dir` or the SDK `register_repo_root` control request registers a new working directory mid-session
+- Added `mcp_server_errors` to the headless stream-json init event, listing `--mcp-config` entries skipped by config validation; terminal runs print a startup warning
+- Added the `workflowSizeGuideline` settings key so the advisory Dynamic workflow size guideline can be set from any settings file; the `/config` row is hidden while one does
+- Added nested subagent forwarding in stream-json: subagents spawned at depth-2+ now appear when `--forward-subagent-text` is set, keyed by their spawning Agent `tool_use` id
+- Fixed `claude -p` text output dropping the answer already produced when a turn dies on a mid-stream API error
+- Added HTTP status and error text to `claude mcp list` and `/mcp` when a server fails to connect, and a warning for MCP config values with hidden leading or trailing whitespace
+- Fixed the Fable model row showing "Requires usage credits" for plans that include it, when a stale cache had baked the label in
+- Fixed the `/model` picker showing the merged Opus row as plain "Opus" instead of "Opus (1M context)"
+- Fixed copy-on-select inside GNU screen printing base64 into the terminal instead of copying the selection
+- Fixed Remote Control clients keeping a stale fast-mode status after a model switch, reconnect, or failed org check
+- Fixed `CLAUDE_CODE_GIT_BASH_PATH` on Windows exiting or being used as bash when the path isn't a bash/sh binary; it's now ignored with a warning
+- Fixed Vim mode: pressing ← on an empty prompt now returns to the agent view from NORMAL mode, not just INSERT
+- Fixed screen-reader mode rewriting the entire input line on every keystroke instead of echoing only the typed character
+- Improved the "Remote Control is only available via api.anthropic.com" error to name the specific setting that caused it
+- Improved `claude --teleport` to show which repo your current checkout points at when it doesn't match the session's repo
+- Changed dynamic workflows to default to a medium size guideline (aim for fewer than 15 agents); pick another size or unrestricted with Dynamic workflow size in `/config`
+- Changed managed MCP allowlist/denylist `${VAR}` entries to resolve from the startup environment and managed-settings env instead of settings-file env
+- Changed the `/model` picker to highlight only the newest model's name, so the highlight marks the new release rather than an arbitrary subset of the list
+- Added the current default workflow size to the running-workflow status line, with a pointer to `/config` for changing it
+- Removed Opus 4.7 from fast mode; `/fast` now applies to Opus 5 and Opus 4.8
+- Updated the claude-api skill to default to Claude Opus 5, with a migration path from Opus 4.8
+- Subagents can now spawn nested subagents up to depth 3 by default (was 1); set CLAUDE_CODE_MAX_SUBAGENT_SPAWN_DEPTH=1 to disable nesting
 
 ## 2.1.218
 
@@ -13,7 +44,6 @@ Last observed version: 2.1.218
 - Added screen-reader announcements of deleted text for word and line deletions (`Option+Delete`, `Ctrl+W`, `Cmd+Backspace`, `Ctrl+U`, `Ctrl+K`) in `--ax-screen-reader` mode
 - Fixed Windows paths with `\u`-prefixed segments (like `C:\Users\unicorn`) being corrupted into CJK characters in tool inputs, which made those files inaccessible
 - Fixed the left arrow key discarding the conversation with no undo: presses right after editing now ask to confirm, and Esc in the agent view returns to the conversation it backgrounded
-- Added HTTP status and error text to `claude mcp list` and `/mcp` when a server fails to connect, and a warning for MCP config values with hidden leading or trailing whitespace
 - Fixed multi-line paste collapsing into one line with `j` in place of newlines in terminals that encode pasted newlines as Ctrl+J
 - Fixed `/context` reporting stale pre-compact token usage after compacting from the message picker
 - Fixed `/ultrareview` failing on descriptive arguments like "review my auth changes" — they now run a review of your current branch with the text applied as a note to the findings
@@ -77,30 +107,4 @@ Last observed version: 2.1.218
 - Fixed auto mode denying commands with "HTTP 401" classifier errors after the OAuth token expired or rotated mid-session
 - Fixed AskUserQuestion telling Claude to continue even when your answer asked it to wait or explain first — free-text answers now get neutral wording
 - Fixed Claude Code on the web re-asking the same question and dropping your answer after the session sat idle for a few minutes
-- Fixed @-mentions silently attaching nothing after file-modifying hooks, vim dot-repeat of `c`-operators and paste, statusline running twice on resume, and resume-picker hangs on failure
-- Fixed resumed background agent sessions reverting to the default agent: the agent's prompt and tool restrictions are now restored
-- Fixed worktree-isolated subagents redirecting git into the shared checkout via `git -C`, `--git-dir`, or `GIT_DIR`/`GIT_WORK_TREE`
-- Fixed worktree sessions landing in another project's leftover worktree when the working directory did not match the selected project
-- Fixed background sessions whose worktree has no git repository being undeletable
-- Fixed `claude daemon stop --any` potentially terminating an unrelated process via a stale legacy daemon lockfile
-- Fixed Esc-Esc at an idle prompt not opening the rewind picker in long-running sessions with background tasks
-- Fixed Bash command permission checking for compound statements with redirects inside `&&` lists or negations
-- Fixed pressing Ctrl+X twice in the agent list failing to delete a session, and deleted sessions reappearing when their background worker had died
-- Fixed background subagents getting cancelled when a high-priority message arrives during their startup window
-- Fixed mouse and focus garbage in the terminal while a GUI editor from `/memory`, `/plan`, `/keybindings`, or Ctrl+G is open; `/memory` no longer waits for the editor to close
-- Fixed Claude-in-Chrome 403-looping on reconnect when the session's OAuth token lacks a required scope
-- Fixed workflow saves and scheduled-task writes following a symlink at `.claude`, which could redirect writes outside the project
-- Fixed MCP re-authenticate revoking working credentials before the new sign-in succeeds, and the reconnect needs-auth message in background sessions pointing at an unusable command
-- Fixed read-only commands on Windows accessing network paths without a permission prompt
-- Fixed Bash command parsing of non-ASCII characters to match real shell word boundaries
-- Fixed PowerShell tool permission validation of commands containing invisible Unicode characters
-- Fixed dialogs in fullscreen mode stretching past the right-hand edge of their panel
-- Fixed the `/config` settings list in fullscreen mode clipping its keyboard-hint footer
-- Fixed the transcript-mode (Ctrl+O) footer hint wrapping on terminals narrower than 104 columns
-- Fixed the Prometheus metrics endpoint (`OTEL_METRICS_EXPORTER=prometheus`) emitting invalid `# UNIT` lines
-- Fixed skills and commands changed during a session not appearing in the slash menu until restart
-- Fixed plugin skills with a `name` frontmatter field losing their plugin prefix in slash-command autocomplete
-- Fixed telemetry misreporting permission denials: failed permission-prompt requests no longer count as user rejections, and user interrupts are now reported as user aborts instead of rejections
-- Improved the `/fork` confirmation to one line with the new session's name, `claude attach` id, and a note when the copy shares your checkout
-- Improved validation of `git` and `gh` command arguments in the PowerShell tool
-- Improved the `/ultr
+- Fixed @-mentions silently attaching nothing after file-modifying hooks, vim dot-repeat 

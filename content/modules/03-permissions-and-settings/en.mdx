@@ -108,3 +108,7 @@ Corporate mTLS, TLS verification, OAuth scope, and proxy settings are now proper
 ## What's new in v2.1.218
 
 Added `sandbox.filesystem.disabled` setting to skip filesystem isolation while keeping network egress control. Screen reader mode (`--ax-screen-reader`) now includes screen-reader announcements for word and line deletions. The `emojiCompletionEnabled` setting controls emoji shortcode autocomplete (e.g., type `:heart:` for ❤️). Boolean values in skill and plugin frontmatter now accept `yes`/`no`/`on`/`off`/`1`/`0` (case-insensitive) alongside `true`/`false`.
+
+## What's new in v2.1.220
+
+A new setting `sandbox.network.strictAllowlist` denies non-allowlisted hosts for sandboxed commands without prompting. The `sandbox.filesystem.disabled` setting lets you skip filesystem isolation while maintaining network egress control. Additionally, `workflowSizeGuideline` can now be set from any settings file to control the advisory dynamic workflow size guideline (default: aim for fewer than 15 agents).
