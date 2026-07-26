@@ -98,3 +98,7 @@ Subagent spawning is now controlled by two new constraints: a per-session spawn 
 ## What's new in v2.1.218
 
 Subagent spawning is now capped at 20 concurrent agents per session (override with `CLAUDE_CODE_MAX_CONCURRENT_SUBAGENTS`) to prevent unbounded delegation loops. By default, subagents can no longer spawn nested subagents; enable deeper nesting with `CLAUDE_CODE_MAX_SUBAGENT_SPAWN_DEPTH`. Skills with `context: fork` now run in the background by default—opt out per skill with `background: false`.
+
+## What's new in v2.1.220
+
+**What's new in 2.1.220:** Subagents can now spawn nested subagents up to depth 3 by default (previously depth 1). This enables more complex delegation workflows. You can disable nesting by setting `CLAUDE_CODE_MAX_SUBAGENT_SPAWN_DEPTH=1`. Additionally, the spawn cap (default 20 concurrent subagents per session) can be customized via the `CLAUDE_CODE_MAX_CONCURRENT_SUBAGENTS` environment variable to prevent unbounded delegation.

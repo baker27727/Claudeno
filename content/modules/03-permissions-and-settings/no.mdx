@@ -110,3 +110,7 @@ Bedriftens mTLS, TLS-verifisering, OAuth-omfang og proxy-innstillinger blir nå 
 ## Nytt i v2.1.218
 
 Lagt til `sandbox.filesystem.disabled`-innstilling for å hoppe over filsystemisolasjon mens nettverksutgangskontroll opprettholdes. Skjermleser-modus (`--ax-screen-reader`) inkluderer nå skjermleser-kunngjøringer for ord- og linjeslettinger. Innstillingen `emojiCompletionEnabled` kontrollerer emoji-forkortelsesautofullføring (f.eks. skriv `:heart:` for ❤️). Boolske verdier i skill- og plugin-frontmatter godtar nå `yes`/`no`/`on`/`off`/`1`/`0` (case-insensitive) sammen med `true`/`false`.
+
+## Nytt i v2.1.220
+
+**Nyheter i 2.1.220:** En ny innstilling `sandbox.network.strictAllowlist` har blitt lagt til for å nekte ikke-tillatte verter for sandkassekommandoer uten spørsmål. Innstillingen `sandbox.filesystem.disabled` (tilgjengelig siden 2.1.216) fortsetter å tillate å hoppe over filsystemisisolering mens du opprettholder nettverkstamingskontroll.

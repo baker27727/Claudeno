@@ -99,3 +99,7 @@ Underagent-spawning kontrolleres nå av to nye begrensninger: en spawning-grense
 ## Nytt i v2.1.218
 
 Underagent-spawning er nå begrenset til 20 samtidige agenter per økt (overstyring med `CLAUDE_CODE_MAX_CONCURRENT_SUBAGENTS`) for å forhindre ubegrensede delegeringssløyfer. Som standard kan underagenter ikke lenger spawne nestede underagenter; aktiver dypere nestling med `CLAUDE_CODE_MAX_SUBAGENT_SPAWN_DEPTH`. Skills med `context: fork` kjører nå i bakgrunnen som standard—velg bort per skill med `background: false`.
+
+## Nytt i v2.1.220
+
+**Nyheter i 2.1.220:** Underagenter kan nå spawne nestede underagenter inntil dybde 3 som standard (tidligere dybde 1). Dette muliggjør mer komplekse delegeringsarbeidsflyter. Du kan deaktivere nesteding ved å angi `CLAUDE_CODE_MAX_SUBAGENT_SPAWN_DEPTH=1`. I tillegg kan spawning-grensen (standard 20 samtidige underagenter per økt) tilpasses via miljøvariabelen `CLAUDE_CODE_MAX_CONCURRENT_SUBAGENTS` for å forhindre ubegrenset delegering.

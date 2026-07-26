@@ -1,3 +1,16 @@
+- id: "2.1.220"
+  version: "2.1.220"
+  date: "2026-07-26"
+  entry:
+    en: "Bug fixes and reliability improvements. Subagents can now spawn nested
+      subagents up to depth 3 by default; spawn cap and nesting depth are now
+      configurable via environment variables. New
+      `sandbox.network.strictAllowlist` setting for stricter network isolation."
+    no: "Feilrettinger og pålitelighetsforbedringer. Underagenter kan nå spawne
+      nestede underagenter inntil dybde 3 som standard; spawning-grensen og
+      nestingsdybden er nå konfigurerbar via miljøvariabler. Ny innstilling
+      `sandbox.network.strictAllowlist` for strengere nettverksisolering."
+  sources: []
 - id: "2.1.218"
   version: "2.1.218"
   date: "2026-07-23"
