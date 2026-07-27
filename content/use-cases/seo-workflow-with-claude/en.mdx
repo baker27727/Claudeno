@@ -1,186 +1,247 @@
 ---
-title: "SEO Workflow with Claude Code"
-description: "Use Claude Code for keyword research, content briefs, on-page optimisation, technical SEO audits, and search performance reporting."
-updatedDate: "2026-07-09T14:00:00.000Z"
-profession: "seo"
+title: SEO Workflow with Claude Code
+description: Build an automated SEO analysis and optimization workflow using Claude Code to analyze content, generate reports, and implement SEO best practices.
+updatedDate: 2025-01-14T00:00:00Z
+author: "Claude Code Learn"
+profession: "seo-workflow-with-claude"
 difficulty: "intermediate"
-tools:
-  - "Claude Code"
-  - "curl"
-  - "Markdown"
-  - "CSV"
-tags:
-  - "seo"
-  - "content"
-  - "audit"
-  - "keyword research"
-  - "on-page seo"
-  - "Claude Code"
-sources:
-  - "https://docs.anthropic.com/en/docs/claude-code/overview"
-  - "https://developers.google.com/search/docs/fundamentals/seo-starter-guide"
-relatedModules:
-  - "cli-basics"
-  - "slash-commands"
-relatedUseCases:
-  - "marketing-with-claude"
-  - "excel-and-data-analysis"
-  - "writing-with-claude"
+tools: ["Claude Code", "Claude API", "Python"]
+tags: ["SEO", "automation", "content-analysis", "Python", "agents"]
+sources: [
+  "https://docs.anthropic.com/en/docs/claude-code/overview",
+  "https://developers.google.com/search/docs/fundamentals/seo-starter-guide"
+]
+relatedModules: []
+relatedUseCases: []
+faq: [
+  {
+    "question": "What SEO metrics can Claude Code help analyze?",
+    "answer": "Claude Code can help analyze page structure, metadata optimization, content quality, keyword presence, heading hierarchy, link text, alt text for images, and crawlability issues. It can also assist in generating SEO reports and recommendations based on Google's SEO Starter Guide best practices."
+  },
+  {
+    "question": "Can Claude Code run SEO tools?",
+    "answer": "Yes. Claude Code can execute commands and scripts, making it ideal for running SEO tools and integrating with APIs. You can use it to run scripts that analyze website content, fetch data from search tools, and generate automated reports."
+  },
+  {
+    "question": "How does Claude Code help with content optimization?",
+    "answer": "Claude Code can read your codebase and content files, analyze them for SEO issues, suggest improvements to titles and descriptions, check heading structure, verify image alt text, and help implement Schema markup for better search appearance."
+  }
+]
 draft: false
-order: 2
-faq:
-  - question: "Can Claude Code replace SEO tools like Ahrefs or SEMrush?"
-    answer: "No. Claude Code cannot fetch live ranking, search volume, or backlink data. It is best used for interpreting data you export from those tools and for drafting SEO content."
-  - question: "How do I audit a page with Claude Code?"
-    answer: "Fetch or save the page HTML as a file, then ask Claude Code to analyse the title, meta description, headings, internal links, and content quality."
-  - question: "Can Claude Code help with keyword research?"
-    answer: "It can cluster keywords, suggest related topics, and build content briefs from a keyword list. For search volume and difficulty, use a dedicated SEO tool."
-  - question: "Is the output SEO-friendly by default?"
-    answer: "Claude Code follows your instructions. If you ask for SEO-friendly output with headings, meta descriptions, and internal links, it will structure the content accordingly."
+order: 1
 ---
 
-Search engine optimisation involves a mix of technical checks, content planning, and competitive analysis. While Claude Code cannot replace your SEO platform, it can dramatically speed up the parts of SEO that involve reading, structuring, and writing.
+# SEO Workflow with Claude Code
 
-This guide covers a practical SEO workflow using Claude Code: keyword clustering, content briefs, on-page audits, meta descriptions at scale, and competitor analysis.
+Search Engine Optimization (SEO) is a complex process involving technical audits, content analysis, and ongoing optimization. Claude Code can automate much of this workflow—reading your website structure, analyzing content, and implementing improvements—all while you stay in your editor or terminal.
 
-## What Claude Code can and cannot do for SEO
+## Why Claude Code for SEO?
 
-### What it can do
-- Draft SEO-friendly titles and meta descriptions.
-- Cluster keywords into topic groups.
-- Build content briefs from a target keyword.
-- Audit on-page elements from saved HTML.
-- Summarise competitor content.
-- Generate internal link suggestions.
+Claude Code excels at SEO tasks because it can:
 
-### What it cannot do
-- Fetch live search volume, keyword difficulty, or rankings.
-- Crawl websites at scale.
-- Provide backlink data.
-- Replace tools like Ahrefs, SEMrush, Screaming Frog, or Google Search Console.
+- **Read your entire codebase** to understand site structure and identify optimization opportunities
+- **Execute commands** to run SEO analysis tools and integrations
+- **Write and modify files** to implement technical SEO improvements
+- **Generate reports** with actionable recommendations based on industry standards
+- **Integrate with APIs** to fetch data from Google Search Console, Google Analytics, or third-party SEO tools
 
-Use Claude Code as a writing and analysis assistant alongside your SEO stack.
+## Core SEO Optimization Workflow
 
-## Use case 1: build a content brief from a keyword
+### 1. Site Structure Analysis
 
-A strong content brief saves time for writers and improves ranking potential.
+Start by having Claude Code examine your website's structure:
 
-Create `target-keyword.md`:
-
-```markdown
-# Target keyword
-
-Keyword: reusable coffee filter
-Search intent: informational/commercial investigation
-Audience: Home coffee brewers interested in sustainability
-Goal: Rank on page 1 and educate readers enough to consider a purchase
+```
+Analyze my website structure and create a sitemap report. Look for:
+- URL patterns and hierarchy
+- Internal linking structure
+- Static vs. dynamic content
+- Mobile responsiveness indicators
 ```
 
-Then ask:
+Claude Code will read your codebase, identify pages, and map out the site architecture. This reveals opportunities for better crawlability and internal linking.
 
-```bash
-claude "Read target-keyword.md and create a content brief. Include: title suggestion, meta description, target word count, H2 outline, 3 subtopics to cover, and 2-3 internal link ideas."
+### 2. Content Audit
+
+Have Claude Code examine your content for SEO issues:
+
+```
+Audit all blog post pages for SEO compliance:
+- Title tags (should be 50-60 characters)
+- Meta descriptions (should be 155-160 characters)
+- Heading hierarchy (H1, H2, H3 structure)
+- Keyword presence and density
+- Image alt text completeness
 ```
 
-Claude returns a brief you can hand to a writer or use as your own outline.
+Claude Code can scan your content files, identify gaps, and generate a report showing which pages need optimization.
 
-## Use case 2: generate meta descriptions in bulk
+### 3. Technical SEO Implementation
 
-If you manage many pages, writing unique meta descriptions is tedious. Claude Code can handle batch work from a CSV.
+Let Claude Code implement technical improvements:
 
-Create `pages.csv`:
-
-```csv
-url,title
-/blog/post-1,How to brew better coffee at home
-/blog/post-2,Reusable coffee filters explained
-/blog/post-3,Best coffee grinders for beginners
+```
+Implement the following technical SEO improvements:
+1. Add XML sitemap generation for all pages
+2. Create robots.txt with appropriate directives
+3. Add canonical tags to content templates
+4. Implement structured data (Schema markup) for articles
+5. Add meta tags for social sharing (Open Graph, Twitter Cards)
 ```
 
-Run:
+Claude Code can:
+- Generate sitemap files automatically
+- Write robots.txt following Google's recommendations
+- Add canonical tags to prevent duplicate content issues
+- Implement JSON-LD structured data
+- Add Open Graph and Twitter Card meta tags
 
-```bash
-claude "Read pages.csv and write a meta description for each row. Keep each under 160 characters and include the target keyword naturally."
+### 4. Automated Report Generation
+
+Have Claude Code create comprehensive SEO reports:
+
+```
+Generate a detailed SEO audit report that includes:
+- Executive summary of issues found
+- Technical SEO checklist results
+- Content quality metrics
+- Mobile usability assessment
+- Link structure analysis
+- Priority recommendations for next steps
+Format as both HTML and PDF
 ```
 
-You can then save the output back to a CSV or directly into your CMS import file.
+## Practical Example: Complete SEO Audit Script
 
-## Use case 3: on-page SEO audit from HTML
+Here's a typical workflow you might ask Claude Code to create:
 
-Fetch a page and save it locally:
+```python
+# seo_audit.py - Automated SEO Analysis
+import os
+import json
+from pathlib import Path
 
-```bash
-curl -s https://example.com/page > page.html
+def audit_seo_compliance():
+    """Analyze website for SEO issues"""
+    
+    # Scan all content files
+    issues = []
+    
+    for markdown_file in Path('content').glob('**/*.md'):
+        with open(markdown_file) as f:
+            content = f.read()
+        
+        # Check title tag length
+        if 'title:' in content:
+            title = content.split('title: ')[1].split('\n')[0]
+            if len(title) < 30 or len(title) > 60:
+                issues.append({
+                    'file': str(markdown_file),
+                    'issue': f'Title tag too long: {len(title)} chars',
+                    'priority': 'high'
+                })
+        
+        # Check for meta descriptions
+        if 'description:' not in content:
+            issues.append({
+                'file': str(markdown_file),
+                'issue': 'Missing meta description',
+                'priority': 'high'
+            })
+        
+        # Check heading structure
+        h1_count = content.count('# ')
+        if h1_count != 1:
+            issues.append({
+                'file': str(markdown_file),
+                'issue': f'Multiple H1 tags ({h1_count} found)',
+                'priority': 'medium'
+            })
+    
+    return issues
+
+if __name__ == '__main__':
+    issues = audit_seo_compliance()
+    print(json.dumps(issues, indent=2))
 ```
 
-Then ask Claude to audit it:
+## Best Practices with Claude Code
 
-```bash
-claude "Read page.html and perform an on-page SEO audit. Check: title tag, meta description, H1, heading structure, image alt text, internal links, and one content improvement suggestion."
+### 1. Break Down Large Audits
+
+For large websites, have Claude Code focus on specific sections:
+
+```
+Audit only the blog section:
+- Analyze 50 most recent posts
+- Check title and description optimization
+- Generate improvement suggestions
+- Prioritize fixes by impact
 ```
 
-For a deeper audit, add more requirements:
+### 2. Automate Repetitive Tasks
 
-```bash
-claude "Also check if the page has schema markup, canonical tag, and Open Graph tags. List anything missing."
+Use Claude Code to handle tedious optimization work:
+
+- **Generate sitemaps** automatically when new content is added
+- **Add boilerplate SEO tags** to new pages
+- **Create alt text templates** for images
+- **Format URLs** according to SEO best practices
+
+### 3. Integrate with Google Tools
+
+Have Claude Code pull data from Google's tools:
+
+```
+Fetch data from Google Search Console API:
+- Get list of pages with lowest click-through rates
+- Identify queries where we rank 4-10 (optimization opportunities)
+- Export top performing keywords
+- Generate recommendations for each
 ```
 
-## Use case 4: keyword clustering
+### 4. Monitor and Report
 
-Give Claude a raw list of keywords and ask it to group them by topic:
+Set up automated monitoring:
 
-```bash
-claude "Cluster these keywords into topic groups and suggest one pillar page and supporting pages for each group: reusable coffee filter, paper coffee filter, eco coffee filter, stainless steel coffee filter, best reusable filter, coffee filter environmental impact."
+```
+Create a weekly SEO health check:
+- Check all pages for broken meta tags
+- Verify internal links are working
+- Generate trend report comparing to last week
+- Send summary to stakeholders
 ```
 
-This helps you plan a content hub instead of writing isolated posts.
+## Advanced Integration: SEO Agent
 
-## Use case 5: competitor content analysis
+You can build a more sophisticated SEO agent that continuously monitors and improves your site:
 
-Save a competitor article as `competitor-post.md` and ask:
-
-```bash
-claude "Read competitor-post.md. What headings do they use? What questions do they answer? What is missing that we could cover better?"
+```
+Create an SEO optimization agent that:
+1. Scans the website daily for new content
+2. Analyzes each page against SEO standards
+3. Suggests and implements improvements
+4. Generates weekly performance reports
+5. Identifies content opportunities based on search trends
+6. Recommends internal linking improvements
 ```
 
-Use the output to create a more comprehensive version of your own content.
+Claude Code can execute this agent automatically, making continuous improvements to your SEO posture.
 
-## Use case 6: internal link suggestions
+## Key Tools and Resources
 
-Given a list of your existing pages, Claude can suggest logical internal links:
+Claude Code integrates well with:
 
-```bash
-claude "Here is a list of my pages: [paste list]. Suggest 3 internal links for a new article about reusable coffee filters."
-```
+- **Python libraries**: `requests` for API calls, `beautifulsoup4` for parsing HTML, `json` for data handling
+- **APIs**: Google Search Console API, Google Analytics API, SEO tool APIs
+- **File formats**: JSON for reports, CSV for data analysis, HTML for visual reports
 
-Strong internal linking helps users and search engines discover related content.
+## Getting Started
 
-## SEO best practices when using Claude Code
+1. **Define your SEO goals** - What metrics matter most? (traffic, rankings, conversions?)
+2. **Identify your biggest issues** - Have Claude Code run an initial audit
+3. **Create an improvement plan** - Prioritize fixes with highest impact
+4. **Implement gradually** - Start with technical SEO, then content optimization
+5. **Monitor results** - Set up regular reports to track progress
 
-### 1. Provide search intent
-Always tell Claude whether the target keyword is informational, transactional, or navigational.
-
-### 2. Specify length limits
-Ask for meta descriptions under 160 characters, titles under 60 characters, and introductions around 150 words.
-
-### 3. Ask for structured output
-Use Markdown headings, tables, and lists so the content is easy to transfer to your CMS.
-
-### 4. Fact-check every claim
-SEO content often includes statistics and recommendations. Verify these against reliable sources.
-
-### 5. Avoid keyword stuffing
-Ask Claude to use keywords naturally and to include semantic variations.
-
-## Common SEO mistakes with AI-generated content
-
-- **Publishing without editing** — AI drafts need human review for accuracy and brand voice.
-- **Ignoring search intent** — a keyword can have multiple intents; match your content to the right one.
-- **Skipping internal links** — AI does not know your site structure unless you provide it.
-- **Forgetting about E-E-A-T** — add author bios, sources, and real-world experience signals.
-
-## Next steps
-
-- Combine this workflow with [Excel and data analysis with Claude Code](/en/use-cases/excel-and-data-analysis/) to process larger keyword datasets.
-- Improve your writing process with [Writing with Claude Code](/en/use-cases/writing-with-claude/).
-- Learn Claude Code commands in the [CLI basics module](/en/learn/cli-basics/).
+With Claude Code handling the technical work, you can focus on strategy and content quality—the real drivers of long-term SEO success.

@@ -95,3 +95,52 @@
     en: "Use cases"
     no: "Fagområder"
   href: "/use-cases/"
+- id: seo-workflow-with-claude
+  kind: use-case
+  title:
+    en: "seo-workflow-with-claude"
+    no: "seo-workflow-with-claude"
+  href: "/use-cases/seo-workflow-with-claude/"
+- id: automate-excel-workflows
+  kind: use-case
+  title:
+    en: "automate-excel-workflows"
+    no: "automate-excel-workflows"
+  href: "/use-cases/automate-excel-workflows/"
+- id: data-analysis-with-python
+  kind: use-case
+  title:
+    en: "data-analysis-with-python"
+    no: "data-analysis-with-python"
+  href: "/use-cases/data-analysis-with-python/"
+- id: automated-data-analysis-reporting
+  kind: use-case
+  title:
+    en: "automated-data-analysis-reporting"
+    no: "automated-data-analysis-reporting"
+  href: "/use-cases/automated-data-analysis-reporting/"
+- id: writing-blog-posts-with-claude
+  kind: use-case
+  title:
+    en: "writing-blog-posts-with-claude"
+    no: "writing-blog-posts-with-claude"
+  href: "/use-cases/writing-blog-posts-with-claude/"
+- id: customer-support-with-claude
+  kind: use-case
+  title:
+    en: "customer-support-with-claude"
+    no: "customer-support-with-claude"
+  href: "/use-cases/customer-support-with-claude/"
+- id: content-creation-social-media
+  kind: use-case
+  title:
+    en: "content-creation-social-media"
+    no: "content-creation-social-media"
+  href: "/use-cases/content-creation-social-media/"
+- id: research-summarization-with-claude-code
+  kind: use-case
+  title:
+    en: "research-summarization-with-claude-code"
+    no: "research-summarization-with-claude-code"
+  href: "/use-cases/research-summarization-with-claude-code/"
+

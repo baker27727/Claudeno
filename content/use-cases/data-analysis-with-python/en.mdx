@@ -1,0 +1,195 @@
+---
+title: Data Analysis with Python and Claude Code
+description: Learn how to use Claude Code with Python and pandas to perform exploratory data analysis, statistical calculations, and generate insights from your data.
+updatedDate: 2025-01-24T00:00:00Z
+author: Claude Code Learn
+profession: excel-and-data-analysis
+difficulty: intermediate
+tools:
+  - Claude Code
+  - Python
+  - pandas
+  - matplotlib
+  - numpy
+tags:
+  - data-analysis
+  - python
+  - statistics
+  - visualization
+  - exploratory-analysis
+sources:
+  - https://docs.anthropic.com/en/docs/claude-code/overview
+  - https://pandas.pydata.org/docs/
+relatedUseCases:
+  - automate-excel-workflows
+draft: false
+order: 2
+---
+
+# Data Analysis with Python and Claude Code
+
+## Overview
+
+While Excel is excellent for basic spreadsheet work, Python offers more powerful tools for deep data analysis. Claude Code bridges this gap by helping you write Python scripts that explore data, calculate statistics, identify patterns, and generate actionable insights—without needing to be a programming expert.
+
+## Why Python for Data Analysis?
+
+**Limitations of Excel:**
+- Formula complexity grows quickly
+- Performance degrades with large datasets (100k+ rows)
+- Difficult to track transformation steps
+- Limited statistical and visualization capabilities
+
+**Advantages of Python with pandas:**
+- Handle millions of rows efficiently
+- Write readable, reproducible analysis code
+- Access advanced statistical methods
+- Create publication-quality visualizations
+- Integrate with other tools and data sources
+
+## Common Analysis Workflows
+
+### 1. Exploratory Data Analysis (EDA)
+
+When you receive a new dataset, start with questions:
+
+- What are the dimensions and structure?
+- What columns do we have, and what are their types?
+- How much missing data exists?
+- What are the distributions of key variables?
+- Are there obvious outliers or anomalies?
+
+**Claude Code helps by:**
+- Writing code to profile the data
+- Generating summary statistics
+- Creating visualizations of distributions
+- Identifying data quality issues
+
+**Example:**
+```python
+import pandas as pd
+
+# Load and explore
+df = pd.read_csv('sales_data.csv')
+print(df.info())  # Data types and missing values
+print(df.describe())  # Summary statistics
+print(df.isnull().sum())  # Missing value counts
+```
+
+### 2. Data Cleaning and Preparation
+
+Raw data is rarely clean. Common tasks include:
+
+- **Handling missing values** (remove, impute, or flag)
+- **Removing duplicates**
+- **Standardizing formats** (dates, phone numbers, addresses)
+- **Outlier detection** and treatment
+- **Type conversion** (strings to dates, etc.)
+
+Claude Code can automate these repetitive steps with robust error handling.
+
+### 3. Statistical Analysis
+
+Answer quantitative business questions:
+
+- What is the average customer lifetime value by region?
+- How do product sales correlate with marketing spend?
+- Is there a significant difference in performance between two groups?
+- What are the trends over time?
+
+**pandas and scipy together provide:**
+- Correlation and regression analysis
+- Hypothesis testing
+- Time series analysis
+- Aggregation and grouping
+
+### 4. Visualization and Reporting
+
+Turning data into actionable insights requires clear communication:
+
+- **Matplotlib/Seaborn**: Statistical graphics
+- **Plotly**: Interactive, web-ready visualizations
+- **Pandas plotting**: Quick exploratory plots
+
+Claude Code can generate charts, create dashboards, or export formatted reports.
+
+## Getting Started
+
+### Step 1: Prepare Your Data
+Export from Excel or load from a database/API as CSV.
+
+### Step 2: Describe Your Question
+Tell Claude Code what you want to understand:
+- "Analyze customer retention by product category"
+- "Find the top factors affecting sales performance"
+- "Identify seasonal patterns in our revenue data"
+
+### Step 3: Claude Code Writes the Analysis
+It generates Python code that:
+- Loads and explores the data
+- Performs calculations
+- Creates visualizations
+- Summarizes findings
+
+### Step 4: Iterate and Refine
+Run the code, review the output, ask follow-up questions, and refine the analysis.
+
+## Key Libraries
+
+| Library | Purpose |
+|---------|----------|
+| **pandas** | Data manipulation, analysis, and aggregation |
+| **numpy** | Numerical computations and arrays |
+| **matplotlib** | Static visualizations (plots, charts) |
+| **seaborn** | Statistical visualization built on matplotlib |
+| **scipy** | Scientific computing and statistics |
+| **plotly** | Interactive, web-based visualizations |
+
+## Common Analysis Patterns
+
+### Grouping and Aggregation
+```python
+# Sales by region and month
+sales_summary = df.groupby(['region', 'month']).agg({
+    'revenue': 'sum',
+    'units': 'sum',
+    'orders': 'count'
+})
+```
+
+### Handling Missing Data
+```python
+# Fill missing values with column mean
+df['price'].fillna(df['price'].mean(), inplace=True)
+
+# Or drop rows with any missing values
+df.dropna(inplace=True)
+```
+
+### Creating New Columns
+```python
+# Calculate derived metrics
+df['profit_margin'] = (df['revenue'] - df['cost']) / df['revenue']
+df['customer_segment'] = pd.cut(df['spend'], bins=3, labels=['Low', 'Medium', 'High'])
+```
+
+## Tips for Effective Analysis
+
+1. **Start simple**: Understand your data before building complex models
+2. **Document assumptions**: Note what you're assuming about the data
+3. **Validate results**: Check that outputs make sense (compare to Excel if needed)
+4. **Automate, don't over-engineer**: Solve the problem at hand, then generalize
+5. **Share your code**: Comments and docstrings help others understand your work
+
+## From Analysis to Action
+
+DataAnalysis alone isn't valuable—it must drive decisions:
+
+- **Dashboard creation**: Visualize key metrics for ongoing monitoring
+- **Automated reporting**: Schedule analysis to run weekly or monthly
+- **Predictive models**: Use past data to forecast future outcomes
+- **Process improvement**: Use insights to optimize operations
+
+## Next Steps
+
+Start with a dataset you know well (your own sales, inventory, or customer data). Ask a specific, answerable question and work with Claude Code to explore it. As you become comfortable with the workflow, tackle more complex analyses.
