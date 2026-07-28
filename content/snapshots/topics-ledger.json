@@ -1,5 +1,142 @@
 [
   {
+    "topic": "Using effort levels to control Claude's reasoning depth in Claude Opus 5 and Fable 5",
+    "status": "candidate",
+    "score": {
+      "frequency": 0.25,
+      "recency": 0.691,
+      "engagement": 0.5,
+      "gap": 1,
+      "total": 0.535
+    },
+    "matchedSources": [
+      "anthropic_changelog"
+    ],
+    "whyItMatters": "The new effort parameter (low, medium, high, xhigh, max) is the primary control mechanism in Claude Opus 5 for steering model capability and behavior. Developers need practical guidance on how to set effort levels strategically for different tasks.",
+    "firstSeen": "2026-07-28T07:41:29.369Z",
+    "lastSeen": "2026-07-28T07:41:29.369Z"
+  },
+  {
+    "topic": "Managing context window overflow in Claude Code with skills and subagents",
+    "status": "candidate",
+    "score": {
+      "frequency": 0.25,
+      "recency": 0.906,
+      "engagement": 0.5,
+      "gap": 1,
+      "total": 0.589
+    },
+    "matchedSources": [
+      "docs_map"
+    ],
+    "whyItMatters": "Claude Code's 1M token context window still fills up on large projects. The documentation explicitly mentions using skills and subagents to manage context—a practical pattern developers need to master.",
+    "firstSeen": "2026-07-28T07:41:29.369Z",
+    "lastSeen": "2026-07-28T07:41:29.369Z"
+  },
+  {
+    "topic": "Setting up and maintaining CLAUDE.md files effectively across teams",
+    "status": "candidate",
+    "score": {
+      "frequency": 0.5,
+      "recency": 0.906,
+      "engagement": 0.334,
+      "gap": 1,
+      "total": 0.635
+    },
+    "matchedSources": [
+      "docs_map",
+      "hn_search"
+    ],
+    "whyItMatters": "The newly updated documentation emphasizes CLAUDE.md as central to Claude Code performance, with sections on team deployment, organization-wide configuration, and the advice to refresh it periodically. A HN discussion explicitly raised the question of maintaining CLAUDE.md for multiple models.",
+    "firstSeen": "2026-07-28T07:41:29.369Z",
+    "lastSeen": "2026-07-28T07:41:29.369Z"
+  },
+  {
+    "topic": "Building multi-agent workflows with Claude Code agent collaboration and coordination",
+    "status": "candidate",
+    "score": {
+      "frequency": 0.25,
+      "recency": 0.977,
+      "engagement": 0.632,
+      "gap": 1,
+      "total": 0.64
+    },
+    "matchedSources": [
+      "github_search"
+    ],
+    "whyItMatters": "Multiple new projects on GitHub show developers building infrastructure for parallel Claude Code agents—agent buses, agent meshes, and fleet orchestration. This reflects growing demand for coordinating multiple AI agents on shared systems.",
+    "firstSeen": "2026-07-28T07:41:29.369Z",
+    "lastSeen": "2026-07-28T07:41:29.369Z"
+  },
+  {
+    "topic": "Using Claude Code permissions modes (plan, auto, dontAsk, bypassPermissions) strategically",
+    "status": "candidate",
+    "score": {
+      "frequency": 0.25,
+      "recency": 0.906,
+      "engagement": 0.5,
+      "gap": 1,
+      "total": 0.589
+    },
+    "matchedSources": [
+      "docs_map"
+    ],
+    "whyItMatters": "Permission modes control Claude's autonomy and safety guardrails in Claude Code. The documentation shows multiple modes with different trade-offs; developers need guidance on when and how to apply each one.",
+    "firstSeen": "2026-07-28T07:41:29.369Z",
+    "lastSeen": "2026-07-28T07:41:29.369Z"
+  },
+  {
+    "topic": "Automating code review and testing with Claude Code routines and scheduled tasks",
+    "status": "candidate",
+    "score": {
+      "frequency": 0.25,
+      "recency": 0.906,
+      "engagement": 0.5,
+      "gap": 1,
+      "total": 0.589
+    },
+    "matchedSources": [
+      "docs_map"
+    ],
+    "whyItMatters": "Claude Code now supports scheduled routines triggered by GitHub, API calls, or timers. Developers are using this for auto-fix pull requests and continuous integration; practical guidance on setup and best practices is needed.",
+    "firstSeen": "2026-07-28T07:41:29.369Z",
+    "lastSeen": "2026-07-28T07:41:29.369Z"
+  },
+  {
+    "topic": "Migrating to Claude Opus 5's new tokenizer and effort-based parameter system",
+    "status": "candidate",
+    "score": {
+      "frequency": 0.25,
+      "recency": 0.691,
+      "engagement": 0.5,
+      "gap": 1,
+      "total": 0.535
+    },
+    "matchedSources": [
+      "anthropic_changelog"
+    ],
+    "whyItMatters": "Claude Opus 5 introduces breaking changes: effort replaces extended thinking, the tokenizer produces 30% more tokens, and thinking is on by default. Teams upgrading need migration guidance.",
+    "firstSeen": "2026-07-28T07:41:29.369Z",
+    "lastSeen": "2026-07-28T07:41:29.369Z"
+  },
+  {
+    "topic": "Building Claude Code skills for domain-specific tasks and team reuse",
+    "status": "candidate",
+    "score": {
+      "frequency": 0.25,
+      "recency": 0.977,
+      "engagement": 0.111,
+      "gap": 1,
+      "total": 0.509
+    },
+    "matchedSources": [
+      "github_search"
+    ],
+    "whyItMatters": "Recent GitHub projects show developers building production skills (Aegis for security auditing, ThinkFull for multi-specialist workflows, Bilibili subtitle extraction). Skill development is emerging as a key pattern for extending Claude Code.",
+    "firstSeen": "2026-07-28T07:41:29.369Z",
+    "lastSeen": "2026-07-28T07:41:29.369Z"
+  },
+  {
     "topic": "Auditing and preventing drift in Claude Code agent configurations",
     "status": "published",
     "score": {
