@@ -126,3 +126,7 @@ The `/resume` and `/continue` commands now properly handle malformed attachment 
 ## What's new in v2.1.218
 
 The `/code-review` command now runs as a background subagent, keeping your conversation focused on other work while reviews are processed in the background. Similarly, `/deep-research` now starts only when invoked manually rather than launching automatically. The `/ultrareview` command has improved error handling to help Claude correct invalid arguments, and descriptive arguments like "review my auth changes" now apply as notes to findings on your current branch.
+
+## What's new in v2.1.220
+
+/code-review now runs as a background subagent, keeping review work out of your main conversation. `/deep-research` no longer launches automatically; it only starts when invoked manually. Dynamic workflows now default to a medium size guideline (fewer than 15 agents); adjust via the Dynamic workflow size option in `/config`.

@@ -125,3 +125,7 @@ Kommandoene `/resume` og `/continue` håndterer nå korrekt malformerte vedleggs
 ## Nytt i v2.1.218
 
 Kommandoen `/code-review` kjører nå som en underagent i bakgrunnen, slik at konversasjonen din forblir fokusert på annet arbeid mens gjennomganger behandles i bakgrunnen. Tilsvarende starter `/deep-research` nå bare når den påkalles manuelt i stedet for å starte automatisk. Kommandoen `/ultrareview` har forbedret feilbehandling for å hjelpe Claude med å korrigere ugyldige argumenter, og beskrivende argumenter som "review my auth changes" brukes nå som notater til funn på gjeldende gren.
+
+## Nytt i v2.1.220
+
+/code-review kjører nå som en bakgrunnsunderagent, og holder gjennomgangsarbeid utenfor hovedsamtalen. `/deep-research` startes ikke lenger automatisk; det kjører bare når du starter det manuelt. Dynamiske arbeidsflyter bruker nå en medium størrelsesretningslinje som standard (færre enn 15 agenter); juster via alternativet Dynamic workflow size i `/config`.
