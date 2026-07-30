@@ -1,5 +1,24 @@
 [
   {
+    "topic": "Setting up and maintaining CLAUDE.md files effectively across teams",
+    "status": "published",
+    "score": {
+      "frequency": 0.5,
+      "recency": 0.906,
+      "engagement": 0.334,
+      "gap": 1,
+      "total": 0.635
+    },
+    "matchedSources": [
+      "docs_map",
+      "hn_search"
+    ],
+    "whyItMatters": "The newly updated documentation emphasizes CLAUDE.md as central to Claude Code performance, with sections on team deployment, organization-wide configuration, and the advice to refresh it periodically. A HN discussion explicitly raised the question of maintaining CLAUDE.md for multiple models.",
+    "firstSeen": "2026-07-28T07:41:29.369Z",
+    "lastSeen": "2026-07-30T08:12:37.830Z",
+    "publishedSlug": "claude-md-team-maintenance"
+  },
+  {
     "topic": "Using effort levels to control Claude's reasoning depth in Claude Opus 5 and Fable 5",
     "status": "candidate",
     "score": {
@@ -30,24 +49,6 @@
       "docs_map"
     ],
     "whyItMatters": "Claude Code's 1M token context window still fills up on large projects. The documentation explicitly mentions using skills and subagents to manage context—a practical pattern developers need to master.",
-    "firstSeen": "2026-07-28T07:41:29.369Z",
-    "lastSeen": "2026-07-28T07:41:29.369Z"
-  },
-  {
-    "topic": "Setting up and maintaining CLAUDE.md files effectively across teams",
-    "status": "candidate",
-    "score": {
-      "frequency": 0.5,
-      "recency": 0.906,
-      "engagement": 0.334,
-      "gap": 1,
-      "total": 0.635
-    },
-    "matchedSources": [
-      "docs_map",
-      "hn_search"
-    ],
-    "whyItMatters": "The newly updated documentation emphasizes CLAUDE.md as central to Claude Code performance, with sections on team deployment, organization-wide configuration, and the advice to refresh it periodically. A HN discussion explicitly raised the question of maintaining CLAUDE.md for multiple models.",
     "firstSeen": "2026-07-28T07:41:29.369Z",
     "lastSeen": "2026-07-28T07:41:29.369Z"
   },

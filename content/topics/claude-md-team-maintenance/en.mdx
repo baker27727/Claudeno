@@ -1,0 +1,96 @@
+---
+title: "Setting Up and Maintaining CLAUDE.md Files Across Teams"
+description: "CLAUDE.md is Claude Code's central memory file, and the docs now cover team deployment, organization-wide configuration, and how to keep it lean over time. Here's how it actually loads, how to structure it, and where it breaks down."
+discoveredAt: "2026-07-28T07:41:29.369Z"
+updatedDate: "2026-07-30T08:12:37.829Z"
+author: "Claude Code Learn"
+trendScore: 0.635
+scoreBreakdown:
+  frequency: 0.5
+  recency: 0.906
+  engagement: 0.334
+  gap: 1
+tags:
+  - "Claude Code"
+  - "CLAUDE.md"
+  - "memory"
+  - "team workflows"
+  - "configuration"
+  - "best practices"
+sources:
+  - "https://code.claude.com/docs/en/memory.md"
+  - "https://code.claude.com/docs/en/best-practices.md"
+  - "https://code.claude.com/docs/en/claude-directory.md"
+  - "https://code.claude.com/docs/en/prompt-caching.md"
+relatedModules:
+  - "memory"
+  - "permissions-and-settings"
+  - "checkpointing"
+relatedUseCases:
+  - "project-management-with-claude"
+relatedSkills: []
+draft: false
+# Verified against Claude Code 2.1.220
+---
+## Quick summary
+
+CLAUDE.md is the file Claude Code reads at the start of every session to learn your project's conventions, commands, and constraints. For a solo user it's a simple checklist; for a team it becomes shared configuration that needs the same discipline as any other file people edit together — clear ownership, a sane structure, and periodic pruning so it doesn't rot into a wall of stale instructions Claude quietly ignores.
+
+## What's new
+
+Claude Code's documentation now treats CLAUDE.md as a first-class, multi-layered configuration system rather than a single flat file. The `memory` docs walk through choosing where CLAUDE.md files live, writing effective instructions, importing additional files, and — specifically for larger organizations — a dedicated section on managing CLAUDE.md for large teams, including how to deploy an organization-wide CLAUDE.md and how to exclude specific CLAUDE.md files from loading. The docs also introduce `.claude/rules/` as a way to organize rules more granularly: path-specific rules, rules shared across projects via symlinks, and user-level rules that sit alongside project-level memory.
+
+The best-practices guide frames "write an effective CLAUDE.md" as a core part of configuring your environment, alongside permissions, MCP servers, hooks, skills, and subagents — reinforcing that CLAUDE.md is one piece of a layered setup, not a catch-all. Separately, community activity shows teams already building tooling around this problem: projects like grading and "drift watching" for CLAUDE.md files, and multi-agent/multi-vendor frameworks that need a CLAUDE.md-equivalent that works across Claude, Codex, Gemini, and other coding agents — echoing the question raised on Hacker News about maintaining a single memory file when multiple models are in play.
+
+## How it works
+
+1. **Discovery and loading.** Claude Code loads CLAUDE.md files hierarchically — it looks in the current project and can load from additional directories, so a monorepo can have a root-level file plus per-package files that layer on top.
+2. **Rules directory.** Instead of cramming everything into one file, `.claude/rules/` lets you split instructions into discrete files, some scoped to specific paths. These can be symlinked across multiple repositories so a shared standard (e.g., commit message format, testing conventions) stays in sync without copy-pasting.
+3. **User vs. project vs. org scope.** There are distinct layers: user-level rules (your personal preferences, not shared with the team), project-level CLAUDE.md (checked into the repo, shared by everyone working on it), and an organization-wide CLAUDE.md that can be deployed centrally for large teams. Admins can also exclude specific CLAUDE.md files from being loaded, which matters when a subdirectory's instructions are outdated or conflict with the parent.
+4. **Auto memory as a companion.** CLAUDE.md is explicitly distinguished from auto memory — auto memory captures things Claude learns during a session automatically, while CLAUDE.md is the deliberately authored, versioned file. The `/memory` command lets you view and edit both.
+5. **Prompt cache interaction.** Editing CLAUDE.md mid-session does not invalidate the prompt cache, which is one reason the docs recommend refreshing it periodically rather than treating it as static — you can iterate on it without paying a full cache-miss penalty every time.
+6. **Failure modes are documented.** The troubleshooting section explicitly covers "Claude isn't following my CLAUDE.md," "I don't know what auto memory saved," "My CLAUDE.md is too large," and "Instructions seem lost after `/compact`" — signals that oversized or stale files are a known, named problem, not a hypothetical.
+
+## Hands-on example
+
+A typical team setup splits responsibilities between a root CLAUDE.md and scoped rules:
+
+```
+# CLAUDE.md (repo root)
+## Project
+Internal billing service. Node.js + PostgreSQL.
+
+## Commands
+- `npm run test` — unit tests, must pass before commit
+- `npm run lint:fix` — auto-fix style issues
+
+## Conventions
+- Use conventional commits (feat:, fix:, chore:)
+- Never touch files under /legacy without asking first
+
+.claude/rules/
+  frontend.md      # path-specific: only applies under /src/frontend
+  backend.md       # path-specific: only applies under /src/backend
+  security.md      # symlinked from a shared org repo, same in every project
+```
+
+To audit what's actually loaded and trim the stale parts, run inside a session:
+
+```
+/memory
+```
+
+This opens the current CLAUDE.md and auto memory for editing — a good habit to repeat every few weeks, deleting instructions that no longer apply and confirming the file still reflects real commands (e.g., a renamed test script) rather than what was true six months ago.
+
+## When to use it (and when not to)
+
+Use a project CLAUDE.md for anything Claude needs on every session: build/test commands, architectural conventions, things it should never touch. Use `.claude/rules/` when instructions are only relevant to part of the codebase, or when you want to share a rule (like a security checklist) across multiple repos via symlink. Use an organization-wide CLAUDE.md when you have standards that must apply everywhere regardless of what an individual repo contains, and use the exclusion mechanism when a subdirectory's inherited instructions actively conflict with its own needs.
+
+Don't use CLAUDE.md as a dumping ground for everything you ever want Claude to know — the docs' own troubleshooting section names "too large" as a failure mode, and a bloated file competes for context budget and attention just like any other prompt content. It's also not a substitute for auto memory (which captures session-specific learnings automatically) or for hooks and permissions (which enforce behavior mechanically rather than by instruction). If your team runs multiple AI coding agents side by side, be aware that CLAUDE.md is Claude Code–specific; keeping a single source of truth in sync across agents (Codex, Gemini, etc.) is an open problem the community is actively building tooling around, not something the format solves natively.
+
+## Sources
+
+- https://code.claude.com/docs/en/memory.md
+- https://code.claude.com/docs/en/best-practices.md
+- https://code.claude.com/docs/en/claude-directory.md
+- https://code.claude.com/docs/en/prompt-caching.md

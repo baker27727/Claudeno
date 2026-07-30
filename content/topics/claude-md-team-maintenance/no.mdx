@@ -1,0 +1,96 @@
+---
+title: "Sette opp og vedlikeholde CLAUDE.md-filer i team"
+description: "CLAUDE.md er Claude Codes sentrale minnefil, og dokumentasjonen dekker nå team-utrulling, organisasjonsdekkende konfigurasjon og hvordan man holder den slank over tid. Her er hvordan den faktisk lastes, struktureres, og hvor den svikter."
+discoveredAt: "2026-07-28T07:41:29.369Z"
+updatedDate: "2026-07-30T08:12:37.829Z"
+author: "Claude Code Learn"
+trendScore: 0.635
+scoreBreakdown:
+  frequency: 0.5
+  recency: 0.906
+  engagement: 0.334
+  gap: 1
+tags:
+  - "Claude Code"
+  - "CLAUDE.md"
+  - "memory"
+  - "team workflows"
+  - "configuration"
+  - "best practices"
+sources:
+  - "https://code.claude.com/docs/en/memory.md"
+  - "https://code.claude.com/docs/en/best-practices.md"
+  - "https://code.claude.com/docs/en/claude-directory.md"
+  - "https://code.claude.com/docs/en/prompt-caching.md"
+relatedModules:
+  - "memory"
+  - "permissions-and-settings"
+  - "checkpointing"
+relatedUseCases:
+  - "project-management-with-claude"
+relatedSkills: []
+draft: false
+# Verified against Claude Code 2.1.220
+---
+## Kort oppsummert
+
+CLAUDE.md er filen Claude Code leser ved starten av hver sesjon for å lære prosjektets konvensjoner, kommandoer og begrensninger. For en enkeltbruker er det en enkel sjekkliste; for et team blir det delt konfigurasjon som krever samme disiplin som annen kode folk redigerer sammen — tydelig eierskap, en sunn struktur, og regelmessig opprydding så den ikke forfaller til en vegg med utdaterte instruksjoner Claude stille ignorerer.
+
+## Hva er nytt
+
+Claude Codes dokumentasjon behandler nå CLAUDE.md som et fullverdig, flerlags konfigurasjonssystem snarere enn én flat fil. `memory`-dokumentasjonen går gjennom hvor CLAUDE.md-filer bør ligge, hvordan skrive effektive instruksjoner, hvordan importere flere filer, og — spesifikt for større organisasjoner — en egen seksjon om å administrere CLAUDE.md for store team, inkludert hvordan man ruller ut en organisasjonsdekkende CLAUDE.md og hvordan man utelukker spesifikke CLAUDE.md-filer fra å bli lastet. Dokumentasjonen introduserer også `.claude/rules/` som en måte å organisere regler mer granulært: stiavhengige regler, regler delt mellom prosjekter via symlenker, og brukernivå-regler som ligger side om side med prosjektnivå-minne.
+
+Beste praksis-guiden rammer «skriv en effektiv CLAUDE.md» som en kjernedel av å konfigurere miljøet ditt, på linje med tillatelser, MCP-servere, hooks, skills og subagenter — noe som understreker at CLAUDE.md er én del av et lagdelt oppsett, ikke en samlepost for alt. Samtidig viser aktivitet i fellesskapet at team allerede bygger verktøy rundt dette problemet: prosjekter for evaluering og «drift-overvåking» av CLAUDE.md-filer, samt multi-agent/multi-leverandør-rammeverk som trenger noe CLAUDE.md-lignende som fungerer over Claude, Codex, Gemini og andre kodeagenter — noe som gjenspeiler spørsmålet reist på Hacker News om å vedlikeholde en enkelt minnefil når flere modeller er i spill.
+
+## Slik fungerer det
+
+1. **Oppdagelse og lasting.** Claude Code laster CLAUDE.md-filer hierarkisk — den ser i det aktuelle prosjektet og kan laste fra flere kataloger, så et monorepo kan ha en rotfil pluss per-pakke-filer som legger seg på toppen.
+2. **Regelkatalog.** I stedet for å presse alt inn i én fil, lar `.claude/rules/` deg dele instruksjoner i separate filer, noen avgrenset til spesifikke stier. Disse kan symlenkes over flere repositorier så en delt standard (f.eks. commit-meldingsformat, testkonvensjoner) forblir synkronisert uten kopiering.
+3. **Bruker- vs. prosjekt- vs. org-nivå.** Det finnes distinkte lag: brukernivå-regler (dine personlige preferanser, ikke delt med teamet), prosjektnivå CLAUDE.md (sjekket inn i repoet, delt av alle som jobber på det), og en organisasjonsdekkende CLAUDE.md som kan rulles ut sentralt for store team. Administratorer kan også utelukke spesifikke CLAUDE.md-filer fra å bli lastet, noe som er viktig når en underkatalogs instruksjoner er utdaterte eller er i konflikt med foreldrenivået.
+4. **Auto-minne som følgesvenn.** CLAUDE.md skilles eksplisitt fra auto-minne — auto-minne fanger opp ting Claude lærer under en sesjon automatisk, mens CLAUDE.md er den bevisst forfattede, versjonerte filen. Kommandoen `/memory` lar deg vise og redigere begge.
+5. **Interaksjon med prompt-cache.** Å redigere CLAUDE.md midt i en sesjon invaliderer ikke prompt-cachen, noe som er en av grunnene til at dokumentasjonen anbefaler å oppdatere den regelmessig i stedet for å behandle den som statisk — du kan iterere på den uten å betale full cache-miss-kostnad hver gang.
+6. **Feilmodus er dokumentert.** Feilsøkingsseksjonen dekker eksplisitt «Claude følger ikke min CLAUDE.md», «Jeg vet ikke hva auto-minne lagret», «Min CLAUDE.md er for stor», og «Instruksjoner ser ut til å være tapt etter `/compact`» — signaler om at overdimensjonerte eller utdaterte filer er et kjent, navngitt problem, ikke en hypotetisk risiko.
+
+## Prøv det selv
+
+Et typisk team-oppsett deler ansvar mellom en rot-CLAUDE.md og avgrensede regler:
+
+```
+# CLAUDE.md (repo-rot)
+## Prosjekt
+Intern fakturaservice. Node.js + PostgreSQL.
+
+## Kommandoer
+- `npm run test` — enhetstester, må passere før commit
+- `npm run lint:fix` — autofiks stilproblemer
+
+## Konvensjoner
+- Bruk conventional commits (feat:, fix:, chore:)
+- Aldri rør filer under /legacy uten å spørre først
+
+.claude/rules/
+  frontend.md      # stiavhengig: gjelder kun under /src/frontend
+  backend.md       # stiavhengig: gjelder kun under /src/backend
+  security.md      # symlenket fra et delt org-repo, likt i alle prosjekter
+```
+
+For å revidere hva som faktisk lastes og trimme det utdaterte, kjør inne i en sesjon:
+
+```
+/memory
+```
+
+Dette åpner den aktuelle CLAUDE.md og auto-minnet for redigering — en god vane å gjenta hver par uker, hvor man sletter instruksjoner som ikke lenger gjelder og bekrefter at filen fortsatt gjenspeiler reelle kommandoer (f.eks. et omdøpt testskript) snarere enn hva som var sant for seks måneder siden.
+
+## Når du bør bruke det (og når ikke)
+
+Bruk en prosjekt-CLAUDE.md for alt Claude trenger i hver sesjon: bygg-/testkommandoer, arkitektoniske konvensjoner, ting den aldri bør røre. Bruk `.claude/rules/` når instruksjoner kun er relevante for deler av kodebasen, eller når du vil dele en regel (som en sikkerhetssjekkliste) over flere repositorier via symlenk. Bruk en organisasjonsdekkende CLAUDE.md når du har standarder som må gjelde alle steder uavhengig av hva et enkelt repo inneholder, og bruk eksklusjonsmekanismen når en underkatalogs nedarvede instruksjoner aktivt er i konflikt med sine egne behov.
+
+Bruk ikke CLAUDE.md som en samlepost for alt du noen gang vil at Claude skal vite — dokumentasjonens egen feilsøkingsseksjon navngir «for stor» som en feilmodus, og en oppblåst fil konkurrerer om kontekstbudsjett og oppmerksomhet på samme måte som annet promptinnhold. Den er heller ikke en erstatning for auto-minne (som fanger opp sesjonsspesifikk lærdom automatisk) eller for hooks og tillatelser (som håndhever oppførsel mekanisk snarere enn gjennom instruksjon). Hvis teamet ditt kjører flere AI-kodeagenter side om side, vær klar over at CLAUDE.md er spesifikt for Claude Code; å holde én kilde til sannhet synkronisert over flere agenter (Codex, Gemini, osv.) er et åpent problem fellesskapet aktivt bygger verktøy rundt, ikke noe formatet løser innebygd.
+
+## Kilder
+
+- https://code.claude.com/docs/en/memory.md
+- https://code.claude.com/docs/en/best-practices.md
+- https://code.claude.com/docs/en/claude-directory.md
+- https://code.claude.com/docs/en/prompt-caching.md
