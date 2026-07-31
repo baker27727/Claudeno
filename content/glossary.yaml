@@ -143,3 +143,13 @@
   no: "Claude Opus 5"
   note: "Default Opus model as of 2.1.219, featuring 1M context and fast mode
     pricing"
+- id: "sandbox.network.strictallowlist"
+  en: "sandbox.network.strictAllowlist"
+  no: "sandbox.network.strictAllowlist"
+  note: "Settings key to deny non-allowlisted hosts for sandboxed commands without
+    prompting"
+- id: "workflowsizeguideline"
+  en: "workflowSizeGuideline"
+  no: "workflowSizeGuideline"
+  note: "Settings key to control the default dynamic workflow size (medium, large,
+    or unrestricted)"
