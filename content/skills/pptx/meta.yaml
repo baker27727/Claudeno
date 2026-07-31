@@ -30,7 +30,7 @@ permissions:
   - "file-write"
 relatedSkills: []
 relatedModules: []
-lastVerified: "2026-07-30"
+lastVerified: "2026-07-31"
 verifiedVersion: "2.1.211"
 rubric:
   docs: 5
