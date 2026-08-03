@@ -1,0 +1,160 @@
+---
+title: Building Agentic Workflows
+description: Learn how to create long-running, autonomous coding agents with Claude Code that handle complex multi-step development tasks
+updatedDate: 2025-01-13T00:00:00Z
+author: Claude Code Learn
+profession: writing-with-claude
+difficulty: advanced
+tools: ['Claude Code', 'Agent SDK', 'Automation']
+tags: ['agents', 'automation', 'workflows', 'advanced']
+sources:
+  - 'https://docs.anthropic.com/en/docs/claude-code/overview'
+  - 'https://www.anthropic.com/news'
+faq:
+  - question: What makes an agentic workflow different from regular coding?
+    answer: Agentic workflows run autonomously for extended periods, making decisions based on command outputs and iterating without manual intervention between steps.
+  - question: Can agents handle complex multi-file projects?
+    answer: Yes, Claude Code agents are designed for long-running tasks across complex codebases, reading and modifying multiple files as needed.
+  - question: How do agents decide what to do next?
+    answer: Agents analyze command outputs, test results, and code context to determine next steps, iterating until the task is complete.
+order: 2
+---
+
+## Overview
+
+Agentic workflows represent an advanced use of Claude Code where the AI operates autonomously over extended periods, handling complex multi-step development tasks. Rather than responding to individual prompts, agents continuously iterate and refine their approach based on real-time feedback.
+
+## Key Characteristics of Agentic Workflows
+
+### Autonomy
+Agents operate with minimal human intervention. Once given a goal, they:
+- Make decisions about which files to read and modify
+- Execute tests and evaluate results
+- Iterate on solutions based on feedback
+- Adapt their approach when initial attempts don't succeed
+
+### Long-Running Execution
+Unlike single-turn interactions, agents maintain context and progress across:
+- Multiple file edits
+- Sequential command executions
+- Test failures and debugging cycles
+- Incremental feature implementation
+
+### Intelligent Iteration
+Agents use feedback loops to improve solutions:
+1. Execute a task or test
+2. Analyze the output
+3. Identify issues or gaps
+4. Refine the implementation
+5. Repeat until successful
+
+## Ideal Use Cases for Agentic Workflows
+
+### Large Feature Implementation
+- Build features spanning multiple files and components
+- Coordinate changes across interdependent modules
+- Validate implementation with full test suites
+- Iterate based on test failures
+
+### Codebase Modernization
+- Systematic refactoring across large projects
+- Updating patterns or frameworks
+- Maintaining consistency as changes propagate
+- Running regression tests continuously
+
+### Complex Debugging
+- Multi-layered issue investigation
+- Testing multiple hypotheses
+- Isolating root causes across components
+- Implementing and validating fixes
+
+### Automated Code Review Tasks
+- Scanning for specific patterns or issues
+- Applying fixes systematically
+- Verifying changes don't break functionality
+- Generating reports on improvements
+
+## Building Effective Agents
+
+### 1. Define Clear Goals
+Be specific about what success looks like:
+- What functionality should be implemented?
+- What are acceptance criteria?
+- What tests should pass?
+- Any constraints or requirements?
+
+### 2. Provide Rich Context
+Agents perform better with comprehensive background:
+- Project structure and architecture
+- Coding standards and patterns
+- Dependencies and frameworks
+- Known limitations or gotchas
+
+### 3. Enable Self-Evaluation
+Agents need ways to validate progress:
+- Comprehensive test suites
+- Clear error messages
+- Build or linting scripts
+- Integration tests
+
+### 4. Permit Sufficient Iterations
+Allow agents enough computational budget to:
+- Try different approaches
+- Debug and fix issues
+- Refactor based on learnings
+- Achieve robust solutions
+
+## Agentic Workflow Patterns
+
+### Exploration Pattern
+Agent explores codebase before acting:
+1. Read key files to understand structure
+2. Identify files that need modification
+3. Create a plan
+4. Execute the plan
+5. Validate with tests
+
+### Iterative Refinement Pattern
+Agent continuously improves a solution:
+1. Implement initial version
+2. Run tests
+3. Analyze failures
+4. Refactor or fix issues
+5. Repeat steps 2-4 until all tests pass
+
+### Multi-Stage Pattern
+Agent completes distinct phases:
+1. Analysis phase: Understand requirements
+2. Planning phase: Design solution
+3. Implementation phase: Write code
+4. Testing phase: Validate functionality
+5. Refinement phase: Address issues
+
+## Monitoring Agentic Progress
+
+While agents operate autonomously, you should monitor:
+- Progress through task phases
+- Test pass rates and failures
+- Files being modified
+- Whether iterations are productive
+- Any explicit errors or blockers
+
+Intervene if:
+- Progress stalls or loops unproductively
+- Approach diverges from your vision
+- External changes are needed
+- Additional context would help
+
+## Performance Optimization
+
+### Reduce Unnecessary File Reads
+Provide file lists or directory structure upfront so agents don't waste iterations discovering the codebase.
+
+### Optimize Test Feedback
+Ensure tests fail fast and provide clear error messages so agents can quickly identify issues.
+
+### Set Clear Success Criteria
+Define exactly what "done" looks like to prevent agents from over-engineering solutions.
+
+### Leverage Caching
+Use Claude Code's prompt caching features to reduce token usage on repeated context.

@@ -95,3 +95,52 @@
     en: "Use cases"
     no: "Fagområder"
   href: "/use-cases/"
+- id: marketing-campaign-analysis
+  kind: use-case
+  title:
+    en: "Marketing Campaign Analysis with Claude Code"
+    no: "Analyse av markedsføringskampanjer med Claude Code"
+  href: "/use-cases/marketing-campaign-analysis/"
+- id: seo-workflow-with-claude
+  kind: use-case
+  title:
+    en: "seo-workflow-with-claude"
+    no: "seo-workflow-with-claude"
+  href: "/use-cases/seo-workflow-with-claude/"
+- id: data-analysis-reporting-automation
+  kind: use-case
+  title:
+    en: "data-analysis-reporting-automation"
+    no: "data-analysis-reporting-automation"
+  href: "/use-cases/data-analysis-reporting-automation/"
+- id: project-management-with-claude-code
+  kind: use-case
+  title:
+    en: "project-management-with-claude-code"
+    no: "project-management-with-claude-code"
+  href: "/use-cases/project-management-with-claude-code/"
+- id: agentic-workflows
+  kind: use-case
+  title:
+    en: "agentic-workflows"
+    no: "agentic-workflows"
+  href: "/use-cases/agentic-workflows/"
+- id: customer-support-with-claude
+  kind: use-case
+  title:
+    en: "Customer Support with Claude"
+    no: "Kundesupport med Claude"
+  href: "/use-cases/customer-support-with-claude/"
+- id: social-media-content-creation
+  kind: use-case
+  title:
+    en: "social-media-content-creation"
+    no: "social-media-content-creation"
+  href: "/use-cases/social-media-content-creation/"
+- id: research-analysis-with-claude-code
+  kind: use-case
+  title:
+    en: "research-analysis-with-claude-code"
+    no: "research-analysis-with-claude-code"
+  href: "/use-cases/research-analysis-with-claude-code/"
+
