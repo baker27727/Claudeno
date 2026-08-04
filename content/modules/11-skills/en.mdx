@@ -108,3 +108,7 @@ permissions, its limitations, and when *not* to use it:
 ## What's new in v2.1.215
 
 The `/verify` and `/code-review` skills are no longer invoked automatically by Claude. You must explicitly call them with their respective slash commands when needed.
+
+## What's new in v2.1.221
+
+New in 2.1.221: Plugins now accept `"."` as a `skills` path in their configuration, and the root-level `SKILL.md` validation error now helpfully suggests using the plugin root as an alternative. The new `prompt-audit` subcommand in the `claude-api` skill allows you to audit prompts and tool descriptions for patterns written for older models.

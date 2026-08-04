@@ -94,3 +94,7 @@ Kommandoen /mcp og claude mcp list viser nå HTTP-status og feilmelding når en 
 ## Nytt i v2.1.220
 
 Kommandoen `claude mcp list` og `/mcp` viser nå HTTP-statuskoder og feiltekst når en tjener ikke klarer å koble til. En advarsel varsler også brukere om MCP-konfigurasjonsverdier med skjult ledende eller etterfølgende mellomrom som kan forårsake tilkoblingsproblemer.
+
+## Nytt i v2.1.221
+
+Nytt i 2.1.221: MCP-tjenere fra `--mcp-config` er nå riktig tilkoblet før første tur i utskriftsmodus (`-p`). Kommandoen `claude mcp list` er forbedret til å vise HTTP-status og feilmelding når en tjener ikke klarer å koble til. Merk at oppføringer i administrert MCP allowlist/denylist med `${VAR}`-plassholdere nå løses fra oppstartsmiljøet og administrert-innstillingsmiljø i stedet for innstillingsfil-miljø.

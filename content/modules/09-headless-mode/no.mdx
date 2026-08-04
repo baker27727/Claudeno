@@ -119,3 +119,7 @@ Remote Control-økter viser nå korrekt utestående tillatelsesledetekster og di
 ## Nytt i v2.1.218
 
 Hodeløse økter og SDK-økter bevarer nå fork-session-avstamning etter komprimering, noe som forhindrer tap av øktforhold. Når du gjenoppretter en økt med --resume eller /resume, håndteres malformerte delta-vedlegg som tidligere forårsaket at hver tur mislyktes eller krakket, nå på en elegant måte.
+
+## Nytt i v2.1.221
+
+Nytt i 2.1.221: Bakgrunnsøkter forplikter nå og sender for å bevare arbeid, åpner utkast-PR bare når oppgaven eksplisitt krever det, følger dine CLAUDE.md git-instruksjoner, og avslutter alltid med å rapportere hvor arbeidet ligger. MCP-tjenerfeil fra `--mcp-config`-oppføringer som mislykkes konfigurasjonsvalidering vises nå i headless stream-json init-hendelse under `mcp_server_errors`, med en oppstartsvarsling skrevet ut i terminalekjøringer.

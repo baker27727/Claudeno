@@ -129,3 +129,7 @@ Kommandoen `/code-review` kjører nå som en underagent i bakgrunnen, slik at ko
 ## Nytt i v2.1.220
 
 /code-review kjører nå som en bakgrunnsunderagent, og holder gjennomgangsarbeid utenfor hovedsamtalen. `/deep-research` startes ikke lenger automatisk; det kjører bare når du starter det manuelt. Dynamiske arbeidsflyter bruker nå en medium størrelsesretningslinje som standard (færre enn 15 agenter); juster via alternativet Dynamic workflow size i `/config`.
+
+## Nytt i v2.1.221
+
+Nytt i 2.1.221: Kommandoen `/plugin install` oppdaterer nå et foreldet markedsplatakatalog og prøver på nytt før den rapporterer at et plugin ikke ble funnet. I tillegg aktiveres plugin installert via `/plugin` nå umiddelbart når det er sikkert, i stedet for alltid å kreve `/reload-plugins`. Kommandoen `/status` er forbedret til å vise øktstypen: `interactive`, eller en bakgrunnsjobb som er `attached` eller `unattended`.

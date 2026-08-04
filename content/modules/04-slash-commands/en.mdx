@@ -130,3 +130,7 @@ The `/code-review` command now runs as a background subagent, keeping your conve
 ## What's new in v2.1.220
 
 /code-review now runs as a background subagent, keeping review work out of your main conversation. `/deep-research` no longer launches automatically; it only starts when invoked manually. Dynamic workflows now default to a medium size guideline (fewer than 15 agents); adjust via the Dynamic workflow size option in `/config`.
+
+## What's new in v2.1.221
+
+New in 2.1.221: The `/plugin install` command now refreshes a stale marketplace catalog and retries before reporting a plugin not found. Additionally, plugins installed via `/plugin` now activate immediately when safe, instead of always requiring `/reload-plugins`. The `/status` command has been enhanced to show the session kind: `interactive`, or a background job that is `attached` or `unattached`.

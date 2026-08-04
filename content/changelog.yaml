@@ -1,3 +1,17 @@
+- id: "2.1.221"
+  version: "2.1.221"
+  date: "2026-08-04"
+  entry:
+    en: "Version 2.1.221 introduces the Focus view for VSCode, adds `mode: \"mask\"`
+      for sandbox credentials on Linux/WSL, improves MCP server handling and
+      plugin installation, and includes numerous bug fixes for permission
+      checks, session handling, API requests, and authentication workflows."
+    no: "Versjon 2.1.221 introduserer Focus-visningen for VSCode, legger til `mode:
+      \"mask\"` for sandkasse-legitimasjon på Linux/WSL, forbedrer
+      MCP-tjener-håndtering og plugin-installasjon, og inkluderer tallrike
+      feilrettinger for tillatelseskontroller, økthåndtering, API-forespørsler
+      og autentiseringsarbeidsflyten."
+  sources: []
 - id: "2.1.220"
   version: "2.1.220"
   date: "2026-07-26"

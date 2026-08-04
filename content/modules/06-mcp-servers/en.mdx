@@ -92,3 +92,7 @@ The /mcp command and claude mcp list now display HTTP status and error text when
 ## What's new in v2.1.220
 
 The `claude mcp list` command and `/mcp` now display HTTP status codes and error text when a server fails to connect. Additionally, a warning alerts users to MCP config values with hidden leading or trailing whitespace that could cause connection issues.
+
+## What's new in v2.1.221
+
+New in 2.1.221: MCP servers from `--mcp-config` are now properly connected before the first turn in print mode (`-p`). The `claude mcp list` command has been improved to show HTTP status and error text when a server fails to connect. Note that managed MCP allowlist/denylist entries with `${VAR}` placeholders now resolve from the startup environment and managed-settings env instead of settings-file env.

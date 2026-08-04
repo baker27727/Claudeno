@@ -153,3 +153,19 @@
   no: "workflowSizeGuideline"
   note: "Settings key to control the default dynamic workflow size (medium, large,
     or unrestricted)"
+- id: "focus-view"
+  en: "Focus view"
+  no: "Focus-visning"
+  note: "VSCode chat-menu toggle that hides tool activity behind an expandable
+    per-turn summary with a live running-tool indicator (new in 2.1.221)"
+- id: "sandbox-credential-masking"
+  en: "sandbox credential masking"
+  no: "sandkasse-legitimasjonsskjerming"
+  note: "Feature allowing sandboxed commands to read sentinel copies of credential
+    files while the sandbox proxy substitutes real values on egress (new in
+    2.1.221, Linux/WSL only)"
+- id: "prompt-audit"
+  en: "prompt-audit"
+  no: "prompt-audit"
+  note: "Subcommand in the claude-api skill for auditing prompts and tool
+    descriptions for patterns written for older models (new in 2.1.221)"
