@@ -1,5 +1,142 @@
 [
   {
+    "topic": "Effort levels for controlling Claude Opus 5 and Fable 5 reasoning depth",
+    "status": "candidate",
+    "score": {
+      "frequency": 0.25,
+      "recency": 0.191,
+      "engagement": 0.5,
+      "gap": 1,
+      "total": 0.41
+    },
+    "matchedSources": [
+      "anthropic_changelog"
+    ],
+    "whyItMatters": "Effort levels (low, medium, high, xhigh, max) are now the primary control mechanism for steering reasoning behavior in Claude's latest models, with distinct API behavior changes and pricing implications that developers need to understand for optimal use.",
+    "firstSeen": "2026-08-04T07:42:17.740Z",
+    "lastSeen": "2026-08-04T07:42:17.740Z"
+  },
+  {
+    "topic": "Mid-conversation tool changes and system messages for agentic workflows",
+    "status": "candidate",
+    "score": {
+      "frequency": 0.25,
+      "recency": 0.191,
+      "engagement": 0.5,
+      "gap": 1,
+      "total": 0.41
+    },
+    "matchedSources": [
+      "anthropic_changelog"
+    ],
+    "whyItMatters": "Recent updates enable adding/removing tools and injecting system messages between conversation turns while preserving prompt cache, a critical capability for multi-turn agentic applications that wasn't previously available.",
+    "firstSeen": "2026-08-04T07:42:17.740Z",
+    "lastSeen": "2026-08-04T07:42:17.740Z"
+  },
+  {
+    "topic": "Server-side fallback handling with response_inclusion filtering for Claude API",
+    "status": "candidate",
+    "score": {
+      "frequency": 0.25,
+      "recency": 0,
+      "engagement": 0.5,
+      "gap": 1,
+      "total": 0.363
+    },
+    "matchedSources": [
+      "anthropic_changelog"
+    ],
+    "whyItMatters": "New default fallback mode and response_inclusion parameter for web search/fetch tools enable cleaner agentic workflows by letting Claude automatically handle refusals and drop unnecessary result blocks without API consumer intervention.",
+    "firstSeen": "2026-08-04T07:42:17.740Z",
+    "lastSeen": "2026-08-04T07:42:17.740Z"
+  },
+  {
+    "topic": "Event deltas for streaming Claude Managed Agents session updates in real-time",
+    "status": "candidate",
+    "score": {
+      "frequency": 0.25,
+      "recency": 0,
+      "engagement": 0.5,
+      "gap": 1,
+      "total": 0.363
+    },
+    "matchedSources": [
+      "anthropic_changelog"
+    ],
+    "whyItMatters": "Event deltas (event_start and event_delta) enable previewing agent-generated text as it streams before the complete message arrives, improving UX for interactive agent deployments and reducing perceived latency.",
+    "firstSeen": "2026-08-04T07:42:17.740Z",
+    "lastSeen": "2026-08-04T07:42:17.740Z"
+  },
+  {
+    "topic": "Session configuration overrides for single-shot Claude Managed Agents runs",
+    "status": "candidate",
+    "score": {
+      "frequency": 0.25,
+      "recency": 0,
+      "engagement": 0.5,
+      "gap": 1,
+      "total": 0.363
+    },
+    "matchedSources": [
+      "anthropic_changelog"
+    ],
+    "whyItMatters": "Ability to override an agent's model, system prompt, tools, MCP servers, or skills for individual sessions without modifying the agent itself enables flexible experimentation and A/B testing of agent configurations.",
+    "firstSeen": "2026-08-04T07:42:17.740Z",
+    "lastSeen": "2026-08-04T07:42:17.740Z"
+  },
+  {
+    "topic": "CLAUDE.md configuration and permission auditing across Claude Code projects",
+    "status": "candidate",
+    "score": {
+      "frequency": 0.5,
+      "recency": 0.977,
+      "engagement": 0.782,
+      "gap": 1,
+      "total": 0.765
+    },
+    "matchedSources": [
+      "github_search",
+      "hn_search"
+    ],
+    "whyItMatters": "Tools emerging on GitHub (claude-quartermaster, 1-in-6 permission audit) highlight that many teams lack systematic ways to audit and enforce CLAUDE.md consistency, permissions rules, and configuration drift across multiple projects.",
+    "firstSeen": "2026-08-04T07:42:17.740Z",
+    "lastSeen": "2026-08-04T07:42:17.740Z"
+  },
+  {
+    "topic": "Cross-agent session context bridging between Claude Code, Codex, and other CLIs",
+    "status": "candidate",
+    "score": {
+      "frequency": 0.25,
+      "recency": 0.977,
+      "engagement": 0.177,
+      "gap": 1,
+      "total": 0.526
+    },
+    "matchedSources": [
+      "github_search"
+    ],
+    "whyItMatters": "Recent GitHub projects (context-bridge, lazar-harness) show developers want to reuse skills, CLAUDE.md, plugins, and session context across multiple AI coding tools, reducing duplication and enabling smoother agent orchestration.",
+    "firstSeen": "2026-08-04T07:42:17.740Z",
+    "lastSeen": "2026-08-04T07:42:17.740Z"
+  },
+  {
+    "topic": "Governance-first orchestration and quality gates for autonomous Claude Code workflows",
+    "status": "candidate",
+    "score": {
+      "frequency": 0.25,
+      "recency": 0.977,
+      "engagement": 0.639,
+      "gap": 1,
+      "total": 0.642
+    },
+    "matchedSources": [
+      "github_search"
+    ],
+    "whyItMatters": "Emerging projects (compass, vnx-orchestration) implement contract-first development and multi-stage review gates (plan, build, review, ship) for Claude Code, addressing the need for provenance and drift prevention in production agent deployments.",
+    "firstSeen": "2026-08-04T07:42:17.740Z",
+    "lastSeen": "2026-08-04T07:42:17.740Z"
+  },
+  {
     "topic": "Setting up and maintaining CLAUDE.md files effectively across teams",
     "status": "published",
     "score": {
