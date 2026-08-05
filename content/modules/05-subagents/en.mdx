@@ -102,3 +102,7 @@ Subagent spawning is now capped at 20 concurrent agents per session (override wi
 ## What's new in v2.1.220
 
 **What's new in 2.1.220:** Subagents can now spawn nested subagents up to depth 3 by default (previously depth 1). This enables more complex delegation workflows. You can disable nesting by setting `CLAUDE_CODE_MAX_SUBAGENT_SPAWN_DEPTH=1`. Additionally, the spawn cap (default 20 concurrent subagents per session) can be customized via the `CLAUDE_CODE_MAX_CONCURRENT_SUBAGENTS` environment variable to prevent unbounded delegation.
+
+## What's new in v2.1.222
+
+**Nested subagent depth (2.1.219–2.1.222)**: Subagents can spawn nested subagents up to depth 3 by default (configure via `CLAUDE_CODE_MAX_SUBAGENT_SPAWN_DEPTH`). Org-restricted `model:` aliases now step down to the newest org-allowed model in the family instead of dropping to the parent model. Worktree isolation now applies to file edits and Bash in every session type, preventing destructive git commands against the main checkout.

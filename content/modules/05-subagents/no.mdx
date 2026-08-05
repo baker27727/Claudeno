@@ -103,3 +103,7 @@ Underagent-spawning er nå begrenset til 20 samtidige agenter per økt (overstyr
 ## Nytt i v2.1.220
 
 **Nyheter i 2.1.220:** Underagenter kan nå spawne nestede underagenter inntil dybde 3 som standard (tidligere dybde 1). Dette muliggjør mer komplekse delegeringsarbeidsflyter. Du kan deaktivere nesteding ved å angi `CLAUDE_CODE_MAX_SUBAGENT_SPAWN_DEPTH=1`. I tillegg kan spawning-grensen (standard 20 samtidige underagenter per økt) tilpasses via miljøvariabelen `CLAUDE_CODE_MAX_CONCURRENT_SUBAGENTS` for å forhindre ubegrenset delegering.
+
+## Nytt i v2.1.222
+
+**Nesting av underagenter (2.1.219–2.1.222)**: Underagenter kan spawne nestede underagenter opp til dybde 3 som standard (konfigurer via `CLAUDE_CODE_MAX_SUBAGENT_SPAWN_DEPTH`). Org-begrenset `model:`-aliaser nedtrinnes nå til den nyeste org-tillatt modellen i familien i stedet for å falle tilbake til den overordnet modellen. Worktree-isolasjon gjelder nå for filredigeringer og Bash i alle øktstyper, og forhindrer destruktive git-kommandoer mot hovedutsjekken.

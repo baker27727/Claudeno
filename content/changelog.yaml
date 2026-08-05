@@ -1,3 +1,22 @@
+- id: "2.1.222"
+  version: "2.1.222"
+  date: "2026-08-05"
+  entry:
+    en: "Version 2.1.222 brings critical security and isolation improvements:
+      worktree-isolated sessions now prevent destructive git commands, auto-mode
+      permission checks now evaluate SendMessage dispatch, PreToolUse hooks no
+      longer bypass tool restrictions, and the startup connectivity check works
+      reliably behind HTTPS proxies. Multiple usage, session, and display fixes
+      improve accuracy of credit attribution, PR linking, and subagent effort
+      reporting."
+    no: "Versjon 2.1.222 bringer kritiske sikkerhet- og isolasjonsforbedringer:
+      worktree-isolert økter forhindrer nå destruktive git-kommandoer,
+      auto-modustillatelsessjekker evaluerer nå SendMessage-avsending,
+      PreToolUse-hooks omgår ikke lenger verktøybegrensninger, og
+      oppstartsforbindelsesjekken fungerer pålitelig bak HTTPS-proxyobjekter.
+      Flere bruksomfatting-, økt- og visningsfiks forbedrer nøyaktigheten av
+      kredittattribusjon, PR-kobling og rapportering av underagentinnsats."
+  sources: []
 - id: "2.1.221"
   version: "2.1.221"
   date: "2026-08-04"
