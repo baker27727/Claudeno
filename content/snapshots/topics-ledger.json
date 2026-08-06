@@ -1,5 +1,24 @@
 [
   {
+    "topic": "CLAUDE.md configuration and permission auditing across Claude Code projects",
+    "status": "published",
+    "score": {
+      "frequency": 0.5,
+      "recency": 0.977,
+      "engagement": 0.782,
+      "gap": 1,
+      "total": 0.765
+    },
+    "matchedSources": [
+      "github_search",
+      "hn_search"
+    ],
+    "whyItMatters": "Tools emerging on GitHub (claude-quartermaster, 1-in-6 permission audit) highlight that many teams lack systematic ways to audit and enforce CLAUDE.md consistency, permissions rules, and configuration drift across multiple projects.",
+    "firstSeen": "2026-08-04T07:42:17.740Z",
+    "lastSeen": "2026-08-06T08:21:47.805Z",
+    "publishedSlug": "claude-md-configuration-permission-auditing"
+  },
+  {
     "topic": "Effort levels for controlling Claude Opus 5 and Fable 5 reasoning depth",
     "status": "candidate",
     "score": {
@@ -81,24 +100,6 @@
       "anthropic_changelog"
     ],
     "whyItMatters": "Ability to override an agent's model, system prompt, tools, MCP servers, or skills for individual sessions without modifying the agent itself enables flexible experimentation and A/B testing of agent configurations.",
-    "firstSeen": "2026-08-04T07:42:17.740Z",
-    "lastSeen": "2026-08-04T07:42:17.740Z"
-  },
-  {
-    "topic": "CLAUDE.md configuration and permission auditing across Claude Code projects",
-    "status": "candidate",
-    "score": {
-      "frequency": 0.5,
-      "recency": 0.977,
-      "engagement": 0.782,
-      "gap": 1,
-      "total": 0.765
-    },
-    "matchedSources": [
-      "github_search",
-      "hn_search"
-    ],
-    "whyItMatters": "Tools emerging on GitHub (claude-quartermaster, 1-in-6 permission audit) highlight that many teams lack systematic ways to audit and enforce CLAUDE.md consistency, permissions rules, and configuration drift across multiple projects.",
     "firstSeen": "2026-08-04T07:42:17.740Z",
     "lastSeen": "2026-08-04T07:42:17.740Z"
   },

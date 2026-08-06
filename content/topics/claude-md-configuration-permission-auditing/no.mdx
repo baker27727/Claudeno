@@ -1,0 +1,94 @@
+---
+title: "Konfigurasjon av CLAUDE.md og revisjon av tillatelser på tvers av prosjekter"
+description: "Når team bruker Claude Code på mange repoer, glir CLAUDE.md-filer og tillatelsesinnstillinger fra hverandre. Artikkelen forklarer hvordan CLAUDE.md og tillatelseskonfigurasjon faktisk fungerer, og hvordan man kan revidere dem for konsistens."
+discoveredAt: "2026-08-04T07:42:17.740Z"
+updatedDate: "2026-08-06T08:21:47.804Z"
+author: "Claude Code Learn"
+trendScore: 0.765
+scoreBreakdown:
+  frequency: 0.5
+  recency: 0.977
+  engagement: 0.782
+  gap: 1
+tags:
+  - "Claude Code"
+  - "CLAUDE.md"
+  - "permissions"
+  - "configuration management"
+  - "auditing"
+  - "team workflows"
+sources:
+  - "https://code.claude.com/docs/en/memory.md"
+  - "https://code.claude.com/docs/en/permission-modes.md"
+  - "https://code.claude.com/docs/en/claude-directory.md"
+  - "https://code.claude.com/docs/en/best-practices.md"
+relatedModules:
+  - "memory"
+  - "permissions-and-settings"
+  - "hooks"
+relatedUseCases:
+  - "project-management-with-claude"
+relatedSkills: []
+draft: false
+# Verified against Claude Code 2.1.222
+---
+## Kort oppsummert
+
+CLAUDE.md-filer inneholder prosjektinstruksjoner for Claude Code, og tillatelsesinnstillinger styrer hvilke handlinger Claude kan utføre uten å spørre. Når team kjører Claude Code på tvers av dusinvis av repoer, har begge en tendens til å gli fra hverandre: enkelte CLAUDE.md-filer blir utdaterte, enkelte gir løsere tillatelser enn tiltenkt, og ingen har ett samlet bilde av forskjellene. En liten bølge community-verktøy (som tillatelsesrevisjons-verktøy som dukker opp på GitHub) vokser frem nettopp for å skanne og håndheve konsistens på tvers av prosjekter — fordi Claude Code selv ikke leveres med en innebygd flerprosjekt-revisor.
+
+## Hva er nytt
+
+Claude Codes egen dokumentasjon beskriver allerede byggeklossene som gjør revisjon nødvendig og mulig: CLAUDE.md-filer kan ligge på brukernivå, prosjektnivå og i nøstede mapper, og kan importere flere filer; tillatelsesmoduser (standard, `acceptEdits`, `plan`, `auto`, `dontAsk`, `bypassPermissions`) bestemmer hvor mye en økt kan gjøre uten bekreftelse; og `.claude`-mappen inneholder lokal tilstand — innstillinger, minne, klartekstdata — per prosjekt. Anthropics dokumentasjon beskriver funksjoner for store team, inkludert utrulling av en organisasjonsomfattende CLAUDE.md og ekskludering av bestemte CLAUDE.md-filer, noe som direkte anerkjenner at konsistens på tvers av mange prosjekter er et reelt driftsproblem, ikke et hypotetisk et.
+
+På community-siden ser GitHub samtidig nytt verktøy rettet nøyaktig mot dette gapet: repoer som posisjonerer seg som konfigurasjons- eller tillatelses-"kvartermestere" og revisjonsskript for AI-agent-regelfiler (CLAUDE.md, `.cursor/rules` og lignende). Dette gjenspeiler en bredere trend med å behandle agent-regelfiler som lintede, versjonerte artefakter fremfor engangs-tekstfiler — samme instinkt som ligger bak verktøy som RuleSync, som beskriver seg selv som "ESLint og Babel for AI-agentregler".
+
+## Slik fungerer det
+
+Mekanikken ethvert revisjonsverktøy må forholde seg til er godt definert:
+
+1. **Oppløsningsrekkefølge for CLAUDE.md.** Claude Code laster CLAUDE.md-filer hierarkisk: en fil på brukernivå, en fil på prosjektnivå, og filer i nøstede mapper etter hvert som du navigerer i repoet. Flere filer kan trekkes inn via imports. En revisjon må gå gjennom samme oppløsningskjede per prosjekt for å vite hvilke instruksjoner som faktisk gjelder — ikke bare hvilke filer som finnes.
+2. **Regelmapper.** Instruksjoner kan også organiseres under `.claude/rules/`, inkludert stiavgrensede regler og regler delt på tvers av prosjekter via symlinker, samt brukernivåregler. Dette er et annet sted drift kan gjemme seg: en regel symlinket inn i ett prosjekt, men glemt i et annet.
+3. **Auto-minne versus CLAUDE.md.** Claude Code vedlikeholder også "auto-minne" adskilt fra CLAUDE.md — innhold lagret automatisk, som kan vises og redigeres via `/memory`. En revisjon av "hva Claude vet" om et prosjekt er ufullstendig hvis den bare leser CLAUDE.md og ignorerer lagringsstedet for auto-minne.
+4. **Tillatelsesmoduser som håndhevingslag.** Faktisk oppførsel ved kjøretid styres av tillatelsesmodus: standard (spør før risikable handlinger), `acceptEdits` (godkjenner filredigeringer automatisk), `plan` (analyserer uten å redigere), `auto` (en klassifiserer avgjør, med konfigurerbar fallback-oppførsel), `dontAsk` (kun forhåndsgodkjente verktøy kjøres), og `bypassPermissions` (hopper over alle sjekker). Beskyttede stier finnes som et gulv under alle moduser. En tillatelsesrevisjon må sjekke hvilken modus et prosjekt bruker som standard og hvilke verktøy som er forhåndsgodkjent, siden to prosjekter kan ha identiske CLAUDE.md-filer men svært ulik reell risiko hvis tillatelsesmodusene deres skiller seg.
+5. **`.claude`-mappen som revisjonsflate.** Prosjektspesifikk konfigurasjon, innstillinger og klartekstlagrede data ligger i `.claude`-mappen. Dette er den konkrete filsystemflaten et revisjonsverktøy skanner: det kan diffe innstillingsfiler på tvers av repoer, flagge prosjekter som mangler en forventet CLAUDE.md, eller oppdage tillatelsesmodus-overstyringer som avviker fra en organisasjonsbasislinje.
+6. **Organisasjonsomfattende utrulling og ekskludering.** For store team støtter Claude Code utrulling av en organisasjonsomfattende CLAUDE.md og ekskludering av bestemte filer fra denne utrullingen. En revisjonsprosess bygger på dette: den verifiserer at den organisasjonsomfattende filen faktisk er til stede og uendret der den forventes, og at ekskluderinger er tilsiktede snarere enn utilsiktede hull.
+
+## Prøv det selv
+
+En minimal manuell revisjonsrunde uten spesialverktøy, kjørt per prosjekt, ser slik ut:
+
+```bash
+# Fra rotmappen til et prosjekt du vil revidere
+claude
+> /memory
+# Viser CLAUDE.md-innhold og lar deg gjennomgå/redigere auto-minne
+
+# Sjekk hva som faktisk ligger på disk for dette prosjektet
+ls -la .claude/
+cat .claude/settings.json   # inspiser tillatelsesmodus og forhåndsgodkjente verktøy
+find . -name "CLAUDE.md"    # finn alle CLAUDE.md-filer i hierarkiet, inkludert nøstede mapper
+find . -path "*/.claude/rules/*"  # finn stiavgrensede og delte regler
+```
+
+For å sammenligne to prosjekter for drift, diff den oppløste tillatelsesmodusen og CLAUDE.md-hierarkiet:
+
+```bash
+diff <(cat prosjekt-a/.claude/settings.json) <(cat prosjekt-b/.claude/settings.json)
+diff <(find prosjekt-a -name "CLAUDE.md" -exec cat {} \;) \
+     <(find prosjekt-b -name "CLAUDE.md" -exec cat {} \;)
+```
+
+Dette er nøyaktig den typen repetitive, flerprosjekt-sjekker som community-verktøy (revisjonsskript for tillatelser, CLAUDE.md-lintere) sikter mot å automatisere fremfor å kjøre for hånd på tvers av hvert repo.
+
+## Når du bør bruke det (og når ikke)
+
+Systematisk revisjon av CLAUDE.md og tillatelser er verdt å sette opp når du kjører Claude Code på tvers av mange repoer med ulike team, når du har rullet ut en organisasjonsomfattende CLAUDE.md og trenger å bekrefte at den faktisk er anvendt, eller når du feilsøker hvorfor Claude oppfører seg inkonsekvent mellom to ellers like prosjekter. Det er også nyttig før du løsner tillatelsesmoduser organisasjonsomfattende, siden en revisjon avdekker hvilke prosjekter som påvirkes.
+
+Det er overkill for et enkelt repo eller en solo-utvikler — å lese `.claude/settings.json` og én CLAUDE.md-fil direkte er raskere enn å bygge eller kjøre et revisjonsverktøy. Det fanger heller ikke alt: tillatelsesmoduser beskriver hva som er tillatt, ikke hva Claude faktisk gjorde i en økt, så revisjon av konfigurasjon er et supplement til — ikke en erstatning for — å gjennomgå øktlogger og sjekkpunkter når noe går galt. Og siden tredjeparts revisjonsverktøy er community-bygget snarere enn en del av Claude Code selv, bør du behandle resultatene deres som et utgangspunkt for gjennomgang, ikke en autoritativ samsvarsrapport.
+
+## Kilder
+
+- https://code.claude.com/docs/en/memory.md
+- https://code.claude.com/docs/en/permission-modes.md
+- https://code.claude.com/docs/en/claude-directory.md
+- https://code.claude.com/docs/en/best-practices.md

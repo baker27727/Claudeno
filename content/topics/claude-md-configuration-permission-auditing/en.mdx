@@ -1,0 +1,94 @@
+---
+title: "CLAUDE.md Configuration and Permission Auditing Across Projects"
+description: "As teams run Claude Code across many repositories, CLAUDE.md files and permission settings drift apart. This article explains how CLAUDE.md and permission configuration actually work, and how to audit them for consistency."
+discoveredAt: "2026-08-04T07:42:17.740Z"
+updatedDate: "2026-08-06T08:21:47.804Z"
+author: "Claude Code Learn"
+trendScore: 0.765
+scoreBreakdown:
+  frequency: 0.5
+  recency: 0.977
+  engagement: 0.782
+  gap: 1
+tags:
+  - "Claude Code"
+  - "CLAUDE.md"
+  - "permissions"
+  - "configuration management"
+  - "auditing"
+  - "team workflows"
+sources:
+  - "https://code.claude.com/docs/en/memory.md"
+  - "https://code.claude.com/docs/en/permission-modes.md"
+  - "https://code.claude.com/docs/en/claude-directory.md"
+  - "https://code.claude.com/docs/en/best-practices.md"
+relatedModules:
+  - "memory"
+  - "permissions-and-settings"
+  - "hooks"
+relatedUseCases:
+  - "project-management-with-claude"
+relatedSkills: []
+draft: false
+# Verified against Claude Code 2.1.222
+---
+## Quick summary
+
+CLAUDE.md files hold project instructions for Claude Code, and permission settings control what actions Claude can take without asking. When teams run Claude Code across dozens of repositories, both tend to drift: some CLAUDE.md files go stale, some grant looser permissions than intended, and nobody has a single view of the differences. A small wave of community tools (like permission-audit utilities showing up on GitHub) is emerging specifically to scan and enforce consistency across projects — because Claude Code itself does not ship a built-in multi-project auditor.
+
+## What's new
+
+Claude Code's own documentation already describes the building blocks that make auditing necessary and possible: CLAUDE.md files can live at the user level, project level, and in nested directories, and can import additional files; permission modes (default, `acceptEdits`, `plan`, `auto`, `dontAsk`, `bypassPermissions`) determine how much a session can do without confirmation; and the `.claude` directory holds the local state — settings, memory, plaintext data — per project. Anthropic's docs describe features for large teams, including deploying an organization-wide CLAUDE.md and excluding specific CLAUDE.md files, which acknowledges directly that consistency across many projects is a real operational problem, not a hypothetical one.
+
+Separately, on the community side, GitHub is seeing new tooling aimed at exactly this gap: repositories positioning themselves as configuration or permission "quartermasters" and "audit" scripts for AI agent rule files (CLAUDE.md, `.cursor/rules`, and similar). This mirrors a broader trend of treating agent rule files like linted, versioned artifacts rather than one-off text files — the same instinct behind tools like RuleSync, which frames itself as "ESLint and Babel for AI agent rules."
+
+## How it works
+
+The mechanics that any audit tool has to reason about are well defined:
+
+1. **CLAUDE.md resolution order.** Claude Code loads CLAUDE.md files hierarchically: a user-level file, a project-level file, and files in nested directories as you navigate the repo. Additional files can be pulled in via imports. An audit needs to walk this same resolution chain per project to know which instructions actually apply, not just which files exist.
+2. **Rules directories.** Instructions can also be organized under `.claude/rules/`, including path-specific rules and rules shared across projects via symlinks, plus user-level rules. This is a second place drift can hide: a rule symlinked into one project but forgotten in another.
+3. **Auto memory vs. CLAUDE.md.** Claude Code also maintains "auto memory" distinct from CLAUDE.md — content saved automatically, viewable and editable via `/memory`. An audit of "what Claude knows" about a project is incomplete if it only reads CLAUDE.md and ignores auto memory's storage location.
+4. **Permission modes as the enforcement layer.** Actual behavior at runtime is gated by permission mode: default (ask before risky actions), `acceptEdits` (auto-approve file edits), `plan` (analyze without editing), `auto` (a classifier decides, with configurable fallback behavior), `dontAsk` (only pre-approved tools run), and `bypassPermissions` (skips checks entirely). Protected paths exist as a floor beneath all modes. A permission audit needs to check which mode a project defaults to and which tools are pre-approved, since two projects can have identical CLAUDE.md files but very different effective risk if their permission modes differ.
+5. **The `.claude` directory as the audit surface.** Per-project configuration, settings, and plaintext-stored data live in the `.claude` directory. This is the concrete filesystem surface an auditing tool scans: it can diff settings files across repos, flag projects missing an expected CLAUDE.md, or detect permission mode overrides that deviate from an org baseline.
+6. **Organization-wide deployment and exclusion.** For large teams, Claude Code supports deploying an organization-wide CLAUDE.md and excluding specific files from that deployment. An auditing workflow layers on top of this: it verifies the org-wide file is actually present and unmodified where expected, and that exclusions are intentional rather than accidental gaps.
+
+## Hands-on example
+
+A minimal manual audit pass without any special tooling, run per project, looks like this:
+
+```bash
+# From the root of a project you want to audit
+claude
+> /memory
+# Shows CLAUDE.md contents and lets you review/edit auto memory
+
+# Check what's actually on disk for this project
+ls -la .claude/
+cat .claude/settings.json   # inspect permission mode and pre-approved tools
+find . -name "CLAUDE.md"    # find every CLAUDE.md in the hierarchy, including nested dirs
+find . -path "*/.claude/rules/*"  # find path-specific and shared rules
+```
+
+To compare two projects for drift, diff the resolved permission mode and the CLAUDE.md hierarchy:
+
+```bash
+diff <(cat project-a/.claude/settings.json) <(cat project-b/.claude/settings.json)
+diff <(find project-a -name "CLAUDE.md" -exec cat {} \;) \
+     <(find project-b -name "CLAUDE.md" -exec cat {} \;)
+```
+
+This is exactly the kind of repetitive, multi-repo check that community tools (permission-audit scripts, CLAUDE.md linters) aim to automate instead of running by hand across every repository.
+
+## When to use it (and when not to)
+
+Systematic CLAUDE.md and permission auditing is worth setting up when you run Claude Code across many repositories with different teams, when you've deployed an organization-wide CLAUDE.md and need to confirm it's actually applied, or when you're troubleshooting why Claude behaves inconsistently between two otherwise similar projects. It's also useful before loosening permission modes org-wide, since an audit surfaces which projects would be affected.
+
+It's overkill for a single repo or a solo developer — reading `.claude/settings.json` and one CLAUDE.md file directly is faster than building or running an audit tool. It also won't catch everything: permission modes describe what's allowed, not what Claude actually did in a session, so auditing configuration is a complement to, not a substitute for, reviewing session transcripts and checkpoints when something goes wrong. And because third-party audit tools are community-built rather than part of Claude Code itself, treat their output as a starting point for review, not an authoritative compliance report.
+
+## Sources
+
+- https://code.claude.com/docs/en/memory.md
+- https://code.claude.com/docs/en/permission-modes.md
+- https://code.claude.com/docs/en/claude-directory.md
+- https://code.claude.com/docs/en/best-practices.md
