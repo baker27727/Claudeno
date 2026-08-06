@@ -134,3 +134,7 @@ The `/code-review` command now runs as a background subagent, keeping your conve
 ## What's new in v2.1.221
 
 New in 2.1.221: The `/plugin install` command now refreshes a stale marketplace catalog and retries before reporting a plugin not found. Additionally, plugins installed via `/plugin` now activate immediately when safe, instead of always requiring `/reload-plugins`. The `/status` command has been enhanced to show the session kind: `interactive`, or a background job that is `attached` or `unattached`.
+
+## What's new in v2.1.223
+
+The `/review` command is now an alias for `/code-review`, which reviews the current diff or a pull request (`/code-review <level> <pr#>`). Use `/code-review ultra` for a deep cloud review. When you type a level like `/code-review high`, it becomes your new default for subsequent reviews in that session.

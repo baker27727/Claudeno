@@ -116,3 +116,7 @@ Added `sandbox.filesystem.disabled` setting to skip filesystem isolation while k
 ## What's new in v2.1.222
 
 **Auto mode safety improvements (2.1.222)**: Messages sent to other agent sessions via `SendMessage` are now evaluated by the permission classifier before dispatch, strengthening isolation between concurrent sessions.
+
+## What's new in v2.1.223
+
+Version 2.1.223 strengthens permission checking: Bash commands padded with tabs or invisible Unicode characters can no longer hide parts of themselves from permission approval dialogs. Additionally, permission prompts now validate that commands remain fully visible before approval is granted.

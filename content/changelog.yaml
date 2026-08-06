@@ -1,3 +1,17 @@
+- id: "2.1.223"
+  version: "2.1.223"
+  date: "2026-08-06"
+  entry:
+    en: "Version 2.1.223 adds owner wildcard support for managed marketplace
+      settings, strengthens permission validation to prevent command
+      obfuscation, introduces the `/teleport` hint for cloud-to-local session
+      transitions, and includes numerous security and stability fixes."
+    no: "Versjon 2.1.223 legger til eierjokertstøtte for administrerte
+      markedplassinnstillinger, styrker tillatelsevalidering for å forhindre
+      kommandoforklaring, introduserer `/teleport`-hinten for økt-overganger fra
+      sky til lokal, og inkluderer flere sikkerhets- og
+      stabilitetsforbedringer."
+  sources: []
 - id: "2.1.222"
   version: "2.1.222"
   date: "2026-08-05"

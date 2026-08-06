@@ -169,3 +169,14 @@
   no: "prompt-audit"
   note: "Subcommand in the claude-api skill for auditing prompts and tool
     descriptions for patterns written for older models (new in 2.1.221)"
+- id: "owner-wildcard-entries"
+  en: "owner wildcard entries"
+  no: "eierjoker-oppføringer"
+  note: "Allows marketplace and blocked repo settings to use patterns like
+    'owner/*' to apply to all repos under a GitHub organization (new in
+    2.1.223)"
+- id: "/teleport"
+  en: "/teleport"
+  no: "/teleport"
+  note: "Hint command in cloud sessions showing how to continue locally with
+    `claude --teleport <session id>` (new in 2.1.223)"

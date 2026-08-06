@@ -118,3 +118,7 @@ Lagt til `sandbox.filesystem.disabled`-innstilling for å hoppe over filsystemis
 ## Nytt i v2.1.222
 
 **Forbedringer i auto-modusikkerhet (2.1.222)**: Meldinger sendt til andre underagent-økter via `SendMessage` blir nå evaluert av tillatelsesklassifikatoren før avsending, som styrker isolasjonen mellom samtidige økter.
+
+## Nytt i v2.1.223
+
+Versjon 2.1.223 styrker tillatelselskontroller: Bash-kommandoer paddet med faner eller usynlige Unicode-tegn kan ikke lenger skjule deler av seg selv fra tillatelsesdialoger. I tillegg validerer nå tillatelsesspørsmål at kommandoer forblir fullt synlige før godkjenning gis.

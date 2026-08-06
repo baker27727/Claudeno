@@ -133,3 +133,7 @@ Kommandoen `/code-review` kjører nå som en underagent i bakgrunnen, slik at ko
 ## Nytt i v2.1.221
 
 Nytt i 2.1.221: Kommandoen `/plugin install` oppdaterer nå et foreldet markedsplatakatalog og prøver på nytt før den rapporterer at et plugin ikke ble funnet. I tillegg aktiveres plugin installert via `/plugin` nå umiddelbart når det er sikkert, i stedet for alltid å kreve `/reload-plugins`. Kommandoen `/status` er forbedret til å vise øktstypen: `interactive`, eller en bakgrunnsjobb som er `attached` eller `unattended`.
+
+## Nytt i v2.1.223
+
+Kommandoen `/review` er nå et alias for `/code-review`, som gjennomgår den nåværende diffen eller en pull-forespørsel (`/code-review <level> <pr#>`). Bruk `/code-review ultra` for en grundig sky-gjennomgang. Når du skriver et nivå som `/code-review high`, blir det ditt nye standardvalg for påfølgende gjennomganger i den økten.
