@@ -122,3 +122,7 @@ Lagt til `sandbox.filesystem.disabled`-innstilling for å hoppe over filsystemis
 ## Nytt i v2.1.223
 
 Versjon 2.1.223 styrker tillatelselskontroller: Bash-kommandoer paddet med faner eller usynlige Unicode-tegn kan ikke lenger skjule deler av seg selv fra tillatelsesdialoger. I tillegg validerer nå tillatelsesspørsmål at kommandoer forblir fullt synlige før godkjenning gis.
+
+## Nytt i v2.1.224
+
+Nytt i 2.1.224: Meldingsutveksling på tvers av økter er nå tilgjengelig via `SendMessage` — Claude Code-økter kan sende meldinger til hverandre på maskinene dine med `ListAgents` for å oppdage dem (macOS og Linux). I tillegg er alternativene for sandkasse-legitimasjonsskjerming utvidet med `extract` og `onExtractNoMatch` for strukturerte miljøvariabler, `decode: "jwt"` med `maskClaims` for JWT-bevisst skjerming, og `awsPairs`/`sigv4` for AWS SigV4 re-signering (krever `network.tlsTerminate` og blir respektert bare fra bruker-, administrert eller `--settings`-kilder). Innstillingene `crossSessionInbound` og `dialogExpiry` kontrollerer hvordan meldinger på tvers av økter leveres—meldinger sendt til en økt med omgåtte tillatelser holdes for godkjenning, mens meldinger til andre økter leveres automatisk.

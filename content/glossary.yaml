@@ -180,3 +180,29 @@
   no: "/teleport"
   note: "Hint command in cloud sessions showing how to continue locally with
     `claude --teleport <session id>` (new in 2.1.223)"
+- id: "self-hosted-runner"
+  en: "self-hosted-runner"
+  no: "self-hosted-runner"
+  note: "Command turning user machines or containers into Claude Code session
+    hosts (Team and Enterprise); kept as English technical identifier"
+- id: "archive-plugin-source"
+  en: "archive plugin source"
+  no: "arkiv-plugin-kilde"
+  note: "Plugin installation method using zip over HTTPS with optional SHA-256
+    pinning (new in 2.1.224)"
+- id: "crosssessioninbound"
+  en: "crossSessionInbound"
+  no: "crossSessionInbound"
+  note: "Settings key controlling handling of cross-session messages sent to
+    sessions with bypassed permissions; kept as English configuration identifier
+    (new in 2.1.224)"
+- id: "dialogexpiry"
+  en: "dialogExpiry"
+  no: "dialogExpiry"
+  note: "Settings key for expiration handling of cross-session messages; kept as
+    English configuration identifier (new in 2.1.224)"
+- id: "listagents"
+  en: "ListAgents"
+  no: "ListAgents"
+  note: "Command to discover Claude Code sessions for cross-session messaging on
+    macOS and Linux (new in 2.1.224); kept as English code identifier"

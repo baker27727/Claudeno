@@ -1,3 +1,16 @@
+- id: "2.1.224"
+  version: "2.1.224"
+  date: "2026-08-07"
+  entry:
+    en: "Added self-hosted environments, archive plugin source, cross-session
+      messaging, expanded sandbox credential-masking, and several bug fixes
+      including session isolation, RemoteControl reliability, and paste content
+      handling."
+    no: "Lagt til selvhoste-miljøer, arkiv-plugin-kilde, meldingsutveksling på tvers
+      av økter, utvidet sandkasse-legitimasjonsskjerming, og flere feilrettinger
+      inkludert ØKT-isolasjon, RemoteControl-pålitelighet og håndtering av
+      limeavsnitt-innhold."
+  sources: []
 - id: "2.1.223"
   version: "2.1.223"
   date: "2026-08-06"

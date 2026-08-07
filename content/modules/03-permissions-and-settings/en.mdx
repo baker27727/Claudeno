@@ -120,3 +120,7 @@ Added `sandbox.filesystem.disabled` setting to skip filesystem isolation while k
 ## What's new in v2.1.223
 
 Version 2.1.223 strengthens permission checking: Bash commands padded with tabs or invisible Unicode characters can no longer hide parts of themselves from permission approval dialogs. Additionally, permission prompts now validate that commands remain fully visible before approval is granted.
+
+## What's new in v2.1.224
+
+New in 2.1.224: Cross-session messaging is now available via `SendMessage` — Claude Code sessions can message each other on your machines with `ListAgents` to discover them (macOS and Linux). Additionally, sandbox credential-masking options have been expanded with `extract` and `onExtractNoMatch` for structured env values, `decode: "jwt"` with `maskClaims` for JWT-aware masking, and `awsPairs`/`sigv4` for AWS SigV4 re-signing (requires `network.tlsTerminate` and honored only from user, managed, or `--settings` sources). The `crossSessionInbound` and `dialogExpiry` settings control how cross-session messages are delivered—messages sent to a session with bypassed permissions are held for approval, while messages to other sessions auto-deliver.
