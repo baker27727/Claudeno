@@ -124,3 +124,7 @@ Version 2.1.223 strengthens permission checking: Bash commands padded with tabs 
 ## What's new in v2.1.224
 
 New in 2.1.224: Cross-session messaging is now available via `SendMessage` — Claude Code sessions can message each other on your machines with `ListAgents` to discover them (macOS and Linux). Additionally, sandbox credential-masking options have been expanded with `extract` and `onExtractNoMatch` for structured env values, `decode: "jwt"` with `maskClaims` for JWT-aware masking, and `awsPairs`/`sigv4` for AWS SigV4 re-signing (requires `network.tlsTerminate` and honored only from user, managed, or `--settings` sources). The `crossSessionInbound` and `dialogExpiry` settings control how cross-session messages are delivered—messages sent to a session with bypassed permissions are held for approval, while messages to other sessions auto-deliver.
+
+## What's new in v2.1.226
+
+Version 2.1.224 added two new cross-session settings: `crossSessionInbound` controls how sessions with bypassed permissions handle messages from other sessions (holding them for your approval by default), and `dialogExpiry` configures auto-delivery behavior for messages to other sessions.

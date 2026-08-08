@@ -126,3 +126,7 @@ Versjon 2.1.223 styrker tillatelselskontroller: Bash-kommandoer paddet med faner
 ## Nytt i v2.1.224
 
 Nytt i 2.1.224: Meldingsutveksling på tvers av økter er nå tilgjengelig via `SendMessage` — Claude Code-økter kan sende meldinger til hverandre på maskinene dine med `ListAgents` for å oppdage dem (macOS og Linux). I tillegg er alternativene for sandkasse-legitimasjonsskjerming utvidet med `extract` og `onExtractNoMatch` for strukturerte miljøvariabler, `decode: "jwt"` med `maskClaims` for JWT-bevisst skjerming, og `awsPairs`/`sigv4` for AWS SigV4 re-signering (krever `network.tlsTerminate` og blir respektert bare fra bruker-, administrert eller `--settings`-kilder). Innstillingene `crossSessionInbound` og `dialogExpiry` kontrollerer hvordan meldinger på tvers av økter leveres—meldinger sendt til en økt med omgåtte tillatelser holdes for godkjenning, mens meldinger til andre økter leveres automatisk.
+
+## Nytt i v2.1.226
+
+Versjon 2.1.224 la til to nye innstillinger for kryssøkt-kommunikasjon: `crossSessionInbound` kontrollerer hvordan økter med omgåtte tillatelser håndterer meldinger fra andre økter (holder dem for godkjenning som standard), og `dialogExpiry` konfigurerer automatisk leveringsfølelse for meldinger til andre økter.
