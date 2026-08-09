@@ -96,3 +96,7 @@ The `claude mcp list` command and `/mcp` now display HTTP status codes and error
 ## What's new in v2.1.221
 
 New in 2.1.221: MCP servers from `--mcp-config` are now properly connected before the first turn in print mode (`-p`). The `claude mcp list` command has been improved to show HTTP status and error text when a server fails to connect. Note that managed MCP allowlist/denylist entries with `${VAR}` placeholders now resolve from the startup environment and managed-settings env instead of settings-file env.
+
+## What's new in v2.1.226
+
+**New in 2.1.226:** Self-hosted runners are now available on Team and Enterprise plans via the `claude self-hosted-runner` command, allowing your own machines or containers to serve as hosts for Claude Code sessions. Additionally, the new `archive` plugin source enables plugin installation from zip files over HTTPS with optional SHA-256 pinning, without requiring git or npm.
