@@ -107,3 +107,7 @@ Underagent-spawning er nå begrenset til 20 samtidige agenter per økt (overstyr
 ## Nytt i v2.1.222
 
 **Nesting av underagenter (2.1.219–2.1.222)**: Underagenter kan spawne nestede underagenter opp til dybde 3 som standard (konfigurer via `CLAUDE_CODE_MAX_SUBAGENT_SPAWN_DEPTH`). Org-begrenset `model:`-aliaser nedtrinnes nå til den nyeste org-tillatt modellen i familien i stedet for å falle tilbake til den overordnet modellen. Worktree-isolasjon gjelder nå for filredigeringer og Bash i alle øktstyper, og forhindrer destruktive git-kommandoer mot hovedutsjekken.
+
+## Nytt i v2.1.226
+
+**Tillitsmeldinger for arbeidsområde:** Underagenter viser nå en tillitsmeldinger for upålitelige mapper, som samsvarer med oppførselen til hovedagenten. **Kryssøkt-meldinger:** Bruk `ListAgents` til å oppdage Claude Code-økter på macOS og Linux, slik at underagenter kan sende meldinger til hverandre på tvers av maskiner ved hjelp av `SendMessage` (nytt i v2.1.224).

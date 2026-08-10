@@ -106,3 +106,7 @@ Subagent spawning is now capped at 20 concurrent agents per session (override wi
 ## What's new in v2.1.222
 
 **Nested subagent depth (2.1.219–2.1.222)**: Subagents can spawn nested subagents up to depth 3 by default (configure via `CLAUDE_CODE_MAX_SUBAGENT_SPAWN_DEPTH`). Org-restricted `model:` aliases now step down to the newest org-allowed model in the family instead of dropping to the parent model. Worktree isolation now applies to file edits and Bash in every session type, preventing destructive git commands against the main checkout.
+
+## What's new in v2.1.226
+
+**Workspace trust prompt:** Subagents now display a workspace trust prompt for untrusted directories, matching the behavior of the main `claude` agent. **Cross-session messaging:** Use `ListAgents` to discover Claude Code sessions on macOS and Linux, enabling subagents to message each other across machines with `SendMessage` (new in v2.1.224).

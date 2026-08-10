@@ -206,3 +206,13 @@
   no: "ListAgents"
   note: "Command to discover Claude Code sessions for cross-session messaging on
     macOS and Linux (new in 2.1.224); kept as English code identifier"
+- id: "workspace-trust-prompt"
+  en: "workspace trust prompt"
+  no: "tillitsmeldinger for arbeidsområde"
+  note: "Security dialog asking users to confirm they trust an untrusted directory
+    before running agents; new in v2.1.225"
+- id: "gateway-spend-limit-support"
+  en: "gateway spend-limit support"
+  no: "gatewayforbrug-grensestøtte"
+  note: "Usage warning naming the spending cap, its reset time, and the operator's
+    message; requires gateway v2.1.225+"
