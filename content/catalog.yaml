@@ -95,3 +95,64 @@
     en: "Use cases"
     no: "Fagområder"
   href: "/use-cases/"
+- id: claude-code-for-marketing-campaigns
+  kind: use-case
+  title:
+    en: "Building Marketing Campaigns with Claude Code"
+    no: "Bygge markedsføringskampanjer med Claude Code"
+  href: "/use-cases/claude-code-for-marketing-campaigns/"
+- id: seo-workflow-with-claude
+  kind: use-case
+  title:
+    en: "seo-workflow-with-claude"
+    no: "seo-workflow-with-claude"
+  href: "/use-cases/seo-workflow-with-claude/"
+- id: analyze-data-with-claude-code
+  kind: use-case
+  title:
+    en: "analyze-data-with-claude-code"
+    no: "analyze-data-with-claude-code"
+  href: "/use-cases/analyze-data-with-claude-code/"
+- id: automated-data-analysis
+  kind: use-case
+  title:
+    en: "automated-data-analysis"
+    no: "automated-data-analysis"
+  href: "/use-cases/automated-data-analysis/"
+- id: dashboard-and-report-generation
+  kind: use-case
+  title:
+    en: "dashboard-and-report-generation"
+    no: "dashboard-and-report-generation"
+  href: "/use-cases/dashboard-and-report-generation/"
+- id: project-management-with-claude
+  kind: use-case
+  title:
+    en: "project-management-with-claude"
+    no: "project-management-with-claude"
+  href: "/use-cases/project-management-with-claude/"
+- id: writing-with-claude-code
+  kind: use-case
+  title:
+    en: "writing-with-claude-code"
+    no: "writing-with-claude-code"
+  href: "/use-cases/writing-with-claude-code/"
+- id: automating-customer-support-with-claude-code
+  kind: use-case
+  title:
+    en: "automating-customer-support-with-claude-code"
+    no: "automating-customer-support-with-claude-code"
+  href: "/use-cases/automating-customer-support-with-claude-code/"
+- id: social-media-content-strategy
+  kind: use-case
+  title:
+    en: "social-media-content-strategy"
+    no: "social-media-content-strategy"
+  href: "/use-cases/social-media-content-strategy/"
+- id: research-and-code-analysis
+  kind: use-case
+  title:
+    en: "Research and Code Analysis with Claude Code"
+    no: "Forskning og kodeanalyse med Claude Code"
+  href: "/use-cases/research-and-code-analysis/"
+

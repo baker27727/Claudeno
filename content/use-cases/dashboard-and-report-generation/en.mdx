@@ -1,0 +1,163 @@
+---
+title: Dashboard and Report Generation
+description: Use Claude Code to create interactive dashboards, export formatted reports, and build self-updating reporting systems
+updatedDate: 2025-01-14T00:00:00Z
+author: Claude Code Learn
+profession: statistics-and-reporting
+difficulty: intermediate
+tools: ["Claude Code", "Python", "pandas", "matplotlib", "plotly"]
+tags: ["dashboards", "reporting", "visualization", "automation", "business intelligence"]
+sources: [
+  "https://docs.anthropic.com/en/docs/claude-code/overview",
+  "https://pandas.pydata.org/docs/"
+]
+relatedModules: []
+relatedUseCases: ["automated-data-analysis"]
+faq: [
+  {
+    "question": "What's the difference between static and interactive dashboards?",
+    "answer": "Static dashboards are generated as HTML, PDF, or image files and are viewed as snapshots. Interactive dashboards (using plotly or streamlit) allow users to filter, zoom, and explore data themselves. Claude Code can build both—choose based on your distribution needs."
+  },
+  {
+    "question": "How often should I regenerate reports?",
+    "answer": "This depends on your data freshness requirements. Daily reports work well for business metrics, while hourly or real-time reports suit operational monitoring. Claude Code can help you set up scheduled scripts; combine with tools like cron or cloud schedulers."
+  },
+  {
+    "question": "Can Claude Code format reports for non-technical stakeholders?",
+    "answer": "Yes. Claude Code can generate professional HTML reports with branded styling, export Excel workbooks with multiple sheets and formatting, or create PDF reports with charts and narrative text. This ensures stakeholders see polished, actionable output."
+  }
+]
+draft: false
+order: 2
+---
+
+## Overview
+
+Claude Code excels at building reporting infrastructure—from one-off analysis exports to recurring dashboard systems. Whether you need a weekly PDF for executives or a live dashboard for operational teams, Claude Code can generate and structure the output.
+
+## Dashboard Types
+
+**Static HTML dashboards**: Self-contained HTML files with embedded charts, styling, and data. Perfect for email distribution or archiving.
+
+**Interactive dashboards**: Built with Python frameworks (plotly, streamlit, dash) that allow users to filter, drill down, and explore.
+
+**Scheduled reports**: Automated scripts that run on a schedule, regenerate findings, and deliver output via email or file storage.
+
+**PDF executive summaries**: Formatted documents with key metrics, charts, and narrative insights for leadership review.
+
+## Building Your First Dashboard
+
+### 1. Define the Structure
+
+Describe what your dashboard should include:
+- Key metrics (KPIs, totals, percentages)
+- Visualizations (trends, comparisons, distributions)
+- Data filters (by date, region, product, etc.)
+- Target audience (executives, operations, analysis team)
+
+### 2. Provide Sample Data
+
+Share a representative CSV or database query output so Claude Code can understand:
+- Data columns and their meaning
+- Expected data volume and refresh frequency
+- Any calculated fields needed
+
+### 3. Request Generation
+
+Example prompt:
+```
+Create an interactive dashboard for our Q4 sales performance.
+Include:
+- Total revenue and target vs. actual
+- Sales by region (pie or bar chart)
+- Daily sales trend
+- Top 10 products by revenue
+Use plotly so viewers can hover for details.
+Export as a standalone HTML file.
+```
+
+## Practical Examples
+
+### Weekly Sales Report (HTML)
+
+Request: "Generate a weekly sales report that shows: total revenue, growth %, top products, regional breakdown, and a trend chart. Export as a formatted HTML file with company colors."
+
+Claude Code will:
+1. Load sales data from your database or CSV
+2. Calculate metrics and comparisons
+3. Create polished visualizations with matplotlib or plotly
+4. Wrap everything in styled HTML
+5. Export ready-to-email output
+
+### Live Operations Dashboard
+
+Request: "Build a Streamlit app that displays real-time order status, average fulfillment time, inventory levels, and customer satisfaction scores. Refresh every 5 minutes."
+
+Claude Code will:
+1. Connect to your data source
+2. Create interactive filters and KPI cards
+3. Build a responsive layout
+4. Set up auto-refresh mechanism
+
+### Executive Monthly Summary (PDF)
+
+Request: "Create a PDF report with: executive summary, key results vs. targets, visualizations of trends, and insights/recommendations. Include company branding."
+
+Claude Code will:
+1. Aggregate monthly data
+2. Calculate variances and highlights
+3. Generate charts and tables
+4. Compose narrative insights
+5. Format as a branded PDF document
+
+## Export Formats
+
+**HTML**: Standalone, embeddable, full styling control. Best for web and email.
+
+**Excel**: Multi-sheet workbooks with formatting, formulas, and conditional highlighting. Familiar to business users.
+
+**PDF**: Professional, print-ready, fixed layout. Ideal for archives and executive distribution.
+
+**CSV/JSON**: Raw data exports for import into other systems or BI tools.
+
+## Integration with Scheduling
+
+Once Claude Code creates your reporting script:
+
+1. **Save the Python script** to your project folder
+2. **Test it locally** to ensure it runs cleanly
+3. **Schedule it** using:
+   - **Linux/Mac**: cron jobs (`crontab -e`)
+   - **Windows**: Task Scheduler
+   - **Cloud**: AWS Lambda, Google Cloud Functions, Azure Functions
+   - **BI Tools**: Tableau, Power BI, Looker (which can run Python)
+
+Example cron for a daily 8am report:
+```
+0 8 * * * /usr/bin/python3 /home/user/scripts/daily_report.py
+```
+
+## Tips for Professional Reports
+
+**Use consistent branding**: Ask Claude Code to apply company colors, fonts, and logos.
+
+**Include context**: Add date ranges, data sources, and update frequency to your reports.
+
+**Highlight exceptions**: Use color and formatting to draw attention to important anomalies or achievements.
+
+**Write for your audience**: Executive summaries differ from detailed analyst reports. Specify the audience when requesting reports.
+
+**Version and archive**: Keep copies of generated reports for historical comparison and audit trails.
+
+## Tools and Libraries
+
+- **pandas**: Data aggregation and transformation
+- **matplotlib/seaborn**: Static visualizations
+- **plotly**: Interactive, hover-enabled charts
+- **streamlit/dash**: Web app dashboards
+- **reportlab/weasyprint**: PDF generation
+- **openpyxl**: Excel formatting
+
+## Next Steps
+
+Start by automating one routine report. Once you see the workflow, expand to additional reports or build an integrated dashboard system.

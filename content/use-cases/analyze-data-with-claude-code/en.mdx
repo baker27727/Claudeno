@@ -1,0 +1,127 @@
+---
+title: Analyze Data with Claude Code
+description: Use Claude Code to import, transform, and analyze data from spreadsheets and CSV files. Write Python scripts to perform complex analysis, create visualizations, and export results.
+tags:
+  - data-analysis
+  - python
+  - spreadsheets
+  - pandas
+  - automation
+tools:
+  - Python
+  - pandas
+  - Claude Code
+difficulty: intermediate
+relatedUseCases: []
+author: Claude Code Learn
+profession: excel-and-data-analysis
+updatedDate: 2025-01-17T00:00:00Z
+sources:
+  - https://docs.anthropic.com/en/docs/claude-code/overview
+  - https://pandas.pydata.org/docs/
+order: 1
+draft: false
+---
+
+## Overview
+
+Claude Code can significantly accelerate your data analysis workflow by automating the repetitive and complex tasks that would traditionally require manual Excel formulas or writing code from scratch. Whether you're working with spreadsheets, CSV files, or databases, Claude Code can help you:
+
+- **Import and clean data** from multiple formats
+- **Transform and reshape** data structures
+- **Perform statistical analysis** and create pivot tables
+- **Generate visualizations** for insights
+- **Automate repetitive analysis tasks**
+- **Export results** in various formats
+
+## Key Capabilities
+
+### 1. Data Import and Handling
+
+Claude Code can read data from spreadsheets and CSV files using Python libraries like pandas. You can describe what you need, and Claude Code will write the code to:
+
+- Load Excel files (.xlsx, .xls) and CSV files
+- Handle missing data and data type conversions
+- Merge multiple data sources
+- Filter and subset data
+
+### 2. Data Transformation
+
+With pandas and Claude Code, you can:
+
+- Rename columns and restructure data
+- Create new calculated columns
+- Pivot and unpivot data
+- Aggregate data by groups
+- Sort and reorder data
+
+### 3. Analysis and Statistics
+
+Claude Code can perform complex analysis without manual formula writing:
+
+- Calculate descriptive statistics (mean, median, standard deviation)
+- Perform grouping and aggregation
+- Create cross-tabulations
+- Identify outliers and patterns
+- Generate trend analysis
+
+### 4. Visualization
+
+Claude Code can create charts and graphs using matplotlib, seaborn, or plotly:
+
+- Line charts, bar charts, and scatter plots
+- Histograms and distribution plots
+- Heatmaps and correlation matrices
+- Interactive dashboards
+
+## Practical Example: Sales Analysis
+
+Imagine you have monthly sales data in an Excel file. Instead of manually creating pivot tables and formulas, you could ask Claude Code:
+
+> "Analyze our Q4 sales data. Calculate total revenue by product category, identify top-performing regions, and create a visualization showing sales trends over the quarter."
+
+Claude Code would:
+1. Read your Excel file
+2. Filter for Q4 data
+3. Group and aggregate by category and region
+4. Create summary statistics
+5. Generate relevant charts
+6. Save the results to a new Excel file
+
+This task might take 30+ minutes manually but just minutes with Claude Code.
+
+## Getting Started
+
+1. **Prepare your data**: Have your spreadsheet or CSV file ready
+2. **Open Claude Code**: Launch Claude Code in your terminal or IDE
+3. **Describe your analysis**: Tell Claude Code what you want to accomplish
+4. **Review and refine**: Check the generated code and ask for adjustments
+5. **Export results**: Save your analysis to Excel, CSV, or other formats
+
+## Best Practices
+
+- **Be specific**: Describe exactly what analysis you want ("top 5 products by revenue" rather than "analyze products")
+- **Provide context**: Explain what your columns represent and any data quirks
+- **Use clear naming**: Column names should be descriptive for better results
+- **Iterate**: Ask Claude Code to refine results or try different approaches
+- **Verify outputs**: Always review generated charts and statistics for accuracy
+
+## Common Use Cases
+
+- **Sales reporting**: Summarize by region, product, or time period
+- **Financial analysis**: Calculate metrics, ratios, and variances
+- **Customer analytics**: Segment customers, track lifetime value, churn analysis
+- **Inventory management**: Track stock levels, identify slow movers
+- **Quality control**: Analyze defect rates, process metrics
+- **HR analytics**: Analyze turnover, compensation, performance trends
+
+## Limitations to Keep in Mind
+
+- Very large datasets (100M+ rows) may require optimization
+- Real-time data streams need specialized tools
+- Some advanced statistical methods may need manual refinement
+- Sensitive data should be handled with appropriate security practices
+
+## Next Steps
+
+Start with a simple analysis task on your existing data. As you become comfortable, tackle more complex analyses like forecasting, cohort analysis, or multi-source data integration.
