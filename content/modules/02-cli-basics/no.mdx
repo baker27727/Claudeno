@@ -130,3 +130,7 @@ Nytt i 2.1.224: Kommandoen `claude self-hosted-runner` gjør at dine egne maskin
 ## Nytt i v2.1.226
 
 Versjon 2.1.224 introduserte `ListAgents` for å oppdage Claude Code-økter på andre maskiner for kryssøkt-kommunikasjon på macOS og Linux. Versjon 2.1.225 la til en arbeidsplassbekreftelsesprompt til `claude agents` for upålitelige kataloger. Også i 2.1.225 ble gateway-kostnadsgrensestøtte lagt til i brukervarslinger, som nå viser kostnadsgrensen, dens tilbakestillingstid og operatørens melding.
+
+## Nytt i v2.1.227
+
+**Nytt i v2.1.227:** Ytelsen er forbedret med færre event-loop-stopp ved forslag for fil-ikke-funnet og @-omtale-størrelseskontroller. I tillegg ble det fikset at alle Bash-kommandoer mislyktes under `claude-code-action` med `allowed_non_write_users` på GitHub-hosted runners.

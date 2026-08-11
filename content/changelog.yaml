@@ -1,3 +1,17 @@
+- id: "2.1.227"
+  version: "2.1.227"
+  date: "2026-08-11"
+  entry:
+    en: "Fixed feature flags evaluation with expired login tokens, Bash command
+      failures under claude-code-action with allowed_non_write_users, and /tui
+      conversation rewind. Improved slash-command menu styling (blue selection,
+      bolded matches, emoji preservation) and performance (fewer event-loop
+      stalls)."
+    no: "Fikset evaluering av funksjonflagg med utløpte innloggingstokener,
+      Bash-kommandofeil under claude-code-action med allowed_non_write_users, og
+      /tui-samtaletilbakespoling. Forbedret slash-kommandomenystil (blå utvalg,
+      uthevet matching, emoji-bevaring) og ytelse (færre event-loop-stopp)."
+  sources: []
 - id: "2.1.226"
   version: "2.1.226"
   date: "2026-08-08"

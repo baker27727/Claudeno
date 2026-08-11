@@ -1,11 +1,19 @@
 # Upstream snapshot — Claude Code CHANGELOG
 
-Last observed version: 2.1.226
+Last observed version: 2.1.227
 
 > This file is maintained automatically by `scripts/watch-upstream.ts`.
 > It stores the last-seen upstream CHANGELOG so daily diffs can be computed.
 
 # Changelog
+
+## 2.1.227
+
+- Fixed feature flags being evaluated without the user's subscription tier when a session started with an expired login token, which could wrongly prompt Max plan users to enable usage credits for Fable
+- Fixed every Bash command failing under `claude-code-action` with `allowed_non_write_users` on GitHub-hosted runners
+- Fixed `/tui` bringing back a conversation that had been rewound to before its first message
+- Improved slash-command menu: blue now marks only the selected row, matched characters are bolded instead of recolored, and emoji or accented names keep their glyphs
+- Improved performance: fewer event-loop stalls on file-not-found suggestions and at-mention size checks
 
 ## 2.1.226
 
@@ -95,10 +103,4 @@ Last observed version: 2.1.226
 - Fixed sessions not linking to pull requests created after the branch was pushed, including through the GitHub REST API
 - Fixed org-restricted `model: opus`-style subagent and teammate family aliases dropping to the parent model instead of stepping down to the newest org-allowed model in the family
 - Fixed stream idle timeout firing on custom `ANTHROPIC_BASE_URL` gateways despite server keep-alive pings arriving on the wire
-- Fixed claude.ai connectors being falsely marked as needing authorization when the session token is invalid — they now show a `/login` hint instead
-- Fixed tool errors not being displayed for tools no longer available locally, for example after an MCP server is removed
-- Fixed `SendMessage` rejecting a long summary — it now truncates instead, so sends no longer fail on a character limit
-- Fixed the spinner's effort label in a subagent's transcript view showing the session's effort level instead of the subagent's own `effort:` setting
-- Fixed rare crashes when a file watcher hit a filesystem error or during file-watcher teardown
-- Fixed screen readers re-reading the whole input line on every backspace in `--ax-screen-reader` mode — end-of-line deletions now echo just the deleted characters
-- Fixed host model-selecti
+- Fixed claude.ai connectors being falsely marked as needing authorization when the session token is invalid — they now show a 

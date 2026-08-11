@@ -71,3 +71,7 @@ Checkpointing is local undo, not version control:
 ## What's new in v2.1.217
 
 The `/rewind` command now skips and reports symlinked or hard-linked paths at tracked locations instead of restoring or deleting files through them, improving safety and consistency.
+
+## What's new in v2.1.227
+
+**What's new in v2.1.227:** Fixed an issue where `/tui` would bring back a conversation that had been rewound to before its first message.
