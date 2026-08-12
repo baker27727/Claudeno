@@ -100,3 +100,7 @@ New in 2.1.221: MCP servers from `--mcp-config` are now properly connected befor
 ## What's new in v2.1.226
 
 **New in 2.1.226:** Self-hosted runners are now available on Team and Enterprise plans via the `claude self-hosted-runner` command, allowing your own machines or containers to serve as hosts for Claude Code sessions. Additionally, the new `archive` plugin source enables plugin installation from zip files over HTTPS with optional SHA-256 pinning, without requiring git or npm.
+
+## What's new in v2.1.228
+
+**Improved OAuth reliability (2.1.225+):** MCP OAuth servers on macOS are now more resilient — intermittent keychain read timeouts no longer cause repeated 401 errors that would wrongly suggest authentication never succeeded. Expired or missing Google Cloud credentials for Vertex AI now fail fast (within seconds) instead of retrying for minutes.

@@ -128,3 +128,7 @@ New in 2.1.224: Cross-session messaging is now available via `SendMessage` — C
 ## What's new in v2.1.226
 
 Version 2.1.224 added two new cross-session settings: `crossSessionInbound` controls how sessions with bypassed permissions handle messages from other sessions (holding them for your approval by default), and `dialogExpiry` configures auto-delivery behavior for messages to other sessions.
+
+## What's new in v2.1.228
+
+**Workspace trust for agents (2.1.225+):** `claude agents` now prompts to confirm you trust untrusted directories before running agents, matching the behavior of `claude`. This security check helps prevent agents from executing unintended code in directories you haven't explicitly approved.

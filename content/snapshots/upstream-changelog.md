@@ -1,11 +1,32 @@
 # Upstream snapshot — Claude Code CHANGELOG
 
-Last observed version: 2.1.227
+Last observed version: 2.1.228
 
 > This file is maintained automatically by `scripts/watch-upstream.ts`.
 > It stores the last-seen upstream CHANGELOG so daily diffs can be computed.
 
 # Changelog
+
+## 2.1.228
+
+- Fixed interactive sessions that could stop redrawing entirely, while the process kept running, after a rare internal layout error
+- Fixed `git` / Git Bash not being found on Windows when Claude Code is launched from a parent folder of the git installation
+- Fixed `/tui` reverting the session to an earlier model when `/model` had been changed since the last response
+- Fixed cross-session messaging sometimes starting without an inbox in the first session after install or upgrade
+- Fixed Remote Control `/resume` while connected leaking the resumed conversation's title or history into the connected session
+- Fixed `claude self-hosted-runner` sessions failing on every fresh runner when the `checkout` hook fails for a repository the session doesn't push to; that repository is now skipped with a warning
+- Fixed self-hosted runners ending sessions in the gap between a background task finishing and the follow-up turn starting
+- Fixed session cleanup deleting contents inside a project's memory folder
+- Fixed background plugin-cache cleanup deleting a plugin's cache when its only version is a symlinked development checkout
+- Fixed a settings-merge issue where a marketplace entry redefined in a higher-precedence settings tier could inherit another tier's custom headers; marketplace entries now merge as whole entries
+- Fixed the deferred-tools reminder occasionally being sent to the model twice after a skill invocation
+- Hardened skills synced from claude.ai: they no longer shadow local commands or MCP prompts, their descriptions are sanitized and labeled, and on your machine their bodies don't run `!` commands or expand `@` files
+- Improved cross-session messages: the sender and body now display inline instead of a collapsed line, and messages to Remote Control sessions on other machines show your Remote Control session name as the sender
+- Improved Vertex AI credential handling: expired or missing Google Cloud credentials now fail within seconds instead of retrying for minutes
+- Improved compaction progress: the retry countdown and stall hint now appear during compaction instead of only a progress bar
+- Updated terminal title busy-spinner glyphs to reduce tab-bar jitter on some terminals
+- Changed the Write tool so newer models can overwrite an existing file they haven't read this session, matching the Edit tool's rules; older models still require the read first
+- Removed the outdated note about auto mode sessions costing slightly more from the first-use notice for Pro, Max, and Team plans
 
 ## 2.1.227
 
@@ -85,22 +106,3 @@ Last observed version: 2.1.227
 - Fixed managed settings: server-delivered settings no longer disable the env block of a machine-local `managed-settings.json` or MDM profile; admin env now merges per key
 - Fixed sandboxed commands failing to start on Linux when `sandbox.filesystem.denyWrite` covers the working directory
 - Fixed forked background agents getting stuck "already resuming" for the rest of the session when rebuilding the fork's parent prompt failed during resume
-- Fixed a resumed session failing every turn, or leaving the interactive app on an unresponsive error screen, when its history held a malformed diagnostics attachment
-- Fixed a rare hang when parsing unusual `git push` output
-- Changed `CLAUDE_CODE_DISABLE_1M_CONTEXT` to hold every Claude model with a native 1M window to 200K via auto-compaction, not just a fixed list; a startup warning now appears when auto-compaction isn't holding the session to 200K
-- Changed auto-compact to keep sessions on unrecognized model IDs within the assumed context window instead of letting them grow past it; set `CLAUDE_CODE_DISABLE_UNKNOWN_MODEL_WINDOW_ENFORCEMENT=1` to restore the previous behavior
-- Changed `/review` to be an alias of `/code-review`, which reviews the current diff or a PR (`/code-review <level> <pr#>`); use `/code-review ultra` for a deep cloud review
-- Changed `/code-review` with no effort level to reuse the level you typed last; type a level like `/code-review high` to change it
-
-## 2.1.222
-
-- Fixed worktree-isolated sessions and their subagents being able to run destructive git commands against the main checkout; isolation now applies to file edits and Bash in every session type
-- Fixed PreToolUse auto-allow hooks bypassing tool restrictions in background agent tasks (summaries, compaction, renames)
-- Fixed `/usage-credits` on Team and Enterprise showing "you've already sent a usage credit request" for members whose earlier request was dismissed, blocking them from sending a new one
-- Fixed the startup connectivity check hanging and then failing behind an HTTPS proxy; it now uses the same proxy-aware transport as API requests and times out with a clear message
-- Fixed "Connection closed mid-response" errors being reported on responses that had actually completed
-- Fixed `/usage` overattributing usage to MCP servers: a server's share now reflects only the requests that actually consumed its tool results, instead of every turn after any call to it
-- Fixed sessions not linking to pull requests created after the branch was pushed, including through the GitHub REST API
-- Fixed org-restricted `model: opus`-style subagent and teammate family aliases dropping to the parent model instead of stepping down to the newest org-allowed model in the family
-- Fixed stream idle timeout firing on custom `ANTHROPIC_BASE_URL` gateways despite server keep-alive pings arriving on the wire
-- Fixed claude.ai connectors being falsely marked as needing authorization when the session token is invalid — they now show a 

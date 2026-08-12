@@ -1,3 +1,24 @@
+- id: "2.1.228"
+  version: "2.1.228"
+  date: "2026-08-12"
+  entry:
+    en: "**2.1.228:** Critical bug fixes for interactive sessions, Git/Git Bash
+      detection on Windows, TUI model persistence, session messaging, remote
+      control resume leaks, self-hosted runner reliability, session cleanup,
+      settings merges, plugin caching, and skill syncing. Improved cross-session
+      messaging display, Vertex AI credentials handling, compaction progress
+      visibility, terminal title stability. Changed Write tool permissions to
+      match Edit tool rules and removed outdated Pro/Max/Team auto-mode pricing
+      note."
+    no: "**2.1.228:** Kritiske feilrettinger for interaktive økter, Git/Git
+      Bash-deteksjon på Windows, TUI-modellpersistens, øktmeldinger, Remote
+      Control-resume-lekker, self-hosted runner-pålitelighet, øktopprydding,
+      innstillingssammenslåinger, plugin-bufring og skill-synkronisering.
+      Forbedret visning av meldinger på tvers av økter, Vertex
+      AI-legitimasjonshåndtering, synlighet av kompakteringsfremgang,
+      terminalkatstabilitet. Endret Write-verktøytillatelser for å matche
+      Edit-verktøyreglene og fjernet utdatert Pro/Max/Team auto-mode-prisnotat."
+  sources: []
 - id: "2.1.227"
   version: "2.1.227"
   date: "2026-08-11"

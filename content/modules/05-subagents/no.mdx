@@ -111,3 +111,7 @@ Underagent-spawning er nå begrenset til 20 samtidige agenter per økt (overstyr
 ## Nytt i v2.1.226
 
 **Tillitsmeldinger for arbeidsområde:** Underagenter viser nå en tillitsmeldinger for upålitelige mapper, som samsvarer med oppførselen til hovedagenten. **Kryssøkt-meldinger:** Bruk `ListAgents` til å oppdage Claude Code-økter på macOS og Linux, slik at underagenter kan sende meldinger til hverandre på tvers av maskiner ved hjelp av `SendMessage` (nytt i v2.1.224).
+
+## Nytt i v2.1.228
+
+**Meldinger på tvers av økter (2.1.224+):** Underagenter kan nå sende meldinger til hverandre ved å bruke `SendMessage` og oppdage tilgjengelige økter med `ListAgents` på macOS og Linux. Mottakere du allerede har bekreftet blir aldri byttet ut med økter med samme navn når listen ikke kan sjekkes, og økter med omgåtte tillatelser holder innkommende meldinger for godkjenning via nye innstillinger `crossSessionInbound` og `dialogExpiry`.

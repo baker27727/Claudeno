@@ -110,3 +110,7 @@ Subagent spawning is now capped at 20 concurrent agents per session (override wi
 ## What's new in v2.1.226
 
 **Workspace trust prompt:** Subagents now display a workspace trust prompt for untrusted directories, matching the behavior of the main `claude` agent. **Cross-session messaging:** Use `ListAgents` to discover Claude Code sessions on macOS and Linux, enabling subagents to message each other across machines with `SendMessage` (new in v2.1.224).
+
+## What's new in v2.1.228
+
+**Cross-session messaging (2.1.224+):** Subagents can now message each other using `SendMessage` and discover available sessions with `ListAgents` on macOS and Linux. Recipients you've already confirmed are never swapped for same-named sessions when the list can't be checked, and permissions-bypassed sessions hold inbound messages for your approval via new `crossSessionInbound` and `dialogExpiry` settings.
