@@ -131,3 +131,7 @@ Versjon 2.1.224 introduserte `claude self-hosted-runner`, som gjør at du kan gj
 ## Nytt i v2.1.228
 
 **Self-hosted runners (2.1.224+):** Team- og Enterprise-brukere kan nå distribuere `claude self-hosted-runner` for å gjøre sine egne maskiner eller containere til Claude Code-økthostar, noe som aktiverer lokal kjøring av web-, mobil- og skrivebordøkter. Runner-registreringen avslutter nå tydelig ved oppstart hvis basismappen ikke kan opprettes eller skrives til.
+
+## Nytt i v2.1.229
+
+**Nytt i 2.1.229:** Self-hosted runner Windows-oppstart krever nå et eksplisitt `--base-dir`-flagg; det finnes ingen standard sjekk-ut-katalog på Windows. Dette sikrer klarere kontroll over plasseringen av øktefiler i hodeløse miljøer.

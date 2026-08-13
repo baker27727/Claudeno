@@ -132,3 +132,7 @@ Version 2.1.224 added two new cross-session settings: `crossSessionInbound` cont
 ## What's new in v2.1.228
 
 **Workspace trust for agents (2.1.225+):** `claude agents` now prompts to confirm you trust untrusted directories before running agents, matching the behavior of `claude`. This security check helps prevent agents from executing unintended code in directories you haven't explicitly approved.
+
+## What's new in v2.1.229
+
+**New in 2.1.229:** Self-hosted runner sessions now support server-supplied Claude Code hooks, matching the behavior of managed environments. Additionally, `/commit-push-pr` no longer auto-approves git/gh commands with dangerous flags like `--force`, `--amend`, or `--no-verify`, requiring explicit user confirmation instead.

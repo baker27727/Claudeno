@@ -1,3 +1,28 @@
+- id: "2.1.229"
+  version: "2.1.229"
+  date: "2026-08-13"
+  entry:
+    en: "Claude Code 2.1.229 adds `claude remote-control --continue` for resuming
+      sessions, extends hook support to self-hosted runners, improves security
+      by requiring explicit confirmation for dangerous git commands in
+      `/commit-push-pr`, and fixes multiple issues including streaming response
+      display, tool call crashes, terminal rendering in narrow windows, file
+      path handling on Windows, MCP OAuth, Remote Control UI, GitHub workflow
+      completion, performance stalls, plugin cleanup, workflow CPU limits,
+      file-watcher leaks, SDK/stream-json errors, conversation compaction,
+      OpenTelemetry export, managed-MCP server handling, Git Credential Manager
+      timeouts, and more."
+    no: "Claude Code 2.1.229 legger til `claude remote-control --continue` for å
+      gjenoppta økter, utvider hook-støtte til self-hosted runners, forbedrer
+      sikkerhet ved å kreve eksplisitt bekreftelse for farlige git-kommandoer i
+      `/commit-push-pr`, og fikser flere problemer inkludert visning av
+      streaming-respons, verktøy-kall-krasj, terminalrendering i smale vinduer,
+      filstisøkning på Windows, MCP OAuth, Remote Control-brukergrensesnitt,
+      GitHub-arbeidsflyt-fullføring, ytelseslammer, plugin-opprydding,
+      arbeidsflyt-CPU-grenser, filovervåking-lekkasjer, SDK/stream-json-feil,
+      samtalekomprimering, OpenTelemetry-eksport, administrert
+      MCP-serverhåndtering, Git Credential Manager-tidsavbrudd og mer."
+  sources: []
 - id: "2.1.228"
   version: "2.1.228"
   date: "2026-08-12"

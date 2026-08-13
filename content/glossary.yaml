@@ -222,3 +222,20 @@
   note: "Command turning user machines or containers into Claude Code session
     hosts (Team and Enterprise); kept as English technical identifier (new in
     2.1.224)"
+- id: "plugin-marketplace-`command`-sources"
+  en: "plugin marketplace `command` sources"
+  no: "plugin-markedsplass `command`-kilder"
+  note: "Local command (e.g. IDE) prints plugin directory, re-resolved each
+    session and applied without restart; `mode: \"link\"` uses it in place (new
+    in 2.1.229)."
+- id: "sse-keepalive-pings"
+  en: "SSE keepalive pings"
+  no: "SSE keepalive-pinger"
+  note: "Gateway streaming responses now include keepalive pings during long
+    thinking pauses to prevent idle-timeout disconnects on Vertex and Bedrock
+    upstreams (new in 2.1.229)."
+- id: "`listagents`-offline-label"
+  en: "`ListAgents` offline label"
+  no: "`ListAgents` offline-merke"
+  note: "Marks disconnected Remote Control sessions as `offline` and cloud
+    sessions as `cloud` (new in 2.1.229)."

@@ -134,3 +134,7 @@ Versjon 2.1.224 la til to nye innstillinger for kryssøkt-kommunikasjon: `crossS
 ## Nytt i v2.1.228
 
 **Tillitsmeldinger for arbeidsområde med agenter (2.1.225+):** `claude agents` viser nå en sikkerhetsmeldinger før du kjører agenter i ukjente mapper, på samme måte som `claude`. Denne kontrollen hindrer agenter i å kjøre uintendert kode i mapper du ikke har godkjent eksplisitt.
+
+## Nytt i v2.1.229
+
+**Nytt i 2.1.229:** Self-hosted runner-økter støtter nå server-leverte Claude Code-hooks, i samsvar med oppførselen til administrerte miljøer. I tillegg auto-godkjenner `/commit-push-pr` ikke lenger git/gh-kommandoer med farlige flagg som `--force`, `--amend` eller `--no-verify`, og krever eksplisitt brukerbekreftelse i stedet.

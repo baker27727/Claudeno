@@ -156,3 +156,7 @@ Auto-modusoppførselen er blitt raffinert: en PreToolUse-hooks `ask`-beslutning 
 ## Nytt i v2.1.214
 
 SessionStart-hooks rapporterer nå kilde `"fork"` når en økt begynner som en fork i stedet for `"resume"`. I tillegg har single-segment `dir/**` hook `if:`-betingelser endret seg til å samsvare bare med `<cwd>/dir`; bruk `**/dir/**` for samsvar i alle dybder. Merk at `deny`/`ask`-tillatelsesregler beholder sitt opprinnelige samsvar i alle dybder.
+
+## Nytt i v2.1.229
+
+**Nytt i 2.1.229:** Server-leverte Claude Code-hooks er nå støttet i self-hosted runner-økter, og gir samme hook-funksjonalitet som er tilgjengelig i administrerte miljøer.

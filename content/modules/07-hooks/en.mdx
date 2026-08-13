@@ -149,3 +149,7 @@ Auto mode behavior has been refined: a PreToolUse hook's `ask` decision now floo
 ## What's new in v2.1.214
 
 SessionStart hooks now report source `"fork"` when a session begins as a fork instead of `"resume"`. Additionally, single-segment `dir/**` hook `if:` conditions have changed to match only `<cwd>/dir`; use `**/dir/**` for any-depth matching. Note that `deny`/`ask` permission rules retain their original any-depth behavior.
+
+## What's new in v2.1.229
+
+**New in 2.1.229:** Server-supplied Claude Code hooks are now supported in self-hosted runner sessions, providing the same hook functionality available in managed environments.
