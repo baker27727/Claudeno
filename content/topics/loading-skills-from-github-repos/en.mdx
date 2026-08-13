@@ -1,0 +1,79 @@
+---
+title: "Loading Claude Skills from a GitHub Repository at Session Startup"
+description: "Claude Managed Agents sessions can now mount a GitHub repository and automatically discover skills in its root .claude/skills directory at session start — no manual registration required."
+discoveredAt: "2026-08-11T05:54:59.109Z"
+updatedDate: "2026-08-13T07:16:45.192Z"
+author: "Claude Code Learn"
+trendScore: 0.624
+scoreBreakdown:
+  frequency: 0.5
+  recency: 0.697
+  engagement: 0.5
+  gap: 1
+tags:
+  - "Claude Code"
+  - "skills"
+  - "GitHub"
+  - "Managed Agents"
+  - "session startup"
+  - "team distribution"
+sources:
+  - "https://code.claude.com/docs/en/claude-directory.md"
+relatedModules:
+  - "skills"
+relatedUseCases: []
+relatedSkills:
+  - "docx"
+  - "pdf"
+  - "pptx"
+  - "xlsx"
+draft: false
+# Verified against Claude Code 2.1.228
+---
+## Quick summary
+
+Claude Managed Agents sessions can now load skills straight from a GitHub repository: mount a repo, and any skills sitting in its root `.claude/skills` directory are discovered automatically the moment the session starts. There's no manual registration step — if the folder is there, the skills are available to the agent for that session. This is the mechanism that makes it practical to distribute reusable skills to a whole team through a shared repo instead of copying files around.
+
+## What's new
+
+Anthropic's platform release notes describe this as a new capability for Claude Managed Agents: "Claude Managed Agents sessions can now load skills from a GitHub repository. When a session mounts a repository, any skills in its root `.claude/skills` directory are discovered automatically at session start and available to the agent for that session." This shipped alongside a batch of other Managed Agents features in the same release window — session budgets, advisor models, and control over inference geography — signaling a broader push to make Managed Agents sessions more configurable and enterprise-ready. It also complements the existing per-session override mechanism, where you can pass `agent` with `type: "agent_with_overrides"` when creating a session to replace an agent's model, system prompt, tools, MCP servers, or skills for a single run without changing the underlying agent definition.
+
+## How it works
+
+The mechanism is discovery-based, not registration-based:
+
+1. **Mount the repository.** A Claude Managed Agents session is configured to mount a GitHub repository (the same mounting mechanism used elsewhere in the platform for giving a session access to a codebase).
+2. **Scan the root `.claude/skills` directory.** At session start, the platform looks for a `.claude/skills` folder at the root of the mounted repo — this mirrors the `.claude` directory convention already used elsewhere for configuration.
+3. **Automatic discovery.** Any skills found in that directory are discovered automatically — there's no separate API call or manual step to register each skill with the agent.
+4. **Scoped to the session.** The discovered skills become available to the agent only "for that session" — the loading happens fresh each time a session starts, tied to whatever the mounted repository contains at that moment.
+
+Because discovery reads directly from the repository, updating or adding a skill is as simple as committing it to the `.claude/skills` path — the next session that mounts the repo picks it up without any change to the agent's own configuration. This is distinct from configuring skills directly on the agent definition or via a one-off `agent_with_overrides` session override; the GitHub-mounted path is specifically about pulling skills from a repository's file structure at runtime.
+
+## Hands-on example
+
+Conceptually, a team ships a shared skill by committing it to the expected path in a repository that a Managed Agents session will mount:
+
+```
+my-team-repo/
+└── .claude/
+    └── skills/
+        └── pr-review-checklist/
+            └── SKILL.md
+```
+
+When a session is created against this repository (mounting it as part of session setup), the platform scans `.claude/skills` at startup and makes `pr-review-checklist` available to the agent for that session — no separate registration call, no per-agent configuration change. Anyone on the team who mounts the same repo in a new session gets the same skill automatically, and updating `SKILL.md` in the repo updates what future sessions see.
+
+## When to use it (and when not to)
+
+Use this when you want **team-wide, version-controlled skill distribution**: a shared repo becomes the single source of truth, and every session that mounts it gets the current skill set without anyone manually wiring things up per session or per agent. It's a natural fit if you're already mounting repositories into Managed Agents sessions for code access.
+
+Be aware of the tradeoffs:
+
+- **Scope is per-session.** Skills are discovered "for that session" — this is not a persistent, always-on registration on the agent itself. If a session doesn't mount the repository, the skills aren't there.
+- **Root-only discovery.** Only the `.claude/skills` directory at the repository **root** is scanned, per the release note — skills nested elsewhere won't be picked up automatically.
+- **This is a Managed Agents feature.** The release note describes this specifically for Claude Managed Agents sessions, not a generic Claude Code CLI mechanism — don't assume identical behavior in every Claude surface without checking the relevant docs for that surface.
+- **If you need an override for a single run instead of a whole team**, the `agent_with_overrides` session-creation option may be a better fit than restructuring a repository.
+
+## Sources
+
+- https://code.claude.com/docs/en/claude-directory.md

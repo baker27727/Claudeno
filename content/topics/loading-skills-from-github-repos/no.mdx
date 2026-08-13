@@ -1,0 +1,79 @@
+---
+title: "Laste Claude-skills fra et GitHub-repo ved sesjonsstart"
+description: "Claude Managed Agents-sesjoner kan nå montere et GitHub-repo og automatisk oppdage skills i mappen .claude/skills ved sesjonsstart — uten manuell registrering."
+discoveredAt: "2026-08-11T05:54:59.109Z"
+updatedDate: "2026-08-13T07:16:45.192Z"
+author: "Claude Code Learn"
+trendScore: 0.624
+scoreBreakdown:
+  frequency: 0.5
+  recency: 0.697
+  engagement: 0.5
+  gap: 1
+tags:
+  - "Claude Code"
+  - "skills"
+  - "GitHub"
+  - "Managed Agents"
+  - "session startup"
+  - "team distribution"
+sources:
+  - "https://code.claude.com/docs/en/claude-directory.md"
+relatedModules:
+  - "skills"
+relatedUseCases: []
+relatedSkills:
+  - "docx"
+  - "pdf"
+  - "pptx"
+  - "xlsx"
+draft: false
+# Verified against Claude Code 2.1.228
+---
+## Kort oppsummert
+
+Claude Managed Agents-sesjoner kan nå laste skills direkte fra et GitHub-repo: du monterer et repo, og alle skills som ligger i mappen `.claude/skills` i rotkatalogen blir automatisk oppdaget så snart sesjonen starter. Det finnes ikke noe manuelt registreringssteg — hvis mappen finnes, er skills-ene tilgjengelige for agenten i den sesjonen. Dette er mekanismen som gjør det praktisk å distribuere gjenbrukbare skills til et helt team via et delt repo, i stedet for å kopiere filer manuelt.
+
+## Hva er nytt
+
+Anthropics release notes for plattformen beskriver dette som en ny mulighet for Claude Managed Agents: "Claude Managed Agents sessions can now load skills from a GitHub repository. When a session mounts a repository, any skills in its root `.claude/skills` directory are discovered automatically at session start and available to the agent for that session." Dette ble lansert sammen med en rekke andre Managed Agents-funksjoner i samme utgivelsesvindu — sesjonsbudsjetter, rådgivermodeller og kontroll over hvor inferens kjører geografisk — noe som signalerer en bredere satsing på å gjøre Managed Agents-sesjoner mer konfigurerbare og bedriftsklare. Det utfyller også den eksisterende mekanismen for sesjonsoverstyring, der du kan sende `agent` med `type: "agent_with_overrides"` når du oppretter en sesjon for å erstatte en agents modell, systemprompt, verktøy, MCP-servere eller skills for en enkelt kjøring, uten å endre selve agent-definisjonen.
+
+## Slik fungerer det
+
+Mekanismen er basert på oppdagelse (discovery), ikke registrering:
+
+1. **Monter repoet.** En Claude Managed Agents-sesjon konfigureres til å montere et GitHub-repo (samme monteringsmekanisme som ellers brukes for å gi en sesjon tilgang til en kodebase).
+2. **Skann rotmappen `.claude/skills`.** Ved sesjonsstart søker plattformen etter en `.claude/skills`-mappe i rotkatalogen til det monterte repoet — dette speiler `.claude`-katalogkonvensjonen som allerede brukes andre steder for konfigurasjon.
+3. **Automatisk oppdagelse.** Alle skills som finnes i denne mappen, blir automatisk oppdaget — det er ikke noe eget API-kall eller manuelt steg for å registrere hver enkelt skill hos agenten.
+4. **Avgrenset til sesjonen.** De oppdagede skills-ene blir tilgjengelige for agenten kun "for den sesjonen" — lastingen skjer på nytt hver gang en sesjon starter, knyttet til det som til enhver tid ligger i det monterte repoet.
+
+Fordi oppdagelsen leser direkte fra repoet, er det så enkelt som å committe en skill til `.claude/skills`-stien for å oppdatere eller legge til den — neste sesjon som monterer repoet plukker den opp uten noen endring i agentens egen konfigurasjon. Dette er forskjellig fra å konfigurere skills direkte på agent-definisjonen eller via en engangs `agent_with_overrides`-overstyring; GitHub-monteringsveien handler spesifikt om å trekke skills fra et repos filstruktur ved kjøretid.
+
+## Prøv det selv
+
+Konseptuelt distribuerer et team en delt skill ved å committe den til den forventede stien i et repo som en Managed Agents-sesjon vil montere:
+
+```
+mitt-team-repo/
+└── .claude/
+    └── skills/
+        └── pr-review-checklist/
+            └── SKILL.md
+```
+
+Når en sesjon opprettes mot dette repoet (montert som del av sesjonsoppsettet), skanner plattformen `.claude/skills` ved oppstart og gjør `pr-review-checklist` tilgjengelig for agenten i den sesjonen — uten noe eget registreringskall og uten endring i agent-konfigurasjonen. Alle på teamet som monterer samme repo i en ny sesjon, får automatisk samme skill, og en oppdatering av `SKILL.md` i repoet endrer hva fremtidige sesjoner ser.
+
+## Når du bør bruke det (og når ikke)
+
+Bruk dette når du vil ha **team-omfattende, versjonskontrollert distribusjon av skills**: et delt repo blir den ene sannhetskilden, og hver sesjon som monterer det, får det gjeldende sett med skills uten at noen må koble ting sammen manuelt per sesjon eller per agent. Det passer naturlig hvis du allerede monterer repoer inn i Managed Agents-sesjoner for kodetilgang.
+
+Vær bevisst på avveiningene:
+
+- **Omfanget er per sesjon.** Skills blir oppdaget "for den sesjonen" — dette er ikke en permanent, alltid-på registrering på selve agenten. Hvis en sesjon ikke monterer repoet, finnes ikke skills-ene der.
+- **Kun oppdagelse i roten.** Bare `.claude/skills`-mappen i **roten** av repoet blir skannet, ifølge release-notatet — skills som ligger nestet andre steder blir ikke automatisk plukket opp.
+- **Dette er en Managed Agents-funksjon.** Release-notatet beskriver dette spesifikt for Claude Managed Agents-sesjoner, ikke en generell mekanisme i Claude Code CLI — anta ikke identisk oppførsel på alle Claude-flater uten å sjekke den aktuelle dokumentasjonen.
+- **Trenger du en overstyring for én enkelt kjøring** i stedet for hele teamet, kan `agent_with_overrides`-alternativet ved sesjonsopprettelse være et bedre valg enn å restrukturere et repo.
+
+## Kilder
+
+- https://code.claude.com/docs/en/claude-directory.md

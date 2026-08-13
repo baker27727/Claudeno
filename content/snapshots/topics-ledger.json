@@ -1,5 +1,24 @@
 [
   {
+    "topic": "Loading Claude Code skills from GitHub repositories at session startup",
+    "status": "published",
+    "score": {
+      "frequency": 0.5,
+      "recency": 0.697,
+      "engagement": 0.5,
+      "gap": 1,
+      "total": 0.624
+    },
+    "matchedSources": [
+      "anthropic_changelog",
+      "docs_map"
+    ],
+    "whyItMatters": "Distributing reusable skills at scale requires discovered, automatic loading; the new .claude/skills directory discovery pattern enables team-wide skill distribution without manual registration.",
+    "firstSeen": "2026-08-11T05:54:59.109Z",
+    "lastSeen": "2026-08-13T07:16:45.193Z",
+    "publishedSlug": "loading-skills-from-github-repos"
+  },
+  {
     "topic": "Budget caps and spend control in Claude Managed Agents sessions",
     "status": "candidate",
     "score": {
@@ -30,24 +49,6 @@
       "anthropic_changelog"
     ],
     "whyItMatters": "Agent workflows benefit from in-turn consultation with a stronger model for strategic decisions; the new advisor pattern (configurable as a multiagent roster entry) enables quality gates without full re-runs.",
-    "firstSeen": "2026-08-11T05:54:59.109Z",
-    "lastSeen": "2026-08-11T05:54:59.109Z"
-  },
-  {
-    "topic": "Loading Claude Code skills from GitHub repositories at session startup",
-    "status": "candidate",
-    "score": {
-      "frequency": 0.5,
-      "recency": 0.697,
-      "engagement": 0.5,
-      "gap": 1,
-      "total": 0.624
-    },
-    "matchedSources": [
-      "anthropic_changelog",
-      "docs_map"
-    ],
-    "whyItMatters": "Distributing reusable skills at scale requires discovered, automatic loading; the new .claude/skills directory discovery pattern enables team-wide skill distribution without manual registration.",
     "firstSeen": "2026-08-11T05:54:59.109Z",
     "lastSeen": "2026-08-11T05:54:59.109Z"
   },
