@@ -101,3 +101,7 @@ leser ved behov.
 - `@sti`-imports drar inn andre filer; sett en sti i backticks for å nevne den uten
   å importere den.
 - `/memory` lister opp og åpner hver lastet minnefil, og slår av/på auto-minne.
+
+## Nytt i v2.1.232
+
+**Økt-isolasjon i samarbeidsmodus (v2.1.232):** Samarbeidskter holder nå brukeromsminne-filer private: eksterne @-import fra CLAUDE.md-lignende filer blir ikke lenger innlagt i delte samtaler, noe som bevarer grensen mellom tvers-økt-kontekst og lokal-økt-kontekst.

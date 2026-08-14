@@ -115,3 +115,7 @@ Underagent-spawning er nå begrenset til 20 samtidige agenter per økt (overstyr
 ## Nytt i v2.1.228
 
 **Meldinger på tvers av økter (2.1.224+):** Underagenter kan nå sende meldinger til hverandre ved å bruke `SendMessage` og oppdage tilgjengelige økter med `ListAgents` på macOS og Linux. Mottakere du allerede har bekreftet blir aldri byttet ut med økter med samme navn når listen ikke kan sjekkes, og økter med omgåtte tillatelser holder innkommende meldinger for godkjenning via nye innstillinger `crossSessionInbound` og `dialogExpiry`.
+
+## Nytt i v2.1.232
+
+**Underagent-forgrening (v2.1.232):** Underagent-forgrening er nå aktivert som standard. Når du oppretter en `subagent_type: "fork"`-underagent, arver den automatisk hele samtalemeldingshistorikken og ledetekst-cachen, noe som gjør det enklere å spawne spesialiserte agenter som forstår kontekst. Ikke-lagdeltagere-agenter som spawnes i interaktive økter kjører nå i bakgrunnen som standard, noe som holder terminalen responsiv.

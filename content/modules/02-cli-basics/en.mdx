@@ -138,3 +138,7 @@ Version 2.1.224 introduced `ListAgents` for discovering Claude Code sessions on 
 ## What's new in v2.1.229
 
 **New in 2.1.229:** Claude Code now supports `claude remote-control --continue` to resume the most recent Remote Control session, making it easier to pick up where you left off.
+
+## What's new in v2.1.232
+
+**GitLab support and secret redaction (v2.1.232):** Plugin marketplaces now support bare `gitlab.com` repo URLs (including nested subgroups), which clone like GitHub URLs. Claude Code redacts GitLab token families (`glrt-`, `gloas-`, `glptt-`, `glagent-`, `glimt-`, `glsoat-`, `glcbt-`, `glft-`, `glffct-`) and fully redacts routable tokens (`glpat-`, `gldt-`). The `glab` CLI config store receives the same sandbox and credential-path protection as `gh`.

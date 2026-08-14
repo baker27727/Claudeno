@@ -1,3 +1,20 @@
+- id: "2.1.232"
+  version: "2.1.232"
+  date: "2026-08-14"
+  entry:
+    en: "Subagent forking enabled by default with automatic prompt cache
+      inheritance; cross-session messaging via `@` mention and `SendMessage`;
+      GitLab marketplace and token redaction support; session name uniqueness
+      enforcement; `/config` rows for dialog expiry and inbound message
+      handling; numerous fixes for Remote Control, gateway policies, sandbox
+      hardening, and UI responsiveness."
+    no: "Underagent-forgrening aktivert som standard med automatisk arving av
+      ledetekst-cache; meldinger på tvers av økter via `@`-nevning og
+      `SendMessage`; GitLab-markedsplass- og token-redigeringsstøtte;
+      håndhevelse av økt-navnuniqueness; `/config`-rader for dialogutløp og
+      innkommende meldingshåndtering; mange fikser for Remote Control,
+      gateway-retningslinjer, sandkasse-hardening og UI-responsivitet."
+  sources: []
 - id: "2.1.229"
   version: "2.1.229"
   date: "2026-08-13"

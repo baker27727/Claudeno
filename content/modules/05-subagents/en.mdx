@@ -114,3 +114,7 @@ Subagent spawning is now capped at 20 concurrent agents per session (override wi
 ## What's new in v2.1.228
 
 **Cross-session messaging (2.1.224+):** Subagents can now message each other using `SendMessage` and discover available sessions with `ListAgents` on macOS and Linux. Recipients you've already confirmed are never swapped for same-named sessions when the list can't be checked, and permissions-bypassed sessions hold inbound messages for your approval via new `crossSessionInbound` and `dialogExpiry` settings.
+
+## What's new in v2.1.232
+
+**Subagent forking (v2.1.232):** Subagent forking is now enabled by default. When you create a `subagent_type: "fork"` subagent, it automatically inherits the full conversation history and prompt cache, making it easier to spawn specialized agents that understand context. Non-teammate agents spawned in interactive sessions now run in the background by default, keeping your terminal responsive.

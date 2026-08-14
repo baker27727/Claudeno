@@ -136,3 +136,7 @@ Version 2.1.224 added two new cross-session settings: `crossSessionInbound` cont
 ## What's new in v2.1.229
 
 **New in 2.1.229:** Self-hosted runner sessions now support server-supplied Claude Code hooks, matching the behavior of managed environments. Additionally, `/commit-push-pr` no longer auto-approves git/gh commands with dangerous flags like `--force`, `--amend`, or `--no-verify`, requiring explicit user confirmation instead.
+
+## What's new in v2.1.232
+
+**Session naming and cross-session config (v2.1.232):** Interactive sessions on one machine now keep unique names; if you rename a session to a name another live session already uses, it automatically gets a `name-word-word` variant. `/config` now includes "Dialog expiry" and "Messages from your other sessions" rows to manage cross-session inbound message handling.

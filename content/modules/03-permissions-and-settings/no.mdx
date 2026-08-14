@@ -138,3 +138,7 @@ Versjon 2.1.224 la til to nye innstillinger for kryssøkt-kommunikasjon: `crossS
 ## Nytt i v2.1.229
 
 **Nytt i 2.1.229:** Self-hosted runner-økter støtter nå server-leverte Claude Code-hooks, i samsvar med oppførselen til administrerte miljøer. I tillegg auto-godkjenner `/commit-push-pr` ikke lenger git/gh-kommandoer med farlige flagg som `--force`, `--amend` eller `--no-verify`, og krever eksplisitt brukerbekreftelse i stedet.
+
+## Nytt i v2.1.232
+
+**Øktnavngiving og tvers-økt-konfig (v2.1.232):** Interaktive økter på en maskin beholder nå unike navn; hvis du gir en økt samme navn som en annen aktiv økt, får den automatisk en `navn-ord-ord`-variant. `/config` inneholder nå "Dialog expiry" (Dialogutløp) og "Messages from your other sessions" (Meldinger fra dine andre økter) for å håndtere innkommende meldinger på tvers av økter.

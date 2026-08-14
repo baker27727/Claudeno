@@ -101,3 +101,7 @@ on demand.
 - `@path` imports pull in other files; wrap a path in backticks to mention it
   without importing.
 - `/memory` lists and opens every loaded memory file, and toggles auto memory.
+
+## What's new in v2.1.232
+
+**Session isolation in cowork mode (v2.1.232):** Cowork sessions now keep user-scope memory files private: external @-imports from CLAUDE.md-style files no longer inline into shared conversations, preserving the boundary between cross-session and local-session context.

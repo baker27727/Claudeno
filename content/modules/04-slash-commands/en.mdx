@@ -150,3 +150,7 @@ New in 2.1.224: When removing unavailable paste changes that would alter a comma
 ## What's new in v2.1.227
 
 **What's new in v2.1.227:** The slash-command menu has been improved—blue now marks only the selected row, matched characters are bolded instead of recolored, and emoji or accented names keep their glyphs. Also, `/code-review` (alias `/review`) now reuses your last effort level when called without a level, and you can specify depth like `/code-review ultra` for deep cloud reviews.
+
+## What's new in v2.1.232
+
+**Cross-session messaging (v2.1.232):** Type `@` in the prompt to mention another Claude session by name; Claude then uses `SendMessage` to reach that session directly. `SendMessage` now delivers to a bare name that exactly matches one live session, eliminating confirmation steps. Use `/config` to set "Messages from your other sessions" to accept, hold, or refuse inbound cross-session messages.

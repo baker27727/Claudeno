@@ -239,3 +239,19 @@
   no: "`ListAgents` offline-merke"
   note: "Marks disconnected Remote Control sessions as `offline` and cloud
     sessions as `cloud` (new in 2.1.229)."
+- id: "subagent-forking"
+  en: "subagent forking"
+  no: "underagent-forgrening"
+  note: "Default behavior where a `subagent_type: \"fork\"` subagent inherits full
+    conversation history and prompt cache (new in 2.1.232)."
+- id: "dialog-expiry"
+  en: "dialog expiry"
+  no: "dialogutløp"
+  note: "Configuration setting controlling how cross-session messages are handled
+    over time (new in 2.1.232)."
+- id: "session-name-uniqueness"
+  en: "session name uniqueness"
+  no: "økt-navnuniqueness"
+  note: "Feature ensuring interactive sessions on one machine have unique names;
+    name conflicts are resolved with `name-word-word` variants (new in
+    2.1.232)."
