@@ -118,3 +118,7 @@ Subagent spawning is now capped at 20 concurrent agents per session (override wi
 ## What's new in v2.1.232
 
 **Subagent forking (v2.1.232):** Subagent forking is now enabled by default. When you create a `subagent_type: "fork"` subagent, it automatically inherits the full conversation history and prompt cache, making it easier to spawn specialized agents that understand context. Non-teammate agents spawned in interactive sessions now run in the background by default, keeping your terminal responsive.
+
+## What's new in v2.1.233
+
+New in 2.1.232: Subagent forking is now on by default—a `subagent_type: "fork"` subagent inherits the full conversation and prompt cache, and non-teammate agent spawns in interactive sessions now run in the background by default.

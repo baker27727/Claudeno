@@ -142,3 +142,7 @@ Versjon 2.1.224 la til to nye innstillinger for kryssøkt-kommunikasjon: `crossS
 ## Nytt i v2.1.232
 
 **Øktnavngiving og tvers-økt-konfig (v2.1.232):** Interaktive økter på en maskin beholder nå unike navn; hvis du gir en økt samme navn som en annen aktiv økt, får den automatisk en `navn-ord-ord`-variant. `/config` inneholder nå "Dialog expiry" (Dialogutløp) og "Messages from your other sessions" (Meldinger fra dine andre økter) for å håndtere innkommende meldinger på tvers av økter.
+
+## Nytt i v2.1.233
+
+Nytt i 2.1.233: Anthropic-oppstrøm tilbyr nå en frivillig `forward_user_identity` apps gateway-innstilling som sender den påloggede brukerens identitet som overskrifter, slik at mellommenn kan tilskrive kostnader per bruker. Miljøvariablene `CLAUDE_CODE_TOOL_MEMORY_LIMIT` (minnegrenser for Linux Bash-verktøy) og `CLAUDE_CODE_WEBFETCH_CACHE_TTL_MS` (WebFetch-bufferttl, standard 15 minutter) er nå konfigurerbare.

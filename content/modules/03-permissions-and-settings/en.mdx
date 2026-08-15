@@ -140,3 +140,7 @@ Version 2.1.224 added two new cross-session settings: `crossSessionInbound` cont
 ## What's new in v2.1.232
 
 **Session naming and cross-session config (v2.1.232):** Interactive sessions on one machine now keep unique names; if you rename a session to a name another live session already uses, it automatically gets a `name-word-word` variant. `/config` now includes "Dialog expiry" and "Messages from your other sessions" rows to manage cross-session inbound message handling.
+
+## What's new in v2.1.233
+
+New in 2.1.233: Anthropic upstreams now offer an opt-in `forward_user_identity` apps gateway setting that sends the signed-in user's identity as headers, enabling proxies to attribute spending per user. Environment variables `CLAUDE_CODE_TOOL_MEMORY_LIMIT` (Linux Bash tool memory limits) and `CLAUDE_CODE_WEBFETCH_CACHE_TTL_MS` (WebFetch cache TTL, default 15 minutes) are now configurable.

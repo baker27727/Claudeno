@@ -104,3 +104,7 @@ New in 2.1.221: MCP servers from `--mcp-config` are now properly connected befor
 ## What's new in v2.1.228
 
 **Improved OAuth reliability (2.1.225+):** MCP OAuth servers on macOS are now more resilient — intermittent keychain read timeouts no longer cause repeated 401 errors that would wrongly suggest authentication never succeeded. Expired or missing Google Cloud credentials for Vertex AI now fail fast (within seconds) instead of retrying for minutes.
+
+## What's new in v2.1.233
+
+New in 2.1.233: Fixed MCP v2 connections that were endlessly reopening subscriptions/listen streams against servers terminating long-held streams on a fixed timeout (common on serverless hosts).

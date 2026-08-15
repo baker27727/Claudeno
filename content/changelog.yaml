@@ -1,3 +1,22 @@
+- id: "2.1.233"
+  version: "2.1.233"
+  date: "2026-08-15"
+  entry:
+    en: "Version 2.1.233 adds GitLab merge request URL support to --worktree and
+      claude agents view, introduces opt-in user identity forwarding for apps
+      gateways, adds memory and cache TTL configuration for Bash tools and
+      WebFetch, improves screen reader mode accessibility, and fixes issues with
+      MCP v2 streams, permission prompts, CPU usage on Linux, skill command
+      shadowing, argument substitution, Windows path validation, and Bash
+      permission checks."
+    no: "Versjon 2.1.233 legger til GitLab merge request-URL-støtte for --worktree
+      og claude agents-visning, introduserer frivillig
+      brukeridentitetsvideresendig for apps gateways, legger til minne- og
+      buffer TTL-konfigurasjon for Bash-verktøy og WebFetch, forbedrer
+      tilgjengeligheten til skjermleser-modus, og fikser problemer med MCP
+      v2-strømmer, tillatelsesmeldinger, CPU-bruk på Linux,
+      skill-kommandoskygger, argumentutvidelse og Windows-stiversvalidering."
+  sources: []
 - id: "2.1.232"
   version: "2.1.232"
   date: "2026-08-14"

@@ -255,3 +255,25 @@
   note: "Feature ensuring interactive sessions on one machine have unique names;
     name conflicts are resolved with `name-word-word` variants (new in
     2.1.232)."
+- id: "gitlab-merge-request-url"
+  en: "GitLab merge request URL"
+  no: "GitLab merge request-URL"
+  note: "URLs pointing to merge requests on GitLab, now supported by --worktree
+    flag and displayed as !N in claude agents view (new in 2.1.233)"
+- id: "forward_user_identity"
+  en: "forward_user_identity"
+  no: "forward_user_identity"
+  note: "Opt-in apps gateway setting on Anthropic upstreams that forwards
+    signed-in user identity headers for per-user spend attribution (new in
+    2.1.233); kept as English configuration identifier"
+- id: "claude_code_tool_memory_limit"
+  en: "CLAUDE_CODE_TOOL_MEMORY_LIMIT"
+  no: "CLAUDE_CODE_TOOL_MEMORY_LIMIT"
+  note: "Environment variable enabling memory cgroup support for Bash tool
+    commands on Linux to prevent runaway builds from stalling sessions (new in
+    2.1.233)"
+- id: "claude_code_webfetch_cache_ttl_ms"
+  en: "CLAUDE_CODE_WEBFETCH_CACHE_TTL_MS"
+  no: "CLAUDE_CODE_WEBFETCH_CACHE_TTL_MS"
+  note: "Environment variable configuring WebFetch session URL cache TTL in
+    milliseconds (default: 15 minutes, 900000 ms) (new in 2.1.233)"
