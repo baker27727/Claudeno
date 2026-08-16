@@ -132,3 +132,7 @@ Version 2.1.224 introduced `claude self-hosted-runner`, which allows you to turn
 ## What's new in v2.1.229
 
 **New in 2.1.229:** Self-hosted runner Windows startup now requires an explicit `--base-dir` flag; there is no default checkout directory on Windows. This ensures clearer control over session file locations in headless environments.
+
+## What's new in v2.1.233
+
+Headless sessions now send SSE keepalive pings during long thinking pauses on Vertex and Bedrock, preventing idle-timeout disconnects.
