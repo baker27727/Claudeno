@@ -1,0 +1,203 @@
+---
+title: Data Analysis with Claude Code
+description: Use Claude Code to automate data cleaning, transformation, and analysis workflows with AI-powered assistance
+updatedDate: 2025-01-20T00:00:00Z
+author: Claude Code Learn
+profession: excel-and-data-analysis
+difficulty: intermediate
+tools: ["Claude Code", "Python", "pandas", "Excel"]
+tags: ["data-analysis", "automation", "spreadsheets", "data-cleaning", "python"]
+sources: [
+  "https://docs.anthropic.com/en/docs/claude-code/overview",
+  "https://support.microsoft.com/en-us/excel/",
+  "https://pandas.pydata.org/docs/"
+]
+relatedModules: []
+relatedUseCases: []
+order: 1
+draft: false
+---
+
+# Data Analysis with Claude Code
+
+Claude Code is an agentic coding tool that can read your codebase, edit files, run commands, and integrate with your development tools. For data analysts and professionals working with Excel and spreadsheets, Claude Code offers powerful capabilities to automate repetitive analysis tasks and accelerate your workflow.
+
+## Why Use Claude Code for Data Analysis?
+
+- **Automate data cleaning**: Let Claude Code write and execute scripts to clean messy datasets, handle missing values, and standardize formats
+- **Rapid prototyping**: Describe your analysis goal in natural language and Claude Code generates the code
+- **Integration with tools**: Claude Code works across your terminal, IDE, desktop, and browser—wherever your data lives
+- **Python + Excel**: Combine Python libraries like pandas with Excel workflows for comprehensive data manipulation
+
+## Getting Started
+
+### 1. Data Cleaning and Transformation
+
+Describe your data cleaning task to Claude Code:
+
+```
+"I have a CSV file with customer data. Some rows have missing email addresses, 
+and dates are in mixed formats. Please clean the data and save it to a new file."
+```
+
+Claude Code will:
+- Read your data file
+- Identify and handle missing values
+- Standardize date formats
+- Execute the transformation
+- Save the cleaned dataset
+
+### 2. Data Analysis and Insights
+
+Use Claude Code to perform exploratory data analysis:
+
+```
+"Analyze this sales spreadsheet. Show me the top-performing regions, 
+monthly trends, and any outliers worth investigating."
+```
+
+Claude Code can generate:
+- Statistical summaries
+- Visualizations (charts, plots)
+- Trend analysis
+- Anomaly detection
+
+### 3. Batch Processing
+
+Process multiple files or large datasets:
+
+```
+"I have 50 monthly sales reports in Excel. Combine them into a single dataset,
+agg aggregate by product category, and create a summary dashboard."
+```
+
+## Practical Examples
+
+### Example 1: Clean and Merge Datasets
+
+```python
+import pandas as pd
+
+# Load and clean data
+df = pd.read_csv('raw_data.csv')
+df = df.dropna()  # Remove rows with missing values
+df['date'] = pd.to_datetime(df['date'])  # Standardize dates
+
+# Merge with another dataset
+other_df = pd.read_csv('supplementary_data.csv')
+merged = pd.merge(df, other_df, on='id')
+
+# Save result
+merged.to_csv('clean_data.csv', index=False)
+```
+
+With Claude Code, you simply describe the task and it handles the implementation.
+
+### Example 2: Calculate Key Metrics
+
+```python
+# Claude Code can generate pivot tables and aggregations
+revenue_by_region = df.groupby('region')['revenue'].sum()
+top_products = df.groupby('product')['sales'].sum().nlargest(10)
+
+# Create performance summary
+summary = {
+    'total_revenue': df['revenue'].sum(),
+    'average_transaction': df['transaction_value'].mean(),
+    'customer_count': df['customer_id'].nunique()
+}
+```
+
+### Example 3: Automate Excel Updates
+
+Using Claude Code to update Excel files programmatically:
+
+```python
+from openpyxl import load_workbook
+
+# Load and modify Excel workbook
+wb = load_workbook('report.xlsx')
+ws = wb.active
+ws['A1'] = 'Updated Data'
+# Add your data updates here
+wb.save('report.xlsx')
+```
+
+## Best Practices
+
+1. **Start simple**: Begin with clear, specific tasks ("clean missing values") before complex workflows
+2. **Provide context**: Share sample data or describe your data structure
+3. **Request validation**: Ask Claude Code to show you results before saving files
+4. **Use version control**: Keep backups of original data before running transformations
+5. **Document workflows**: Save successful scripts for reuse on similar datasets
+
+## Integration with Excel
+
+While Claude Code works with Python and pandas for complex analysis, you can:
+
+- Import Excel files using pandas: `df = pd.read_excel('file.xlsx')`
+- Process data with Python
+- Export results back to Excel: `df.to_excel('output.xlsx')`
+- Combine Excel's visualization with programmatic data preparation
+
+## When to Use Claude Code vs Excel
+
+| Task | Tool |
+|------|------|
+| Simple calculations, manual entry | Excel |
+| Automating repetitive analysis | Claude Code |
+| Complex data transformations | Claude Code |
+| Quick charts and pivots | Excel |
+| Merging/cleaning large datasets | Claude Code |
+| Sharing formatted reports | Excel |
+
+## Tips for Success
+
+- **Be descriptive**: "Remove rows where sales < 100 and group by product category" is better than "clean the data"
+- **Ask for validation**: Request summaries or sample outputs before committing changes
+- **Leverage pandas**: Claude Code excels at pandas operations—learn basic pandas syntax for better results
+- **Combine tools**: Use Claude Code for processing, Excel for presentation
+
+## Common Tasks
+
+### Task: Find duplicates
+```python
+duplicates = df[df.duplicated(subset=['email'], keep=False)]
+```
+
+### Task: Create calculated columns
+```python
+df['profit_margin'] = (df['revenue'] - df['cost']) / df['revenue']
+```
+
+### Task: Filter and summarize
+```python
+top_customers = df[df['revenue'] > 10000].groupby('region').size()
+```
+
+## Frequently Asked Questions
+
+**Q: Can Claude Code directly edit my Excel file?**
+A: Yes, Claude Code can read and write Excel files using Python libraries like openpyxl and pandas.
+
+**Q: How does Claude Code handle large datasets?**
+A: Claude Code uses efficient libraries like pandas to handle datasets with millions of rows, though performance depends on your system's resources.
+
+**Q: Do I need to know Python?**
+A: No! You describe your analysis goal in plain English, and Claude Code generates the code. Understanding basic Python syntax helps you verify results.
+
+**Q: Is my data secure with Claude Code?**
+A: Claude Code runs locally on your system. Your data doesn't leave your machine unless you explicitly upload it or save it to the cloud.
+
+**Q: Can I schedule recurring analysis tasks?**
+A: Yes, once Claude Code generates a script, you can schedule it using system tools (cron on Linux/Mac, Task Scheduler on Windows).
+
+## Next Steps
+
+1. Identify a repetitive analysis task you perform regularly
+2. Open Claude Code and describe the task in detail
+3. Review the generated code and run it on a test dataset
+4. Refine and save the script for future use
+5. Extend the script as your analysis needs grow
+
+By combining Claude Code's AI-powered automation with Python's data analysis capabilities, you can dramatically reduce time spent on routine tasks and focus on deriving insights from your data.

@@ -1,0 +1,99 @@
+---
+title: Automated Statistical Analysis and Reporting
+description: Use Claude Code to automate statistical analyses, validate datasets, and generate reproducible reports with Python libraries like SciPy and pandas.
+updatedDate: 2025-01-17T00:00:00Z
+author: Claude Code Learn
+profession: statistics-and-reporting
+difficulty: intermediate
+tools: ["Claude Code", "Python", "SciPy", "pandas", "NumPy"]
+tags: ["statistics", "data-analysis", "reporting", "automation", "Python"]
+sources: [
+  "https://docs.anthropic.com/en/docs/claude-code/overview",
+  "https://docs.scipy.org/doc/scipy/",
+  "https://pandas.pydata.org/docs/"
+]
+relatedModules: []
+relatedUseCases: []
+faq:
+  - question: "Can Claude Code run statistical tests automatically?"
+    answer: "Yes. Claude Code can execute SciPy's statistical tests (t-tests, ANOVA, chi-square, etc.), interpret results, and generate insights—all without manual intervention."
+  - question: "How can I validate data quality programmatically?"
+    answer: "Use pandas with Claude Code to detect missing values, outliers, and inconsistencies. Claude Code can read your dataset, apply validation rules, and generate a quality report."
+  - question: "Can Claude Code help with reproducible research?"
+    answer: "Absolutely. Claude Code can generate documented Python scripts that readers can run independently, ensuring your statistical workflows are transparent and verifiable."
+draft: false
+order: 1
+---
+
+## Overview
+
+Statisticians and data analysts spend significant time on repetitive tasks: loading datasets, performing validation checks, running standard tests, and compiling results into reports. Claude Code automates these workflows by executing Python code that handles the entire pipeline—from data ingestion through statistical testing to report generation.
+
+## Common Workflows
+
+### 1. Automated Data Validation
+
+Before any analysis, data quality checks are essential. Claude Code can:
+
+- **Load and inspect datasets** using pandas to identify structure, data types, and dimensions
+- **Detect anomalies** like missing values, duplicates, and out-of-range entries
+- **Generate validation reports** summarizing data quality issues and recommendations
+
+Example: You provide a CSV file and ask Claude Code to identify data quality problems. It loads the file, checks for missing values, detects outliers using statistical methods, and produces a summary report—all in one execution.
+
+### 2. Statistical Testing Workflows
+
+Claude Code can orchestrate complex statistical analyses:
+
+- **Run multiple test types** (parametric and non-parametric) using SciPy
+- **Interpret results** by checking p-values, effect sizes, and confidence intervals
+- **Handle edge cases** like unequal group sizes or non-normal distributions
+
+Example: Submit raw data and Claude Code performs exploratory analysis, checks assumptions (normality, homogeneity of variance), selects appropriate tests, and documents findings.
+
+### 3. Report Generation
+
+Claude Code creates structured reports with:
+
+- **Visualizations** using matplotlib or seaborn
+- **Statistical summaries** (tables, descriptive statistics)
+- **Narrative interpretation** of results in context
+
+Example: Run an analysis and get a professional markdown or HTML report ready for stakeholders.
+
+## Practical Example: Complete Analysis Pipeline
+
+You provide a dataset and research question. Claude Code:
+
+1. Loads and explores the data
+2. Checks statistical assumptions (normality, equal variances)
+3. Selects and executes appropriate tests
+4. Computes effect sizes and confidence intervals
+5. Generates a report with tables, visualizations, and interpretations
+
+## Key Benefits
+
+- **Speed**: Routine analyses that take hours complete in minutes
+- **Consistency**: Standardized workflows reduce human error
+- **Transparency**: Generated code is auditable and reproducible
+- **Scalability**: Same workflow applies to datasets of any size
+
+## Tools Used
+
+- **SciPy**: Statistical functions and hypothesis tests
+- **pandas**: Data manipulation and aggregation
+- **NumPy**: Numerical computation
+- **matplotlib/seaborn**: Visualization
+
+## Best Practices
+
+1. **Provide clear context**: Describe your data, variables, and research question
+2. **Specify assumptions**: Mention if you know your data violates normality or have unequal sample sizes
+3. **Request documentation**: Ask Claude Code to comment code and explain decisions
+4. **Review outputs**: Always check that statistical choices are appropriate for your data
+
+## Limitations
+
+- Claude Code works best with well-structured datasets (tidy format)
+- Complex study designs may require manual setup; Claude Code excels at execution once defined
+- Domain expertise is still needed to interpret results in your field's context

@@ -1,176 +1,139 @@
 ---
-title: "Project Management with Claude Code"
-description: "Use Claude Code to write project briefs, meeting notes, status updates, risk registers, and project communication."
-updatedDate: "2026-07-09T14:00:00.000Z"
-profession: "project-management"
+title: "Project Management with Claude"
+description: "Use Claude Code to streamline project planning, status tracking, task automation, and team coordination."
+updatedDate: "2026-08-15T00:00:00Z"
+author: "Claude Code Learn"
+profession: "project-management-with-claude"
 difficulty: "beginner"
-tools:
-  - "Claude Code"
-  - "Markdown"
-  - "GitHub"
-  - "Notion"
-tags:
-  - "project management"
-  - "planning"
-  - "documentation"
-  - "agile"
-  - "Claude Code"
-sources:
-  - "https://docs.anthropic.com/en/docs/claude-code/overview"
-relatedModules:
-  - "getting-started"
-  - "cli-basics"
-relatedUseCases:
-  - "writing-with-claude"
-  - "research-and-summarization-with-claude"
-  - "customer-support-with-claude"
-draft: false
-order: 5
+tools: ["Claude Code", "Claude API", "File Management"]
+tags: ["project-management", "automation", "task-tracking", "team-collaboration", "planning"]
+sources: ["https://docs.anthropic.com/en/docs/claude-code/overview", "https://www.anthropic.com/news"]
+relatedModules: []
+relatedUseCases: []
 faq:
-  - question: "Can Claude Code replace project management software?"
-    answer: "No. Claude Code helps draft plans, updates, and documents, but you still need a task tracker such as Jira, Linear, or Trello for assignments, timelines, and collaboration."
-  - question: "Can Claude Code read Jira or Linear tickets?"
-    answer: "Not directly. Export or save tickets as Markdown or CSV files, and Claude can analyse and summarise them. Direct API access requires separate setup."
-  - question: "Is Claude Code useful for Agile project management?"
-    answer: "Yes. It can draft sprint goals, user stories, retrospectives, and acceptance criteria from short notes or requirements."
-  - question: "How do I keep project docs up to date with Claude Code?"
-    answer: "Store your documents as Markdown files in the project folder. Ask Claude to rewrite sections when requirements change, and keep version history with Git."
+  - question: "Can Claude help with real-time project updates?"
+    answer: "Claude can read and update project files, parse status documents, and generate reports. For real-time synchronization with tools like Jira or Monday.com, you would need API integrations or Claude plugins."
+  - question: "How can I use Claude for risk identification?"
+    answer: "Provide Claude with project scope documents, timelines, and resource lists. Claude can analyze these to identify potential scheduling conflicts, resource constraints, and common project risks."
+  - question: "Can Claude automate meeting notes?"
+    answer: "Yes, Claude can process meeting transcripts, extract action items, identify owners, and generate structured summaries that feed into your project tracking system."
+draft: false
+order: 1
 ---
 
-Project managers spend a significant portion of their time writing: status updates, meeting notes, requirement briefs, risk registers, and stakeholder communications. **Claude Code** helps turn raw notes into structured project documents directly from the terminal.
+## Overview
 
-This guide covers practical project management workflows using Claude Code.
+Project management involves coordinating people, timelines, and resources—tasks where Claude can add significant value. Claude Code enables you to:
 
-## Why project managers use Claude Code
+- **Automate planning workflows**: Generate project templates, breakdown structures, and timelines
+- **Track and analyze status**: Parse status documents and dashboards, generate insights
+- **Identify risks early**: Review scope, schedules, and dependencies for potential issues
+- **Process team communication**: Extract action items from meeting notes and emails
+- **Generate reports**: Create executive summaries, burndown charts, and progress dashboards
 
-Claude Code does not replace your project management tool, but it removes friction from documentation work.
+## Getting Started
 
-Key benefits:
+### 1. Project Planning & Breakdown
 
-- **Draft status updates** from bullet-point notes.
-- **Write user stories** and acceptance criteria from feature ideas.
-- **Summarise meetings** into decisions and action items.
-- **Compare document versions** to track changes.
-- **Generate project READMEs** and onboarding guides.
-- **Keep everything in Markdown**, making version control and handoffs easier.
+Start with project definition. Create a scope document, and have Claude help structure it:
 
-## Use case 1: status update from bullet notes
-
-You have rough notes from the week and need a polished update.
-
-Create `weekly-notes.md`:
-
-```markdown
-- Backend API merged to staging
-- Frontend blocked waiting for design tokens
-- QA found 3 regressions in checkout flow
-- Next: deploy to production on Thursday
-- Risk: designer availability next week
+```
+User prompt:
+"I'm starting a website redesign project. We need to update our homepage, product pages, and checkout flow. 
+The timeline is 8 weeks, and we have 3 designers and 2 developers. Create a work breakdown structure (WBS) 
+with milestones and a draft timeline."
 ```
 
-Ask Claude:
+Claude will:
+- Create a hierarchical WBS (phases → deliverables → tasks)
+- Suggest realistic milestones based on scope and team size
+- Identify critical path items
+- Flag dependency chains
 
-```bash
-claude "Read weekly-notes.md and write a concise project status update for stakeholders. Include achievements, blockers, risks, and next steps."
+### 2. Status Tracking & Reporting
+
+Maintain project status in simple text or CSV files. Have Claude parse and analyze:
+
+```
+User prompt:
+"Here's our current project status [file]. Generate a one-page executive summary highlighting: 
+1) tasks completed this week, 2) tasks at risk, 3) blockers, and 4) upcoming critical milestones."
 ```
 
-The result is a paragraph you can paste into Slack, Notion, email, or a steering deck.
+Claude will extract key information, identify trends, and flag items needing attention.
 
-## Use case 2: user stories from a feature brief
+### 3. Risk & Issue Management
 
-Turn a feature idea into backlog-ready user stories.
+Provide project documents (scope, schedule, resource plan), and ask Claude to identify risks:
 
-Create `feature-brief.md`:
-
-```markdown
-# Feature: one-click reorder
-
-Users want to reorder their last purchase without browsing the shop again.
-Requirements:
-- Show last order on account dashboard
-- One button to add all items to cart
-- Allow removing individual items before checkout
+```
+User prompt:
+"Analyze our project plan for risks. Consider scope creep, resource constraints, and schedule pressure. 
+Rank the top 5 risks by impact and likelihood, and suggest mitigation strategies."
 ```
 
-Run:
+Claude can identify common patterns (understaffing, unrealistic timelines, unclear requirements) and suggest mitigation approaches.
 
-```bash
-claude "Read feature-brief.md and write 5 user stories with acceptance criteria for a developer backlog. Use the format: As a [role], I want [goal], so that [benefit]."
+### 4. Meeting Notes & Action Items
+
+After meetings, have Claude process notes:
+
+```
+User prompt:
+"Extract from these meeting notes: 1) action items with owners and due dates, 2) decisions made, 
+3) open questions, and 4) risks discussed. Format as a structured list."
 ```
 
-Claude returns structured stories you can paste into Jira, Linear, or GitHub Issues.
+Claude will parse narrative notes and create actionable, tracked items.
 
-## Use case 3: meeting summary and action items
+## Best Practices
 
-Save meeting notes as `meeting.md`:
+### Be Specific with Context
+- Provide the full project scope, not just isolated questions
+- Share timeline constraints, team size, and dependencies
+- Include past project data if asking for estimates
 
-```markdown
-Attendees: Anna, Ben, Clara
-Decisions:
-- Migrate auth service by end of Q2
-- Delay mobile redesign by 2 weeks
-Action items:
-- Anna: prepare migration plan
-- Ben: update roadmap
-- Clara: communicate delay to clients
-```
+### Use Templates
+- Create reusable prompts for recurring tasks (status reports, risk reviews, action item extraction)
+- Save Claude's structured templates for consistency across projects
 
-Then ask:
+### Validate Outputs
+- Claude's suggestions are starting points, not final answers
+- Review risk assessments against your team's actual capacity and constraints
+- Cross-check generated timelines with your team's input
 
-```bash
-claude "Read meeting.md and produce a formal meeting summary with decisions and a table of action items including owner and deadline."
-```
+### Integrate with Tools
+- Export Claude's outputs to your project management tool (Jira, Monday.com, Asana)
+- Use Claude Code to read project files and keep summaries updated
+- Combine Claude's analysis with your team's domain knowledge
 
-## Use case 4: project README and onboarding doc
+## Common Workflows
 
-A good README helps new team members get started. Point Claude at your project files:
+### Weekly Status Report Generation
+1. Collect status updates from team (in a shared document or file)
+2. Ask Claude to read the file and generate a structured report
+3. Claude extracts completed work, blockers, and upcoming priorities
+4. Review and customize the report before sharing with stakeholders
 
-```bash
-claude "Read the files in this project and write a README.md that explains what the project does, how to set it up, and who to contact for questions."
-```
+### Resource Allocation Analysis
+1. Provide Claude with task list and team member capacity
+2. Ask Claude to identify conflicts (over-allocated team members, idle capacity)
+3. Use Claude's suggestions to rebalance the workload
 
-You can then refine:
+### Post-Project Retrospective
+1. Collect project data (original plan vs. actual, blockers, successes)
+2. Ask Claude to analyze variance and identify lessons learned
+3. Use insights for improving future project planning
 
-```bash
-claude "Add a section for common troubleshooting issues."
-```
+## Tips
 
-## Use case 5: risk register from notes
+- **Ask Claude to challenge assumptions**: "What could derail this timeline? What are we underestimating?"
+- **Use Claude for scenario planning**: "If we lose one developer, how does the timeline shift?"
+- **Leverage Claude for documentation**: Generate project charters, communication plans, and handoff documents
+- **Combine with APIs**: Use Claude alongside your project management tool's API for automated, intelligent status updates
 
-Turn identified risks into a structured register:
+## Related Learning
 
-```bash
-claude "Read project-risks.md and format the risks as a table with columns: Risk, Impact, Likelihood, Mitigation, Owner."
-```
-
-This makes risks easier to review in status meetings.
-
-## Best practices for project management with Claude Code
-
-### 1. Keep notes in Markdown files
-Files are easier to edit, search, and version than chat threads.
-
-### 2. Use consistent templates
-Ask Claude to follow a template for status updates, user stories, or meeting notes.
-
-### 3. Always review names, dates, and dependencies
-Claude can misinterpret context. Verify factual details before sharing.
-
-### 4. Separate drafts from final documents
-Save Claude's output to a draft file, then edit before publishing.
-
-### 5. Link to your project management tool
-Claude drafts content; your task tracker owns assignments and deadlines.
-
-## Common mistakes to avoid
-
-- **Using Claude as a source of truth for deadlines** — always confirm dates in your calendar or project tool.
-- **Publishing drafts unedited** — stakeholder communications need your judgement.
-- **Asking vague questions** — the more context you provide, the better the output.
-- **Ignoring confidentiality** — avoid sharing sensitive project data unless approved.
-
-## Next steps
-
-- Improve your writing workflow with [Writing with Claude Code](/en/use-cases/writing-with-claude/).
-- Learn how to summarise research with [Research and summarisation with Claude Code](/en/use-cases/research-and-summarization-with-claude/).
-- Start with the [Getting Started module](/en/learn/getting-started/) if you are new to Claude Code.
+- Explore Claude Code's file and code capabilities to automate data extraction from project files
+- Learn about prompt caching for large project documents that you reference repeatedly
+- Check out how to integrate Claude with external tools for workflow automation

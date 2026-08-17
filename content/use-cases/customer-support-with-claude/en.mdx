@@ -1,150 +1,191 @@
 ---
-title: "Customer Support with Claude Code"
-description: "Use Claude Code to draft support replies, build FAQ documents, analyse ticket trends, and create internal troubleshooting guides from support data."
-updatedDate: "2026-07-09T14:00:00.000Z"
-profession: "customer-support"
-difficulty: "beginner"
+title: Customer Support with Claude
+description: Learn how to build AI-powered customer support systems using Claude, including best practices for handling inquiries, managing conversations, and improving response quality.
+updatedDate: 2024-01-15T00:00:00Z
+author: Claude Code Learn
+profession: customer-support-with-claude
+difficulty: intermediate
 tools:
-  - "Claude Code"
-  - "Markdown"
-  - "CSV"
+  - Claude API
+  - Claude Code
+  - Python
+useCases:
+  - Customer inquiry handling
+  - Multi-turn conversations
+  - Support ticket triage
 tags:
-  - "customer support"
-  - "helpdesk"
-  - "knowledge base"
-  - "FAQ"
-  - "Claude Code"
+  - customer-support
+  - AI-agents
+  - automation
 sources:
-  - "https://docs.anthropic.com/en/docs/claude-code/overview"
-relatedModules:
-  - "getting-started"
-  - "cli-basics"
-relatedUseCases:
-  - "writing-with-claude"
-  - "research-and-summarization-with-claude"
-  - "project-management-with-claude"
+  - https://docs.anthropic.com/en/docs/claude-code/overview
+  - https://www.anthropic.com/news
+relatedModules: []
+relatedUseCases: []
+faq: []
 draft: false
-order: 7
-faq:
-  - question: "Can Claude Code access my support ticket system?"
-    answer: "Not directly. Export tickets as CSV or text files, then ask Claude to analyse or draft replies from them. API integrations require separate setup."
-  - question: "Is it safe to paste customer messages into Claude Code?"
-    answer: "Avoid sharing personally identifiable information unless your organisation approves it. Anonymise or redact data when possible."
-  - question: "Can Claude Code replace human support agents?"
-    answer: "No. It drafts replies and documentation, but human judgement is essential for empathy, escalation, and complex cases."
-  - question: "How do I keep replies on-brand?"
-    answer: "Provide Claude with examples of approved replies and your tone guidelines. Save templates and ask Claude to follow them."
+order: 1
 ---
 
-Support teams answer the same questions many times a day. **Claude Code** helps draft consistent, helpful replies and turn common questions into a reusable knowledge base.
+## Overview
 
-This guide shows how support teams can use Claude Code for replies, FAQs, ticket analysis, and internal guides.
+Claude Code enables you to build intelligent customer support systems that handle inquiries, manage conversations, and automate responses. This guide covers building effective support automation using Claude's capabilities.
 
-## Why support teams use Claude Code
+## Key Capabilities
 
-Claude Code does not replace human empathy, but it removes repetitive writing work.
+### 1. Multi-Turn Conversations
+Clause Code supports extended conversations with context preservation, allowing your support system to maintain conversation history and provide coherent, contextual responses across multiple turns.
 
-Key benefits:
+### 2. Flexible Integration
+Integrate Claude into your existing support infrastructure:
+- **API Integration**: Use Claude API for programmatic access
+- **Web Integration**: Deploy on web platforms
+- **Custom Applications**: Build with Claude Code CLI or SDK
 
-- **Draft faster replies** to common questions.
-- **Build a Markdown FAQ** from real support conversations.
-- **Categorise ticket exports** by topic or sentiment.
-- **Summarise long email threads** for escalation.
-- **Create internal troubleshooting guides** for agents.
-- **Keep templates file-based** so the team can reuse and improve them.
+### 3. Automated Triage
+Automatically categorize and route inquiries:
+- Identify issue severity and type
+- Route to appropriate support channels
+- Flag urgent matters for human escalation
 
-## Use case 1: draft a reply from a customer message
+## Building a Support System
 
-Create `ticket.md`:
+### Step 1: Define Your Support Scope
+Identify:
+- Common customer inquiries
+- Required knowledge base information
+- Escalation criteria
+- Preferred response tone
 
-```markdown
-Customer: I can't reset my password. The link says expired even though I just received it.
-Account type: Premium
-Previous contact: None
+### Step 2: Create System Prompts
+Develop clear instructions for Claude:
+```
+You are a helpful customer support agent for [Company]. 
+Your role is to:
+1. Address customer inquiries professionally and accurately
+2. Use the provided knowledge base for factual information
+3. Escalate issues you cannot resolve
+4. Maintain a helpful and empathetic tone
 ```
 
-Ask Claude:
+### Step 3: Implement Context Management
+Maintain conversation context by:
+- Storing previous messages
+- Including customer history when relevant
+- Using Claude's context window efficiently
 
-```bash
-claude "Read ticket.md and draft a polite, helpful support reply. Acknowledge the issue, explain the likely cause, and offer a clear next step."
+### Step 4: Set Up Monitoring and Improvement
+- Track response quality and customer satisfaction
+- Collect feedback on Claude's responses
+- Continuously refine system prompts based on interactions
+
+## Best Practices
+
+### 1. Clarity in Instructions
+Provide explicit guidance on:
+- Acceptable response styles
+- Information sources to prioritize
+- Situations requiring human intervention
+
+### 2. Knowledge Management
+- Maintain updated knowledge base documents
+- Reference specific sources in responses
+- Be transparent about limitations
+
+### 3. Handling Escalations
+- Define clear escalation criteria
+- Provide meaningful handoff information
+- Enable human agents to see AI-generated context
+
+### 4. Safety and Compliance
+- Don't ask Claude to make promises about refunds or policies without authorization
+- Verify sensitive information through human agents
+- Maintain audit trails of customer interactions
+
+## Example: Basic Support Chatbot
+
+Here's a simple pattern for building support automation:
+
+```python
+from anthropic import Anthropic
+
+client = Anthropic()
+
+system_prompt = """You are a helpful customer support agent. 
+Your knowledge base:
+- Product specs available in our documentation
+- Common issues and solutions
+When you cannot help, escalate to a human agent."""
+
+conversation_history = []
+
+def handle_customer_message(user_message):
+    conversation_history.append({
+        "role": "user",
+        "content": user_message
+    })
+    
+    response = client.messages.create(
+        model="claude-3-5-sonnet-20241022",
+        max_tokens=1024,
+        system=system_prompt,
+        messages=conversation_history
+    )
+    
+    assistant_message = response.content[0].text
+    conversation_history.append({
+        "role": "assistant",
+        "content": assistant_message
+    })
+    
+    return assistant_message
 ```
 
-Claude returns a reply you can review, personalise, and send.
+## Real-World Considerations
 
-## Use case 2: create an FAQ from support tickets
+### Performance
+- Response latency matters for real-time support
+- Consider caching for common queries
+- Monitor token usage for cost optimization
 
-Export a sample of tickets as `support-tickets.csv`:
+### Quality
+- Implement feedback loops from support team
+- Regular testing with edge cases
+- A/B test prompt variations
 
-```csv
-id,subject,message
-101,Password reset not working,The link says expired...
-102,How do I change my plan,I want to upgrade...
-```
+### Scaling
+- Design for concurrent conversations
+- Implement rate limiting appropriately
+- Plan for peak support hours
 
-Run:
+## Integration Patterns
 
-```bash
-claude "Read support-tickets.csv and create a Markdown FAQ with the 10 most common questions and concise answers. Group related questions together."
-```
+### Email Support
+Automatically draft responses to customer emails, reviewed and sent by humans.
 
-The FAQ becomes a self-service resource and an agent reference.
+### Chat Systems
+Deploy Claude directly in web or mobile chat interfaces for real-time support.
 
-## Use case 3: categorise tickets by topic
+### Ticket Systems
+Use Claude to auto-respond to support tickets and suggest resolutions.
 
-Understanding ticket trends helps prioritise fixes.
+## Limitations and When to Escalate
 
-```bash
-claude "Read support-tickets.csv and categorise each ticket into one of: Billing, Account, Technical, Feature Request, or Other. Return the results as a CSV with the original columns plus a 'category' column."
-```
+Always escalate to humans for:
+- Account security issues
+- Financial transactions or refunds
+- Complaints requiring empathy and judgment
+- Information requiring verification
+- Complex technical issues needing hands-on support
 
-You can then count categories and report trends to the product team.
+## Next Steps
 
-## Use case 4: summarise a long thread
+1. **Start Small**: Begin with a specific support category
+2. **Gather Data**: Collect real customer interactions
+3. **Iterate**: Refine prompts based on performance
+4. **Expand**: Gradually extend coverage
+5. **Monitor**: Track metrics and customer satisfaction
 
-Paste a long email thread into `thread.md` and ask:
+---
 
-```bash
-claude "Read thread.md and summarise: what is the issue, what has been tried, what is the customer's current request, and what should the next action be?"
-```
-
-This is invaluable when escalating complex cases.
-
-## Use case 5: internal troubleshooting guide
-
-Turn agent notes into a structured guide:
-
-```bash
-claude "Read agent-notes.md and write an internal troubleshooting guide for password reset issues. Include symptoms, causes, and step-by-step resolution."
-```
-
-New agents can use this to resolve common issues independently.
-
-## Best practices for support with Claude Code
-
-### 1. Save approved replies as templates
-Build a library of `reply-templates/*.md` files so Claude can match your brand voice.
-
-### 2. Anonymise data before analysis
-Remove names, emails, and account IDs from ticket exports.
-
-### 3. Always review before sending
-AI replies can sound correct but miss emotional nuance or edge cases.
-
-### 4. Keep technical steps accurate
-Ask Claude to base troubleshooting steps on your current product documentation.
-
-### 5. Measure what you automate
-Track which replies come from templates and which still need human authoring.
-
-## Common mistakes to avoid
-
-- **Sending AI replies unedited** — always add a human review step.
-- **Including wrong product details** — verify features and links.
-- **Over-sharing customer data** — follow your privacy policy.
-- **Ignoring escalation signals** — angry or complex cases need a human.
-
-## Next steps
-
-- Improve your writing with [Writing with Claude Code](/en/use-cases/writing-with-claude/).
-- Analyse research and sources with [Research and summarisation with Claude Code](/en/use-cases/research-and-summarization-with-claude/).
-- Learn terminal basics in the [CLI basics module](/en/learn/cli-basics/).
+*Last updated: January 2024*
