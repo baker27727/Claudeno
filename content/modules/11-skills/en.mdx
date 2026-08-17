@@ -112,3 +112,7 @@ The `/verify` and `/code-review` skills are no longer invoked automatically by C
 ## What's new in v2.1.221
 
 New in 2.1.221: Plugins now accept `"."` as a `skills` path in their configuration, and the root-level `SKILL.md` validation error now helpfully suggests using the plugin root as an alternative. The new `prompt-audit` subcommand in the `claude-api` skill allows you to audit prompts and tool descriptions for patterns written for older models.
+
+## What's new in v2.1.233
+
+Fixed in 2.1.233: bundled skill aliases like `/checkup` and `/review` no longer report "Unknown command" when running in `-p` mode or with plugins/MCP loaded. Skill and command argument substitution has also been hardened to prevent argument values from being re-expanded as template markers.

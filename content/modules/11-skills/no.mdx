@@ -111,3 +111,7 @@ Skills `/verify` og `/code-review` blir ikke lenger påkalt automatisk av Claude
 ## Nytt i v2.1.221
 
 Nytt i 2.1.221: Plugin aksepterer nå `"."` som en `skills`-vei i deres konfigurasjon, og rot-nivå `SKILL.md` valideringsfeil foreslår nå bruk av plugin-roten som alternativ. Den nye `prompt-audit` underkommandoen i `claude-api`-skill lar deg revidere ledetekster og verktøybeskrivelser for mønstre skrevet for eldre modeller.
+
+## Nytt i v2.1.233
+
+Rettet i 2.1.233: innebygde skill-aliaser som `/checkup` og `/review` rapporterer ikke lenger "Unknown command" når de kjøres i `-p`-modus eller med plugins/MCP lastet. Skill- og kommando-argumentsubstitusjon er også blitt styrket for å hindre at argumentverdier blir re-utvidet som malapropism-markører.
