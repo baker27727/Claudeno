@@ -277,3 +277,19 @@
   no: "CLAUDE_CODE_WEBFETCH_CACHE_TTL_MS"
   note: "Environment variable configuring WebFetch session URL cache TTL in
     milliseconds (default: 15 minutes, 900000 ms) (new in 2.1.233)"
+- id: "selection:clear"
+  en: "selection:clear"
+  no: "selection:clear"
+  note: "Keybinding action to clear an in-app text selection; also works in agents
+    view (new in 2.1.234); kept as English code identifier"
+- id: "claude_code_project_dir_name"
+  en: "CLAUDE_CODE_PROJECT_DIR_NAME"
+  no: "CLAUDE_CODE_PROJECT_DIR_NAME"
+  note: "Environment variable for hosts to specify a short name for per-project
+    transcript directory (new in 2.1.234); kept as English environment variable
+    identifier"
+- id: "auto-continue-at-usage-limit"
+  en: "auto-continue at usage limit"
+  no: "auto-fortsettelse ved bruksgrense"
+  note: "Feature allowing sessions to automatically resume when a usage limit
+    resets (new in 2.1.234); configurable in /config"

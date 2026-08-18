@@ -146,3 +146,7 @@ Versjon 2.1.224 la til to nye innstillinger for kryssøkt-kommunikasjon: `crossS
 ## Nytt i v2.1.233
 
 Nytt i 2.1.233: Anthropic-oppstrøm tilbyr nå en frivillig `forward_user_identity` apps gateway-innstilling som sender den påloggede brukerens identitet som overskrifter, slik at mellommenn kan tilskrive kostnader per bruker. Miljøvariablene `CLAUDE_CODE_TOOL_MEMORY_LIMIT` (minnegrenser for Linux Bash-verktøy) og `CLAUDE_CODE_WEBFETCH_CACHE_TTL_MS` (WebFetch-bufferttl, standard 15 minutter) er nå konfigurerbare.
+
+## Nytt i v2.1.234
+
+Claude Code fortsetter nå økten din automatisk når en bruksgrense tilbakestilles. Slå dette av i `/config` under "Fortsett automatisk ved bruksgrenseutløp". I tillegg er Claude nå instruert til å bruke e-postadressen din kun til å identifisere deg, og ikke å sende den til urelated tjenester med mindre du eksplisitt ber om det.

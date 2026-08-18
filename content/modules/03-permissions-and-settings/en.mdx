@@ -144,3 +144,7 @@ Version 2.1.224 added two new cross-session settings: `crossSessionInbound` cont
 ## What's new in v2.1.233
 
 New in 2.1.233: Anthropic upstreams now offer an opt-in `forward_user_identity` apps gateway setting that sends the signed-in user's identity as headers, enabling proxies to attribute spending per user. Environment variables `CLAUDE_CODE_TOOL_MEMORY_LIMIT` (Linux Bash tool memory limits) and `CLAUDE_CODE_WEBFETCH_CACHE_TTL_MS` (WebFetch cache TTL, default 15 minutes) are now configurable.
+
+## What's new in v2.1.234
+
+Claude Code now continues your session automatically when a usage limit resets. Turn this off in `/config` under "Continue automatically at usage limit". Additionally, Claude is now told to use your account email only to identify you, and not to send it to unrelated services unless you explicitly ask.
