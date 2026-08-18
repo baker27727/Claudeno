@@ -1,5 +1,145 @@
 [
   {
+    "topic": "Using Claude Code with Remote Control across devices for mobile and desktop collaboration",
+    "status": "candidate",
+    "score": {
+      "frequency": 0.25,
+      "recency": 0.984,
+      "engagement": 0.5,
+      "gap": 1,
+      "total": 0.609
+    },
+    "matchedSources": [
+      "docs_map"
+    ],
+    "whyItMatters": "Remote Control sessions enable developers to run Claude Code on a remote machine and connect from phones, tablets, or other devices. This emerging pattern is critical for teams working across devices, especially mobile-first workflows and secure remote access.",
+    "firstSeen": "2026-08-18T05:32:22.109Z",
+    "lastSeen": "2026-08-18T05:32:22.109Z"
+  },
+  {
+    "topic": "Building Claude Code status line plugins for real-time session cost and context tracking",
+    "status": "candidate",
+    "score": {
+      "frequency": 0.25,
+      "recency": 0.912,
+      "engagement": 0.4,
+      "gap": 1,
+      "total": 0.566
+    },
+    "matchedSources": [
+      "hn_search"
+    ],
+    "whyItMatters": "With token pricing and context window management becoming critical, community-built status line tools (e.g., statuslin.es with 11pts/2c engagement) show strong demand for real-time visibility into session spend, context usage, and rate-limit warnings during active work.",
+    "firstSeen": "2026-08-18T05:32:22.109Z",
+    "lastSeen": "2026-08-18T05:32:22.109Z"
+  },
+  {
+    "topic": "Preventing unintended destructive actions in Claude Code with guardrail agents and safety harnesses",
+    "status": "candidate",
+    "score": {
+      "frequency": 0.5,
+      "recency": 0.912,
+      "engagement": 0.313,
+      "gap": 1,
+      "total": 0.631
+    },
+    "matchedSources": [
+      "hn_search",
+      "github_search"
+    ],
+    "whyItMatters": "Projects like Doberman (6pts/3c) and pr-sentinel show high demand for detection and prevention of database deletions, breaking changes, and unsafe commits. Safety harnesses are critical for autonomous Claude Code workflows in production.",
+    "firstSeen": "2026-08-18T05:32:22.109Z",
+    "lastSeen": "2026-08-18T05:32:22.109Z"
+  },
+  {
+    "topic": "Orchestrating multiple Claude Code agents across repos and hosts with harness patterns",
+    "status": "candidate",
+    "score": {
+      "frequency": 0.5,
+      "recency": 0.912,
+      "engagement": 0.37,
+      "gap": 1,
+      "total": 0.646
+    },
+    "matchedSources": [
+      "hn_search",
+      "github_search"
+    ],
+    "whyItMatters": "HarnessRouter (9pts/10c), agent-mesh, and parallel harness projects show strong community interest in multi-agent coordination, task dispatch, and inter-agent messaging for large-scale coding workflows beyond single-session limits.",
+    "firstSeen": "2026-08-18T05:32:22.109Z",
+    "lastSeen": "2026-08-18T05:32:22.109Z"
+  },
+  {
+    "topic": "Optimizing token usage in Claude Code with context compaction, caching, and the fak kernel",
+    "status": "candidate",
+    "score": {
+      "frequency": 0.25,
+      "recency": 0.984,
+      "engagement": 0.552,
+      "gap": 1,
+      "total": 0.622
+    },
+    "matchedSources": [
+      "github_search"
+    ],
+    "whyItMatters": "The fak project (30★) demonstrates emerging techniques for cache-stable model traffic, local repeat serving, and GGUF inference to reduce token spend. As pricing pressure grows, token optimization is becoming a core workflow concern.",
+    "firstSeen": "2026-08-18T05:32:22.109Z",
+    "lastSeen": "2026-08-18T05:32:22.109Z"
+  },
+  {
+    "topic": "Building Claude Code plugins for specialized domains: quantum error correction, translation, academic writing",
+    "status": "candidate",
+    "score": {
+      "frequency": 0.25,
+      "recency": 0.984,
+      "engagement": 0.676,
+      "gap": 1,
+      "total": 0.653
+    },
+    "matchedSources": [
+      "github_search"
+    ],
+    "whyItMatters": "Domain-specific plugins (QECTOR, ppt-translator, referee-flow) and plugin marketplaces show Claude Code extending into specialized technical and knowledge domains. This pattern enables team reuse and ecosystem growth.",
+    "firstSeen": "2026-08-18T05:32:22.109Z",
+    "lastSeen": "2026-08-18T05:32:22.109Z"
+  },
+  {
+    "topic": "Scheduling and running unattended Claude Code jobs on a subscription without API keys",
+    "status": "candidate",
+    "score": {
+      "frequency": 0.5,
+      "recency": 0.912,
+      "engagement": 0.177,
+      "gap": 1,
+      "total": 0.597
+    },
+    "matchedSources": [
+      "hn_search",
+      "github_search"
+    ],
+    "whyItMatters": "Projects like Cronloop and claude-jobs enable autonomous, scheduled Claude Code runs without ANTHROPIC_API_KEY. This pattern is key for CI/CD integration and asynchronous coding workflows that don't require user interaction.",
+    "firstSeen": "2026-08-18T05:32:22.109Z",
+    "lastSeen": "2026-08-18T05:32:22.109Z"
+  },
+  {
+    "topic": "Detecting and mitigating Claude-generated watermarks through strategic rewriting and prose analysis",
+    "status": "candidate",
+    "score": {
+      "frequency": 0.5,
+      "recency": 0.912,
+      "engagement": 0.288,
+      "gap": 1,
+      "total": 0.625
+    },
+    "matchedSources": [
+      "hn_search",
+      "github_search"
+    ],
+    "whyItMatters": "Claude's new text watermarking feature (5pts) and tools like slopvac show immediate community interest in understanding watermark mechanics and techniques for removing AI writing patterns. This is relevant for compliance, authenticity, and content workflows.",
+    "firstSeen": "2026-08-18T05:32:22.109Z",
+    "lastSeen": "2026-08-18T05:32:22.109Z"
+  },
+  {
     "topic": "Loading Claude Code skills from GitHub repositories at session startup",
     "status": "published",
     "score": {
