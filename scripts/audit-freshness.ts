@@ -71,6 +71,19 @@ function errorMessage(error: unknown): string {
   return "Unknown error (the rejected operation did not provide an Error object)";
 }
 
+function normalizeFreshnessResult(raw: unknown): FreshnessResult {
+  const value = raw && typeof raw === "object" ? raw as Partial<FreshnessResult> : {};
+  return {
+    has_drift: value.has_drift === true,
+    summary: typeof value.summary === "string" ? value.summary : "",
+    corrected_en: typeof value.corrected_en === "string" ? value.corrected_en : "",
+    corrected_no: typeof value.corrected_no === "string" ? value.corrected_no : "",
+    sources: Array.isArray(value.sources)
+      ? value.sources.filter((source): source is string => typeof source === "string")
+      : [],
+  };
+}
+
 async function fetchDoc(url: string, attempts = 3): Promise<string> {
   let lastError: unknown;
   for (let attempt = 1; attempt <= attempts; attempt++) {
@@ -183,7 +196,7 @@ Keep the MDX imports at the top if the original had them. List the source URLs y
   assertTokenBudget(data.usage);
   const toolUse = data.content.find((block) => block.type === "tool_use");
   if (!toolUse?.input) throw new Error(`Claude API did not return a tool_use block for ${slug}`);
-  return toolUse.input as FreshnessResult;
+  return normalizeFreshnessResult(toolUse.input);
 }
 
 function listEvergreenSlugs(root: string): string[] {
