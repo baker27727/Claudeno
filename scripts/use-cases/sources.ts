@@ -6,6 +6,8 @@
 // places.
 
 export interface SourceSet {
+  /** Canonical profession taxonomy value used by use-case frontmatter. */
+  profession: string;
   /** Primary upstream / vendor documentation. */
   docs: string[];
   /** Optional supplementary reading (blogs, guides, changelogs). */
@@ -14,10 +16,12 @@ export interface SourceSet {
 
 export const USE_CASE_SOURCES: Record<string, SourceSet> = {
   "marketing-with-claude": {
+    profession: "marketing",
     docs: ["https://docs.anthropic.com/en/docs/claude-code/overview"],
     refs: ["https://www.anthropic.com/news"],
   },
   "seo-workflow-with-claude": {
+    profession: "seo",
     docs: [
       "https://docs.anthropic.com/en/docs/claude-code/overview",
       "https://developers.google.com/search/docs/fundamentals/seo-starter-guide",
@@ -25,6 +29,7 @@ export const USE_CASE_SOURCES: Record<string, SourceSet> = {
     refs: ["https://www.anthropic.com/news"],
   },
   "excel-and-data-analysis": {
+    profession: "data-analysis",
     docs: ["https://docs.anthropic.com/en/docs/claude-code/overview"],
     refs: [
       "https://support.microsoft.com/en-us/excel",
@@ -32,6 +37,7 @@ export const USE_CASE_SOURCES: Record<string, SourceSet> = {
     ],
   },
   "statistics-and-reporting": {
+    profession: "statistics",
     docs: ["https://docs.anthropic.com/en/docs/claude-code/overview"],
     refs: [
       "https://docs.scipy.org/doc/scipy/",
@@ -39,22 +45,27 @@ export const USE_CASE_SOURCES: Record<string, SourceSet> = {
     ],
   },
   "project-management-with-claude": {
+    profession: "project-management",
     docs: ["https://docs.anthropic.com/en/docs/claude-code/overview"],
     refs: ["https://www.anthropic.com/news"],
   },
   "writing-with-claude": {
+    profession: "writing",
     docs: ["https://docs.anthropic.com/en/docs/claude-code/overview"],
     refs: ["https://www.anthropic.com/news"],
   },
   "customer-support-with-claude": {
+    profession: "customer-support",
     docs: ["https://docs.anthropic.com/en/docs/claude-code/overview"],
     refs: ["https://www.anthropic.com/news"],
   },
   "social-media-with-claude": {
+    profession: "social-media",
     docs: ["https://docs.anthropic.com/en/docs/claude-code/overview"],
     refs: ["https://www.anthropic.com/news"],
   },
   "research-and-summarization-with-claude": {
+    profession: "research",
     docs: ["https://docs.anthropic.com/en/docs/claude-code/overview"],
     refs: ["https://www.anthropic.com/news"],
   },

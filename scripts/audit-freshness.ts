@@ -134,7 +134,9 @@ async function checkContent(
   const apiKey = process.env.ANTHROPIC_API_KEY;
   if (!apiKey) throw new Error("ANTHROPIC_API_KEY is not set");
 
-  const docs = await Promise.all(docUrls.map(fetchDoc));
+  // Do not pass fetchDoc directly to map: map's index argument would replace
+  // the optional retry count (the first URL would receive attempts=0).
+  const docs = await Promise.all(docUrls.map((url) => fetchDoc(url)));
   const maxChars = contentKind === "module" ? MAX_SOURCE_CHARS : MAX_EVERGREEN_SOURCE_CHARS;
 
   const prompt = `You audit a bilingual (English/Norwegian Bokmål) Claude Code ${contentKind} page for factual
