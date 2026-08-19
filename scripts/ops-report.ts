@@ -185,7 +185,9 @@ function openIssue(title: string, body: string) {
     execFileSync("gh", ["issue", "create", "--title", title, "--label", "operations", "--body", body]);
     console.log(`[ops-report] created issue: ${title}`);
   } catch (err) {
-    console.error(`[ops-report] failed to create issue: ${(err as Error).message}`);
+    console.warn(`[ops-report] operations label unavailable; retrying without it: ${(err as Error).message}`);
+    execFileSync("gh", ["issue", "create", "--title", title, "--body", body]);
+    console.log(`[ops-report] created unlabelled issue: ${title}`);
   }
 }
 

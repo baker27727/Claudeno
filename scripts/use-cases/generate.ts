@@ -6,6 +6,7 @@ import { existsSync, mkdirSync, readFileSync, readdirSync, statSync, writeFileSy
 import { join } from "node:path";
 import { parse as parseYaml } from "yaml";
 import { verifyAndPublish } from "../_auto-publish.ts";
+import { normalizeGeneratedContent } from "../_content-safety.ts";
 import { USE_CASE_SOURCES, type SourceSet } from "./sources.ts";
 import type { ResearchResult } from "./research.ts";
 
@@ -231,10 +232,11 @@ function parseFrontmatter(path: string): Record<string, unknown> | undefined {
 }
 
 function writeUseCase(slug: string, en: string, no: string) {
+  if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug)) throw new Error(`Unsafe use-case slug: ${JSON.stringify(slug)}`);
   const dir = join(USE_CASES_DIR, slug);
   mkdirSync(dir, { recursive: true });
-  writeFileSync(join(dir, "en.mdx"), en.trimEnd() + "\n", "utf-8");
-  writeFileSync(join(dir, "no.mdx"), no.trimEnd() + "\n", "utf-8");
+  writeFileSync(join(dir, "en.mdx"), normalizeGeneratedContent(en), "utf-8");
+  writeFileSync(join(dir, "no.mdx"), normalizeGeneratedContent(no), "utf-8");
 }
 
 function updateCatalog(slug: string, titleEn: string, titleNo: string) {

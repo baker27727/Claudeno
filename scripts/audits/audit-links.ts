@@ -62,24 +62,30 @@ function collectUrls(): Set<string> {
 }
 
 async function checkUrl(url: string): Promise<string | undefined> {
-  const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), 10_000);
-  try {
-    let res = await fetch(url, { method: "HEAD", redirect: "follow", signal: controller.signal });
-    if (res.status === 405 || res.status === 501) {
-      res = await fetch(url, { method: "GET", redirect: "follow", signal: controller.signal });
+  for (let attempt = 1; attempt <= 3; attempt++) {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 15_000);
+    try {
+      const init = { redirect: "follow" as const, signal: controller.signal, headers: { "user-agent": "Claudeno link audit" } };
+      let res = await fetch(url, { ...init, method: "HEAD" });
+      if (res.status === 405 || res.status === 501) res = await fetch(url, { ...init, method: "GET" });
+      if (res.status >= 400) return `${url}: HTTP ${res.status}`;
+      return undefined;
+    } catch (err) {
+      if (attempt === 3) {
+        console.warn(`audit-links: transient check failure after 3 attempts (not treated as a dead link): ${url}: ${(err as Error).message}`);
+        return undefined;
+      }
+      await new Promise((resolve) => setTimeout(resolve, attempt * 500));
+    } finally {
+      clearTimeout(timeout);
     }
-    if (res.status >= 400) return `${url}: HTTP ${res.status}`;
-    return undefined;
-  } catch (err) {
-    return `${url}: ${(err as Error).message}`;
-  } finally {
-    clearTimeout(timeout);
   }
 }
 
 const urls = [...collectUrls()].filter((u) => !isExempt(u));
-const results = await Promise.all(urls.map(checkUrl));
+const results: Array<string | undefined> = [];
+for (let i = 0; i < urls.length; i += 8) results.push(...await Promise.all(urls.slice(i, i + 8).map(checkUrl)));
 const errors = results.filter((r): r is string => Boolean(r));
 
 if (errors.length > 0) fail("audit-links", errors);

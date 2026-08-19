@@ -139,9 +139,11 @@ export function verify(): string | null {
  * conflict (rebase fails) or repeated rejection past `attempts` is reported
  * back so the caller can fall through to the branch/issue fallback.
  */
-function commitAndPushWithRetry(paths: string[], commitMessage: string, attempts = 3): { ok: true } | { ok: false; error: string } {
+function commitAndPushWithRetry(paths: string[], commitMessage: string, attempts = 3): { ok: true; noop?: boolean } | { ok: false; error: string } {
   try {
     execFileSync("git", ["add", ...paths]);
+    const staged = run("git", ["diff", "--cached", "--quiet"]);
+    if (staged.ok) return { ok: true, noop: true };
     execFileSync("git", ["commit", "-m", commitMessage]);
   } catch (err) {
     return { ok: false, error: `commit failed: ${(err as Error).message}` };
@@ -231,6 +233,13 @@ export async function verifyAndPublish(opts: {
     const pushResult = commitAndPushWithRetry(opts.paths, opts.commitMessage);
 
     if (pushResult.ok) {
+      if (pushResult.noop) {
+        return {
+          published: false,
+          deployTriggered: true,
+          reason: "Verification passed, but generated content is unchanged — nothing to commit or deploy.",
+        };
+      }
       // GitHub doesn't fire `on: push` workflows for commits made with
       // GITHUB_TOKEN, so deploy.yml would never see this push. Dispatch it
       // explicitly so the live site actually picks up the change. No
@@ -283,6 +292,13 @@ export async function verifyAndPublish(opts: {
   const branch = `${opts.fallbackBranchPrefix}-${Date.now()}`;
   execFileSync("git", ["checkout", "-b", branch]);
   execFileSync("git", ["add", ...opts.paths]);
+  if (run("git", ["diff", "--cached", "--quiet"]).ok) {
+    return {
+      published: false,
+      deployTriggered: true,
+      reason: "Verification failed because of an external check, but generated content is unchanged — no review branch created.",
+    };
+  }
   execFileSync("git", ["commit", "-m", `${opts.commitMessage} [needs review: verification failed]`]);
   pushBranchAndNotify(
     branch,

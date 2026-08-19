@@ -15,6 +15,7 @@ import { join } from "node:path";
 import { parse as parseYaml, stringify as stringifyYaml } from "yaml";
 import { listModuleDirs } from "./audits/_util.ts";
 import { verifyAndPublish, assertTokenBudget, type TokenUsage } from "./_auto-publish.ts";
+import { normalizeGeneratedContent } from "./_content-safety.ts";
 
 const ANTHROPIC_MODEL = process.env.ANTHROPIC_MODEL ?? "claude-haiku-4-5-20251001";
 
@@ -212,8 +213,8 @@ async function auditModules(findings: Finding[], touchedPaths: string[]) {
       continue;
     }
 
-    writeFileSync(enPath, result.corrected_en.trimEnd() + "\n", "utf-8");
-    writeFileSync(noPath, result.corrected_no.trimEnd() + "\n", "utf-8");
+    writeFileSync(enPath, normalizeGeneratedContent(result.corrected_en), "utf-8");
+    writeFileSync(noPath, normalizeGeneratedContent(result.corrected_no), "utf-8");
     touchedPaths.push(enPath, noPath);
     findings.push({ slug: mod.slug, summary: result.summary, sources: result.sources });
   }
@@ -259,8 +260,8 @@ async function auditEvergreen(
       continue;
     }
 
-    writeFileSync(enPath, result.corrected_en.trimEnd() + "\n", "utf-8");
-    writeFileSync(noPath, result.corrected_no.trimEnd() + "\n", "utf-8");
+    writeFileSync(enPath, normalizeGeneratedContent(result.corrected_en), "utf-8");
+    writeFileSync(noPath, normalizeGeneratedContent(result.corrected_no), "utf-8");
     updateFrontmatterDate(enPath);
     updateFrontmatterDate(noPath);
     touchedPaths.push(enPath, noPath);
