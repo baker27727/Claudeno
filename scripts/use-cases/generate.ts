@@ -2,9 +2,8 @@
 // uses the Claude API to propose updates or new guides. Inspired by
 // scripts/audit-freshness.ts but focused on professional-domain use-cases.
 
-import { existsSync, mkdirSync, readFileSync, readdirSync, statSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
-import { parse as parseYaml } from "yaml";
 import { verifyAndPublish } from "../_auto-publish.ts";
 import { normalizeGeneratedContent } from "../_content-safety.ts";
 import { USE_CASE_SOURCES, type SourceSet } from "./sources.ts";
@@ -220,17 +219,6 @@ function loadExistingUseCase(slug: string): { en?: string; no?: string } {
   };
 }
 
-function parseFrontmatter(path: string): Record<string, unknown> | undefined {
-  const content = readFileSync(path, "utf-8");
-  const match = content.match(/^---\n([\s\S]*?)\n---/);
-  if (!match) return undefined;
-  try {
-    return parseYaml(match[1]) as Record<string, unknown>;
-  } catch {
-    return undefined;
-  }
-}
-
 function writeUseCase(slug: string, en: string, no: string) {
   if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug)) throw new Error(`Unsafe use-case slug: ${JSON.stringify(slug)}`);
   const dir = join(USE_CASES_DIR, slug);
@@ -254,36 +242,31 @@ function extractTitle(content: string): string | undefined {
   return match?.[1];
 }
 
-function findExistingSlugForProfession(profession: string): string | undefined {
-  if (!existsSync(USE_CASES_DIR)) return undefined;
-  for (const slug of readdirSync(USE_CASES_DIR)) {
-    const dir = join(USE_CASES_DIR, slug);
-    if (!statSync(dir).isDirectory()) continue;
-    const enPath = join(dir, "en.mdx");
-    const noPath = join(dir, "no.mdx");
-    for (const path of [enPath, noPath]) {
-      if (!existsSync(path)) continue;
-      const data = parseFrontmatter(path);
-      if (data?.profession === profession) return slug;
-    }
-  }
-  return undefined;
+function extractProfession(content: string): string | undefined {
+  return content.match(/^profession:\s*["']?([^"'\n]+)["']?\s*$/m)?.[1]?.trim();
 }
 
 export async function generateUseCases(researchByProfession: Record<string, ResearchResult[]>) {
   const touchedPaths: string[] = [];
   const findings: Array<{ slug: string; action: "updated" | "created"; summary: string; sources: string[] }> = [];
 
-  for (const [profession, sourceSet] of Object.entries(USE_CASE_SOURCES)) {
-    const research = researchByProfession[profession] ?? [];
-
-    const primarySlug = findExistingSlugForProfession(profession);
-    const existing = primarySlug ? loadExistingUseCase(primarySlug) : { en: undefined, no: undefined };
+  for (const [primarySlug, sourceSet] of Object.entries(USE_CASE_SOURCES)) {
+    const profession = sourceSet.profession;
+    const research = researchByProfession[primarySlug] ?? [];
+    const existing = loadExistingUseCase(primarySlug);
+    const hasExistingGuide = Boolean(existing.en && existing.no);
+    if (hasExistingGuide && extractProfession(existing.en!) !== profession) {
+      throw new Error(`Source config profession for ${primarySlug} does not match its existing frontmatter`);
+    }
 
     const prompt = buildPrompt(profession, sourceSet, research, primarySlug, existing.en, existing.no);
     const plan = await callClaude(prompt);
 
     for (const update of plan.updates) {
+      if (update.slug !== primarySlug) {
+        console.warn(`  skipping update for ${update.slug}: generator is scoped to ${primarySlug}`);
+        continue;
+      }
       if (!update.has_new_info) {
         console.log(`  ✓ ${update.slug}: no new info`);
         continue;
@@ -299,6 +282,10 @@ export async function generateUseCases(researchByProfession: Record<string, Rese
     }
 
     for (const newCase of plan.new_use_cases) {
+      if (hasExistingGuide) {
+        console.warn(`  skipping new ${newCase.slug}: ${primarySlug} already covers profession ${profession}`);
+        continue;
+      }
       if (!newCase.en.trim().startsWith("---") || !newCase.no.trim().startsWith("---")) {
         console.warn(`  skipping new ${newCase.slug}: missing frontmatter`);
         continue;
