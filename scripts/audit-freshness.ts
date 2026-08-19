@@ -65,6 +65,12 @@ interface Finding {
   sources: string[];
 }
 
+function errorMessage(error: unknown): string {
+  if (error instanceof Error) return error.message;
+  if (typeof error === "string") return error;
+  return "Unknown error (the rejected operation did not provide an Error object)";
+}
+
 async function fetchDoc(url: string, attempts = 3): Promise<string> {
   let lastError: unknown;
   for (let attempt = 1; attempt <= attempts; attempt++) {
@@ -75,12 +81,14 @@ async function fetchDoc(url: string, attempts = 3): Promise<string> {
     } catch (err) {
       lastError = err;
       if (attempt < attempts) {
-        console.warn(`Attempt ${attempt}/${attempts} for ${url} failed: ${(err as Error).message}. Retrying...`);
+        console.warn(`Attempt ${attempt}/${attempts} for ${url} failed: ${errorMessage(err)}. Retrying...`);
         await new Promise((resolve) => setTimeout(resolve, 2000 * attempt));
       }
     }
   }
-  throw lastError;
+  throw lastError instanceof Error
+    ? lastError
+    : new Error(`Failed to fetch ${url} after ${attempts} attempts: ${errorMessage(lastError)}`);
 }
 
 function parseFrontmatter(path: string): Record<string, unknown> | undefined {
@@ -198,7 +206,7 @@ async function auditModules(findings: Finding[], touchedPaths: string[]) {
     try {
       result = await checkContent(mod.slug, docUrls, readFileSync(enPath, "utf-8"), readFileSync(noPath, "utf-8"), "module");
     } catch (err) {
-      console.error(`  ✗ skipping ${mod.slug}: ${(err as Error).message}`);
+      console.error(`  ✗ skipping ${mod.slug}: ${errorMessage(err)}`);
       continue;
     }
 
@@ -245,7 +253,7 @@ async function auditEvergreen(
     try {
       result = await checkContent(`${kind}/${slug}`, sources, readFileSync(enPath, "utf-8"), readFileSync(noPath, "utf-8"), "evergreen");
     } catch (err) {
-      console.error(`  ✗ skipping ${kind}/${slug}: ${(err as Error).message}`);
+      console.error(`  ✗ skipping ${kind}/${slug}: ${errorMessage(err)}`);
       continue;
     }
 
