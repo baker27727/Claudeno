@@ -1,3 +1,24 @@
+- id: "2.1.235"
+  version: "2.1.235"
+  date: "2026-08-19"
+  entry:
+    en: "Added optional `spellcheck` setting. Fixed prompt input highlights, slash
+      commands in mid-response, permission dialogs, task list collapsing, and
+      Shift+Tab in permission prompts. Improved permission dialogs consistency,
+      memory/CPU usage in background cloud sessions, Vim mode transcript toggle
+      preservation, dialog key selection responsiveness, and context-limit error
+      messaging. Enhanced `/permissions` to open mid-turn and grid embedded grep
+      performance. Preserved NORMAL mode and cursor position in Vim when
+      toggling transcript or closing panels."
+    no: "La til valgfri `spellcheck`-innstilling. Rettet ledetekstmarkering,
+      slash-kommandoer i mid-respons, tillatelsesvinduer, oppgavelistesammenfall
+      og Shift+Tab i tillatelsesprompter. Forbedret
+      tillatelsesvinduer-konsistens, minne-/CPU-bruk i bakgrunnskysesjonger,
+      Vim-modus transkripsjonsveksling, dialogtastvalg-respons og feilmelding på
+      kontekstgrense. Forbedret `/permissions` for å åpne mid-turn og ytelse på
+      innebygd grep. Bevart NORMAL-modus og marørposisjon i Vim når du veksler
+      transkripsjon eller lukker paneler."
+  sources: []
 - id: "2.1.234"
   version: "2.1.234"
   date: "2026-08-18"

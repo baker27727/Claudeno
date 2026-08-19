@@ -143,3 +143,7 @@ Hodeløse økter sender nå SSE keepalive-pinger under lange tenkepauser på Ver
 ## Nytt i v2.1.234
 
 La til den valgfrie `CLAUDE_CODE_PROJECT_DIR_NAME`-miljøvariabelen. Verter som gir hver økt sin egen konfigurasjonsmappe kan bruke denne til å velge et kort navn for den per-prosjekt-transkripsjonskatalogen.
+
+## Nytt i v2.1.235
+
+2.1.235 forbedrer minne- og CPU-bruk mens skysesjonene som `/ultrareview` eller `/autofix-pr` kjører i bakgrunnen — deres hendelsesstrømmer gjennomskans og gjengis ikke på nytt ved hver oppdatering. I tillegg nektrer `SendMessage` nå meldinger som er for store til tverrsesjonlevering på forhånd i stedet for å stille dem stille.

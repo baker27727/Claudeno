@@ -140,3 +140,7 @@ Headless sessions now send SSE keepalive pings during long thinking pauses on Ve
 ## What's new in v2.1.234
 
 Added the optional `CLAUDE_CODE_PROJECT_DIR_NAME` environment variable. Hosts that give each session its own config directory can use this to choose a short name for the per-project transcript directory.
+
+## What's new in v2.1.235
+
+2.1.235 improves memory and CPU usage while cloud sessions such as `/ultrareview` or `/autofix-pr` run in the background — their event streams are no longer re-scanned and re-rendered on every update. Additionally, `SendMessage` now refuses messages too large for cross-session delivery up front instead of silently dropping them.
