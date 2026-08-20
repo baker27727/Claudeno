@@ -292,3 +292,8 @@
   no: "stavekontroll"
   note: "Optional setting underlines misspelled words in prompt input using
     installed aspell, hunspell, or ispell (new in 2.1.235)"
+- id: "concise-output-style"
+  en: "Concise output style"
+  no: "Concise-utdatastil"
+  note: "Built-in output style that leads with results and skips preamble and
+    narration (new in 2.1.237)"

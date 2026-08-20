@@ -1,3 +1,16 @@
+- id: "2.1.237"
+  version: "2.1.237"
+  date: "2026-08-20"
+  entry:
+    en: "Fixed prompt caching for sessions using an LLM gateway or custom base URL.
+      Added a built-in \"Concise\" output style: Claude leads with results and
+      skips preamble and narration, while doing the work just as thoroughly.
+      Select it under Output style in /config."
+    no: "Fikset prompt-caching for økter som bruker en LLM-gateway eller tilpasset
+      basis-URL. Lagt til en innebygd \"Concise\"-utdatastil: Claude presenterer
+      resultater først og hopper over innledning og forklaring, mens arbeidet
+      blir gjort like grundig. Velg den under Output style i /config."
+  sources: []
 - id: "2.1.235"
   version: "2.1.235"
   date: "2026-08-19"
