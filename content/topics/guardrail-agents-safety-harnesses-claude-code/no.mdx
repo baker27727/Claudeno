@@ -1,0 +1,109 @@
+---
+title: "Guardrail-agenter og sikkerhetsseler: Forhindre destruktive handlinger i Claude Code"
+description: "Når Claude Code kjører mer autonomt i produksjon, bygger team guardrail-agenter og sikkerhetsseler som fanger opp og blokkerer destruktive handlinger, som database-slettinger eller kritiske commits, før de skjer."
+discoveredAt: "2026-08-18T05:32:22.109Z"
+updatedDate: "2026-08-20T06:35:26.169Z"
+author: "Claude Code Learn"
+trendScore: 0.631
+scoreBreakdown:
+  frequency: 0.5
+  recency: 0.912
+  engagement: 0.313
+  gap: 1
+tags:
+  - "claude-code"
+  - "safety"
+  - "permissions"
+  - "hooks"
+  - "guardrails"
+  - "devops"
+  - "autonomous-agents"
+sources:
+  - "https://code.claude.com/docs/en/permission-modes.md"
+  - "https://code.claude.com/docs/en/how-claude-code-works.md"
+  - "https://code.claude.com/docs/en/best-practices.md"
+relatedModules:
+  - "permissions-and-settings"
+  - "hooks"
+  - "checkpointing"
+  - "subagents"
+relatedUseCases: []
+relatedSkills: []
+draft: false
+# Verified against Claude Code 2.1.235
+---
+# Guardrail-agenter og sikkerhetsseler: Forhindre destruktive handlinger i Claude Code
+
+## Kort oppsummert
+
+Når utviklere gir Claude Code mer autonomi – kjøring uten tilsyn, feilrettinger, utsending av commits – øker også risikoen for at en agent sletter en database, force-pusher over historikk, eller slår sammen en endring som knekker produksjon. Guardrail-agenter og sikkerhetsseler ("safety harnesses") er mønstre og verktøy (som fellesskapsprosjekter Doberman og pr-sentinel) som plasserer seg mellom Claude Code og den virkelige verden, og som fanger opp risikable operasjoner og blokkerer eller flagger dem før de utføres. Dette er relevant nå fordi Claude Codes eget tillatelsessystem, hooks og checkpoints gir byggeklossene du trenger for å konstruere slike seler selv.
+
+## Hva er nytt
+
+Interessen for sikkerhetsmekanismer rundt autonome kodeagenter har vokst i takt med Claude Codes satsing på mer ubevoktet drift. Fellesskapsprosjekter som Doberman og pr-sentinel fokuserer spesifikt på å oppdage og forhindre database-slettinger, brytende endringer og utrygge commits før de når produksjon – et tegn på reell etterspørsel etter sikkerhetslag rundt agentautonomi.
+
+Claude Codes dokumentasjon reflekterer dette skiftet direkte. Systemet for **permission-modes** definerer klare nivåer – fra `acceptEdits` (godkjenner filredigeringer automatisk) til `plan`-modus (analyser før redigering) til `auto`-modus (en klassifiserer blokkerer visse handlinger som standard) til `dontAsk` (kun forhåndsgodkjente verktøy) og `bypassPermissions` (hopp over alle kontroller). Auto-modus dokumenterer spesifikt "hva klassifisereren blokkerer som standard" og lar deg angi grenser i samtalen, med definert reserveoppførsel når klassifisereren er usikker. Claude Code dokumenterer også **beskyttede stier** og **kritiske stier**, inkludert spesialbehandling for destruktive kommandoer som `Remove-Item` i PowerShell – en tydelig anerkjennelse av at visse filoperasjoner krever ekstra oppmerksomhet uavhengig av modus.
+
+**Checkpointing**-systemet (dokumentert under "Stay safe with checkpoints and permissions" i how-claude-code-works) gir et andre, uavhengig lag: muligheten til å angre endringer etterpå, separat fra å forhindre dem i utgangspunktet. Anthropics egne beste praksis anbefaler også eksplisitt å legge til "et adversarialt gjennomgangssteg" ("adversarial review step") når man automatiserer og skalerer bruken av Claude Code – en direkte anerkjennelse av at autonome agenter har nytte av at en annen agent (eller prosess) gjennomgår arbeidet før det får tillit.
+
+## Slik fungerer det
+
+En sikkerhetssele rundt Claude Code kombinerer typisk flere uavhengige mekanismer, siden ingen enkelt kontroll er tilstrekkelig alene:
+
+1. **Tillatelsesmodus som første sperre.** Claude Codes tillatelsesmoduser bestemmer hva som skjer *før* et verktøykall utføres. `plan`-modus tvinger Claude til å produsere og få godkjent en plan før filer berøres. `auto`-modus kjører en klassifiserer mot hver foreslåtte handling; handlinger den flagger blokkeres som standard, og du kan utvide hva den blokkerer ved å angi grenser i samtalen. `dontAsk`-modus begrenser utførelse til en forhåndsgodkjent liste over verktøy, som er den strengeste praktiske modusen kort av full manuell gjennomgang.
+
+2. **Beskyttede og kritiske stier som en andre, stiavhengig sperre.** Uavhengig av aktiv tillatelsesmodus gjenkjenner Claude Code beskyttede stier og kritiske stier, og behandler operasjoner mot disse (som destruktive PowerShell-kommandoer) med ekstra forsiktighet. Dette betyr at selv i en løsere modus blir visse filsystemmål gransket nøye.
+
+3. **Hooks som et programmerbart avlyttingslag.** Fordi hooks kan kjøre egendefinert logikk på definerte punkter i Claude Codes utførelse, er de det naturlige stedet å implementere en guardrail-agent: en hook kan inspisere en foreslått bash-kommando eller filredigering, sjekke den mot en blokkeringsliste (f.eks. `DROP TABLE`, `rm -rf`, `git push --force` mot en beskyttet branch), og avvise handlingen før den kjører – uavhengig av hva den innebygde klassifisereren bestemmer.
+
+4. **En separat vurderingsagent ("det adversariale gjennomgangssteget").** Anthropics egne beste praksis anbefaler å legge til et eget gjennomgangssteg – i praksis en andre agent eller subagent hvis eneste jobb er å se etter problemer i den første agentens output før det commitas eller merges. Dette er kjerneideen bak prosjekter som Doberman og pr-sentinel: en dedikert detektor, frikoblet fra agenten som gjør arbeidet, med incentiv til å finne brytende endringer, ikke til å fullføre oppgaven.
+
+5. **Checkpoints som siste forsvarslinje.** Selv med sperrer på plass lar checkpointing deg rulle tilbake hvis noe destruktivt likevel slipper gjennom. Dette er en gjenopprettingsmekanisme, ikke en forhindringsmekanisme – den er viktig fordi forhindringslag kan ha svakheter, og checkpoints forutsetter at de vil ha det.
+
+Sammen utgjør disse lagene en sele: modusbasert sperring, stibasert sperring, programmerbar avlytting via hooks, en uavhengig vurderingsagent, og tilbakerulling via checkpoints.
+
+## Prøv det selv
+
+Et minimalt guardrail-oppsett kombinerer en restriktiv tillatelsesmodus med en hook som blokkerer spesifikke destruktive mønstre før de utføres:
+
+```bash
+# Start Claude Code i en modus som bare tillater forhåndsgodkjente verktøy
+claude --permission-mode dontAsk
+
+# I .claude/settings.json, definer en PreToolUse-hook som inspiserer
+# bash-kommandoer før de kjøres og blokkerer kjente destruktive mønstre
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "command": "./scripts/guard-bash.sh"
+      }
+    ]
+  }
+}
+
+# guard-bash.sh (forenklet): les den foreslåtte kommandoen fra stdin,
+# avslutt med feilkode for å blokkere hvis den matcher et destruktivt mønster
+#!/bin/bash
+cmd=$(cat)
+if echo "$cmd" | grep -Eq "DROP TABLE|rm -rf /|--force"; then
+  echo "Blokkert: destruktiv kommando oppdaget" >&2
+  exit 1
+fi
+exit 0
+```
+
+I en PR-gjennomgangsflyt vil du kombinere dette med en separat subagent som kalles etter at Claude foreslår en diff – dens eneste jobb er å flagge skjemabrytende migrasjoner eller force-pusher før endringen merges, på linje med det dedikerte verktøy som pr-sentinel forsøker å gjøre.
+
+## Når du bør bruke det (og når ikke)
+
+Bygg eller ta i bruk en guardrail-sele når Claude Code opererer med reell autonomi: ubevoktede kjøringer, tilgang til produksjonsdatabaser, eller automatisk sammenslåing av PR-er. I disse tilfellene er det ikke nok å stole på én enkelt tillatelsesmodus – legg på stibeskyttelse, hooks, og et uavhengig gjennomgangssteg.
+
+Unngå å overkomplisere guardrails for interaktive, overvåkede sesjoner der du gjennomgår hver diff før den brukes – `plan`-modus pluss vanlige checkpoints er vanligvis tilstrekkelig der, og tung hook-logikk gir bare friksjon uten stor nytteverdi. Husk også at klassifiserere og hooks basert på blokkeringslister er mønstergjenkjennere, ikke garantier: en bestemt eller forvirret agent kan fortsatt konstruere en kommando som slipper forbi en hooks regulære uttrykk, så guardrails reduserer risiko, de eliminerer den ikke. Checkpoints forblir essensielle nettopp fordi forhindringslag er ufullkomne.
+
+## Kilder
+
+- https://code.claude.com/docs/en/permission-modes.md
+- https://code.claude.com/docs/en/how-claude-code-works.md
+- https://code.claude.com/docs/en/best-practices.md

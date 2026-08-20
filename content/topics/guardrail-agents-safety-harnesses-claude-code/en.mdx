@@ -1,0 +1,109 @@
+---
+title: "Guardrail Agents and Safety Harnesses: Preventing Destructive Actions in Claude Code"
+description: "As Claude Code runs more autonomously in production, teams are building guardrail agents and safety harnesses that detect and block destructive actions like database deletions or breaking commits before they land."
+discoveredAt: "2026-08-18T05:32:22.109Z"
+updatedDate: "2026-08-20T06:35:26.169Z"
+author: "Claude Code Learn"
+trendScore: 0.631
+scoreBreakdown:
+  frequency: 0.5
+  recency: 0.912
+  engagement: 0.313
+  gap: 1
+tags:
+  - "claude-code"
+  - "safety"
+  - "permissions"
+  - "hooks"
+  - "guardrails"
+  - "devops"
+  - "autonomous-agents"
+sources:
+  - "https://code.claude.com/docs/en/permission-modes.md"
+  - "https://code.claude.com/docs/en/how-claude-code-works.md"
+  - "https://code.claude.com/docs/en/best-practices.md"
+relatedModules:
+  - "permissions-and-settings"
+  - "hooks"
+  - "checkpointing"
+  - "subagents"
+relatedUseCases: []
+relatedSkills: []
+draft: false
+# Verified against Claude Code 2.1.235
+---
+# Guardrail Agents and Safety Harnesses: Preventing Destructive Actions in Claude Code
+
+## Quick summary
+
+As developers give Claude Code more autonomy—running unattended, fixing bugs, shipping commits—the risk of an agent deleting a database, force-pushing over history, or merging a breaking change grows too. Guardrail agents and safety harnesses are patterns and tools (like community projects such as Doberman and pr-sentinel) that sit between Claude Code and the real world, detecting risky operations and blocking or flagging them before they execute. This matters now because Claude Code's own permission system, hooks, and checkpoints give you the building blocks to construct these harnesses yourself.
+
+## What's new
+
+Interest in guardrails for autonomous coding agents has grown alongside Claude Code's push toward more unattended operation. Community projects like Doberman and pr-sentinel focus specifically on detecting and preventing database deletions, breaking changes, and unsafe commits before they reach production—signaling real demand for safety layers around agent autonomy.
+
+Claude Code's documentation reflects this shift directly. The **permission-modes** system defines explicit tiers—from `acceptEdits` (auto-approves file edits) to `plan` mode (analyze before editing) to `auto` mode (a classifier blocks certain actions by default) to `dontAsk` (only pre-approved tools) and `bypassPermissions` (skip all checks). Auto mode specifically documents "what the classifier blocks by default" and lets you state boundaries in conversation, with defined fallback behavior when the classifier is uncertain. Claude Code also documents **protected paths** and **critical paths**, including special handling for destructive commands like `Remove-Item` in PowerShell—an explicit acknowledgment that certain file operations warrant extra scrutiny regardless of mode.
+
+The **checkpointing** system (documented under "Stay safe with checkpoints and permissions" in how-claude-code-works) provides a second, independent layer: the ability to undo changes after the fact, separate from preventing them upfront. Anthropic's best-practices guidance also explicitly recommends adding "an adversarial review step" when automating and scaling Claude Code usage—a direct nod to the idea that autonomous agents benefit from a second agent (or process) reviewing their work before it's trusted.
+
+## How it works
+
+A safety harness around Claude Code typically combines several independent mechanisms, since no single control is sufficient on its own:
+
+1. **Permission mode as the first gate.** Claude Code's permission modes determine what happens *before* a tool call executes. `plan` mode forces Claude to produce and get approval for a plan before touching files. `auto` mode runs a classifier against each proposed action; actions it flags are blocked by default, and you can extend what it blocks by stating boundaries in the conversation. `dontAsk` mode restricts execution to a pre-approved allowlist of tools, which is the tightest practical mode short of full manual review.
+
+2. **Protected and critical paths as a second, path-aware gate.** Independent of the active permission mode, Claude Code recognizes protected paths and critical paths, and treats operations against them (such as destructive PowerShell commands) with extra caution. This means even in a looser mode, certain filesystem targets get scrutinized.
+
+3. **Hooks as a programmable interception layer.** Because hooks can run custom logic at defined points in Claude Code's execution, they're the natural place to implement a guardrail agent: a hook can inspect a proposed bash command or file edit, check it against a denylist (e.g., `DROP TABLE`, `rm -rf`, `git push --force` to a protected branch), and reject the action before it runs—independent of what the built-in classifier decides.
+
+4. **A separate reviewing agent (the "adversarial review step").** Anthropic's own best practices recommend adding a distinct review pass—effectively a second agent or subagent whose only job is to look for problems in the first agent's output before it's committed or merged. This is the core idea behind projects like Doberman and pr-sentinel: a dedicated detector, decoupled from the agent doing the work, whose incentive is to find breaking changes, not to finish the task.
+
+5. **Checkpoints as the last line of defense.** Even with gates in place, checkpointing lets you roll back if something destructive slips through. This is a recovery mechanism, not a prevention mechanism—it matters because prevention layers can have gaps, and checkpoints assume they will.
+
+Together these layers form a harness: mode-based gating, path-based gating, programmable interception via hooks, an independent reviewer agent, and rollback via checkpoints.
+
+## Hands-on example
+
+A minimal guardrail setup combines a restrictive permission mode with a hook that blocks specific destructive patterns before they execute:
+
+```bash
+# Start Claude Code in a mode that only allows pre-approved tools
+claude --permission-mode dontAsk
+
+# In .claude/settings.json, define a PreToolUse hook that inspects
+# bash commands before they run and blocks known-destructive patterns
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "command": "./scripts/guard-bash.sh"
+      }
+    ]
+  }
+}
+
+# guard-bash.sh (simplified): read the proposed command from stdin,
+# exit non-zero to block if it matches a destructive pattern
+#!/bin/bash
+cmd=$(cat)
+if echo "$cmd" | grep -Eq "DROP TABLE|rm -rf /|--force"; then
+  echo "Blocked: destructive command detected" >&2
+  exit 1
+fi
+exit 0
+```
+
+In a PR review workflow, you'd pair this with a separate subagent invoked after Claude proposes a diff—its only job is to flag schema-breaking migrations or force-pushes before the change is merged, mirroring what dedicated tools like pr-sentinel aim to do.
+
+## When to use it (and when not to)
+
+Build or adopt a guardrail harness when Claude Code operates with real autonomy: unattended runs, production database access, or automatic PR merges. In these cases, relying on a single permission mode is not enough—layer path protections, hooks, and an independent review step.
+
+Don't over-engineer guardrails for interactive, supervised sessions where you're reviewing every diff before it's applied—`plan` mode plus normal checkpoints is usually sufficient there, and heavy hook logic adds friction without much benefit. Also remember that classifiers and denylist-based hooks are pattern matchers, not guarantees: a determined or confused agent can still construct a command that evades a hook's regex, so guardrails reduce risk, they don't eliminate it. Checkpoints remain essential precisely because prevention layers are imperfect.
+
+## Sources
+
+- https://code.claude.com/docs/en/permission-modes.md
+- https://code.claude.com/docs/en/how-claude-code-works.md
+- https://code.claude.com/docs/en/best-practices.md

@@ -1,0 +1,106 @@
+---
+title: "Orkestrering av flere Claude Code-agenter på tvers av repoer og maskiner"
+description: "En gjennomgang av det voksende mønsteret med å kjøre mange Claude Code-økter parallelt via egenbygde \"harnesses\" — dispatchlag som ruter oppgaver, håndterer worktrees og koordinerer agenter på tvers av repoer og maskiner."
+discoveredAt: "2026-08-18T05:32:22.109Z"
+updatedDate: "2026-08-20T06:34:14.210Z"
+author: "Claude Code Learn"
+trendScore: 0.646
+scoreBreakdown:
+  frequency: 0.5
+  recency: 0.912
+  engagement: 0.37
+  gap: 1
+tags:
+  - "Claude Code"
+  - "multi-agent"
+  - "orchestration"
+  - "subagents"
+  - "headless mode"
+  - "CI/CD"
+  - "worktrees"
+  - "harness"
+sources:
+  - "https://code.claude.com/docs/en/common-workflows.md"
+  - "https://code.claude.com/docs/en/best-practices.md"
+  - "https://code.claude.com/docs/en/sessions.md"
+  - "https://code.claude.com/docs/en/how-claude-code-works.md"
+  - "https://github.com/IsaiahDupree/acd"
+  - "https://github.com/bon5co/bermuda"
+  - "https://github.com/c-wenlong/quiver"
+  - "https://github.com/1919-doomer/DeepseekHarness-CLI"
+relatedModules:
+  - "subagents"
+  - "headless-mode"
+  - "checkpointing"
+  - "permissions-and-settings"
+relatedUseCases:
+  - "project-management-with-claude"
+relatedSkills: []
+draft: false
+# Verified against Claude Code 2.1.235
+---
+# Orkestrering av flere Claude Code-agenter på tvers av repoer og maskiner
+
+## Kort oppsummert
+
+En enkelt Claude Code-økt er begrenset av ett kontekstvindu, én arbeidsmappe og ett menneske som følger med. Etter hvert som team tar Claude Code inn i større arbeidsflyter, har det dukket opp et mønster: bygge et lettvekts eksternt "harness" som fordeler oppgaver til mange Claude Code-instanser samtidig, følger med på tilstanden deres, og ruter meldinger mellom dem. Prosjekter som dispatch-dashbord, orkestreringslag og multi-CLI-startere viser at dette nå er et vanlig gjør-det-selv-mønster, ikke en offisiell Anthropic-funksjon.
+
+## Hva er nytt
+
+Anthropics egen plattform har lagt til førstepartsbyggeklosser for flerarget-arbeid — Claude Managed Agents støtter nå en "multiagent-liste" (roster) med rådgiverroller, øktbudsjetter, webhooks for livssyklushendelser, og seeding av startevents for å sette i gang en agent-loop i ett kall. Dette retter seg mot hostede agent-økter, ikke Claude Code CLI direkte, men det viser at Anthropic behandler flerargent-koordinering som et førsteklasses problem.
+
+For Claude Code spesifikt er de dokumenterte mulighetene fortsatt øktbaserte: subagenter for å delegere undersøkelser innenfor én økt, git worktrees for å kjøre parallelle økter på samme repo uten kollisjon, headless/ikke-interaktiv modus for skripting, samt gjenoppta/forgrening av økter for å plukke opp tidligere arbeid. Det finnes ingen innebygd dispatcher på tvers av maskiner eller repoer i selve Claude Code.
+
+Det gapet er nettopp det community-prosjekter fyller. Nylige eksempler inkluderer dashbord for å dispatche PRD-er (produktkravdokumenter) og kjøre Claude Code-agenter "på tvers av prosjekter i stor skala", orkestreringslag som håndhever arbeidsflyt-steg en agent ikke kan hoppe over, og enhetlige startere som kan starte, gjenoppta og analysere økter på tvers av flere AI-kodings-CLI-er (Claude Code, Codex, Cursor, opencode) fra én kommando. HarnessRouter-lignende prosjekter og "agent-mesh"-verktøy følger samme form: en ekstern prosess eier sannheten om oppgaver og tilstand, og Claude Code-instanser behandles som arbeidere den starter, mater og overvåker.
+
+## Slik fungerer det
+
+Et harness ligger utenfor Claude Code og koordinerer flere instanser av det. Mekanikken kombinerer som regel noen Claude Code-primitiver som er dokumentert hver for seg, men ikke pakket sammen til et flerargent-produkt:
+
+1. **Oppgavefordeling via headless-modus.** Harnesset kaller Claude Code ikke-interaktivt (headless-modus), sender med en prompt eller oppgavefil, og fanger opp strukturert output. Hvert kall er en separat prosess, så oppgaver kan kjøre samtidig uten at én blokkerer en annen.
+2. **Isolasjon via worktrees eller separate kloner.** For å la flere agenter jobbe på samme repo uten å tråkke i hverandres filendringer, sjekker harnesset ut en git worktree (eller en full klone) per oppgave/agent — samme mønster som Claude Codes egen dokumenterte fremgangsmåte for parallelle økter på grener.
+3. **Distribusjon på tvers av maskiner.** For å skalere utover én maskin starter harnesset Claude Code-prosesser på separate verter (eller containere/sandkasser) og kommuniserer over hvilken transport det velger — HTTP, meldingskøer eller filer — siden Claude Code selv ikke definerer en nettverksprotokoll for dette.
+4. **Tilstands- og øktsporing.** Fordi hver Claude Code-økt kan gjenopptas eller forgrenes, kan et harness som vil sjekke fremdrift, gjøre om et steg, eller overføre en oppgave til en annen agent, basere seg på økt-ID-er i stedet for å bygge opp kontekst fra bunnen — omtrent slik CLI-ens egen øktvelger lar et menneske gjenoppta en bestemt tidligere økt.
+5. **Meldingsutveksling mellom agenter.** Dette er den minst standardiserte delen. Siden det ikke finnes en innebygd agent-til-agent-kanal i Claude Code, implementerer harness sitt eget: en delt oppgavekø, en database med "claims" (en arbeider reserverer en oppgave), eller et forum/logg-mønster agentene leser fra og skriver til, slik at agenter kan overlevere arbeid eller unngå duplisert innsats uten at et menneske videreformidler meldinger.
+6. **Verifisering og portvakt.** Noen harness håndhever en arbeidsflyt agenten "ikke kan hoppe over" — for eksempel å kreve et planleggingssteg, et gjennomgangssteg og et sammenslåingssteg i rekkefølge, i stedet for å stole på at én agent selv følger sin egen prosess, i tråd med Claude Codes egne råd om å legge til et motstridende gjennomgangssteg og gi Claude noe å verifisere mot.
+
+Anthropics hostede Managed Agents-plattform beveger seg mot lignende konsepter nativt — en "multiagent-liste" som kan inkludere en rådgiveroppføring (advisor, en separat modell som konsulteres midt i en tur for strategisk veiledning), øktbudsjetter for å begrense forbruk, og webhooks for livssyklushendelser for miljø/minnelager slik at et eksternt system kan reagere uten å pushe/polle. Dette er foreløpig avgrenset til Managed Agents/API-produktet, atskilt fra den åpne Claude Code CLI-en, men representerer det samme underliggende problemet: mange agenter (eller agentroller), delt tilstand, og kontrollert forbruk.
+
+## Prøv det selv
+
+Et minimalt harness-mønster med headless-modus og worktrees, uten noe eget rammeverk:
+
+```bash
+# Opprett isolerte worktrees for tre parallelle oppgaver på samme repo
+git worktree add ../repo-task-auth feature/auth
+git worktree add ../repo-task-db feature/db-migration
+git worktree add ../repo-task-docs feature/docs-update
+
+# Fordel én Claude Code-økt per worktree i headless-modus
+(cd ../repo-task-auth && claude -p "Implementer OAuth-innlogging iht. spec.md" --output-format json > auth.log &)
+(cd ../repo-task-db  && claude -p "Skriv migrasjonen beskrevet i migration.md" --output-format json > db.log &)
+(cd ../repo-task-docs && claude -p "Oppdater docs/README.md i tråd med det nye API-et" --output-format json > docs.log &)
+
+wait
+# Et harness-skript parser deretter hver JSON-logg, sjekker avslutningsstatus,
+# og slår enten sammen grenen, ber om gjennomgang, eller sender oppgaven på nytt ved feil.
+```
+
+En dispatcher-prosess som pakker inn denne løkken er i bunn og grunn det verktøy som "acd" (dispatching av PRD-er på tvers av prosjekter) eller multi-CLI-startere automatiserer: velg en oppgave, tildel en worktree, kjør Claude Code headless, fang opp resultatet, og oppdater en delt oppgavetavle.
+
+## Når du bør bruke det (og når ikke)
+
+Bruk et harness når du har genuint parallelliserbare, godt avgrensede oppgaver — uavhengige filer, uavhengige tjenester, eller uavhengige feilrettinger — der koordineringskostnaden ved å skrive en dispatcher er mindre enn tidsgevinsten av å kjøre agenter samtidig. Det er også nyttig når du trenger et revisjonsspor på tvers av mange små agentkjøringer, siden headless-output kan logges og diffes sentralt, og når du vil håndheve en fast arbeidsflyt (plan → implementer → gjennomgå → slå sammen) som ingen enkelt agentkjøring bør stoles på å hoppe over.
+
+Unngå det når oppgaver er tett koblet eller berører de samme filene, siden worktree-isolasjon ikke forhindrer sammenslåingskonflikter, og et eksternt harness legger til koordineringskostnad uten å fjerne den underliggende avhengigheten. Det er også overkill for utforskende arbeid eller arbeid i én økt — subagenter innenfor én Claude Code-økt, eller ganske enkelt å gjenoppta en økt, dekker det meste av daglig delegering uten behov for ekstern infrastruktur. Til slutt: husk at Claude Code ikke har innebygd meldingsutveksling mellom agenter eller en nettverksomfattende planlegger — alt beskrevet her er limkode du (eller et tredjepartsprosjekt) må bygge og vedlikeholde, inkludert feilhåndtering, gjenforsøk og sikkerhetsgrenser på tvers av maskiner.
+
+## Kilder
+
+- https://code.claude.com/docs/en/common-workflows.md
+- https://code.claude.com/docs/en/best-practices.md
+- https://code.claude.com/docs/en/sessions.md
+- https://code.claude.com/docs/en/how-claude-code-works.md
+- https://github.com/IsaiahDupree/acd
+- https://github.com/bon5co/bermuda
+- https://github.com/c-wenlong/quiver
+- https://github.com/1919-doomer/DeepseekHarness-CLI

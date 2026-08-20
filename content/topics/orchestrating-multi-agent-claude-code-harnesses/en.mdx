@@ -1,0 +1,106 @@
+---
+title: "Orchestrating Multiple Claude Code Agents Across Repos and Hosts"
+description: "A look at the emerging pattern of running many Claude Code sessions in parallel via custom \"harnesses\" — dispatch layers that route tasks, manage worktrees, and coordinate agents across repositories and hosts."
+discoveredAt: "2026-08-18T05:32:22.109Z"
+updatedDate: "2026-08-20T06:34:14.210Z"
+author: "Claude Code Learn"
+trendScore: 0.646
+scoreBreakdown:
+  frequency: 0.5
+  recency: 0.912
+  engagement: 0.37
+  gap: 1
+tags:
+  - "Claude Code"
+  - "multi-agent"
+  - "orchestration"
+  - "subagents"
+  - "headless mode"
+  - "CI/CD"
+  - "worktrees"
+  - "harness"
+sources:
+  - "https://code.claude.com/docs/en/common-workflows.md"
+  - "https://code.claude.com/docs/en/best-practices.md"
+  - "https://code.claude.com/docs/en/sessions.md"
+  - "https://code.claude.com/docs/en/how-claude-code-works.md"
+  - "https://github.com/IsaiahDupree/acd"
+  - "https://github.com/bon5co/bermuda"
+  - "https://github.com/c-wenlong/quiver"
+  - "https://github.com/1919-doomer/DeepseekHarness-CLI"
+relatedModules:
+  - "subagents"
+  - "headless-mode"
+  - "checkpointing"
+  - "permissions-and-settings"
+relatedUseCases:
+  - "project-management-with-claude"
+relatedSkills: []
+draft: false
+# Verified against Claude Code 2.1.235
+---
+# Orchestrating Multiple Claude Code Agents Across Repos and Hosts
+
+## Quick summary
+
+A single Claude Code session is bounded by one context window, one working directory, and one human paying attention to it. As teams push Claude Code into larger workflows, a pattern has emerged: build a lightweight external "harness" that dispatches tasks to many Claude Code instances at once, tracks their state, and routes messages between them. Projects like dispatch dashboards, orchestration layers, and multi-CLI launchers show this is now a common DIY pattern rather than an official Anthropic feature.
+
+## What's new
+
+Anthropic's own platform has been adding first-party building blocks for multi-agent work — Claude Managed Agents now support a "multiagent roster" with advisor roles, session budgets, webhooks for lifecycle events, and initial-event seeding to kick off an agent loop in one call. These are aimed at hosted agent sessions, not the Claude Code CLI directly, but they signal that Anthropic is treating multi-agent coordination as a first-class problem.
+
+On the Claude Code side specifically, the documented capabilities remain session-scoped: subagents for delegating investigation within one session, git worktrees for running parallel sessions on the same repo without collision, headless/non-interactive mode for scripting, and session resume/fork for picking up prior work. There is no built-in cross-host or cross-repo dispatcher in Claude Code itself.
+
+That gap is exactly what community projects are filling. Recent examples include dashboards for dispatching PRDs (product requirement docs) and running Claude Code agents "across projects at scale," orchestration layers that enforce workflow steps an agent can't skip, and unified launchers that can start, resume, and analyze sessions across multiple AI coding CLIs (Claude Code, Codex, Cursor, opencode) from one command. HarnessRouter-style projects and "agent-mesh" tools follow the same shape: an external process holds the source of truth for tasks and state, and Claude Code instances are treated as workers it starts, feeds, and monitors.
+
+## How it works
+
+A harness sits outside Claude Code and coordinates multiple instances of it. The mechanics generally combine a few Claude Code primitives that are documented individually but not bundled into a multi-agent product:
+
+1. **Task dispatch via headless mode.** The harness invokes Claude Code non-interactively (headless mode), passing a prompt or task file and capturing structured output. Each invocation is a separate process, so tasks can run concurrently without one blocking another.
+2. **Isolation via worktrees or separate clones.** To let multiple agents work on the same repository without stepping on each other's file changes, the harness checks out a git worktree (or a full clone) per task/agent, matching Claude Code's own documented pattern for running parallel sessions on branches.
+3. **Cross-host distribution.** For scaling beyond one machine, the harness starts Claude Code processes on separate hosts (or containers/sandboxes) and communicates over whatever transport it chooses — HTTP, message queues, or files — since Claude Code itself doesn't define a network protocol for this.
+4. **State and session tracking.** Because each Claude Code session can be resumed or forked, a harness that wants to check on progress, retry a step, or hand a task to a different agent can rely on session identifiers rather than re-establishing context from scratch, similar to how the CLI's own session picker lets a human resume a specific prior session.
+5. **Inter-agent messaging.** This is the least standardized part. Since there is no built-in agent-to-agent channel in Claude Code, harnesses implement their own: a shared task queue, a database of claims (worker "reserves" a task), or a forum/log pattern the agents read from and write to, so agents can hand off work or avoid duplicate effort without a human relaying messages.
+6. **Verification and gating.** Some harnesses enforce a workflow the agent "cannot skip" — for example, requiring a plan step, a review step, and a merge step in sequence, rather than trusting a single agent to self-police its own process, echoing Claude Code's own documented advice to add adversarial review steps and give Claude something to verify against.
+
+Anthropic's hosted Managed Agents platform is converging toward similar concepts natively — a "multiagent roster" that can include an advisor entry (a separate model consulted mid-turn for strategic guidance), per-session budgets to cap spend, and webhooks for environment/memory-store lifecycle events so an external system can react without polling. These are currently scoped to the Managed Agents/API product, distinct from the open-source Claude Code CLI, but they represent the same underlying problem: many agents (or agent roles), shared state, and controlled spend.
+
+## Hands-on example
+
+A minimal harness pattern using headless mode and worktrees, without any special framework:
+
+```bash
+# Create isolated worktrees for three parallel tasks on the same repo
+git worktree add ../repo-task-auth feature/auth
+git worktree add ../repo-task-db feature/db-migration
+git worktree add ../repo-task-docs feature/docs-update
+
+# Dispatch a Claude Code session per worktree in headless mode
+(cd ../repo-task-auth && claude -p "Implement OAuth login per spec.md" --output-format json > auth.log &)
+(cd ../repo-task-db  && claude -p "Write the migration described in migration.md" --output-format json > db.log &)
+(cd ../repo-task-docs && claude -p "Update docs/README.md to match the new API" --output-format json > docs.log &)
+
+wait
+# A harness script then parses each JSON log, checks exit status,
+# and either merges the branch, requests review, or re-dispatches on failure.
+```
+
+A dispatcher process wrapping this loop is essentially what tools like "acd" (dispatching PRDs across projects) or multi-CLI launchers automate: pick a task, allocate a worktree, run Claude Code headlessly, capture the result, and update a shared task board.
+
+## When to use it (and when not to)
+
+Use a harness when you have genuinely parallelizable, well-scoped tasks — independent files, independent services, or independent bug fixes — where the coordination overhead of writing a dispatcher is smaller than the time saved by running agents concurrently. It's also useful when you need an audit trail across many small agent runs, since headless output can be logged and diffed centrally, and when you want to enforce a fixed workflow (plan → implement → review → merge) that no single agent invocation should be trusted to skip.
+
+Avoid it when tasks are tightly coupled or touch the same files, since worktree isolation won't prevent merge conflicts and an external harness adds coordination cost without removing the underlying dependency. It's also overkill for exploratory or single-session work — subagents within one Claude Code session, or simply resuming a session, cover most day-to-day delegation without needing external infrastructure. Finally, remember that Claude Code has no built-in inter-agent messaging or network-wide scheduler: everything described here is glue code you (or a third-party project) must build and maintain, including its failure handling, retries, and security boundaries across hosts.
+
+## Sources
+
+- https://code.claude.com/docs/en/common-workflows.md
+- https://code.claude.com/docs/en/best-practices.md
+- https://code.claude.com/docs/en/sessions.md
+- https://code.claude.com/docs/en/how-claude-code-works.md
+- https://github.com/IsaiahDupree/acd
+- https://github.com/bon5co/bermuda
+- https://github.com/c-wenlong/quiver
+- https://github.com/1919-doomer/DeepseekHarness-CLI

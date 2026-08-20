@@ -1,5 +1,43 @@
 [
   {
+    "topic": "Preventing unintended destructive actions in Claude Code with guardrail agents and safety harnesses",
+    "status": "published",
+    "score": {
+      "frequency": 0.5,
+      "recency": 0.912,
+      "engagement": 0.313,
+      "gap": 1,
+      "total": 0.631
+    },
+    "matchedSources": [
+      "hn_search",
+      "github_search"
+    ],
+    "whyItMatters": "Projects like Doberman (6pts/3c) and pr-sentinel show high demand for detection and prevention of database deletions, breaking changes, and unsafe commits. Safety harnesses are critical for autonomous Claude Code workflows in production.",
+    "firstSeen": "2026-08-18T05:32:22.109Z",
+    "lastSeen": "2026-08-20T06:35:26.169Z",
+    "publishedSlug": "guardrail-agents-safety-harnesses-claude-code"
+  },
+  {
+    "topic": "Orchestrating multiple Claude Code agents across repos and hosts with harness patterns",
+    "status": "published",
+    "score": {
+      "frequency": 0.5,
+      "recency": 0.912,
+      "engagement": 0.37,
+      "gap": 1,
+      "total": 0.646
+    },
+    "matchedSources": [
+      "hn_search",
+      "github_search"
+    ],
+    "whyItMatters": "HarnessRouter (9pts/10c), agent-mesh, and parallel harness projects show strong community interest in multi-agent coordination, task dispatch, and inter-agent messaging for large-scale coding workflows beyond single-session limits.",
+    "firstSeen": "2026-08-18T05:32:22.109Z",
+    "lastSeen": "2026-08-20T06:34:14.211Z",
+    "publishedSlug": "orchestrating-multi-agent-claude-code-harnesses"
+  },
+  {
     "topic": "Using Claude Code with Remote Control across devices for mobile and desktop collaboration",
     "status": "candidate",
     "score": {
@@ -30,42 +68,6 @@
       "hn_search"
     ],
     "whyItMatters": "With token pricing and context window management becoming critical, community-built status line tools (e.g., statuslin.es with 11pts/2c engagement) show strong demand for real-time visibility into session spend, context usage, and rate-limit warnings during active work.",
-    "firstSeen": "2026-08-18T05:32:22.109Z",
-    "lastSeen": "2026-08-18T05:32:22.109Z"
-  },
-  {
-    "topic": "Preventing unintended destructive actions in Claude Code with guardrail agents and safety harnesses",
-    "status": "candidate",
-    "score": {
-      "frequency": 0.5,
-      "recency": 0.912,
-      "engagement": 0.313,
-      "gap": 1,
-      "total": 0.631
-    },
-    "matchedSources": [
-      "hn_search",
-      "github_search"
-    ],
-    "whyItMatters": "Projects like Doberman (6pts/3c) and pr-sentinel show high demand for detection and prevention of database deletions, breaking changes, and unsafe commits. Safety harnesses are critical for autonomous Claude Code workflows in production.",
-    "firstSeen": "2026-08-18T05:32:22.109Z",
-    "lastSeen": "2026-08-18T05:32:22.109Z"
-  },
-  {
-    "topic": "Orchestrating multiple Claude Code agents across repos and hosts with harness patterns",
-    "status": "candidate",
-    "score": {
-      "frequency": 0.5,
-      "recency": 0.912,
-      "engagement": 0.37,
-      "gap": 1,
-      "total": 0.646
-    },
-    "matchedSources": [
-      "hn_search",
-      "github_search"
-    ],
-    "whyItMatters": "HarnessRouter (9pts/10c), agent-mesh, and parallel harness projects show strong community interest in multi-agent coordination, task dispatch, and inter-agent messaging for large-scale coding workflows beyond single-session limits.",
     "firstSeen": "2026-08-18T05:32:22.109Z",
     "lastSeen": "2026-08-18T05:32:22.109Z"
   },
