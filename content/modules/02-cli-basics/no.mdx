@@ -146,3 +146,7 @@ Versjon 2.1.224 introduserte `ListAgents` for å oppdage Claude Code-økter på 
 ## Nytt i v2.1.233
 
 Nytt i 2.1.233: Flagget `--worktree` støtter nå GitLab merge request-URLer ved siden av GitHub pull requests, og viser MR-er som `!N` i visningen `claude agents`.
+
+## Nytt i v2.1.238
+
+**Plugin-installasjon med headers helper**: Når en katalogoppføring inkluderer en `headersHelper`, kjøres den etter at oppføringens kommando er vist og før installasjon eller oppdatering. `claude plugin install/update`-kommandoen spør nå `[y/N]` (eller bruk `-y`-flagget for å hoppe over bekreftelse).

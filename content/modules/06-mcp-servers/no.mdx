@@ -110,3 +110,7 @@ Nytt i 2.1.221: MCP-tjenere fra `--mcp-config` er nå riktig tilkoblet før før
 ## Nytt i v2.1.233
 
 Nytt i 2.1.233: Fikset MCP v2-tilkoblinger som endelig åpnet abonnement/lytt-strømmer på nytt mot servere som avslutter langvarige strømmer på en fast tidsavbrudd (vanlig på serverless-verter).
+
+## Nytt i v2.1.238
+
+**Headers helper for MCP**: MCP-tjenere kan nå inkludere en `headersHelper`-kommando som produserer HTTP-hodinger (f.eks. nylig utstedte tokens) for katalog- og same-origin-arkivhentinger. I prosjekt `.mcp.json`-filer krever `headersHelper` at prosjektmappens tillitsdialog er blitt akseptert, og den kjøres uten arvede legitimasjonsomgivelsesvariabler.

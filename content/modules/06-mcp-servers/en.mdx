@@ -108,3 +108,7 @@ New in 2.1.221: MCP servers from `--mcp-config` are now properly connected befor
 ## What's new in v2.1.233
 
 New in 2.1.233: Fixed MCP v2 connections that were endlessly reopening subscriptions/listen streams against servers terminating long-held streams on a fixed timeout (common on serverless hosts).
+
+## What's new in v2.1.238
+
+**Headers helper for MCP**: MCP servers can now include a `headersHelper` command that mints HTTP headers (e.g. freshly issued tokens) for catalog and same-origin archive fetches. In project `.mcp.json` files, `headersHelper` requires that the project folder's trust dialog has been accepted, and it runs without inherited credential environment variables.

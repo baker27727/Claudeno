@@ -297,3 +297,14 @@
   no: "Concise-utdatastil"
   note: "Built-in output style that leads with results and skips preamble and
     narration (new in 2.1.237)"
+- id: "keybindingflavor"
+  en: "keybindingFlavor"
+  no: "keybindingFlavor"
+  note: "Settings key controlling readline vs. classic Ctrl+W behavior in prompt
+    input; kept as English configuration identifier (new in 2.1.238)"
+- id: "headershelper"
+  en: "headersHelper"
+  no: "headersHelper"
+  note: "MCP server and plugin marketplace field that runs a command to mint HTTP
+    headers (e.g. short-lived tokens) for catalog and same-origin archive
+    fetches (new in 2.1.238); kept as English configuration identifier"

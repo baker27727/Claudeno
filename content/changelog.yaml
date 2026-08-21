@@ -1,3 +1,19 @@
+- id: "2.1.238"
+  version: "2.1.238"
+  date: "2026-08-21"
+  entry:
+    en: "Added `keybindingFlavor` setting for readline-style Ctrl+W behavior; plugin
+      marketplace `headersHelper` support for HTTP header minting; `claude
+      self-hosted-runner` shutdown deferral and proxy authorization options;
+      fixed unbounded memory growth in long sessions, custom output style drift,
+      and numerous CLI/Remote Control/MCP issues."
+    no: "La til `keybindingFlavor`-innstilling for readline-stil Ctrl+W-oppførsel;
+      plugin-markedsplass `headersHelper`-støtte for HTTP-hode-produksjon;
+      `claude self-hosted-runner` nedstenging-oppskuv og
+      proxy-autorisasjonsalternativer; fikset ubegrenset minnevekst i lange
+      økter, egendefinert utdatastil-avdrift og mange CLI/Remote
+      Control/MCP-problemer."
+  sources: []
 - id: "2.1.237"
   version: "2.1.237"
   date: "2026-08-20"
