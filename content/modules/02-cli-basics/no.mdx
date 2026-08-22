@@ -150,3 +150,7 @@ Nytt i 2.1.233: Flagget `--worktree` støtter nå GitLab merge request-URLer ved
 ## Nytt i v2.1.238
 
 **Plugin-installasjon med headers helper**: Når en katalogoppføring inkluderer en `headersHelper`, kjøres den etter at oppføringens kommando er vist og før installasjon eller oppdatering. `claude plugin install/update`-kommandoen spør nå `[y/N]` (eller bruk `-y`-flagget for å hoppe over bekreftelse).
+
+## Nytt i v2.1.239
+
+Nytt i 2.1.239: Kommandoen `/claude-api upgrade` hjelper til med migrering av Python-prosjekter fra `anthropic` 0.x til 1.x, med oppdatert Python-referansedokumentasjon for versjon 1.x (merk: tidsavbrytelser bruker nå `anthropic.Timeout` i stedet for `httpx.Timeout`).

@@ -308,3 +308,11 @@
   note: "MCP server and plugin marketplace field that runs a command to mint HTTP
     headers (e.g. short-lived tokens) for catalog and same-origin archive
     fetches (new in 2.1.238); kept as English configuration identifier"
+- id: "us-only-inference-premium"
+  en: "US-only-inference premium"
+  no: "US-only-inference-premie"
+  note: "1.1× cost multiplier applied to data-residency workspaces (new in 2.1.239)"
+- id: "data-residency-workspace"
+  en: "data-residency workspace"
+  no: "arbeidsområde med dataplassering"
+  note: "Workspace configured to keep data within the US region (new in 2.1.239)"

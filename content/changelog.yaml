@@ -1,3 +1,19 @@
+- id: "2.1.239"
+  version: "2.1.239"
+  date: "2026-08-22"
+  entry:
+    en: "Cost estimates now include US-only-inference premium for data-residency
+      workspaces. Python 1.x migration support added via `/claude-api upgrade`.
+      Cloud session plugins now show synced status. Alpine/musl builds support
+      native add-ons. Windows cross-session messaging now available. Many fixes
+      for streaming, proxy handling, editor integration, and UI rendering."
+    no: "Kostnadsestimater inkluderer nå US-only-inference-premie for arbeidsområder
+      med dataplassering. Støtte for Python 1.x-migrering lagt til via
+      `/claude-api upgrade`. Sky-øktplugginer viser nå synkroniseringsstatus.
+      Alpine/musl-bygg støtter native tillegg. Meldingsutveksling på tvers av
+      Windows-økter nå tilgjengelig. Mange fiksingene for strømming,
+      proxy-håndtering, editor-integrasjon og UI-rendering."
+  sources: []
 - id: "2.1.238"
   version: "2.1.238"
   date: "2026-08-21"
