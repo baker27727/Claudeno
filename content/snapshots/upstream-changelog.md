@@ -1,11 +1,19 @@
 # Upstream snapshot — Claude Code CHANGELOG
 
-Last observed version: 2.1.239
+Last observed version: 2.1.241
 
 > This file is maintained automatically by `scripts/watch-upstream.ts`.
 > It stores the last-seen upstream CHANGELOG so daily diffs can be computed.
 
 # Changelog
+
+## 2.1.241
+
+- Bug fixes and reliability improvements
+
+## 2.1.240
+
+- Bug fixes and reliability improvements
 
 ## 2.1.239
 
@@ -95,5 +103,4 @@ Last observed version: 2.1.239
 - Fixed a Remote Control session whose process crashed staying unavailable until `claude remote-control` was restarted; it can now be reused when you next message it
 - Fixed Remote Control messages sent from the web or Desktop while Claude is mid-turn disappearing from the transcript after the turn finishes
 - Fixed Remote Control model picks made on a phone or web not updating the model shown in the terminal
-- Fixed Remote Control disconnecting with "login expired" when a brief network hiccup delays renewing your sign-in; it now retries and stays connected
-- Fixed Remote Control reportin
+- Fixed Remote Control disconnecting with "login expired" when a brief net

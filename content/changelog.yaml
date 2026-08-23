@@ -1,3 +1,14 @@
+- id: "2.1.241"
+  version: "2.1.241"
+  date: "2026-08-23"
+  entry:
+    en: "Bug fixes and reliability improvements, including fixes for HTTPS proxy
+      handling, session title syncing, MCP server reconnection, race conditions,
+      and enhanced stability for headless and cloud sessions."
+    no: "Feilrettinger og pålitelighetsforbedrelser, inkludert rettinger for
+      HTTPS-proxy-håndtering, økttittelsynkronisering, MCP-tjenergenoppretting,
+      race-conditions, og forbedret stabilitet for hodeløse økter og sky-økter."
+  sources: []
 - id: "2.1.239"
   version: "2.1.239"
   date: "2026-08-22"
