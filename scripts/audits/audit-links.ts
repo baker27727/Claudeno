@@ -1,10 +1,11 @@
-// audit-links — fails if any external link referenced from content/ returns
-// a 4xx/5xx status (with an exceptions list for known-flaky hosts).
+// audit-links — fails when an external link referenced from content/ returns
+// a definitive error. Transient HTTP/network failures are retried and warned.
 // BLUEPRINT §8.
 
 import { readFileSync, readdirSync, statSync } from "node:fs";
 import { join, extname } from "node:path";
 import { CONTENT_ROOT, fail, pass, readYaml } from "./_util.ts";
+import { checkExternalUrl } from "./_link-check.ts";
 
 // Hosts that are known to block bots / rate-limit CI, or are intentionally
 // non-resolvable placeholders. Extend as needed — keep entries justified.
@@ -61,31 +62,11 @@ function collectUrls(): Set<string> {
   return urls;
 }
 
-async function checkUrl(url: string): Promise<string | undefined> {
-  for (let attempt = 1; attempt <= 3; attempt++) {
-    const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 15_000);
-    try {
-      const init = { redirect: "follow" as const, signal: controller.signal, headers: { "user-agent": "Claudeno link audit" } };
-      let res = await fetch(url, { ...init, method: "HEAD" });
-      if (res.status === 405 || res.status === 501) res = await fetch(url, { ...init, method: "GET" });
-      if (res.status >= 400) return `${url}: HTTP ${res.status}`;
-      return undefined;
-    } catch (err) {
-      if (attempt === 3) {
-        console.warn(`audit-links: transient check failure after 3 attempts (not treated as a dead link): ${url}: ${(err as Error).message}`);
-        return undefined;
-      }
-      await new Promise((resolve) => setTimeout(resolve, attempt * 500));
-    } finally {
-      clearTimeout(timeout);
-    }
-  }
-}
-
 const urls = [...collectUrls()].filter((u) => !isExempt(u));
 const results: Array<string | undefined> = [];
-for (let i = 0; i < urls.length; i += 8) results.push(...await Promise.all(urls.slice(i, i + 8).map(checkUrl)));
+for (let i = 0; i < urls.length; i += 8) {
+  results.push(...await Promise.all(urls.slice(i, i + 8).map((url) => checkExternalUrl(url))));
+}
 const errors = results.filter((r): r is string => Boolean(r));
 
 if (errors.length > 0) fail("audit-links", errors);
