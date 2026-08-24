@@ -1,7 +1,7 @@
 ---
 title: "Writing with Claude Code"
 description: "Use Claude Code to draft blog posts, documentation, and emails. Edit tone, structure, and audience with file-based writing workflows."
-updatedDate: "2026-07-09T14:00:00.000Z"
+updatedDate: "2026-08-15T12:00:00.000Z"
 profession: "writing"
 difficulty: "beginner"
 tools:
@@ -34,11 +34,13 @@ faq:
     answer: "It depends. Claude Code is ideal for file-based, version-controlled writing where you want to iterate with commands. For WYSIWYG editing, use a word processor or CMS."
   - question: "Can Claude Code match my brand voice?"
     answer: "Yes, if you provide clear voice guidelines or examples. The more context you give, the closer the output will match your style."
+  - question: "Can Claude Code help with documentation?"
+    answer: "Yes. You can feed it code, comments, or notes and it will generate structured documentation in Markdown or other formats."
 ---
 
 Writers, bloggers, and technical communicators often struggle with blank-page syndrome, inconsistent tone, and repetitive editing. **Claude Code** helps you move from idea to draft faster by working with files in your terminal.
 
-This guide shows how to use Claude Code for long-form writing, editing, and content repurposing.
+This guide shows how to use Claude Code for long-form writing, editing, content repurposing, and documentation generation.
 
 ## Why writers use Claude Code
 
@@ -50,6 +52,7 @@ Claude Code is not a word processor. It is a writing assistant that helps you:
 - Generate documentation from notes or code comments.
 - Proofread for grammar, tone, and structure.
 - Maintain version control because every file lives in your project.
+- Repurpose a single piece of content across multiple platforms.
 
 ## Use case 1: outline to blog post
 
@@ -99,7 +102,7 @@ Repurpose a blog post into a social media thread:
 claude "Read blog-post.md and write a 5-post Twitter thread with a strong hook and a CTA to read the full article."
 ```
 
-You can also ask for newsletter versions, LinkedIn posts, or carousel captions.
+You can also ask for newsletter versions, LinkedIn posts, or carousel captions. Claude can generate platform-specific formats from a single source document.
 
 ## Use case 4: documentation from code comments
 
@@ -114,6 +117,8 @@ Then refine:
 ```bash
 claude "Add a troubleshooting section for common authentication errors."
 ```
+
+Claude Code can generate API documentation, integration guides, and setup instructions directly from your codebase, keeping docs in sync with your project.
 
 ## Use case 5: proofreading and tone checks
 
@@ -142,12 +147,16 @@ Use Git to track drafts. This makes it easy to compare Claude's revisions.
 ### 5. Fact-check every claim
 AI can generate plausible but incorrect facts. Verify names, numbers, and references.
 
+### 6. Use Claude Code for editing workflows
+Store editing instructions in `.claude/instructions` so Claude can apply your house style consistently across projects.
+
 ## Common writing mistakes with AI
 
 - **Publishing the first draft** — always edit.
 - **Ignoring your audience** — the same draft rarely works for everyone.
 - **Over-editing for SEO** — readability matters more than keyword density.
 - **Losing your voice** — make sure the final text sounds like you or your brand.
+- **Skipping documentation** — always verify facts and citations before publishing.
 
 ## Next steps
 

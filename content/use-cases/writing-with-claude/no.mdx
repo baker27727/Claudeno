@@ -1,7 +1,7 @@
 ---
 title: "Skriving med Claude Code"
 description: "Bruk Claude Code til å utkaste blogginnlegg, dokumentasjon og e-poster. Rediger tone, struktur og målgruppe med filbaserte arbeidsflyter."
-updatedDate: "2026-07-09T14:00:00.000Z"
+updatedDate: "2026-08-15T12:00:00.000Z"
 profession: "writing"
 difficulty: "beginner"
 tools:
@@ -34,11 +34,13 @@ faq:
     answer: "Det avhenger. Claude Code er ideelt for filbasert, versjonskontrollert skriving der du vil iterere med kommandoer. For WYSIWYG-redigering, bruk en tekstbehandler eller CMS."
   - question: "Kan Claude Code matche min merkestemme?"
     answer: "Ja, hvis du gir tydelige stemmeretningslinjer eller eksempler. Jo mer kontekst du gir, jo nærmere output vil matche stilen din."
+  - question: "Kan Claude Code hjelpe med dokumentasjon?"
+    answer: "Ja. Du kan mate det med kode, kommentarer eller notater, og det vil generere strukturert dokumentasjon i Markdown eller andre formater."
 ---
 
 Forfattere, bloggere og tekniske kommunikatøre sliter ofte med blank-side-syndrom, inkonsistent tone og repeterende redigering. **Claude Code** hjelper deg med å gå fra idé til utkast raskere ved å arbeide med filer i terminalen.
 
-Denne guiden viser hvordan du bruker Claude Code til langformet skriving, redigering og omformatering av innhold.
+Denne guiden viser hvordan du bruker Claude Code til langformet skriving, redigering, omformatering av innhold og dokumentasjonsgenerering.
 
 ## Hvorfor forfattere bruker Claude Code
 
@@ -50,6 +52,7 @@ Claude Code er ikke en tekstbehandler. Det er en skriveassistent som hjelper deg
 - Generere dokumentasjon fra notater eller kodekommentarer.
 - Korrekturlese for grammatikk, tone og struktur.
 - Opprettholde versjonskontroll fordi hver fil lever i prosjektet ditt.
+- Omforme en enkelt innholdsbit på tvers av flere plattformer.
 
 ## Bruksområde 1: disposisjon til blogginnlegg
 
@@ -61,7 +64,7 @@ Lag `outline.md`:
 # Hvorfor vi byttet til Claude Code
 
 - Problem: onboarding av nye utviklere var tregt
-- Løsning: standardisert CLAUDE.md + terminal-arbeidsflyt
+- Løsning: standardisert CLAUDE.md + terminal-arbeitsflyt
 - Resultat: raskere code reviews og færre gjentatte spørsmål
 ```
 
@@ -88,7 +91,7 @@ claude "Les post.md og skriv om introduksjonen for et ikke-teknisk lederpublikum
 Eller:
 
 ```bash
-claude "Skriv om post.md for nybegynnere som aldri har brukt terminalen før. Unngå fagspråk og forklar hvert koncept kort."
+claude "Skriv om post.md for nybegynnere som aldri har brukt terminalen før. Unngå fagspråk og forklar hvert concept kort."
 ```
 
 ## Bruksområde 3: langformet til sosial tråd
@@ -99,7 +102,7 @@ Gjør et blogginnlegg om til en sosiale-medier-tråd:
 claude "Les blog-post.md og skriv en 5-dels Twitter-tråd med en sterk hook og en CTA til å lese hele artikkelen."
 ```
 
-Du kan også be om nyhetsbrevversjoner, LinkedIn-innlegg eller karuselltekster.
+Du kan også be om nyhetsbrevversjoner, LinkedIn-innlegg eller karuselltekster. Claude kan generere plattformspesifikke formater fra et enkelt kiljedokument.
 
 ## Bruksområde 4: dokumentasjon fra kodekommentarer
 
@@ -114,6 +117,8 @@ Forbedre deretter:
 ```bash
 claude "Legg til en feilsøkingsseksjon for vanlige autentiseringsfeil."
 ```
+
+Claude Code kan generere API-dokumentasjon, integreringsveiledninger og setupinstruksjoner direkte fra kodebasen din, og holder dokumentasjonen synkronisert med prosjektet ditt.
 
 ## Bruksområde 5: korrekturlesing og tonekontroll
 
@@ -142,12 +147,16 @@ Bruk Git til å spore utkast. Dette gjør det enkelt å sammenligne Claudes revi
 ### 5. Faktagransk hver påstand
 AI kan generere plausible men feilaktige fakta. Verifiser navn, tall og referanser.
 
+### 6. Bruk Claude Code for redigeringsarbeidsflyten
+Lagre redigeringsinstruksjoner i `.claude/instructions` slik at Claude kan bruke husstilen din konsekvent på tvers av prosjekter.
+
 ## Vanlige skrivefeil med AI
 
 - **Publisere førsteutkastet** — alltid rediger.
 - **Ignorere målgruppen** — samme utkast fungerer sjelden for alle.
 - **Over-redigere for SEO** — lesbarhet betyr mer enn keyword-tetthet.
 - **Miste din egen stemme** — sørg for at den endelige teksten høres ut som deg eller merket ditt.
+- **Hoppe over dokumentasjon** — alltid verifiser fakta og sitater før publisering.
 
 ## Neste steg
 
