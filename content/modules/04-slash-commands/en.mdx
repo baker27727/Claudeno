@@ -170,3 +170,7 @@ The `/config` dialog now includes "Continue automatically at usage limit" and "D
 ## What's new in v2.1.237
 
 The /config command now includes an "Output style" setting where you can select the new built-in "Concise" style to get results-first output with minimal preamble.
+
+## What's new in v2.1.245
+
+**New in 2.1.243:** `/status` now shows a `Skipped sources` line listing managed settings sources (for example `managed-settings.json`) present but not applied because a higher-precedence managed source is active. `/status` also shows whether GitHub is connected for Claude Code on the web (Pro/Max), pointing to `/web-setup` when it isn't. `/mcp` and `/plugins` display a `managed` marker on claude.ai connectors whose authentication is managed by your organization.

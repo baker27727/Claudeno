@@ -164,3 +164,7 @@ Output Style: A new built-in "Concise" output style is now available. Select it 
 ## What's new in v2.1.241
 
 **What's new in 2.1.241:** Bug fixes include improved handling of usage-limit messages that now show when session and weekly limits reset, fixes for permission mode interactions in fullscreen, and enhanced reliability for masked inputs and cross-session features.
+
+## What's new in v2.1.245
+
+**New in 2.1.243:** The `modelPicker` setting lets you curate the `/model` picker with an ordered, labeled list of models (any id spelling, including Vertex/Bedrock ids), appended to or replacing the built-in lineup. The `promptCacheTtl` and `subagentPromptCacheTtl` settings let API-key and cloud-provider users keep a 1-hour prompt cache on the main conversation while subagents stay at 5 minutes. The `modelPricing` managed setting lets organizations use their contracted per-model rates and discount multiplier for `/cost`, the status line, and telemetry cost figures instead of list price.

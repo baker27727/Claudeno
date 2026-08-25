@@ -1,3 +1,24 @@
+- id: "2.1.245"
+  version: "2.1.245"
+  date: "2026-08-25"
+  entry:
+    en: "**2.1.245** — Fixed a crash on startup on Linux distributions that ship
+      glibc 2.44 (for example Arch Linux, CachyOS and Fedora Rawhide).
+      **2.1.243** — Added `modelPicker`, `promptCacheTtl`,
+      `subagentPromptCacheTtl`, and `modelPricing` managed settings. Added
+      `/status` lines for GitHub connection status, skipped sources, and
+      `managed` markers for authenticated MCP/plugin connectors. Fixed multiple
+      issues with MCP servers, auto mode, `/model` picker, `/resume`, sessions,
+      messaging, UI rendering, spellcheck, and more."
+    no: "**2.1.245** — Fikset en krasjfeil ved oppstart på Linux-distribusjoner som
+      leveres med glibc 2.44 (for eksempel Arch Linux, CachyOS og Fedora
+      Rawhide). **2.1.243** — La til administrerte innstillinger `modelPicker`,
+      `promptCacheTtl`, `subagentPromptCacheTtl` og `modelPricing`. La til
+      `/status`-linjer for GitHub-tilkoblingsstatus, hoppede kilder og
+      `managed`-merker for autentiserte MCP/plugin-tilkoblinger. Fikset flere
+      problemer med MCP-tjenere, auto-modus, `/model`-velger, `/resume`, økter,
+      meldinger, UI-rendering, stavekontroll og mer."
+  sources: []
 - id: "2.1.241"
   version: "2.1.241"
   date: "2026-08-23"

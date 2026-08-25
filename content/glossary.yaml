@@ -316,3 +316,24 @@
   en: "data-residency workspace"
   no: "arbeidsområde med dataplassering"
   note: "Workspace configured to keep data within the US region (new in 2.1.239)"
+- id: "modelpicker"
+  en: "modelPicker"
+  no: "modelPicker"
+  note: "Settings key to curate the /model picker with an ordered, labeled list of
+    models; kept as English configuration identifier (new in 2.1.243)"
+- id: "promptcachettl"
+  en: "promptCacheTtl"
+  no: "promptCacheTtl"
+  note: "Settings key controlling time-to-live for prompt cache on main
+    conversation; kept as English configuration identifier (new in 2.1.243)"
+- id: "subagentpromptcachettl"
+  en: "subagentPromptCacheTtl"
+  no: "subagentPromptCacheTtl"
+  note: "Settings key controlling time-to-live for prompt cache on subagent
+    conversations; kept as English configuration identifier (new in 2.1.243)"
+- id: "modelpricing"
+  en: "modelPricing"
+  no: "modelPricing"
+  note: "Managed settings key applying organization's contracted per-model rates
+    and discount multiplier to /cost and telemetry; kept as English
+    configuration identifier (new in 2.1.243)"
