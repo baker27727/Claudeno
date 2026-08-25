@@ -1,5 +1,141 @@
 [
   {
+    "topic": "Seeding Claude Managed Agents sessions with initial_events to skip the separate start call",
+    "status": "candidate",
+    "score": {
+      "frequency": 0.25,
+      "recency": 0,
+      "engagement": 0.5,
+      "gap": 1,
+      "total": 0.363
+    },
+    "matchedSources": [
+      "anthropic_changelog"
+    ],
+    "whyItMatters": "Pass up to 50 initial events (user.message, user.define_outcome) when creating a session to start the agent loop immediately, reducing API roundtrips and latency in production workflows.",
+    "firstSeen": "2026-08-25T05:34:12.100Z",
+    "lastSeen": "2026-08-25T05:34:12.100Z"
+  },
+  {
+    "topic": "Debugging multi-agent Claude Code workflows with timeline minimap and per-tool statistics in Console",
+    "status": "candidate",
+    "score": {
+      "frequency": 0.25,
+      "recency": 0.555,
+      "engagement": 0.5,
+      "gap": 1,
+      "total": 0.501
+    },
+    "matchedSources": [
+      "anthropic_changelog"
+    ],
+    "whyItMatters": "Claude Console's redesigned session viewer now includes timeline minimap, inspector panel with cost/raw events/per-tool stats, and per-thread activity. Essential for understanding complex multi-agent sessions.",
+    "firstSeen": "2026-08-25T05:34:12.100Z",
+    "lastSeen": "2026-08-25T05:34:12.100Z"
+  },
+  {
+    "topic": "Using computer_toolset_20260801 for batch actions and per-member configuration in Claude Code",
+    "status": "candidate",
+    "score": {
+      "frequency": 0.25,
+      "recency": 0.555,
+      "engagement": 0.5,
+      "gap": 1,
+      "total": 0.501
+    },
+    "matchedSources": [
+      "anthropic_changelog"
+    ],
+    "whyItMatters": "The computer use tool recently exited beta with new capabilities (batch actions, zoom by default, per-member configs). Developers need a practical guide on how to leverage these features and migrate from older beta versions.",
+    "firstSeen": "2026-08-25T05:34:12.099Z",
+    "lastSeen": "2026-08-25T05:34:12.099Z"
+  },
+  {
+    "topic": "Designing Claude Code workflows with the browser_toolset_20260801 for in-app automation",
+    "status": "candidate",
+    "score": {
+      "frequency": 0.25,
+      "recency": 0.555,
+      "engagement": 0.5,
+      "gap": 1,
+      "total": 0.501
+    },
+    "matchedSources": [
+      "anthropic_changelog"
+    ],
+    "whyItMatters": "Browser toolset newly launched for driving hosted browser viewports with element references, form input, and tab management. Distinct from computer use, it fills a gap for web-only automation workflows.",
+    "firstSeen": "2026-08-25T05:34:12.099Z",
+    "lastSeen": "2026-08-25T05:34:12.099Z"
+  },
+  {
+    "topic": "Configuring Agent Skills with the API (out of beta) for composable Claude workflows",
+    "status": "candidate",
+    "score": {
+      "frequency": 0.25,
+      "recency": 0.555,
+      "engagement": 0.5,
+      "gap": 1,
+      "total": 0.501
+    },
+    "matchedSources": [
+      "anthropic_changelog"
+    ],
+    "whyItMatters": "Agent Skills and the Skills API graduated from beta on August 19, 2026. Teams adopting skills in production need guidance on setup, composition, and integration with Claude Managed Agents.",
+    "firstSeen": "2026-08-25T05:34:12.099Z",
+    "lastSeen": "2026-08-25T05:34:12.099Z"
+  },
+  {
+    "topic": "Controlling Claude Opus 5 reasoning with effort levels (low to max) for capability-critical work",
+    "status": "candidate",
+    "score": {
+      "frequency": 0.25,
+      "recency": 0,
+      "engagement": 0.5,
+      "gap": 1,
+      "total": 0.363
+    },
+    "matchedSources": [
+      "anthropic_changelog"
+    ],
+    "whyItMatters": "Claude Opus 5 ships with effort as the primary control for reasoning depth and latency, with breaking changes around thinking when effort is xhigh or max. Developers need a guide to choosing the right effort level for their task.",
+    "firstSeen": "2026-08-25T05:34:12.099Z",
+    "lastSeen": "2026-08-25T05:34:12.099Z"
+  },
+  {
+    "topic": "Restricting web search and web fetch domains in Claude Managed Agents with allowed_domains and blocked_domains",
+    "status": "candidate",
+    "score": {
+      "frequency": 0.25,
+      "recency": 0.555,
+      "engagement": 0.5,
+      "gap": 1,
+      "total": 0.501
+    },
+    "matchedSources": [
+      "anthropic_changelog"
+    ],
+    "whyItMatters": "New fine-grained control over which sites agents can reach (allowed_domains, blocked_domains, max_content_tokens, user_location). Critical for security and compliance in enterprise agent deployments.",
+    "firstSeen": "2026-08-25T05:34:12.099Z",
+    "lastSeen": "2026-08-25T05:34:12.099Z"
+  },
+  {
+    "topic": "Building persistent agent workflows with memory stores and self-hosted sandboxes in Claude Managed Agents",
+    "status": "candidate",
+    "score": {
+      "frequency": 0.25,
+      "recency": 0.555,
+      "engagement": 0.5,
+      "gap": 1,
+      "total": 0.501
+    },
+    "matchedSources": [
+      "anthropic_changelog"
+    ],
+    "whyItMatters": "Sessions running in self-hosted sandboxes can now attach memory stores with download/sync. Enables stateful, long-lived agent applications that maintain context across restarts.",
+    "firstSeen": "2026-08-25T05:34:12.099Z",
+    "lastSeen": "2026-08-25T05:34:12.099Z"
+  },
+  {
     "topic": "Preventing unintended destructive actions in Claude Code with guardrail agents and safety harnesses",
     "status": "published",
     "score": {
