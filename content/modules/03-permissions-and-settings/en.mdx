@@ -168,3 +168,7 @@ Output Style: A new built-in "Concise" output style is now available. Select it 
 ## What's new in v2.1.245
 
 **New in 2.1.243:** The `modelPicker` setting lets you curate the `/model` picker with an ordered, labeled list of models (any id spelling, including Vertex/Bedrock ids), appended to or replacing the built-in lineup. The `promptCacheTtl` and `subagentPromptCacheTtl` settings let API-key and cloud-provider users keep a 1-hour prompt cache on the main conversation while subagents stay at 5 minutes. The `modelPricing` managed setting lets organizations use their contracted per-model rates and discount multiplier for `/cost`, the status line, and telemetry cost figures instead of list price.
+
+## What's new in v2.1.246
+
+**Auto mode (new in 2.1.246):** Added an Auto mode tab to `/permissions` for viewing and editing auto mode classifier rules. This complements the auto mode safety checks that now scale the safety-check deadline with prompt size for very large sessions.
