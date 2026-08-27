@@ -337,3 +337,19 @@
   note: "Managed settings key applying organization's contracted per-model rates
     and discount multiplier to /cost and telemetry; kept as English
     configuration identifier (new in 2.1.243)"
+- id: "sendfeedback-tool"
+  en: "SendFeedback tool"
+  no: "SendFeedback-verktøy"
+  note: "Tool allowing Claude to draft feedback reports about session issues for
+    user review and submission (new in 2.1.247)"
+- id: "feedbackdrafts"
+  en: "feedbackDrafts"
+  no: "feedbackDrafts"
+  note: "Settings key to disable SendFeedback tool feedback draft generation (new
+    in 2.1.247); kept as English configuration identifier"
+- id: "cost-optimize"
+  en: "cost-optimize"
+  no: "cost-optimize"
+  note: "Subcommand of `/claude-api` for profiling Claude API spend and iterating
+    through cost optimization levers (new in 2.1.247); kept as English command
+    identifier"

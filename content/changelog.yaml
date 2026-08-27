@@ -1,3 +1,19 @@
+- id: "2.1.247"
+  version: "2.1.247"
+  date: "2026-08-27"
+  entry:
+    en: "Added SendFeedback tool for drafting session feedback reports. Added
+      `/claude-api cost-optimize` command for Claude API spend profiling.
+      Updated `/claude-api` skill with Admin API coverage. Added Auto mode tab
+      to /permissions for classifier rules. Fixed multiple UI, session handling,
+      and plugin issues."
+    no: "Lagt til SendFeedback-verktøy for utkasting av tilbakemeldingsrapporter for
+      økter. Lagt til `/claude-api cost-optimize`-kommando for profilering av
+      Claude API-forbruk. Oppdatert `/claude-api`-ferdighet med Admin
+      API-dekning. Lagt til Auto mode-fane til /permissions for
+      klassifiseringsregler. Fikset flere UI-, økt-håndterings- og
+      plugin-problemer."
+  sources: []
 - id: "2.1.246"
   version: "2.1.246"
   date: "2026-08-26"

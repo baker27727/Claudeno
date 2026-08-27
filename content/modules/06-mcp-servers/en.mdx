@@ -112,3 +112,7 @@ New in 2.1.233: Fixed MCP v2 connections that were endlessly reopening subscript
 ## What's new in v2.1.238
 
 **Headers helper for MCP**: MCP servers can now include a `headersHelper` command that mints HTTP headers (e.g. freshly issued tokens) for catalog and same-origin archive fetches. In project `.mcp.json` files, `headersHelper` requires that the project folder's trust dialog has been accepted, and it runs without inherited credential environment variables.
+
+## What's new in v2.1.247
+
+MCP server configuration failures are now better reported: on Bedrock, Vertex AI, and Foundry sessions (and any with telemetry disabled), Claude is now informed when a configured MCP server failed to connect, instead of the system incorrectly concluding that the server's tools don't exist.

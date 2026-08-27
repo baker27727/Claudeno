@@ -114,3 +114,7 @@ Nytt i 2.1.233: Fikset MCP v2-tilkoblinger som endelig åpnet abonnement/lytt-st
 ## Nytt i v2.1.238
 
 **Headers helper for MCP**: MCP-tjenere kan nå inkludere en `headersHelper`-kommando som produserer HTTP-hodinger (f.eks. nylig utstedte tokens) for katalog- og same-origin-arkivhentinger. I prosjekt `.mcp.json`-filer krever `headersHelper` at prosjektmappens tillitsdialog er blitt akseptert, og den kjøres uten arvede legitimasjonsomgivelsesvariabler.
+
+## Nytt i v2.1.247
+
+MCP-tjener-konfigurasjonssvikter blir nå bedre rapportert: på Bedrock-, Vertex AI- og Foundry-økter (og alle med telemetri deaktivert), blir Claude nå informert når en konfigurert MCP-tjener ikke klarte å koble til, i stedet for at systemet feilaktig konkluderer med at tjenestens verktøy ikke eksisterer.
