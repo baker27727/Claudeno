@@ -1,5 +1,24 @@
 [
   {
+    "topic": "Detecting and mitigating Claude-generated watermarks through strategic rewriting and prose analysis",
+    "status": "published",
+    "score": {
+      "frequency": 0.5,
+      "recency": 0.912,
+      "engagement": 0.288,
+      "gap": 1,
+      "total": 0.625
+    },
+    "matchedSources": [
+      "hn_search",
+      "github_search"
+    ],
+    "whyItMatters": "Claude's new text watermarking feature (5pts) and tools like slopvac show immediate community interest in understanding watermark mechanics and techniques for removing AI writing patterns. This is relevant for compliance, authenticity, and content workflows.",
+    "firstSeen": "2026-08-18T05:32:22.109Z",
+    "lastSeen": "2026-08-27T17:12:01.524Z",
+    "publishedSlug": "watermark-detection-and-deslopping-claude-text"
+  },
+  {
     "topic": "Seeding Claude Managed Agents sessions with initial_events to skip the separate start call",
     "status": "candidate",
     "score": {
@@ -256,24 +275,6 @@
       "github_search"
     ],
     "whyItMatters": "Projects like Cronloop and claude-jobs enable autonomous, scheduled Claude Code runs without ANTHROPIC_API_KEY. This pattern is key for CI/CD integration and asynchronous coding workflows that don't require user interaction.",
-    "firstSeen": "2026-08-18T05:32:22.109Z",
-    "lastSeen": "2026-08-18T05:32:22.109Z"
-  },
-  {
-    "topic": "Detecting and mitigating Claude-generated watermarks through strategic rewriting and prose analysis",
-    "status": "candidate",
-    "score": {
-      "frequency": 0.5,
-      "recency": 0.912,
-      "engagement": 0.288,
-      "gap": 1,
-      "total": 0.625
-    },
-    "matchedSources": [
-      "hn_search",
-      "github_search"
-    ],
-    "whyItMatters": "Claude's new text watermarking feature (5pts) and tools like slopvac show immediate community interest in understanding watermark mechanics and techniques for removing AI writing patterns. This is relevant for compliance, authenticity, and content workflows.",
     "firstSeen": "2026-08-18T05:32:22.109Z",
     "lastSeen": "2026-08-18T05:32:22.109Z"
   },

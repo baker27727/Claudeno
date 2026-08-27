@@ -1,0 +1,92 @@
+---
+title: "Å oppdage og fjerne \"AI-slop\" fra Claude-generert tekst"
+description: "En gjennomgang av hvordan vannmerking av AI-tekst fungerer, hvorfor verktøy som \"slopvac\" og \"deslop\" har dukket opp for å fjerne AI-skrivetrekk, og hvordan man bør forholde seg ærlig til deteksjon og omskriving."
+discoveredAt: "2026-08-18T05:32:22.109Z"
+updatedDate: "2026-08-27T17:12:01.523Z"
+author: "Claude Code Learn"
+trendScore: 0.625
+scoreBreakdown:
+  frequency: 0.5
+  recency: 0.912
+  engagement: 0.288
+  gap: 1
+tags:
+  - "watermarking"
+  - "AI detection"
+  - "prose quality"
+  - "Claude"
+  - "content authenticity"
+  - "compliance"
+sources:
+  - "https://github.com/jarrheyd/deslop"
+relatedModules:
+  - "hooks"
+  - "skills"
+relatedUseCases:
+  - "writing-with-claude"
+relatedSkills: []
+draft: false
+# Verified against Claude Code 2.1.246
+---
+## Kort oppsummert
+
+Det er økende interesse i community for to relaterte problemer: å oppdage tekst som er skrevet av en AI-modell (via vannmerker eller stilistiske "kjennetegn"), og å fjerne generiske, repeterende mønstre ofte kalt "AI-slop" slik at teksten leser mer ut som skrevet av et menneske. Verktøy som community-prosjektet "deslop" posisjonerer seg som en kvalitetssluse som fanger AI-skrivetrekk i prosa før den publiseres, og kjører som en Claude Code-hook eller skill. Dette er relevant for alle som publiserer innhold der autentisitet, compliance, eller simpelthen god skriving står på spill.
+
+## Hva er nytt
+
+Community har aktivt bygget verktøy i dette området. Et konkret eksempel fra GitHub-økosystemet er "deslop" — beskrevet som "en Claude Code kvalitetssluse som fanger AI-skrivetrekk i prosa før de sendes ut," implementert som en auto-hook pluss en skill. Dette reflekterer et bredere mønster: i stedet for kun å stole på modellsidens vannmerking eller etterfølgende detektorer, bygger utviklere automatiserte gjennomgangssteg direkte inn i sine Claude Code-arbeidsflyter, og sjekker generert prosa for kjennetegn før den blir committet eller publisert.
+
+Separat fortsetter Anthropics Claude Platform å levere infrastruktur relevant for compliance og innholdstilsyn — for eksempel Compliance API-endepunkter som returnerer sesjonstranskripsjoner for Claude Code- og Cowork-sesjoner (i beta for Claude Enterprise-organisasjoner), som gir organisasjoner en måte å revidere hva som ble generert og hvordan. Disse transkripsjons- og sesjonssporingsfunksjonene er relatert til, men skiller seg fra, vannmerking av spesifikke tekstutdata — de handler om sesjonsnivå-revisjonsbarhet snarere enn per-token-opprinnelsesmerking.
+
+## Slik fungerer det
+
+Å oppdage og fjerne AI-generert "slop" fra prosa involverer typisk to separate mekanismer:
+
+1. **Vannmerke-basert deteksjon**: Noen AI-systemer bygger inn statistiske signaler i generert tekst — subtile skjevheter i ordvalg, token-sannsynlighetsfordelinger, eller frasemønstre — som en detektor senere kan sjekke for. Dette er en modell-/leverandørside-mekanisme: det skjer på genereringstidspunktet, og deteksjon krever enten leverandørens eget verktøy eller en trenet klassifikator som kjenner signalet.
+
+2. **Deteksjon og omskriving av prosakjennetegn ("deslop"-tilnærmingen)**: I stedet for å stole på kryptografiske eller statistiske vannmerker, fungerer verktøy som "deslop" på arbeidsflytnivå, inne i Claude Code selv:
+   - En **auto-hook** fanger opp generert innhold på et definert punkt i arbeidsflyten (for eksempel før en filskriving eller commit) og kjører en sjekk mot teksten.
+   - En **skill** koder selve deteksjonslogikken — et sett med heuristikker for gjenkjennelige AI-skrivemønstre: repeterende setningsstrukturer, overbrukte overgangsfraser, generisk vagt språk, og andre stilistiske "kjennetegn" som gjør at prosa leser som maskingenerert uavhengig av om et vannmerke er tilstede.
+   - Når kjennetegn blir fanget, kan arbeidsflyten blokkere utdataen, flagge den for gjennomgang, eller utløse at Claude omskriver avsnittet med mer spesifikk, variert, menneskelig-klingende formulering.
+   - Fordi dette kjører som en **kvalitetssluse**, skjer det før innhold publiseres — og integrerer deteksjon og utbedring i samme steg, i stedet for å behandle dem som separate etterfølgende prosesser.
+
+Denne hook-pluss-skill-arkitekturen er et generelt Claude Code-mønster: hooks fanger opp på definerte punkter i livssyklusen, og skills pakker inn gjenbrukbar logikk som Claude kaller for å handle på det hooken fanger.
+
+## Prøv det selv
+
+En arbeidsflyt som bruker et hook-og-skill "kvalitetssluse"-mønster for å fjerne AI-slop kan se slik ut konseptuelt:
+
+```
+# .claude/hooks/pre-commit-check.sh (konseptuell pseudokode)
+# Utløses før en filskriving/commit i Claude Code
+
+claude run-skill deslop --input "$STAGED_TEXT" \
+  --flag-patterns "repetitive-transitions,generic-hedging,overused-phrasing" \
+  --on-flag "rewrite"
+```
+
+I praksis vil en bruker som jobber i Claude Code installere en plugin/skill som "deslop" og la auto-hooken kjøre automatisk hver gang generert prosa er i ferd med å bli lagret eller committet. Hvis skillen flagger kjennetegn (f.eks. et avsnitt som lener seg på faste fraser som "i dagens hektiske verden" eller repeterende setningsåpninger), kan Claude Code bes om å omskrive den flaggede delen:
+
+```
+> Deslop-hooken flagget 3 problemer i draft.md: repeterende 
+  setningsåpninger (linje 12-18), generiske overgangsfraser (linje 22), 
+  overbrukt vagt språk (linje 30). Skriv om disse delene med mer 
+  spesifikk, direkte formulering samtidig som betydningen bevares.
+```
+
+## Når du bør bruke det (og når ikke)
+
+Bruk deteksjon og omskriving av prosakjennetegn når:
+- Du publiserer innhold der å "lyde AI-generert" undergraver tillit, merkevarestemme, eller redaksjonelle standarder.
+- Du ønsker en automatisert, repeterbar sjekk integrert i din eksisterende Claude Code-arbeidsflyt, i stedet for manuell korrekturlesing for stilistiske tics.
+- Du trenger en lettvekts kvalitetssluse før innhold publiseres, ikke et compliance-nivå revisjonsspor.
+
+Vær forsiktig når:
+- Du trenger faktisk opprinnelsesverifisering (f.eks. å bevise om AI ble brukt i det hele tatt) — stilistiske deslop-verktøy skriver bort kjennetegn, som er et annet mål enn transparent åpenhet, og kan virke mot compliance-krav.
+- Du er i en regulert eller revidert kontekst — hvis du trenger et varig register over hva Claude genererte og når, er det bedre tjent av sesjonstranskripsjon- og revisjonsinfrastruktur (som Compliance API-sesjonsendepunkter) enn av å skrive om tekst for å fjerne kjennetegn.
+- Det underliggende innholdet er faktisk feil eller dårlig strukturert — deslop adresserer bare overflatestil, ikke nøyaktighet eller resonneringskvalitet.
+- Du stoler på et enkelt community-verktøy som eneste sikkerhetsnett; disse er heuristikk-baserte og vil ha falske positiver og falske negativer, siden "AI-skrivekjennetegn" er et bevegelig mål ettersom modeller forbedres.
+
+## Kilder
+
+- https://github.com/jarrheyd/deslop

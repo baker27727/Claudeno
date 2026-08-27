@@ -1,0 +1,92 @@
+---
+title: "Detecting and De-Slopping Claude-Generated Text"
+description: "A look at how AI text watermarking works, why tools like \"slopvac\" and \"deslop\" have emerged to strip AI writing tells, and how to think about detection and rewriting honestly."
+discoveredAt: "2026-08-18T05:32:22.109Z"
+updatedDate: "2026-08-27T17:12:01.523Z"
+author: "Claude Code Learn"
+trendScore: 0.625
+scoreBreakdown:
+  frequency: 0.5
+  recency: 0.912
+  engagement: 0.288
+  gap: 1
+tags:
+  - "watermarking"
+  - "AI detection"
+  - "prose quality"
+  - "Claude"
+  - "content authenticity"
+  - "compliance"
+sources:
+  - "https://github.com/jarrheyd/deslop"
+relatedModules:
+  - "hooks"
+  - "skills"
+relatedUseCases:
+  - "writing-with-claude"
+relatedSkills: []
+draft: false
+# Verified against Claude Code 2.1.246
+---
+## Quick summary
+
+There's growing community interest in two related problems: detecting text that was written by an AI model (via watermarks or stylistic "tells"), and stripping out the generic, repetitive patterns often called "AI slop" so writing reads more like a human wrote it. Tools like the community project "deslop" position themselves as a quality gate that catches AI-writing tells in prose before it ships, running as a Claude Code hook or skill. This matters for anyone shipping content where authenticity, compliance, or simply good writing is on the line.
+
+## What's new
+
+The community has been actively building tooling around this space. One concrete example from the GitHub ecosystem is "deslop" — described as "a Claude Code quality gate that catches AI-writing tells in prose before they ship," implemented as an auto-hook plus a skill. This reflects a broader pattern: rather than relying solely on model-side watermarking or after-the-fact detectors, practitioners are building automated review steps directly into their Claude Code workflows, checking generated prose for tells before it's committed or published.
+
+Separately, Anthropic's Claude Platform continues to ship infrastructure relevant to compliance and content oversight — for example, Compliance API endpoints that return session transcripts for Claude Code and Cowork sessions (in beta for Claude Enterprise organizations), giving organizations a way to audit what was generated and how. These transcript and session-tracking capabilities are adjacent to, but distinct from, watermarking specific text outputs — they're about session-level auditability rather than per-token provenance marking.
+
+## How it works
+
+Detecting and de-slopping AI-generated prose typically involves two separate mechanisms:
+
+1. **Watermark-style detection**: Some AI systems embed statistical signals into generated text — subtle biases in word choice, token probability distributions, or phrasing patterns — that a detector can later check for. This is a model/provider-side mechanism: it happens at generation time, and detection requires either the provider's own tooling or a trained classifier that recognizes the signal.
+
+2. **Prose-tell detection and rewriting (the "deslop" approach)**: Rather than relying on cryptographic or statistical watermarks, tools like "deslop" work at the workflow level, inside Claude Code itself:
+   - An **auto-hook** intercepts generated content at a defined point in the workflow (for example, before a file write or commit) and runs a check against the text.
+   - A **skill** encodes the actual detection logic — a set of heuristics for recognizable AI writing patterns: repetitive sentence structures, overused transition phrases, generic hedging language, and other stylistic "tells" that make prose read as machine-generated regardless of whether a watermark is present.
+   - When tells are caught, the workflow can block the output, flag it for review, or trigger Claude to rewrite the passage with more specific, varied, human-sounding phrasing.
+   - Because this runs as a **quality gate**, it happens before content ships — integrating detection and mitigation into the same step, rather than treating them as separate post-hoc processes.
+
+This hook-plus-skill architecture is a general Claude Code pattern: hooks intercept at defined lifecycle points, and skills package reusable logic that Claude invokes to act on what the hook catches.
+
+## Hands-on example
+
+A workflow using a hook-and-skill "quality gate" pattern for de-slopping might look like this conceptually:
+
+```
+# .claude/hooks/pre-commit-check.sh (conceptual pseudocode)
+# Triggered before a file write/commit in Claude Code
+
+claude run-skill deslop --input "$STAGED_TEXT" \
+  --flag-patterns "repetitive-transitions,generic-hedging,overused-phrasing" \
+  --on-flag "rewrite"
+```
+
+In practice, a user working in Claude Code would install a plugin/skill like "deslop" and let the auto-hook run automatically whenever generated prose is about to be saved or committed. If the skill flags tells (e.g., a paragraph leaning on stock phrases like "in today's fast-paced world" or repetitive sentence openers), Claude Code can be prompted to rewrite the flagged section:
+
+```
+> The deslop hook flagged 3 issues in draft.md: repetitive sentence 
+  openers (lines 12-18), generic transition phrases (line 22), 
+  overused hedging language (line 30). Rewrite these sections with 
+  more specific, direct phrasing while preserving meaning.
+```
+
+## When to use it (and when not to)
+
+Use prose-tell detection and rewriting when:
+- You're publishing content where "sounding AI-generated" undermines trust, brand voice, or editorial standards.
+- You want an automated, repeatable check integrated into your existing Claude Code workflow, rather than manual proofreading for stylistic tics.
+- You need a lightweight quality gate before content ships, not a compliance-grade audit trail.
+
+Be cautious about it when:
+- You need actual provenance verification (e.g., proving whether AI was used at all) — stylistic de-slopping tools rewrite away tells, which is a different goal than transparent disclosure, and can work at cross purposes with compliance requirements.
+- You're in a regulated or audited context — if you need a durable record of what Claude generated and when, that's better served by session-transcript and audit infrastructure (like Compliance API session endpoints) than by rewriting text to remove tells.
+- The underlying content is factually wrong or poorly structured — de-slopping only addresses surface style, not accuracy or reasoning quality.
+- You're relying on a single community tool as your only safeguard; these are heuristic-based and will have false positives and false negatives, since "AI writing tells" are a moving target as models improve.
+
+## Sources
+
+- https://github.com/jarrheyd/deslop
