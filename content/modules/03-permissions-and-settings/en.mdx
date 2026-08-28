@@ -176,3 +176,7 @@ Output Style: A new built-in "Concise" output style is now available. Select it 
 ## What's new in v2.1.247
 
 Claude Code 2.1.247 introduces the SendFeedback tool, which lets Claude draft feedback reports about session issues for you to review and send from `/feedback` (disable with the `feedbackDrafts` setting). The `/permissions` interface now includes an Auto mode tab where you can view and edit auto mode classifier rules.
+
+## What's new in v2.1.250
+
+Server-managed settings now include startup diagnostics: `/doctor` and `/status` explain load failures or why settings weren't fetched (relevant for Bedrock, Vertex, third-party providers, or custom `ANTHROPIC_BASE_URL`). The `desktopSessionCleanupPeriodDays` setting caps how long desktop-written sessions are kept after they close.

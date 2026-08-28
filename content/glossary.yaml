@@ -353,3 +353,19 @@
   note: "Subcommand of `/claude-api` for profiling Claude API spend and iterating
     through cost optimization levers (new in 2.1.247); kept as English command
     identifier"
+- id: "restricted-flag"
+  en: "restricted flag"
+  no: "begrenset flagg"
+  note: "The --restricted flag removes command/code tools, disables WebFetch,
+    restricts file operations to working directory, and refuses permission
+    bypasses (new in 2.1.248)."
+- id: "desktopsessioncleanupperioddays"
+  en: "desktopSessionCleanupPeriodDays"
+  no: "desktopSessionCleanupPeriodDays"
+  note: "Settings key capping how long desktop-written sessions are kept in
+    cleanup (new in 2.1.248); kept as English configuration identifier."
+- id: "claude_code_restricted"
+  en: "CLAUDE_CODE_RESTRICTED"
+  no: "CLAUDE_CODE_RESTRICTED"
+  note: "Environment variable equivalent to --restricted flag; kept as English
+    environment variable identifier (new in 2.1.248)."

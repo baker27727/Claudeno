@@ -1,3 +1,18 @@
+- id: "2.1.250"
+  version: "2.1.250"
+  date: "2026-08-28"
+  entry:
+    en: "Version 2.1.250 includes bug fixes and reliability improvements, with
+      notable additions in 2.1.248 including the `--restricted` flag to limit
+      tools and permissions, server-managed settings diagnostics, cross-session
+      messaging, and fixes for prompt-cache misses and session management
+      issues."
+    no: "Versjon 2.1.250 inkluderer feilrettinger og forbedringer av pålitelighet,
+      med bemerkelsesverdig tillegg i 2.1.248 inkludert `--restricted`-flagget
+      for å begrense verktøy og tillatelser, diagnostikk for serveradministrerte
+      innstillinger, meldinger på tvers av økter, og rettinger for
+      ledetekst-cache-misser og økt-administrasjonsproblemer."
+  sources: []
 - id: "2.1.247"
   version: "2.1.247"
   date: "2026-08-27"

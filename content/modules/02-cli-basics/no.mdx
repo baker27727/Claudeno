@@ -158,3 +158,7 @@ Nytt i 2.1.239: Kommandoen `/claude-api upgrade` hjelper til med migrering av Py
 ## Nytt i v2.1.241
 
 **Nytt i 2.1.241:** Denne versjonen fokuserer på feilrettinger og pålitelighetsforbedrelser, inkludert rettinger for henging ved oppstart bak HTTPS-proxyer, race-conditions med Esc-nøkkelhåndtering, gjenoppkoblingsproblemer med MCP-tjenere, og forbedret håndtering av øktnavn og filoperasjoner.
+
+## Nytt i v2.1.250
+
+Flagget `--restricted` (eller miljøvariabelen `CLAUDE_CODE_RESTRICTED=1`) fjerner innebygde kommando- og kodekjøringsverktøy, deaktiverer WebFetch (med mindre eksplisitt navngitt i `--tools`), begrenser filoperasjoner til arbeidsmappen, og nekter tillatelsesoverstyringer – nyttig for kontrollerte kjøringsmiljøer.
