@@ -160,3 +160,7 @@ SessionStart-hooks rapporterer nå kilde `"fork"` når en økt begynner som en f
 ## Nytt i v2.1.229
 
 **Nytt i 2.1.229:** Server-leverte Claude Code-hooks er nå støttet i self-hosted runner-økter, og gir samme hook-funksjonalitet som er tilgjengelig i administrerte miljøer.
+
+## Nytt i v2.1.251
+
+To nye hook-hendelser er nå tilgjengelige: `PreModelSwitch` og `PostModelSwitch`. Disse lar deg blokkere, bekrefte eller annotere en modellbytting før og etter at den oppstår. I tillegg mottar `SessionStart` resume-hooks nå to nye parametere: økt-staleness og estimert gjenopphentelse av cache-kostnad, noe som gir deg bedre visibilitet i overganger av økt-tilstand.

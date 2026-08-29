@@ -186,3 +186,7 @@ The `/claude-api` skill has been expanded with Admin API coverage for organizati
 ## What's new in v2.1.250
 
 New `/usage-credits` command available for Enterprise organizations billed through AWS Marketplace, self-serve Enterprise, and Enterprise trials—members can request higher usage limits from their admin. `/web-setup` now warns when the GitHub CLI token lacks the `workflow` scope, which can cause pushes to large repositories to be rejected.
+
+## What's new in v2.1.251
+
+The `/cost` command now displays a per-session prompt-cache line showing the cache hit ratio, number of misses, tokens re-cached, and warm/cold cache status. This helps you understand prompt caching efficiency across your session history.

@@ -180,3 +180,7 @@ Claude Code 2.1.247 introduces the SendFeedback tool, which lets Claude draft fe
 ## What's new in v2.1.250
 
 Server-managed settings now include startup diagnostics: `/doctor` and `/status` explain load failures or why settings weren't fetched (relevant for Bedrock, Vertex, third-party providers, or custom `ANTHROPIC_BASE_URL`). The `desktopSessionCleanupPeriodDays` setting caps how long desktop-written sessions are kept after they close.
+
+## What's new in v2.1.251
+
+Permission checks for file tools (Read, Write, Edit) have been strengthened to prevent symlinks swapped inside the working directory from being used to access files outside the approved location. Plugin commands in marketplace entries are now validated to ensure they do not point outside the plugin directory. Similarly, the Workflow tool's `scriptPath` parameter is now checked before reading, and Grep/Glob respect Read(...) deny rules even when reached through symlinked search paths.

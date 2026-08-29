@@ -153,3 +153,7 @@ SessionStart hooks now report source `"fork"` when a session begins as a fork in
 ## What's new in v2.1.229
 
 **New in 2.1.229:** Server-supplied Claude Code hooks are now supported in self-hosted runner sessions, providing the same hook functionality available in managed environments.
+
+## What's new in v2.1.251
+
+Two new hook events are now available: `PreModelSwitch` and `PostModelSwitch`. These allow you to block, confirm, or annotate a model switch before and after it occurs. Additionally, `SessionStart` resume hooks now receive two new parameters: session staleness and the estimated re-cache cost, giving you better visibility into session state transitions.

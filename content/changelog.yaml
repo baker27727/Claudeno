@@ -1,3 +1,21 @@
+- id: "2.1.251"
+  version: "2.1.251"
+  date: "2026-08-29"
+  entry:
+    en: "Added hook events PreModelSwitch and PostModelSwitch to control model
+      switches; SessionStart resume hooks now include session staleness and
+      re-cache cost. Added /cost per-session prompt-cache line showing hit
+      ratio, misses, and tokens re-cached. Enhanced permission checks for file
+      operations with symlinks, plugin commands, and MCP servers. Fixed
+      background subagents messaging and auto-mode session handling."
+    no: "La til hook-hendelser PreModelSwitch og PostModelSwitch for å kontrollere
+      modellbytting; SessionStart resume-hooks mottar nå økt-staleness og
+      gjenopphentelse av cache-kostnad. La til per-økt prompt-cache-linje i
+      /cost som viser treffratio, misser og token som ble gjenopphente.
+      Forbedret tillatelseskontroller for filoperasjoner med symlinker,
+      plugin-kommandoer og MCP-tjenere. Fikset underagent-meldinger i bakgrunn
+      og håndtering av auto-modus-økt."
+  sources: []
 - id: "2.1.250"
   version: "2.1.250"
   date: "2026-08-28"

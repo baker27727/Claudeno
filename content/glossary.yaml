@@ -369,3 +369,13 @@
   no: "CLAUDE_CODE_RESTRICTED"
   note: "Environment variable equivalent to --restricted flag; kept as English
     environment variable identifier (new in 2.1.248)."
+- id: "premodelswitch"
+  en: "PreModelSwitch"
+  no: "PreModelSwitch"
+  note: "Hook event fired before a model switch; allows blocking, confirming, or
+    annotating the switch (new in 2.1.251); kept as English code identifier"
+- id: "postmodelswitch"
+  en: "PostModelSwitch"
+  no: "PostModelSwitch"
+  note: "Hook event fired after a model switch completes (new in 2.1.251); kept as
+    English code identifier"
