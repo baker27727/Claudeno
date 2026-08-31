@@ -19,6 +19,7 @@ jobs:
       - run: npm ci
       - run: npm run check
       - run: npm run audit:anthropic-credit
+      - run: npm run audit:upstream-plan
       - run: npm run audit:parity
       - run: npm run audit:quiz
       - run: npm run audit:terminal
