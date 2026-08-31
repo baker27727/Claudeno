@@ -17,6 +17,11 @@ import { listModuleDirs, readYaml } from "./audits/_util.ts";
 import { generateWhatsNewPost } from "./_blog-gen.ts";
 import { verifyAndPublish } from "./_auto-publish.ts";
 import { deferOnAnthropicCreditError } from "./_anthropic-credit.ts";
+import {
+  normalizeUpstreamUpdatePlan,
+  type GlossaryTerm,
+  type UpdatePlan,
+} from "./_upstream-update-plan.ts";
 
 const ROOT = process.cwd();
 const DIFF_PATH = join(ROOT, ".upstream-diff.md");
@@ -37,24 +42,6 @@ const DOCS_MAP_URL = "https://code.claude.com/docs/en/claude_code_docs_map.md";
 // z.string()` schema. Quoting everything sidesteps the whole class of
 // implicit-type-resolution bugs (dates, numeric-looking ids/versions, etc).
 const YAML_STRINGIFY_OPTS = { defaultStringType: "QUOTE_DOUBLE", defaultKeyType: "PLAIN" } as const;
-
-interface ContentPatch {
-  file: string; // module slug, e.g. "cli-basics"
-  en: string;
-  no: string;
-}
-interface GlossaryTerm {
-  en: string;
-  no: string;
-  note?: string;
-}
-interface UpdatePlan {
-  affected_modules: string[];
-  content_patches: ContentPatch[];
-  changelog_entry: { version: string; en: string; no: string };
-  new_glossary_terms: GlossaryTerm[];
-  sources: string[];
-}
 
 const RESULT_TOOL = {
   name: "record_content_update",
@@ -151,7 +138,7 @@ empty content_patches array — do not invent unrelated changes.`;
   };
   const toolUse = data.content.find((block) => block.type === "tool_use");
   if (!toolUse?.input) throw new Error("Claude API did not return a tool_use block");
-  return toolUse.input as UpdatePlan;
+  return normalizeUpstreamUpdatePlan(toolUse.input, latestVersion);
 }
 
 function appendWhatsNew(modulePath: string, locale: "en" | "no", version: string, text: string) {
