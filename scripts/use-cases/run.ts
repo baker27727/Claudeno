@@ -4,6 +4,7 @@
 
 import { researchAll } from "./research.ts";
 import { generateUseCases, publishUseCases } from "./generate.ts";
+import { deferOnAnthropicCreditError } from "../_anthropic-credit.ts";
 
 async function main() {
   const researchByProfession = await researchAll();
@@ -16,6 +17,7 @@ async function main() {
 }
 
 main().catch((err) => {
+  if (deferOnAnthropicCreditError(err, "use-case content generation")) return;
   console.error("use-cases/run failed:", err);
   process.exit(1);
 });

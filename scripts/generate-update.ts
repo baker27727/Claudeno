@@ -16,6 +16,7 @@ import { stringify as stringifyYaml } from "yaml";
 import { listModuleDirs, readYaml } from "./audits/_util.ts";
 import { generateWhatsNewPost } from "./_blog-gen.ts";
 import { verifyAndPublish } from "./_auto-publish.ts";
+import { deferOnAnthropicCreditError } from "./_anthropic-credit.ts";
 
 const ROOT = process.cwd();
 const DIFF_PATH = join(ROOT, ".upstream-diff.md");
@@ -263,6 +264,7 @@ async function main() {
 }
 
 main().catch((err) => {
+  if (deferOnAnthropicCreditError(err, "upstream content generation")) return;
   console.error("generate-update failed:", err);
   process.exit(1);
 });

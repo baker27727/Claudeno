@@ -8,6 +8,7 @@ import { verifyAndPublish } from "../_auto-publish.ts";
 import { normalizeGeneratedContent } from "../_content-safety.ts";
 import { USE_CASE_SOURCES, type SourceSet } from "./sources.ts";
 import type { ResearchResult } from "./research.ts";
+import { deferOnAnthropicCreditError } from "../_anthropic-credit.ts";
 
 const ROOT = process.cwd();
 const USE_CASES_DIR = join(ROOT, "content/use-cases");
@@ -336,6 +337,7 @@ if (import.meta.url === `file://${process.argv[1]}`) {
       if (result.published && !result.deployTriggered) process.exit(1);
     })
     .catch((err) => {
+      if (deferOnAnthropicCreditError(err, "use-case content generation")) return;
       console.error("generate failed:", err);
       process.exit(1);
     });

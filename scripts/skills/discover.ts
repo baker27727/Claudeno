@@ -18,6 +18,7 @@ import { stringify as stringifyYaml } from "yaml";
 import { verifyAndPublish, assertTokenBudget, type TokenUsage } from "../_auto-publish.ts";
 import { readVerifiedVersion } from "../audits/_util.ts";
 import { rawUrl, skillSlugFromPath, discoverableSources, type SourceEntry } from "./sources.ts";
+import { deferOnAnthropicCreditError, isAnthropicCreditError } from "../_anthropic-credit.ts";
 
 const ROOT = process.cwd();
 const SKILLS_DIR = join(ROOT, "content/skills");
@@ -364,6 +365,7 @@ async function main() {
     try {
       skill = await generateSkill(source, upstream);
     } catch (err) {
+      if (isAnthropicCreditError(err)) throw err;
       console.error(`  ✗ failed to generate ${slug}: ${(err as Error).message}`);
       failedCandidates.push({ slug, source: source.id, reason: `Claude API/generation failed: ${(err as Error).message}` });
       continue;
@@ -438,6 +440,7 @@ async function main() {
 }
 
 main().catch((err) => {
+  if (deferOnAnthropicCreditError(err, "skill discovery")) return;
   console.error("skills/discover failed:", err);
   process.exit(1);
 });
