@@ -162,3 +162,7 @@ Nytt i 2.1.239: Kommandoen `/claude-api upgrade` hjelper til med migrering av Py
 ## Nytt i v2.1.250
 
 Flagget `--restricted` (eller miljøvariabelen `CLAUDE_CODE_RESTRICTED=1`) fjerner innebygde kommando- og kodekjøringsverktøy, deaktiverer WebFetch (med mindre eksplisitt navngitt i `--tools`), begrenser filoperasjoner til arbeidsmappen, og nekter tillatelsesoverstyringer – nyttig for kontrollerte kjøringsmiljøer.
+
+## Nytt i v2.1.251
+
+Utdataene fra --resume-flagget navngir nå den nøyaktige `claude attach <id>`-kommandoen for å gjenforene med en kjørende bakgrunnøkt. Nye underkommandoer `attach`, `logs`, `stop`, `respawn`, og `rm` er lagt til `claude --help`. /cost-utdataene inkluderer nå per-økt ledetekst-cache-mål (suksessrate, antall missinger, tokens re-cachede, og varm/kald-deling).

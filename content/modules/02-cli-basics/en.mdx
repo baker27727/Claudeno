@@ -162,3 +162,7 @@ New in 2.1.239: The `/claude-api upgrade` command helps migrate Python projects 
 ## What's new in v2.1.250
 
 The `--restricted` flag (or `CLAUDE_CODE_RESTRICTED=1` environment variable) removes built-in command and code-execution tools, disables WebFetch (unless explicitly named in `--tools`), restricts file operations to the working directory, and refuses permission bypasses—useful for controlled execution environments.
+
+## What's new in v2.1.251
+
+The --resume flag output now names the exact `claude attach <id>` command to rejoin a running background session. New subcommands `attach`, `logs`, `stop`, `respawn`, and `rm` have been added to `claude --help`. The /cost output now includes per-session prompt-cache metrics (hit ratio, misses, tokens re-cached, and warm/cold breakdown).
