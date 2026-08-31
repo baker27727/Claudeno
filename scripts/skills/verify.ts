@@ -18,6 +18,7 @@ import { stringify as stringifyYaml } from "yaml";
 import { verifyAndPublish, assertTokenBudget, type TokenUsage } from "../_auto-publish.ts";
 import { readYaml, readVerifiedVersion } from "../audits/_util.ts";
 import { rawUrl } from "./sources.ts";
+import { deferOnAnthropicCreditError } from "../_anthropic-credit.ts";
 
 const ROOT = process.cwd();
 const SKILLS_DIR = join(ROOT, "content/skills");
@@ -418,6 +419,7 @@ async function main() {
 }
 
 main().catch((err) => {
+  if (deferOnAnthropicCreditError(err, "skill content verification")) return;
   console.error("skills/verify failed:", err);
   process.exit(1);
 });

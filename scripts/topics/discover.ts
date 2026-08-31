@@ -19,6 +19,7 @@ import { loadTopicSources } from "./sources.ts";
 import { fetchAllSources, type FetchedSource } from "./research.ts";
 import { scoreCandidate, qualifiesForWriting, type Candidate, type SourceMention } from "./score.ts";
 import { loadLedger, saveLedger, findLedgerEntry, type LedgerEntry } from "./ledger.ts";
+import { deferOnAnthropicCreditError } from "../_anthropic-credit.ts";
 
 const ROOT = process.cwd();
 const ANTHROPIC_MODEL = process.env.ANTHROPIC_MODEL ?? "claude-haiku-4-5-20251001";
@@ -264,6 +265,7 @@ async function main() {
 }
 
 main().catch((err) => {
+  if (deferOnAnthropicCreditError(err, "topic discovery")) return;
   console.error("topics/discover failed:", err);
   process.exit(1);
 });

@@ -23,6 +23,7 @@ import { loadTopicSources } from "./sources.ts";
 import { fetchAllSources } from "./research.ts";
 import { loadLedger, saveLedger, findLedgerEntry, type LedgerEntry } from "./ledger.ts";
 import { listModuleDirs, readYaml, readVerifiedVersion } from "../audits/_util.ts";
+import { deferOnAnthropicCreditError, isAnthropicCreditError } from "../_anthropic-credit.ts";
 
 const ROOT = process.cwd();
 const TOPICS_DIR = join(ROOT, "content/topics");
@@ -275,6 +276,7 @@ async function main() {
     try {
       article = await writeArticle(entry, sourceExcerpts, existingModuleIds, existingUseCaseSlugsList, existingSkillSlugsList);
     } catch (err) {
+      if (isAnthropicCreditError(err)) throw err;
       console.error(`  ✗ generation failed: ${(err as Error).message}`);
       failed.push({ topic: entry.topic, reason: `generation failed: ${(err as Error).message}` });
       continue;
@@ -354,6 +356,7 @@ async function main() {
 }
 
 main().catch((err) => {
+  if (deferOnAnthropicCreditError(err, "topic article generation")) return;
   console.error("topics/write failed:", err);
   process.exit(1);
 });

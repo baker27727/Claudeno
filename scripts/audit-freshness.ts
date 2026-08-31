@@ -16,6 +16,7 @@ import { parse as parseYaml, stringify as stringifyYaml } from "yaml";
 import { listModuleDirs } from "./audits/_util.ts";
 import { verifyAndPublish, assertTokenBudget, type TokenUsage } from "./_auto-publish.ts";
 import { normalizeGeneratedContent } from "./_content-safety.ts";
+import { deferOnAnthropicCreditError, isAnthropicCreditError } from "./_anthropic-credit.ts";
 
 const ANTHROPIC_MODEL = process.env.ANTHROPIC_MODEL ?? "claude-haiku-4-5-20251001";
 
@@ -221,6 +222,7 @@ async function auditModules(findings: Finding[], touchedPaths: string[]) {
     try {
       result = await checkContent(mod.slug, docUrls, readFileSync(enPath, "utf-8"), readFileSync(noPath, "utf-8"), "module");
     } catch (err) {
+      if (isAnthropicCreditError(err)) throw err;
       console.error(`  ✗ skipping ${mod.slug}: ${errorMessage(err)}`);
       continue;
     }
@@ -268,6 +270,7 @@ async function auditEvergreen(
     try {
       result = await checkContent(`${kind}/${slug}`, sources, readFileSync(enPath, "utf-8"), readFileSync(noPath, "utf-8"), "evergreen");
     } catch (err) {
+      if (isAnthropicCreditError(err)) throw err;
       console.error(`  ✗ skipping ${kind}/${slug}: ${errorMessage(err)}`);
       continue;
     }
@@ -321,6 +324,7 @@ async function main() {
 }
 
 main().catch((err) => {
+  if (deferOnAnthropicCreditError(err, "content freshness healing")) return;
   console.error("audit-freshness failed:", err);
   process.exit(1);
 });
