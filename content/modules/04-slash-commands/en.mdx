@@ -15,6 +15,8 @@ it becomes an argument. When in doubt, this always works:
 /help
 ```
 
+Type `/` to see all available commands, or type `/` followed by letters to filter.
+
 ## Managing your context
 
 Two commands sound similar but do very different things.
@@ -24,8 +26,8 @@ Two commands sound similar but do very different things.
 ```
 
 `/clear` starts a brand new conversation with completely empty context. The old
-conversation isn't gone — it's just parked; you can reopen it later. Aliases: `/reset`,
-`/new`.
+conversation isn't gone — it's just parked; you can reopen it later with `/resume`.
+Aliases: `/reset`, `/new`.
 
 ```bash
 /compact
@@ -83,6 +85,36 @@ want. Aliases: `/checkpoint`, `/undo`.
 | `/permissions` | Manage allow/ask/deny rules for tools. Alias `/allowed-tools`. |
 | `/mcp` | Connect to, list, or reconnect MCP servers. |
 | `/init` | Generate a starter `CLAUDE.md` for a new project. |
+| `/effort` | Adjust effort level: `low` to `xhigh`, `max`, `ultracode`, or `auto`. |
+| `/advisor` | Enable or disable the advisor tool for guidance at key moments. |
+| `/context` | Visualize current context usage and optimization suggestions. |
+| `/diff` | Open an interactive diff viewer showing uncommitted changes. |
+| `/code-review` | Review the current diff or a pull request for bugs and cleanups. Alias: `/review`. |
+| `/security-review` | Check the diff for security vulnerabilities. |
+| `/memory` | Refine your project's `CLAUDE.md` memory file. |
+| `/batch` | Decompose a large change into independent units and run each in parallel. |
+| `/fork` | Copy the current conversation into a new background session. |
+| `/background` | Detach the current session to run as a background agent. Alias: `/bg`. |
+| `/status` | Show current session status and context usage. |
+| `/tasks` | List background work and subagent tasks in the current session. |
+| `/usage` | Show token usage and costs. Alias: `/cost`. |
+| `/debug` | Enable debug logging and troubleshoot runtime issues. |
+| `/doctor` | Run a setup checkup that diagnoses and fixes issues. Alias: `/checkup`. |
+| `/config` | Open Settings to adjust theme, model, output style, and other preferences. Alias: `/settings`. |
+| `/theme` | Change the visual theme for the session. |
+
+## Workflows and skills
+
+Some commands are bundled workflows or skills that fan work out across multiple subagents or provide specialized guidance:
+
+| Command | Purpose |
+|---|---|
+| `/batch` | **[Skill]** Orchestrate large-scale changes across a codebase in parallel. |
+| `/code-review` | **[Skill]** Review code for correctness bugs and cleanup opportunities. |
+| `/deep-research` | **[Workflow]** Fan out web searches, fetch and cross-check sources, and synthesize a cited report. |
+| `/design` | **[Skill]** Draft UI mockups, screen flows, landing pages, or posters as artboards. |
+| `/dataviz` | **[Skill]** Design guidance for charts, graphs, and dashboards. |
+| `/verify` | **[Skill]** Verify that code changes work correctly (invoke explicitly). |
 
 ## Key takeaways
 
@@ -90,103 +122,68 @@ want. Aliases: `/checkpoint`, `/undo`.
 - `/resume` reopens any past conversation by name or ID — nothing is truly lost.
 - `/model` switches models without restarting the session.
 - `/rewind` is the real "undo" for code changes, not `/clear`.
+- `/effort` and `/advisor` customize how Claude approaches your task.
+- `/code-review` runs as a background subagent, keeping your conversation focused.
 
 ## Related skills
 
 A skill behaves like a slash command that can also trigger itself: `/name` works exactly like a custom command, but Claude also loads it automatically when your request matches its description. Learn how in [Skills & SKILL.md](/en/learn/skills/), or [browse the curated skills catalog](/en/skills/).
 
-## What's new in v2.1.205
+## Version history
 
-/doctor is now a full setup checkup that can diagnose and fix issues (in version 2.1.205). Use /checkup as an alias. Note that startup warnings like "claude command missing or broken" have moved from initial startup into /doctor and /status output.
+### v2.1.251
+The `/cost` command now displays a per-session prompt-cache line showing the cache hit ratio, number of misses, tokens re-cached, and warm/cold cache status.
 
-## What's new in v2.1.206
+### v2.1.250
+New `/usage-credits` command available for Enterprise organizations. `/web-setup` now warns when the GitHub CLI token lacks the `workflow` scope.
 
-The `/cd` command now provides directory path suggestions similar to the `/add-dir` behavior, making it easier to navigate to frequently used directories. Additionally, `/doctor` (aliased as `/checkup`) has been expanded into a full setup checkup tool that can diagnose and fix issues, including a new check that proposes trimming checked-in `CLAUDE.md` files by removing content Claude could derive from the codebase. The `/commit-push-pr` command now auto-allows `git push` to the repository's configured push remote (via `remote.pushDefault`, or the sole remote when only one is configured) in addition to `origin`. The `/login` command on the Gateway now supports Anthropic-operated public gateway endpoints.
+### v2.1.247
+The `/claude-api` skill expanded with Admin API coverage and a new `/claude-api cost-optimize` subcommand for profiling spend and working through cost optimization.
 
-## What's new in v2.1.207
+### v2.1.246
+New Auto mode tab in `/permissions` to view and edit auto mode classifier rules.
 
-The `/cd` command now provides directory path suggestions matching the behavior of `/add-dir`. The `/doctor` command has been expanded into a full setup checkup that can diagnose and fix issues (alias: `/checkup`), including a check that proposes trimming checked-in `CLAUDE.md` files by cutting content Claude could derive from the codebase.
+### v2.1.245
+`/status` now shows `Skipped sources` line and whether GitHub is connected for Claude Code on the web.
 
-## What's new in v2.1.212
+### v2.1.237
+`/config` now includes an "Output style" setting where you can select the new "Concise" style.
 
-**New `/fork` behavior**: `/fork` now copies your conversation into a new background session (visible as its own row in `claude agents`) while you continue working in the current session. The in-session subagent it used to launch is now available via `/subtask`. **New `/resume` picker**: Type `/resume` in the agent view to open a picker of past sessions—including deleted ones—and resume your choice as a background session.
+### v2.1.234
+You can now open `/permissions`, `/add-dir`, `/autocompact`, `/theme`, `/help`, `/config`, and `/advisor` dialogs while Claude is working.
 
-## What's new in v2.1.214
+### v2.1.232
+Cross-session messaging: Type `@` in the prompt to mention another Claude session by name.
 
-The `/fork` command has been redesigned in version 2.1.212: it now copies your conversation into a new background session (a new row in `claude agents`) while you keep working in the current session. The previous in-session subagent launcher has been replaced by the `/subtask` command.
+### v2.1.227
+Slash-command menu improvements with better highlighting and emoji support. `/code-review` reuses your last effort level when called without a level.
 
-## What's new in v2.1.215
+### v2.1.223
+`/review` is now an alias for `/code-review`, which can run as `/code-review ultra` for deep cloud reviews.
 
-Claude no longer automatically runs `/verify` and `/code-review` skills. Invoke them explicitly with `/verify` or `/code-review` when you want them to execute.
+### v2.1.220
+`/code-review` now runs as a background subagent. `/deep-research` no longer launches automatically.
 
-## What's new in v2.1.217
+### v2.1.218
+`/code-review` now runs as a background subagent. `/deep-research` starts only when invoked manually.
 
-The `/resume` and `/continue` commands now properly handle malformed attachment entries in transcripts instead of failing with a TypeError. The `/compact` command works correctly for Claude Opus 4.8 on Bedrock and no longer fails once over the limit.
+### v2.1.217
+`/resume` and `/continue` now properly handle malformed attachment entries. `/compact` works correctly for Claude Opus 4.8 on Bedrock.
 
-## What's new in v2.1.218
+### v2.1.215
+Claude no longer automatically runs `/verify` and `/code-review` skills. Invoke them explicitly when needed.
 
-The `/code-review` command now runs as a background subagent, keeping your conversation focused on other work while reviews are processed in the background. Similarly, `/deep-research` now starts only when invoked manually rather than launching automatically. The `/ultrareview` command has improved error handling to help Claude correct invalid arguments, and descriptive arguments like "review my auth changes" now apply as notes to findings on your current branch.
+### v2.1.214
+`/fork` redesigned to copy conversations into a new background session while you continue working.
 
-## What's new in v2.1.220
+### v2.1.212
+New `/fork` behavior and `/resume` picker improvements.
 
-/code-review now runs as a background subagent, keeping review work out of your main conversation. `/deep-research` no longer launches automatically; it only starts when invoked manually. Dynamic workflows now default to a medium size guideline (fewer than 15 agents); adjust via the Dynamic workflow size option in `/config`.
+### v2.1.207
+`/cd` command provides directory path suggestions. `/doctor` expanded into a full setup checkup.
 
-## What's new in v2.1.221
+### v2.1.206
+`/cd` now provides directory path suggestions. `/doctor` can diagnose and fix issues, including CLAUDE.md trimming.
 
-New in 2.1.221: The `/plugin install` command now refreshes a stale marketplace catalog and retries before reporting a plugin not found. Additionally, plugins installed via `/plugin` now activate immediately when safe, instead of always requiring `/reload-plugins`. The `/status` command has been enhanced to show the session kind: `interactive`, or a background job that is `attached` or `unattached`.
-
-## What's new in v2.1.223
-
-The `/review` command is now an alias for `/code-review`, which reviews the current diff or a pull request (`/code-review <level> <pr#>`). Use `/code-review ultra` for a deep cloud review. When you type a level like `/code-review high`, it becomes your new default for subsequent reviews in that session.
-
-## What's new in v2.1.224
-
-New in 2.1.224: When removing unavailable paste changes that would alter a command's text, Claude Code now includes a cancel-and-confirm step to prevent accidental modifications.
-
-## What's new in v2.1.226
-
-**New in 2.1.226:** The `/teleport` command is available in cloud sessions, showing how to continue a session locally using `claude --teleport <session id>`.
-
-## What's new in v2.1.227
-
-**What's new in v2.1.227:** The slash-command menu has been improved—blue now marks only the selected row, matched characters are bolded instead of recolored, and emoji or accented names keep their glyphs. Also, `/code-review` (alias `/review`) now reuses your last effort level when called without a level, and you can specify depth like `/code-review ultra` for deep cloud reviews.
-
-## What's new in v2.1.232
-
-**Cross-session messaging (v2.1.232):** Type `@` in the prompt to mention another Claude session by name; Claude then uses `SendMessage` to reach that session directly. `SendMessage` now delivers to a bare name that exactly matches one live session, eliminating confirmation steps. Use `/config` to set "Messages from your other sessions" to accept, hold, or refuse inbound cross-session messages.
-
-## What's new in v2.1.233
-
-New in 2.1.233: The `/effort` selector in screen reader mode now renders as a numbered list with a typed-number prompt for improved accessibility.
-
-## What's new in v2.1.234
-
-The `/config` dialog now includes "Continue automatically at usage limit" and "Dialog expiry" settings. You can also open `/permissions`, `/add-dir`, `/autocompact`, `/theme`, `/help`, `/config`, and `/advisor` dialogs while Claude is working—rule changes apply to the rest of the current turn.
-
-## What's new in v2.1.235
-
-2.1.235 improves `/permissions`: the dialog can now be opened while Claude is working, and rule changes apply to the rest of the current turn.
-
-## What's new in v2.1.237
-
-The /config command now includes an "Output style" setting where you can select the new built-in "Concise" style to get results-first output with minimal preamble.
-
-## What's new in v2.1.245
-
-**New in 2.1.243:** `/status` now shows a `Skipped sources` line listing managed settings sources (for example `managed-settings.json`) present but not applied because a higher-precedence managed source is active. `/status` also shows whether GitHub is connected for Claude Code on the web (Pro/Max), pointing to `/web-setup` when it isn't. `/mcp` and `/plugins` display a `managed` marker on claude.ai connectors whose authentication is managed by your organization.
-
-## What's new in v2.1.246
-
-**Auto mode permissions (new in 2.1.246):** Use the new Auto mode tab in `/permissions` to view and edit auto mode classifier rules directly from the command interface.
-
-## What's new in v2.1.247
-
-The `/claude-api` skill has been expanded with Admin API coverage for organization members, invites, workspaces, API keys, rate limit reports, workload identity federation, and CMEK. A new subcommand, `/claude-api cost-optimize`, helps you profile an existing Claude API project's spend and work through cost levers—caching, token hygiene, batching, effort allocation, and model choice—one measured change at a time.
-
-## What's new in v2.1.250
-
-New `/usage-credits` command available for Enterprise organizations billed through AWS Marketplace, self-serve Enterprise, and Enterprise trials—members can request higher usage limits from their admin. `/web-setup` now warns when the GitHub CLI token lacks the `workflow` scope, which can cause pushes to large repositories to be rejected.
-
-## What's new in v2.1.251
-
-The `/cost` command now displays a per-session prompt-cache line showing the cache hit ratio, number of misses, tokens re-cached, and warm/cold cache status. This helps you understand prompt caching efficiency across your session history.
+### v2.1.205
+`/doctor` is now a full setup checkup that can diagnose and fix issues. Alias: `/checkup`.

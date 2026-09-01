@@ -14,6 +14,8 @@ kommando gjenkjennes bare i starten av meldingen din; alt etter blir et argument
 /help
 ```
 
+Skriv `/` for å se alle tilgjengelige kommandoer, eller skriv `/` etterfulgt av bokstaver for å filtrere.
+
 ## Håndtere konteksten din
 
 To kommandoer høres like ut, men gjør svært forskjellige ting.
@@ -23,7 +25,7 @@ To kommandoer høres like ut, men gjør svært forskjellige ting.
 ```
 
 `/clear` starter en helt ny samtale med fullstendig tom kontekst. Den gamle samtalen
-er ikke borte — den er bare parkert; du kan åpne den igjen senere. Aliaser: `/reset`,
+er ikke borte — den er bare parkert; du kan åpne den igjen senere med `/resume`. Aliaser: `/reset`,
 `/new`.
 
 ```bash
@@ -81,6 +83,36 @@ ville. Aliaser: `/checkpoint`, `/undo`.
 | `/permissions` | Administrer allow/ask/deny-regler for verktøy. Alias `/allowed-tools`. |
 | `/mcp` | Koble til, list opp, eller koble til på nytt MCP-tjenere. |
 | `/init` | Generer en start-`CLAUDE.md` for et nytt prosjekt. |
+| `/effort` | Juster innsatsnivå: `low` til `xhigh`, `max`, `ultracode`, eller `auto`. |
+| `/advisor` | Aktiver eller deaktiver advisor-verktøyet for veiledning på kritiske momenter. |
+| `/context` | Visualiser gjeldende kontekstbruk og optimiseringsforslag. |
+| `/diff` | Åpne en interaktiv diff-visning som viser uforpliktende endringer. |
+| `/code-review` | Gjennomgå gjeldende diff eller pull request for feil og oppryddinger. Alias: `/review`. |
+| `/security-review` | Sjekk diffen for sikkerhetssårbarheter. |
+| `/memory` | Forbedre prosjektets `CLAUDE.md`-minnefil. |
+| `/batch` | Dekomponér en stor endring til uavhengige enheter og kjør hver parallelt. |
+| `/fork` | Kopier gjeldende samtale til en ny bakgrunnsøkt. |
+| `/background` | Løs gjeldende økt for å kjøre som bakgrunnsagent. Alias: `/bg`. |
+| `/status` | Vis gjeldende øktstatus og kontekstbruk. |
+| `/tasks` | List bakgrunnsarbeid og underagentoppgaver i gjeldende økt. |
+| `/usage` | Vis tokenbruk og kostnader. Alias: `/cost`. |
+| `/debug` | Aktiver debug-logging og feilsøk kjøretidsproblemer. |
+| `/doctor` | Kjør en oppsettkontroll som diagnostiserer og fikser problemer. Alias: `/checkup`. |
+| `/config` | Åpne Innstillinger for å justere tema, modell, utgangsstil og andre innstillinger. Alias: `/settings`. |
+| `/theme` | Endre visuelt tema for økten. |
+
+## Arbeidsflyter og skills
+
+Noen kommandoer er bundlete arbeidsflyter eller skills som distribuerer arbeid på tvers av flere underagenter eller gir spesialisert veiledning:
+
+| Kommando | Formål |
+|---|---|
+| `/batch` | **[Skill]** Orkestrér store endringer på tvers av kodekall parallelt. |
+| `/code-review` | **[Skill]** Gjennomgå kode for korrekthetsfeil og oppryddingsmuligheter. |
+| `/deep-research` | **[Workflow]** Distribuér webbsøk, hent og kryss-sjekk kilder, og syntetisér en sitert rapport. |
+| `/design` | **[Skill]** Utkast UI-mockups, skjermflyter, målsider eller plakater som artboards. |
+| `/dataviz` | **[Skill]** Designveiledning for diagrammer, grafer og dashboards. |
+| `/verify` | **[Skill]** Verifiser at kodeendringer fungerer korrekt (påkall eksplisitt). |
 
 ## Oppsummering
 
@@ -89,103 +121,68 @@ ville. Aliaser: `/checkpoint`, `/undo`.
   virkelig tapt.
 - `/model` bytter modell uten å restarte økten.
 - `/rewind` er den ekte "angre"-kommandoen for kodeendringer, ikke `/clear`.
+- `/effort` og `/advisor` tilpasser hvordan Claude nærmer seg oppgaven din.
+- `/code-review` kjører som en bakgrunnsunderagent, som holder konversasjonen din fokusert.
 
 ## Relaterte skills
 
 En skill oppfører seg som en slash-kommando som også kan utløse seg selv: `/navn` fungerer akkurat som en egendefinert kommando, men Claude laster den også automatisk når forespørselen din matcher beskrivelsen. Lær hvordan i [Skills og SKILL.md](/no/learn/skills/), eller [utforsk den kuraterte skills-katalogen](/no/skills/).
 
-## Nytt i v2.1.205
+## Versjonshistorikk
 
-/doctor er nå en fullstendig oppsettkontroll som kan diagnostisere og fikse problemer (i versjon 2.1.205). Bruk /checkup som alias. Merk at oppstartskvareringar som "claude command missing or broken" er nå flyttet fra oppstart til /doctor og /status-utdata.
+### v2.1.251
+Kommandoen `/cost` viser nå en per-økt prompt-cache-linje med cache-treffratio, antall misser, gjenopphentede token og varm/kald cache-status.
 
-## Nytt i v2.1.206
+### v2.1.250
+Ny `/usage-credits`-kommando for Enterprise-organisasjoner. `/web-setup` advarer nå når GitHub CLI-tokenet mangler `workflow`-omfanget.
 
-Kommandoen `/cd` tilbyr nå katalogveistøtte som ligner på atferden til `/add-dir`, noe som gjør det enklere å navigere til ofte brukte kataloger. I tillegg er `/doctor` (med alias `/checkup`) blitt utvidet til et fullt oppsettskontrollverktøy som kan diagnostisere og fikse problemer, inkludert en ny kontroll som foreslår å trimme innsjekket `CLAUDE.md`-filer ved å fjerne innhold som Claude kan utlede fra kodekallet. Kommandoen `/commit-push-pr` tillater nå automatisk `git push` til kodelajers konfigurerte push-fjernkilde (via `remote.pushDefault`, eller den eneste fjernkilden når bare én er konfigurert) i tillegg til `origin`. Kommandoen `/login` på Gateway støtter nå Anthropic-drivne offentlige gatewayslutpunkter.
+### v2.1.247
+Ferdigheten `/claude-api` utvidet med Admin API-dekning og ny `/claude-api cost-optimize`-underkommando for profilring av utgifter.
 
-## Nytt i v2.1.207
+### v2.1.246
+Ny Automodus-flik i `/permissions` for å vise og redigere automodus klassifisererregler.
 
-Kommandoen `/cd` gir nå forslag til katalogbaner som samsvarer med oppførselen til `/add-dir`. Kommandoen `/doctor` er utvidet til en full oppsettsjekk som kan diagnostisere og fikse problemer (alias: `/checkup`), inkludert en sjekk som foreslår å trimme innsjekket `CLAUDE.md`-filer ved å kutte innhold Claude kunne utlede fra kodelegemet.
+### v2.1.245
+`/status` viser nå `Skipped sources`-linje og om GitHub er tilkoblet for Claude Code på nettet.
 
-## Nytt i v2.1.212
+### v2.1.237
+`/config` inkluderer nå en "Output style"-innstilling der du kan velge den nye "Concise"-stilen.
 
-**Nytt `/fork`-atferd**: `/fork` kopierer nå samtalen din til en ny bakgrunnsøkt (synlig som sin egen rad i `claude agents`) mens du fortsetter å arbeide i gjeldende økt. Underagenten som tidligere ble startet i økten er nå tilgjengelig via `/subtask`. **Ny `/resume`-velger**: Skriv `/resume` i agentvisningen for å åpne en velger av tidligere økter—inkludert slettede—og gjenoppta valget ditt som en bakgrunnsøkt.
+### v2.1.234
+Du kan nå åpne `/permissions`, `/add-dir`, `/autocompact`, `/theme`, `/help`, `/config` og `/advisor`-dialoger mens Claude arbeider.
 
-## Nytt i v2.1.214
+### v2.1.232
+Meldinger på tvers av økter: Skriv `@` i ledeteksten for å nevne en annen Claude-økt ved navn.
 
-`/fork`-kommandoen er blitt redesignet i versjon 2.1.212: den kopierer nå samtalen din til en ny bakgrunnsøkt (en ny rad i `claude agents`) mens du fortsetter å arbeide i den gjeldende økten. Den tidligere in-session underagent-startprogrammet er blitt erstattet av `/subtask`-kommandoen.
+### v2.1.227
+Forbedringer i slash-kommandomenyen med bedre uthevelse og emoji-støtte. `/code-review` gjenbruker ditt siste innsatsnivå når det kalles uten nivå.
 
-## Nytt i v2.1.215
+### v2.1.223
+`/review` er nå et alias for `/code-review`, som kan kjøres som `/code-review ultra` for dype skygjennomganger.
 
-Claude kjører ikke lenger `/verify` og `/code-review` skills automatisk. Påkall dem eksplisitt med `/verify` eller `/code-review` når du ønsker at de skal kjøre.
+### v2.1.220
+`/code-review` kjører nå som en bakgrunnsunderagent. `/deep-research` startes ikke lenger automatisk.
 
-## Nytt i v2.1.217
+### v2.1.218
+`/code-review` kjører nå som en bakgrunnsunderagent. `/deep-research` startes bare når den påkalles manuelt.
 
-Kommandoene `/resume` og `/continue` håndterer nå korrekt malformerte vedleggsoppføringer i utskrifter i stedet for å mislykkes med en TypeError. Kommandoen `/compact` fungerer korrekt for Claude Opus 4.8 på Bedrock og mislykkes ikke lenger når grensen overskrides.
+### v2.1.217
+`/resume` og `/continue` håndterer nå riktig malformerte vedleggsoppføringer. `/compact` fungerer korrekt for Claude Opus 4.8 på Bedrock.
 
-## Nytt i v2.1.218
+### v2.1.215
+Claude kjører ikke lenger `/verify` og `/code-review` skills automatisk. Påkall dem eksplisitt når det er nødvendig.
 
-Kommandoen `/code-review` kjører nå som en underagent i bakgrunnen, slik at konversasjonen din forblir fokusert på annet arbeid mens gjennomganger behandles i bakgrunnen. Tilsvarende starter `/deep-research` nå bare når den påkalles manuelt i stedet for å starte automatisk. Kommandoen `/ultrareview` har forbedret feilbehandling for å hjelpe Claude med å korrigere ugyldige argumenter, og beskrivende argumenter som "review my auth changes" brukes nå som notater til funn på gjeldende gren.
+### v2.1.214
+`/fork` redesignet for å kopiere samtaler til en ny bakgrunnsøkt mens du fortsetter å arbeide.
 
-## Nytt i v2.1.220
+### v2.1.212
+Ny `/fork`-atferd og `/resume`-velgerforbedriger.
 
-/code-review kjører nå som en bakgrunnsunderagent, og holder gjennomgangsarbeid utenfor hovedsamtalen. `/deep-research` startes ikke lenger automatisk; det kjører bare når du starter det manuelt. Dynamiske arbeidsflyter bruker nå en medium størrelsesretningslinje som standard (færre enn 15 agenter); juster via alternativet Dynamic workflow size i `/config`.
+### v2.1.207
+`/cd`-kommandoen gir katalogveistøtte. `/doctor` utvidet til en full oppsettkontroll.
 
-## Nytt i v2.1.221
+### v2.1.206
+`/cd` gir nå katalogveistøtte. `/doctor` kan diagnostisere og fikse problemer, inkludert CLAUDE.md trimming.
 
-Nytt i 2.1.221: Kommandoen `/plugin install` oppdaterer nå et foreldet markedsplatakatalog og prøver på nytt før den rapporterer at et plugin ikke ble funnet. I tillegg aktiveres plugin installert via `/plugin` nå umiddelbart når det er sikkert, i stedet for alltid å kreve `/reload-plugins`. Kommandoen `/status` er forbedret til å vise øktstypen: `interactive`, eller en bakgrunnsjobb som er `attached` eller `unattended`.
-
-## Nytt i v2.1.223
-
-Kommandoen `/review` er nå et alias for `/code-review`, som gjennomgår den nåværende diffen eller en pull-forespørsel (`/code-review <level> <pr#>`). Bruk `/code-review ultra` for en grundig sky-gjennomgang. Når du skriver et nivå som `/code-review high`, blir det ditt nye standardvalg for påfølgende gjennomganger i den økten.
-
-## Nytt i v2.1.224
-
-Nytt i 2.1.224: Når du fjerner utilgjengelige limeavsnitt-endringer som vil endre en kommandos tekst, inkluderer Claude Code nå et avbryt-og-bekreft-trinn for å forhindre utilsiktet endring.
-
-## Nytt i v2.1.226
-
-**Nytt i 2.1.226:** Kommandoen `/teleport` er tilgjengelig i sky-økter, og viser hvordan du fortsetter en økt lokalt ved hjelp av `claude --teleport <session id>`.
-
-## Nytt i v2.1.227
-
-**Nytt i v2.1.227:** Slash-kommandomenyen er forbedret – blå markerer nå bare den valgte raden, matchede tegn er uthevet i stedet for fargeendret, og emoji eller акцентerte navn beholder sine tegn. I tillegg gjenbruker `/code-review` (alias `/review`) nå ditt siste innsatsnivå når det kalles uten nivå, og du kan angi dybde som `/code-review ultra` for dype skytestudier.
-
-## Nytt i v2.1.232
-
-**Meldinger på tvers av økter (v2.1.232):** Skriv `@` i ledeteksten for å nevne en annen Claude-økt ved navn; Claude bruker deretter `SendMessage` for å nå økten direkte. `SendMessage` leverer nå til et navn som nøyaktig samsvarer med en aktiv økt, noe som eliminerer bekreftelsesteg. Bruk `/config` til å stille inn "Messages from your other sessions" (Meldinger fra dine andre økter) til å godta, holde eller avvise innkommende meldinger på tvers av økter.
-
-## Nytt i v2.1.233
-
-Nytt i 2.1.233: Velgeren `/effort` i skjermleser-modus gjengis nå som en nummerert liste med en tastet talletterspørsel for forbedret tilgjengelighet.
-
-## Nytt i v2.1.234
-
-`/config`-dialogen inkluderer nå "Fortsett automatisk ved bruksgrenseutløp" og "Dialogutløp"-innstillinger. Du kan også åpne `/permissions`, `/add-dir`, `/autocompact`, `/theme`, `/help`, `/config`, og `/advisor`-dialoger mens Claude jobber—regelendringer gjelder for resten av gjeldende sving.
-
-## Nytt i v2.1.235
-
-2.1.235 forbedrer `/permissions`: dialogvinduet kan nå åpnes mens Claude arbeider, og regelendringer gjelder resten av gjeldende tur.
-
-## Nytt i v2.1.237
-
-/config-kommandoen inkluderer nå en "Output style"-innstilling der du kan velge den nye innebygde "Concise"-stilen for å få resultatorientert utdata med minimal innledning.
-
-## Nytt i v2.1.245
-
-**Nytt i 2.1.243:** `/status` viser nå en `Skipped sources`-linje som viser administrerte instillingskilder (for eksempel `managed-settings.json`) som er tilstede, men ikke brukt fordi en høyere prioritet administrert kilde er aktiv. `/status` viser også om GitHub er tilkoblet for Claude Code på nettet (Pro/Max), og peker til `/web-setup` når det ikke er det. `/mcp` og `/plugins` viser en `managed`-merke på claude.ai-tilkoblinger hvis autentisering administreres av organisasjonen din.
-
-## Nytt i v2.1.246
-
-**Automatiseringstillatelser (nytt i 2.1.246):** Bruk det nye Automodus-fliken i `/permissions` for å vise og redigere automodus klassifisererregler direkte fra kommandograsjekgrensesnittet.
-
-## Nytt i v2.1.247
-
-Ferdigheten `/claude-api` har blitt utvidet med Admin API-dekning for organisasjonsmedlemmer, invitasjoner, arbeidsområder, API-nøkler, grenserapporter, arbeidsbelastningsidentitetsforbund og CMEK. En ny underkommando, `/claude-api cost-optimize`, hjelper deg med å profilere forbruket til et eksisterende Claude API-prosjekt og arbeide gjennom kostnadsinnflytelsen – mellomlagring, token-hygiene, satsing, innsatsfordeling og modellvalg – en målt endring av gangen.
-
-## Nytt i v2.1.250
-
-Ny `/usage-credits`-kommando tilgjengelig for Enterprise-organisasjoner fakturert gjennom AWS Marketplace, selvbetjent Enterprise, og Enterprise-prøveversjoner – medlemmer kan be administratoren om høyere bruksgrenser. `/web-setup` advarer nå når GitHub CLI-tokenet mangler `workflow`-omfanget, som kan føre til at pusher til store kodelager avvises.
-
-## Nytt i v2.1.251
-
-Kommandoen `/cost` viser nå en per-økt prompt-cache-linje som angir cache-treffratioen, antall misser, token som ble gjenopphente, og varm/kald cache-status. Dette hjelper deg å forstå effektiviteten av prompt-caching gjennom økt-historikken din.
+### v2.1.205
+`/doctor` er nå en full oppsettkontroll som kan diagnostisere og fikse problemer. Alias: `/checkup`.
