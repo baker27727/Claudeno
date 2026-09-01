@@ -164,3 +164,7 @@ SessionStart-hooks rapporterer nå kilde `"fork"` når en økt begynner som en f
 ## Nytt i v2.1.251
 
 To nye hook-hendelser er nå tilgjengelige: `PreModelSwitch` og `PostModelSwitch`. Disse lar deg blokkere, bekrefte eller annotere en modellbytting før og etter at den oppstår. I tillegg mottar `SessionStart` resume-hooks nå to nye parametere: økt-staleness og estimert gjenopphentelse av cache-kostnad, noe som gir deg bedre visibilitet i overganger av økt-tilstand.
+
+## Nytt i v2.1.252
+
+To nye hook-ereignisse er nå tilgjengelige: `PreModelSwitch` (aktiveres før en modellbytting og lar deg blokkere, bekrefte eller merke den) og `PostModelSwitch` (aktiveres etter at en modellbytting er fullført). I tillegg mottar `SessionStart` resume-hooks nå økt-foreldelse og den estimerte omlagringskostnaden.

@@ -1,3 +1,17 @@
+- id: "2.1.252"
+  version: "2.1.252"
+  date: "2026-09-01"
+  entry:
+    en: "Added PreModelSwitch and PostModelSwitch hook events for controlling model
+      switches; SessionStart resume hooks now include staleness and re-cache
+      cost information. Multiple bug fixes and improvements across permissions,
+      remote control, background sessions, and MCP servers."
+    no: "Lagt til PreModelSwitch- og PostModelSwitch-hook-ereignisse for å
+      kontrollere modellbytting; SessionStart resume-hooks inkluderer nå
+      foreldelse- og omlagringskostnadsinformasjon. Flere feilrettinger og
+      forbedringer på tvers av tillatelser, fjernstyring, bakgrunnsøkter og
+      MCP-tjenere."
+  sources: []
 - id: "2.1.251"
   version: "2.1.251"
   date: "2026-08-29"

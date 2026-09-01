@@ -157,3 +157,7 @@ SessionStart hooks now report source `"fork"` when a session begins as a fork in
 ## What's new in v2.1.251
 
 Two new hook events are now available: `PreModelSwitch` and `PostModelSwitch`. These allow you to block, confirm, or annotate a model switch before and after it occurs. Additionally, `SessionStart` resume hooks now receive two new parameters: session staleness and the estimated re-cache cost, giving you better visibility into session state transitions.
+
+## What's new in v2.1.252
+
+Two new hook events are now available: `PreModelSwitch` (fires before a model switch and lets you block, confirm, or annotate it) and `PostModelSwitch` (fires after a model switch completes). Additionally, `SessionStart` resume hooks now receive session staleness and the estimated re-cache cost.
