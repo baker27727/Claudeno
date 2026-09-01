@@ -1,5 +1,147 @@
 [
   {
+    "topic": "Optimizing Claude Code sessions with prompt caching TTL strategies",
+    "status": "candidate",
+    "score": {
+      "frequency": 0.5,
+      "recency": 0.899,
+      "engagement": 0.177,
+      "gap": 1,
+      "total": 0.594
+    },
+    "matchedSources": [
+      "docs_map",
+      "hn_search"
+    ],
+    "whyItMatters": "The HN discussion 'Should your Claude Code sessions cache for five minutes, or an hour?' shows developers actively debating cache lifetime trade-offs. The docs detail exactly how TTL works and what invalidates the cache, making this a concrete optimization technique worth a deep technical guide.",
+    "firstSeen": "2026-09-01T09:49:18.124Z",
+    "lastSeen": "2026-09-01T09:49:18.124Z"
+  },
+  {
+    "topic": "Building Claude Code skills from repeated corrections using configuration drift patterns",
+    "status": "candidate",
+    "score": {
+      "frequency": 0.5,
+      "recency": 0.899,
+      "engagement": 0.223,
+      "gap": 1,
+      "total": 0.606
+    },
+    "matchedSources": [
+      "hn_search",
+      "github_search"
+    ],
+    "whyItMatters": "The HN post 'Turn repeated coding-agent corrections into rules/skills' alongside multiple GitHub projects (config-drift-checker, drydock) show a clear workflow gap: developers manually repeating corrections instead of codifying them as reusable skills. This is a pattern-extraction technique worth documenting.",
+    "firstSeen": "2026-09-01T09:49:18.124Z",
+    "lastSeen": "2026-09-01T09:49:18.124Z"
+  },
+  {
+    "topic": "Multi-agent orchestration patterns for Claude Code: delegation, planning, and quality gates",
+    "status": "candidate",
+    "score": {
+      "frequency": 0.5,
+      "recency": 0.971,
+      "engagement": 0.645,
+      "gap": 1,
+      "total": 0.729
+    },
+    "matchedSources": [
+      "github_search",
+      "anthropic_changelog"
+    ],
+    "whyItMatters": "Multiple GitHub projects (daintree with 54 stars, drydock, superpowers-orchestrator, 1c-quality-gate) demonstrate production workflows coordinating multiple Claude agents with spec-driven development, plan conformance, and blocking quality gates. The changelog mentions subagents and advisors; this is a mature pattern worth systematizing.",
+    "firstSeen": "2026-09-01T09:49:18.124Z",
+    "lastSeen": "2026-09-01T09:49:18.124Z"
+  },
+  {
+    "topic": "Persistent agent memory frameworks for Claude Code without vector databases",
+    "status": "candidate",
+    "score": {
+      "frequency": 0.5,
+      "recency": 0.971,
+      "engagement": 0.5,
+      "gap": 1,
+      "total": 0.693
+    },
+    "matchedSources": [
+      "github_search",
+      "docs_map"
+    ],
+    "whyItMatters": "GitHub projects like Shared_Memory (ADR-based shared knowledge) and amem (local personal agent memory) show developers building memory abstractions for multi-session continuity without relying on external services. The docs cover CLAUDE.md and auto memory; these projects extend that pattern.",
+    "firstSeen": "2026-09-01T09:49:18.124Z",
+    "lastSeen": "2026-09-01T09:49:18.124Z"
+  },
+  {
+    "topic": "Using Claude Code browser_toolset_20260801 for in-app automation and cross-site workflows",
+    "status": "candidate",
+    "score": {
+      "frequency": 0.5,
+      "recency": 0.042,
+      "engagement": 0.5,
+      "gap": 1,
+      "total": 0.461
+    },
+    "matchedSources": [
+      "anthropic_changelog",
+      "docs_map"
+    ],
+    "whyItMatters": "The changelog marks browser_toolset_20260801 as newly launched and generally available (out of beta) with element references, form input, tab management, and file upload. The docs show example workflows (form filling, Google Docs drafting, data extraction). This is a fresh capability worth a how-to guide.",
+    "firstSeen": "2026-09-01T09:49:18.124Z",
+    "lastSeen": "2026-09-01T09:49:18.124Z"
+  },
+  {
+    "topic": "Streaming session updates from Claude Managed Agents with event deltas",
+    "status": "candidate",
+    "score": {
+      "frequency": 0.25,
+      "recency": 0.542,
+      "engagement": 0.5,
+      "gap": 1,
+      "total": 0.498
+    },
+    "matchedSources": [
+      "anthropic_changelog"
+    ],
+    "whyItMatters": "The changelog notes session events and event deltas for real-time updates in self-hosted sandboxes and Managed Agents. The changelog also documents memory store attachment. Together, these enable real-time observability into long-running agent workflows—a concrete technique for monitoring.",
+    "firstSeen": "2026-09-01T09:49:18.124Z",
+    "lastSeen": "2026-09-01T09:49:18.124Z"
+  },
+  {
+    "topic": "Effort levels as the primary control for Claude Opus 5 reasoning depth and latency trade-offs",
+    "status": "candidate",
+    "score": {
+      "frequency": 0.25,
+      "recency": 0,
+      "engagement": 0.5,
+      "gap": 1,
+      "total": 0.363
+    },
+    "matchedSources": [
+      "anthropic_changelog"
+    ],
+    "whyItMatters": "The changelog emphasizes effort (low to max) is now the primary control for Claude Opus 5, with disabling thinking only allowed at effort high or below. This is a breaking change from Opus 4.8 that developers need to understand for optimal performance tuning and cost control.",
+    "firstSeen": "2026-09-01T09:49:18.124Z",
+    "lastSeen": "2026-09-01T09:49:18.124Z"
+  },
+  {
+    "topic": "Federating Claude Code sessions across tools with standardized handoff and context bridging",
+    "status": "candidate",
+    "score": {
+      "frequency": 0.5,
+      "recency": 0.971,
+      "engagement": 0.288,
+      "gap": 1,
+      "total": 0.64
+    },
+    "matchedSources": [
+      "github_search",
+      "docs_map"
+    ],
+    "whyItMatters": "GitHub projects (jk-handoff, easy-webbridge, codex-provider-hub) show developers building CLI-agnostic session handoff and multi-provider routing for Claude Code, Codex, and other agents. The web docs mention teleport and switching between CLI/web. This is an emerging interop pattern.",
+    "firstSeen": "2026-09-01T09:49:18.124Z",
+    "lastSeen": "2026-09-01T09:49:18.124Z"
+  },
+  {
     "topic": "Detecting and mitigating Claude-generated watermarks through strategic rewriting and prose analysis",
     "status": "published",
     "score": {
