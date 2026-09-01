@@ -28,7 +28,7 @@ permissions:
   - "file-write"
 relatedSkills: []
 relatedModules: []
-lastVerified: "2026-08-31"
+lastVerified: "2026-09-01"
 verifiedVersion: "2.1.211"
 rubric:
   docs: 5
