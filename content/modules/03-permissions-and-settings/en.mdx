@@ -184,3 +184,7 @@ Server-managed settings now include startup diagnostics: `/doctor` and `/status`
 ## What's new in v2.1.251
 
 Permission checks for file tools (Read, Write, Edit) have been strengthened to prevent symlinks swapped inside the working directory from being used to access files outside the approved location. Plugin commands in marketplace entries are now validated to ensure they do not point outside the plugin directory. Similarly, the Workflow tool's `scriptPath` parameter is now checked before reading, and Grep/Glob respect Read(...) deny rules even when reached through symlinked search paths.
+
+## What's new in v2.1.258
+
+**Containment Escape rule in auto mode (2.1.257):** Auto mode now includes a Containment Escape rule that requires explicit approval for cloud metadata-credential fetches, egress evasion attempts, and cross-tenant reach operations — unless your environment marks them as expected.

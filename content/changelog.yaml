@@ -1,3 +1,14 @@
+- id: "2.1.258"
+  version: "2.1.258"
+  date: "2026-09-02"
+  entry:
+    en: "Version 2.1.258 fixes macOS 12 (Monterey) launch failures and
+      remote/scheduled session permission approval issues. See what's new
+      below."
+    no: "Versjon 2.1.258 fikser startproblemer på macOS 12 (Monterey) og problemer
+      med tillatelsegodkjenning i fjerne og planlagte økter. Se nyhetene
+      nedenfor."
+  sources: []
 - id: "2.1.252"
   version: "2.1.252"
   date: "2026-09-01"

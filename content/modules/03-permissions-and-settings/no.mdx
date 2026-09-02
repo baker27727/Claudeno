@@ -186,3 +186,7 @@ Serveradministrerte innstillinger inkluderer nå startdiagnostikk: `/doctor` og 
 ## Nytt i v2.1.251
 
 Tillatelseskontroller for filverktøy (Read, Write, Edit) er styrket for å forhindre at symlinker byttet innenfor arbeidsmappen brukes til å få tilgang til filer utenfor den godkjente plasseringen. Plugin-kommandoer i markedsplass-oppføringer valideres nå for å sikre at de ikke peker utenfor plugin-mappen. På samme måte kontrolleres Workflow-verktøyets `scriptPath`-parameter nå før lesing, og Grep/Glob respekterer Read(...) nekteregel selv når de nås gjennom symlinket søkebaner.
+
+## Nytt i v2.1.258
+
+**Containment Escape-regel i auto-modus (2.1.257):** Auto-modus inkluderer nå en Containment Escape-regel som krever eksplisitt godkjenning for cloud-metadata-legitimasjonshentinger, egress-unngåelsesforsøk og cross-tenant-reaksjoner — med mindre miljøet ditt markerer dem som forventede.
