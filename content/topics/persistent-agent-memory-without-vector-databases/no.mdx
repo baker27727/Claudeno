@@ -1,0 +1,106 @@
+---
+title: "Persistent agenthukommelse for Claude Code uten vektordatabase"
+description: "Et blikk på hvordan utviklere bygger videre på Claude Codes innebygde CLAUDE.md og auto-hukommelse med lettvekts, filbaserte hukommelsesrammeverk — uten embeddings eller vektordatabase, kun strukturert Markdown og disiplinert gjenfinning."
+discoveredAt: "2026-09-01T09:49:18.124Z"
+updatedDate: "2026-09-03T10:31:10.573Z"
+author: "Claude Code Learn"
+trendScore: 0.693
+scoreBreakdown:
+  frequency: 0.5
+  recency: 0.971
+  engagement: 0.5
+  gap: 1
+tags:
+  - "Claude Code"
+  - "memory"
+  - "CLAUDE.md"
+  - "agent frameworks"
+  - "multi-session"
+  - "context management"
+sources:
+  - "https://code.claude.com/docs/en/memory.md"
+  - "https://code.claude.com/docs/en/claude-directory.md"
+  - "https://code.claude.com/docs/en/context-window.md"
+  - "https://code.claude.com/docs/en/sessions.md"
+relatedModules:
+  - "memory"
+  - "cli-basics"
+  - "subagents"
+  - "hooks"
+relatedUseCases:
+  - "project-management-with-claude"
+  - "research-and-summarization-with-claude"
+relatedSkills: []
+draft: false
+# Verified against Claude Code 2.1.258
+---
+# Persistent agenthukommelse for Claude Code uten vektordatabase
+
+## Kort oppsummert
+
+Claude Code kommer med to innebygde hukommelsesmekanismer — CLAUDE.md-filer og auto-hukommelse — som lagrer prosjektkunnskap og lærte fakta som ren tekst på disk. En voksende gruppe community-prosjekter (delte ADR-baserte kunnskapslagre, lokale personlige agent-hukommelsesverktøy) bygger videre på dette mønsteret i stedet for å erstatte det med embeddings eller en vektordatabase. Poenget er enkelt: for de fleste kodeagent-arbeidsoppgaver gir strukturert Markdown pluss disiplinert filorganisering kontinuitet på tvers av økter uten å måtte drifte ekstra infrastruktur.
+
+## Hva er nytt
+
+Claude Codes dokumentasjon beskriver allerede to innebygde lag: **CLAUDE.md-filer**, som er eksplisitte, brukerkuraterte instruksjoner som lastes ved øktstart (og kan lastes fra flere kataloger, med støtte for stiavgrensede regler under `.claude/rules/`), og **auto-hukommelse**, som Claude selv skriver til mens den jobber, og lagrer lærte fakta på et definert lagringssted som du kan revidere og redigere med `/memory`. Økter kan også gjenopptas, forgrenes og eksporteres, og `.claude`-katalogen holder denne tilstanden som klartekstfiler i stedet for i en uigjennomsiktig database.
+
+Uavhengige prosjekter i GitHub-økosystemet bygger videre på nettopp denne ideen i stedet for å introdusere et nytt lagringsparadigme. To mønstre går igjen: delt, teamrettet hukommelse bygget rundt arkitekturbeslutningsdokumenter (ADR-er) som flere agenter eller bidragsytere leser fra og legger til i, og lokal, personlig agenthukommelse som bevarer én brukers kontekst på tvers av økter på egen maskin. Begge unngår embedding-pipelines og vektorsøk, og baserer seg i stedet på strukturerte filer, navnekonvensjoner og gjenfinning ved at Claude leser og søker i tekst direkte — samme mekanisme som CLAUDE.md og auto-hukommelse allerede bruker.
+
+## Slik fungerer det
+
+Den underliggende mekanikken er konsistent mellom de innebygde funksjonene og community-utvidelsene:
+
+1. **Lagring er vanlige filer, ikke en database.** CLAUDE.md-innhold ligger i Markdown-filer som Claude laster inn i kontekst ved øktstart; auto-hukommelse skriver til sitt eget lagringssted på disk. Alt kan inspiseres og redigeres med en vanlig tekstredigerer.
+2. **Lasting skjer på definerte tidspunkt.** CLAUDE.md lastes når en økt starter og kan hente inn filer fra flere kataloger; auto-hukommelse leses automatisk som del av hvordan funksjonen fungerer. Community-rammeverk etterligner dette ved å definere en fast fil eller katalog (f.eks. en ADR-logg, en hukommelsesindeks) som leses ved øktstart eller kalles eksplisitt via en skill eller kommando.
+3. **Gjenfinning er tekstbasert, ikke vektorbasert.** I stedet for å embedde innhold og gjøre nærmeste-nabo-søk, baserer disse rammeverkene seg på at Claude selv leser og resonnerer over strukturert tekst — overskrifter, ID-er, datoer, tagger — for å finne det som er relevant. Dette bytter bort presisjon ved gjenfinning i store korpus mot enkelhet: ingen embedding-modell, ingen indeks å holde synkronisert, ingen avhengighet av ekstern tjeneste.
+4. **Organisering gjør jobben vektorsøk ellers ville gjort.** ADR-baserte lagre nummererer og daterer hver oppføring og krever ofte et statusfelt (foreslått/vedtatt/erstattet), slik at en agent kan skanne filnavn eller en innholdsfortegnelse i stedet for å gjøre semantisk søk. Personlige hukommelsesverktøy bruker lignende konvensjoner — tidsstempler, kategorier, eller én løpende logg — for å holde skanning billig.
+5. **Kompaktering og kontekstgrenser gjelder fortsatt.** Alt som trekkes inn i en økt teller mot kontekstvinduet, og dokumentasjonen beskriver hva som overlever kompaktering og hva som ikke gjør det. Filbaserte hukommelsesrammeverk må kurateres (holdes små, ryddes opp i, eller oppsummeres) av samme grunn som CLAUDE.md selv anbefales holdt slank.
+6. **Sporbarhet følger av formatet.** Fordi alt er tekst på disk, kan du kjøre `git diff` på en hukommelsesfil, gjennomgå hva en agent har skrevet, eller rulle tilbake en dårlig hukommelsesoppføring på samme måte som du reverserer enhver annen filendring — noe uigjennomsiktige vektorlagre ikke gir deg gratis.
+
+## Prøv det selv
+
+Du kan tilnærme et lettvekts ADR-basert delt hukommelseslager uten ekstra verktøy, kun med det Claude Code allerede støtter (en prosjektkatalog pluss `/memory` for auto-hukommelse):
+
+```
+prosjekt/
+  .claude/
+    memory/
+      adr/
+        0001-bruk-postgres-fremfor-sqlite.md
+        0002-auth-via-oauth-ikke-magic-links.md
+      INDEX.md   # én linje per ADR: id, tittel, status, dato
+```
+
+En prompt som bruker denne strukturen:
+
+```
+Før du foreslår en tilnærming for den nye faktureringstjenesten, les
+.claude/memory/adr/INDEX.md og åpne eventuelle ADR-er merket "billing"
+eller "database". Følg disse beslutningene med mindre jeg eksplisitt
+overstyrer dem. Hvis vi tar en ny arkitekturbeslutning i denne økten,
+lag en ny nummerert ADR-fil i .claude/memory/adr/ og legg til en
+linje i INDEX.md.
+```
+
+Claude leser indeksen (en liten, billig fil), åpner kun de relevante ADR-ene via filnavn-treff, og — avgjørende — skriver nye beslutninger tilbake i samme format slik at neste økt (eller en kollega) drar nytte av det uten at noen kjører en innlastings- eller embedding-jobb.
+
+## Når du bør bruke det (og når ikke)
+
+Filbasert hukommelse fungerer godt når:
+- Kunnskapsbasen din er liten til middels stor og organisert rundt diskrete, navngivbare enheter (beslutninger, fakta, preferanser) fremfor store ustrukturerte korpus.
+- Du vil at hukommelsen skal være sporbar og versjonerbar i Git, uten ekstern tjeneste eller API-nøkkel å administrere.
+- Teamet ditt allerede gjennomgår CLAUDE.md- og auto-hukommelsesinnhold som del av normal arbeidsflyt, slik at å legge til et parallelt strukturert lager (som ADR-er) er et lite inkrementelt steg.
+
+Det passer dårlig når:
+- Du trenger semantisk søk over et stort, voksende korpus (tusenvis av dokumenter) der å skanne filnavn eller en manuelt vedlikeholdt indeks ikke skalerer — det er nettopp der vektordatabaser gjør en god jobb.
+- Flere agenter skriver samtidig i høyt volum og du trenger konfliktløsning utover det fillåser eller Git-sammenslåinger gir.
+- Hukommelsen må spørres etter relevans/likhet fremfor eksplisitte tagger, ID-er eller kategorier — tekstbasert gjenfinning avhenger av at Claude finner riktig fil via struktur, ikke "nærmeste betydning".
+- Du allerede opplever begrensninger i kontekstvindu eller kompaktering — å legge til flere filer som lastes ved øktstart forverrer dette med mindre oppføringene holdes korte og ryddes jevnlig.
+
+Kort sagt: disse rammeverkene er et disiplinlag oppå Claude Codes eksisterende CLAUDE.md og auto-hukommelse, ikke en erstatningsarkitektur. De er verdt å ta i bruk når flaskehalsen din er organisering og kontinuitet, ikke skala.
+
+## Kilder
+- https://code.claude.com/docs/en/memory.md
+- https://code.claude.com/docs/en/claude-directory.md
+- https://code.claude.com/docs/en/context-window.md
+- https://code.claude.com/docs/en/sessions.md

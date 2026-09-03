@@ -1,0 +1,105 @@
+---
+title: "Persistent Agent Memory for Claude Code Without a Vector Database"
+description: "A look at how developers extend Claude Code's built-in CLAUDE.md and auto memory with lightweight, file-based memory frameworks — no embeddings, no vector store, just structured Markdown and disciplined retrieval."
+discoveredAt: "2026-09-01T09:49:18.124Z"
+updatedDate: "2026-09-03T10:31:10.573Z"
+author: "Claude Code Learn"
+trendScore: 0.693
+scoreBreakdown:
+  frequency: 0.5
+  recency: 0.971
+  engagement: 0.5
+  gap: 1
+tags:
+  - "Claude Code"
+  - "memory"
+  - "CLAUDE.md"
+  - "agent frameworks"
+  - "multi-session"
+  - "context management"
+sources:
+  - "https://code.claude.com/docs/en/memory.md"
+  - "https://code.claude.com/docs/en/claude-directory.md"
+  - "https://code.claude.com/docs/en/context-window.md"
+  - "https://code.claude.com/docs/en/sessions.md"
+relatedModules:
+  - "memory"
+  - "cli-basics"
+  - "subagents"
+  - "hooks"
+relatedUseCases:
+  - "project-management-with-claude"
+  - "research-and-summarization-with-claude"
+relatedSkills: []
+draft: false
+# Verified against Claude Code 2.1.258
+---
+# Persistent Agent Memory for Claude Code Without a Vector Database
+
+## Quick summary
+
+Claude Code ships with two native memory mechanisms — CLAUDE.md files and auto memory — that store project knowledge and learned facts as plain text on disk. A growing set of community projects (shared ADR-based knowledge stores, local personal agent memory tools) build on top of this pattern instead of replacing it with embeddings or a vector database. The pitch is simple: for most coding-agent workloads, structured Markdown plus disciplined file organization gives you multi-session continuity without running extra infrastructure.
+
+## What's new
+
+Claude Code's documentation already describes two built-in layers: **CLAUDE.md files**, which are explicit, user-curated instructions loaded at session start (and re-loadable from multiple directories, with support for path-specific rules under `.claude/rules/`), and **auto memory**, which Claude itself writes to as it works, storing learned facts at a defined storage location that you can audit and edit with `/memory`. Sessions can also be resumed, branched, and exported, and the `.claude` directory holds this state as plaintext files rather than in an opaque database.
+
+Independent projects in the GitHub ecosystem extend this same idea rather than introducing a new storage paradigm. Two patterns recur: shared, team-facing memory built around architecture decision records (ADRs) that multiple agents or contributors read and append to, and local, personal agent memory that persists a single user's context across sessions on their own machine. Both avoid embedding pipelines and vector search, relying instead on structured files, naming conventions, and retrieval by Claude reading and searching text directly — the same mechanism CLAUDE.md and auto memory already use.
+
+## How it works
+
+The underlying mechanics are consistent across the built-in features and the community extensions:
+
+1. **Storage is plain files, not a database.** CLAUDE.md content lives in Markdown files that Claude loads into context at session start; auto memory writes to its own storage location on disk. Everything is inspectable and editable with a normal text editor.
+2. **Loading happens at defined points.** CLAUDE.md is loaded when a session starts and can pull in files from additional directories; auto memory is read automatically as part of "how it works" for that feature. Community frameworks mimic this by defining a fixed file or directory (e.g., an ADR log, a memory index) that gets read at the start of a session or invoked explicitly via a skill or command.
+3. **Retrieval is textual, not vector-based.** Instead of embedding content and doing nearest-neighbor search, these frameworks rely on Claude's own reading and reasoning over structured text — headings, IDs, dates, tags — to find what's relevant. This trades recall precision on large corpora for simplicity: no embedding model, no index to keep in sync, no external service dependency.
+4. **Organization does the work vector search would otherwise do.** ADR-style stores number and date each entry and often require a status field (proposed/accepted/superseded), so an agent can scan filenames or a table of contents instead of doing semantic search. Personal memory tools use similar conventions — timestamps, categories, or a single running log — to keep scans cheap.
+5. **Compaction and context limits still apply.** Anything pulled into a session counts against the context window, and documentation notes what survives compaction versus what doesn't. Memory frameworks built on files must be curated (kept small, pruned, or summarized) for the same reason CLAUDE.md itself is recommended to stay lean.
+6. **Auditability follows from the format.** Because everything is text on disk, you can `git diff` a memory file, review what an agent wrote, or roll back a bad memory entry the same way you'd revert any other file change — something opaque vector stores don't give you for free.
+
+## Hands-on example
+
+You can approximate a lightweight ADR-based shared memory without any extra tooling, using only what Claude Code already supports (a project directory plus `/memory` for auto memory):
+
+```
+project/
+  .claude/
+    memory/
+      adr/
+        0001-use-postgres-over-sqlite.md
+        0002-auth-via-oauth-not-magic-links.md
+      INDEX.md   # one line per ADR: id, title, status, date
+```
+
+A prompt that uses this structure:
+
+```
+Before proposing an approach for the new billing service, read
+.claude/memory/adr/INDEX.md and open any ADRs tagged "billing" or
+"database". Follow their decisions unless I explicitly override them.
+If we make a new architectural decision in this session, draft a new
+numbered ADR file in .claude/memory/adr/ and add a line to INDEX.md.
+```
+
+Claude reads the index (a small, cheap file), opens only the relevant ADRs by filename match, and — critically — writes new decisions back in the same format so the next session (or a teammate) benefits without anyone running an ingestion or embedding step.
+
+## When to use it (and when not to)
+
+File-based memory works well when:
+- Your knowledge base is small to medium-sized and organized around discrete, nameable units (decisions, facts, preferences) rather than large unstructured corpora.
+- You want memory to be auditable and versionable in Git, with no external service or API key to manage.
+- Your team already reviews CLAUDE.md and auto memory content as part of normal workflow, so adding a parallel structured store (like ADRs) is a small incremental step.
+
+It's a poor fit when:
+- You need semantic search over a large, growing corpus (thousands of documents) where scanning filenames or a hand-maintained index doesn't scale — that's the actual use case vector databases solve well.
+- Multiple agents write concurrently at high volume and you need conflict resolution beyond what file locks or Git merges give you.
+- The memory needs to be queried by relevance/similarity rather than by explicit tags, IDs, or categories — text-based retrieval depends on Claude finding the right file through structure, not "closest meaning."
+- You're already hitting context-window or compaction limits; adding more files to load at session start makes that worse unless you keep entries short and prune aggressively.
+
+In short: these frameworks are a discipline layer on top of Claude Code's existing CLAUDE.md and auto memory, not a replacement architecture. They're worth adopting when your bottleneck is organization and continuity, not scale.
+
+## Sources
+- https://code.claude.com/docs/en/memory.md
+- https://code.claude.com/docs/en/claude-directory.md
+- https://code.claude.com/docs/en/context-window.md
+- https://code.claude.com/docs/en/sessions.md

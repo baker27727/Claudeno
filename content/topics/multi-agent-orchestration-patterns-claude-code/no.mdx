@@ -1,0 +1,106 @@
+---
+title: "Mønstre for multi-agent-orkestrering i Claude Code"
+description: "Hvordan team koordinerer flere Claude-agenter gjennom delegering, spesifikasjonsdrevet planlegging og blokkerende kvalitetsporter — og hvordan dette forholder seg til Claude Codes innebygde subagent- og advisor-primitiver."
+discoveredAt: "2026-09-01T09:49:18.124Z"
+updatedDate: "2026-09-03T10:29:59.472Z"
+author: "Claude Code Learn"
+trendScore: 0.729
+scoreBreakdown:
+  frequency: 0.5
+  recency: 0.971
+  engagement: 0.645
+  gap: 1
+tags:
+  - "claude-code"
+  - "multi-agent"
+  - "subagents"
+  - "orchestration"
+  - "quality-gates"
+  - "spec-driven-development"
+  - "advisors"
+sources:
+  - "https://code.claude.com/docs/en/common-workflows.md"
+  - "https://code.claude.com/docs/en/best-practices.md"
+  - "https://code.claude.com/docs/en/how-claude-code-works.md"
+  - "https://code.claude.com/docs/en/features-overview.md"
+  - "https://github.com/groundnuty/macf"
+  - "https://github.com/johanolofsson72/Claude"
+  - "https://github.com/huangruiteng/loopx"
+relatedModules:
+  - "subagents"
+  - "hooks"
+  - "checkpointing"
+  - "memory"
+relatedUseCases:
+  - "project-management-with-claude"
+relatedSkills: []
+draft: false
+# Verified against Claude Code 2.1.258
+---
+## Kort oppsummert
+
+Multi-agent-orkestrering handler om å la flere Claude Code-agenter jobbe i koordinerte roller — en planlegger, én eller flere utførere, og en reviewer — i stedet for at én agent gjør alt i én tråd. Mønsteret har blitt tydelig nok til å systematiseres: delegering til subagenter, spesifikasjonsdrevne planer som en hovedagent må følge, og kvalitetsporter som blokkerer fremdrift til kontroller er bestått. Dette er relevant nå fordi Anthropics egen plattform begynner å eksponere de samme primitivene (multiagent-rostere, advisors, sesjonsbudsjetter) som community-prosjekter til nå har bygget selv med hooks, GitHub Actions og egne CLI-verktøy.
+
+## Hva er nytt
+
+Anthropics changelog for Claude-plattformen viser at byggeklossene for orkestrering blir førsteklasses funksjoner. Managed Agents-sesjoner kan nå gis en **advisor** — en modell som minst er like kapabel som agenten selv, konfigurert som en `{"type": "advisor"}`-oppføring i agentens "multiagent roster", som hovedtråden kan rådføre seg med midt i en tur for strategisk veiledning. Sesjoner kan også få et hardt **budsjett** som pauser sesjonen med stoppgrunnen `budget_reached` når grensen nås, og sesjoner kan nå laste skills automatisk fra en repos `.claude/skills`-mappe når repoet er montert.
+
+På Claude Code-siden formaliserer dokumentasjonen "delegate, don't dictate" som en kjernearbeidsmåte, og har egen veiledning om å delegere research til subagenter og kjøre parallelle sesjoner med worktrees. Best-practices-dokumentasjonen anbefaler eksplisitt å gi Claude en måte å verifisere sitt eget arbeid på, og å legge til et adversarialt reviewsteg — selve kimen til en kvalitetsport.
+
+Parallelt konvergerer community-verktøy mot de samme mønstrene: prosjekter som `groundnuty/macf` beskriver seg selv som "GitHub-native multi-agent coordination for Claude Code — channels, mTLS, dynamic registration, orchestrator-worker patterns", `johanolofsson72/Claude` bunter "en spesifikasjonsdrevet pipeline, subagenter, skills og formell verifikasjon", og `huangruiteng/loopx` posisjonerer seg som et "long-horizon agent control plane for durable, governed work across Codex, Claude Code, and other harnesses." Disse er uavhengige, ikke-offisielle prosjekter, men alle griper etter de samme tre ingrediensene: delegering, en plan utførerne må følge, og en port som kan blokkere en merge eller et neste steg.
+
+## Slik fungerer det
+
+Orkestreringsmønstre for Claude Code kombinerer vanligvis tre mekanismer, alle forankret i konkrete funksjoner:
+
+1. **Delegering via subagenter.** En hovedsesjon i Claude Code starter subagenter (se modulen `subagents`) for avgrensede oppgaver — undersøkelse, et bestemt filsett, eller en researchrunde — slik at hovedtrådens kontekstvindu ikke fylles opp av utforskende arbeid. Dokumentasjonen påpeker at subagenter er et av hovedverktøyene for å håndtere kontekst, sammen med skills, og at prompt-caching fungerer annerledes for subagenter enn for hovedtråden.
+
+2. **Planlegging og etterlevelse.** Istedenfor å la en agent fritt assosiere seg frem til en diff, skriver team først en spesifikasjon eller plan (Claude Codes egen veiledning: "Explore first, then plan, then code" og "Plan before editing" i Common Workflows), og lar deretter subagenter eller en ny gjennomgang kontrollere de faktiske endringene mot planen. Dette er nettopp det spesifikasjonsdrevne pipelines i prosjekter som `johanolofsson72/Claude` formaliserer med deterministiske hooks og formelle verifikasjonssteg, i stedet for å stole på at modellen husker planen.
+
+3. **Kvalitetsporter.** En port er en kontroll som kan blokkere fremdrift, ikke bare advare. I Claude Code implementeres dette typisk med hooks (pre-tool-use eller pre-commit-kontroller), CI-steg, eller en dedikert reviewer-subagent hvis eneste jobb er å godkjenne eller avvise — dette gjenspeiler plattformens egen bevegelse mot blokkerende primitiver, som budsjettgrenser som stopper en sesjon (`budget_reached`) og advisors en sesjon må rådføre seg med før den går videre med en strategisk avgjørelse. Det "adversariale reviewsteget" som anbefales i Claude Codes best-practices-dokumentasjon er enkeltagent-versjonen av samme idé: en ny, skeptisk gjennomgang før arbeidet godkjennes.
+
+På plattformnivå viser roster-konseptet (`multiagent roster`, advisor-oppføringer) at Anthropic nå modellerer disse relasjonene eksplisitt i stedet for å overlate dem til prompt-engineering: en agents konfigurasjon kan navngi en annen modell å rådføre seg med, separat fra verktøyene den kan kalle direkte.
+
+## Prøv det selv
+
+Et minimalt orkestreringsoppsett i én Claude Code-sesjon, som kombinerer delegering med en blokkerende reviewport:
+
+```
+# 1. Planlegg først — be Claude lage en plan, ikke kode ennå
+> Explore the auth module and write a short implementation plan for
+> adding refresh-token rotation. Do not write code yet.
+
+# 2. Deleger implementasjonen til en subagent avgrenset til planen
+> Use a subagent to implement step 2 of the plan (token storage) in
+> isolation. Keep it within src/auth/.
+
+# 3. Port: krev en uavhengig reviewrunde før arbeidet godtas
+> Before you consider this done, use a second subagent to review the
+> diff against the original plan and list any deviations. If there
+> are deviations, stop and report them instead of merging.
+```
+
+I et scriptet/headless oppsett håndheves ofte samme port helt utenfor modellen — f.eks. en pre-commit-hook eller CI-kontroll som kjører tester og en plan-etterlevelses-diff, og bare lar endringen gå videre hvis begge er bestått. Dette matcher rådene om "adversarial review step" og å "verify its work" fra Claude Codes best practices.
+
+## Når du bør bruke det (og når ikke)
+
+Bruk multi-agent-orkestrering når:
+- Oppgaven er stor nok at ett kontekstvindu ville blitt overfylt av utforskende arbeid (deleger research/undersøkelse til subagenter).
+- Korrekthet er viktigere enn hastighet, og du vil kontrollere en plan mot faktiske endringer før de tas inn.
+- Du kjører Claude Code non-interaktivt eller i stor skala (CI, planlagte kjøringer) og trenger en hard stoppbetingelse i stedet for en anbefaling.
+
+Unngå det, eller hold det enkelt, når:
+- Oppgaven er liten nok til å løses i én fokusert sesjon — flere roller og overleveringer legger da mest til koordineringskostnad.
+- Du ikke har en måte å verifisere arbeidet på (tester, en sjekkliste, en reviewer). En kvalitetsport uten noe konkret å kontrollere mot er bare teater.
+- Du stoler på uoffisielle multi-agent-rammeverk i produksjon uten å forstå deres feilmodi — mange av disse er tidligfase community-prosjekter, ikke mønstre Anthropic støtter offisielt, og deres koordineringslogikk (mTLS-kanaler, egne kontrollplan osv.) er sin egen vedlikeholdsbyrde.
+- Primitivene på plattformnivå (advisors, sesjonsbudsjetter, managed-agent-rostere) krever Managed Agents-/Claude API-funksjoner som kanskje ikke er tilgjengelige i din Claude Code-plan — kontroller hva som faktisk er aktivert før du designer rundt dem.
+
+## Kilder
+
+- https://code.claude.com/docs/en/common-workflows.md
+- https://code.claude.com/docs/en/best-practices.md
+- https://code.claude.com/docs/en/how-claude-code-works.md
+- https://code.claude.com/docs/en/features-overview.md
+- https://github.com/groundnuty/macf
+- https://github.com/johanolofsson72/Claude
+- https://github.com/huangruiteng/loopx

@@ -1,0 +1,106 @@
+---
+title: "Multi-Agent Orchestration Patterns for Claude Code"
+description: "How teams coordinate multiple Claude agents through delegation, spec-driven planning, and blocking quality gates — and where these patterns hold up against Claude Code's built-in subagent and advisor primitives."
+discoveredAt: "2026-09-01T09:49:18.124Z"
+updatedDate: "2026-09-03T10:29:59.472Z"
+author: "Claude Code Learn"
+trendScore: 0.729
+scoreBreakdown:
+  frequency: 0.5
+  recency: 0.971
+  engagement: 0.645
+  gap: 1
+tags:
+  - "claude-code"
+  - "multi-agent"
+  - "subagents"
+  - "orchestration"
+  - "quality-gates"
+  - "spec-driven-development"
+  - "advisors"
+sources:
+  - "https://code.claude.com/docs/en/common-workflows.md"
+  - "https://code.claude.com/docs/en/best-practices.md"
+  - "https://code.claude.com/docs/en/how-claude-code-works.md"
+  - "https://code.claude.com/docs/en/features-overview.md"
+  - "https://github.com/groundnuty/macf"
+  - "https://github.com/johanolofsson72/Claude"
+  - "https://github.com/huangruiteng/loopx"
+relatedModules:
+  - "subagents"
+  - "hooks"
+  - "checkpointing"
+  - "memory"
+relatedUseCases:
+  - "project-management-with-claude"
+relatedSkills: []
+draft: false
+# Verified against Claude Code 2.1.258
+---
+## Quick summary
+
+Multi-agent orchestration is the practice of running several Claude Code agents in coordinated roles — a planner, one or more workers, and a reviewer — instead of one agent doing everything in a single thread. The pattern has matured into recognizable shapes: delegation to subagents, spec-driven plans that a lead agent conforms to, and quality gates that block progress until checks pass. This matters now because Anthropic's own platform is exposing the same primitives (multiagent rosters, advisors, session budgets) that community projects have been hand-rolling with hooks, GitHub Actions, and custom CLIs.
+
+## What's new
+
+Anthropic's Claude Platform changelog shows the primitives behind orchestration becoming first-class. Managed Agents sessions can now be given an **advisor** — a model at least as capable as the agent itself, configured as a `{"type": "advisor"}` entry in the agent's "multiagent roster," which the primary thread can consult mid-turn for strategic guidance. Sessions can also carry a hard **budget** that pauses new model requests with a `budget_reached` stop reason, and sessions can load skills automatically from a repository's `.claude/skills` directory when a repo is mounted.
+
+On the Claude Code side, the documentation formalizes "delegate, don't dictate" as a core way of working, and dedicates workflow guidance to delegating research to subagents and running parallel sessions with worktrees. The best-practices docs explicitly recommend giving Claude a way to verify its own work and adding an adversarial review step — the conceptual seed of a quality gate.
+
+In parallel, community tooling is converging on the same shapes: projects like `groundnuty/macf` describe themselves as "GitHub-native multi-agent coordination for Claude Code — channels, mTLS, dynamic registration, orchestrator-worker patterns," `johanolofsson72/Claude` bundles "a spec-driven pipeline, subagents, skills, and formal verification," and `huangruiteng/loopx` positions itself as a "long-horizon agent control plane for durable, governed work across Codex, Claude Code, and other harnesses." These are independent, unofficial projects, but they all reach for the same three ingredients: delegation, a plan the workers must conform to, and a gate that can block a merge or a next step.
+
+## How it works
+
+Orchestration patterns for Claude Code generally combine three mechanisms, each backed by a real feature:
+
+1. **Delegation via subagents.** A lead Claude Code session spins up subagents (see the `subagents` module) for scoped tasks — investigation, a specific file set, or a research pass — so that the main thread's context window isn't consumed by exploratory work. The docs note that subagents are one of the primary tools for managing context, alongside skills, and that prompt caching behaves differently for subagents than for the main thread.
+
+2. **Planning and conformance.** Instead of letting an agent free-associate its way to a diff, teams write a spec or plan first (Claude Code's own guidance: "Explore first, then plan, then code" and "Plan before editing" in Common Workflows), then have subagents or a second pass check the actual changes against that plan. This is what spec-driven pipelines in projects like `johanolofsson72/Claude` formalize with deterministic hooks and formal verification steps rather than relying on the model's memory of the plan.
+
+3. **Quality gates.** A gate is a check that can block progress rather than merely warn. In Claude Code this is typically implemented with hooks (pre-tool-use or pre-commit checks), CI steps, or a dedicated reviewer subagent whose job is only to approve or reject — mirroring the platform's own move toward blocking primitives, such as budget caps that halt a session (`budget_reached`) and advisors that a session must consult before proceeding on a strategic decision. The "adversarial review step" recommended in Claude Code's best-practices docs is the single-agent version of the same idea: a second, skeptical pass before work is accepted.
+
+At the platform level, the roster concept (`multiagent roster`, advisor entries) shows Anthropic modeling these relationships explicitly rather than leaving them to prompt engineering: an agent's configuration can name another model to consult, separate from the tools it can call directly.
+
+## Hands-on example
+
+A minimal orchestration setup inside a single Claude Code session, combining delegation with a blocking review gate:
+
+```
+# 1. Plan first — ask Claude to produce a plan, not code yet
+> Explore the auth module and write a short implementation plan for
+> adding refresh-token rotation. Do not write code yet.
+
+# 2. Delegate the implementation to a subagent scoped to the plan
+> Use a subagent to implement step 2 of the plan (token storage) in
+> isolation. Keep it within src/auth/.
+
+# 3. Gate: require an independent review pass before accepting
+> Before you consider this done, use a second subagent to review the
+> diff against the original plan and list any deviations. If there
+> are deviations, stop and report them instead of merging.
+```
+
+In a scripted/headless setup, the same gate is often enforced outside the model entirely — e.g., a pre-commit hook or CI check that runs tests and a plan-conformance diff, and only lets the change proceed if both pass, matching the "adversarial review step" and "verify its work" guidance from Claude Code's best practices.
+
+## When to use it (and when not to)
+
+Use multi-agent orchestration when:
+- The task is large enough that a single context window would get crowded with exploratory work (delegate research/investigation to subagents).
+- Correctness matters more than speed, and you want a plan checked against actual changes before they land.
+- You're running Claude Code non-interactively or at scale (CI, scheduled runs) and need a hard stop condition rather than a suggestion.
+
+Avoid it, or keep it simple, when:
+- The task is small enough to finish in one focused session — added roles and hand-offs mainly add coordination overhead.
+- You don't yet have a way to verify the work (tests, a checklist, a reviewer). A quality gate with nothing concrete to check against is just theater.
+- You're relying on unofficial multi-agent frameworks in production without understanding their failure modes — many of these are early-stage community projects, not Anthropic-supported patterns, and their coordination logic (mTLS channels, custom control planes, etc.) is its own maintenance burden.
+- The platform-level primitives (advisors, session budgets, managed-agent rosters) require Managed Agents / Claude API features that may not be available in your Claude Code plan — check what's actually enabled before designing around them.
+
+## Sources
+
+- https://code.claude.com/docs/en/common-workflows.md
+- https://code.claude.com/docs/en/best-practices.md
+- https://code.claude.com/docs/en/how-claude-code-works.md
+- https://code.claude.com/docs/en/features-overview.md
+- https://github.com/groundnuty/macf
+- https://github.com/johanolofsson72/Claude
+- https://github.com/huangruiteng/loopx

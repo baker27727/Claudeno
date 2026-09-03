@@ -1,5 +1,43 @@
 [
   {
+    "topic": "Persistent agent memory frameworks for Claude Code without vector databases",
+    "status": "published",
+    "score": {
+      "frequency": 0.5,
+      "recency": 0.971,
+      "engagement": 0.5,
+      "gap": 1,
+      "total": 0.693
+    },
+    "matchedSources": [
+      "github_search",
+      "docs_map"
+    ],
+    "whyItMatters": "GitHub projects like Shared_Memory (ADR-based shared knowledge) and amem (local personal agent memory) show developers building memory abstractions for multi-session continuity without relying on external services. The docs cover CLAUDE.md and auto memory; these projects extend that pattern.",
+    "firstSeen": "2026-09-01T09:49:18.124Z",
+    "lastSeen": "2026-09-03T10:31:10.574Z",
+    "publishedSlug": "persistent-agent-memory-without-vector-databases"
+  },
+  {
+    "topic": "Multi-agent orchestration patterns for Claude Code: delegation, planning, and quality gates",
+    "status": "published",
+    "score": {
+      "frequency": 0.5,
+      "recency": 0.971,
+      "engagement": 0.645,
+      "gap": 1,
+      "total": 0.729
+    },
+    "matchedSources": [
+      "github_search",
+      "anthropic_changelog"
+    ],
+    "whyItMatters": "Multiple GitHub projects (daintree with 54 stars, drydock, superpowers-orchestrator, 1c-quality-gate) demonstrate production workflows coordinating multiple Claude agents with spec-driven development, plan conformance, and blocking quality gates. The changelog mentions subagents and advisors; this is a mature pattern worth systematizing.",
+    "firstSeen": "2026-09-01T09:49:18.124Z",
+    "lastSeen": "2026-09-03T10:29:59.473Z",
+    "publishedSlug": "multi-agent-orchestration-patterns-claude-code"
+  },
+  {
     "topic": "Optimizing Claude Code sessions with prompt caching TTL strategies",
     "status": "candidate",
     "score": {
@@ -32,42 +70,6 @@
       "github_search"
     ],
     "whyItMatters": "The HN post 'Turn repeated coding-agent corrections into rules/skills' alongside multiple GitHub projects (config-drift-checker, drydock) show a clear workflow gap: developers manually repeating corrections instead of codifying them as reusable skills. This is a pattern-extraction technique worth documenting.",
-    "firstSeen": "2026-09-01T09:49:18.124Z",
-    "lastSeen": "2026-09-01T09:49:18.124Z"
-  },
-  {
-    "topic": "Multi-agent orchestration patterns for Claude Code: delegation, planning, and quality gates",
-    "status": "candidate",
-    "score": {
-      "frequency": 0.5,
-      "recency": 0.971,
-      "engagement": 0.645,
-      "gap": 1,
-      "total": 0.729
-    },
-    "matchedSources": [
-      "github_search",
-      "anthropic_changelog"
-    ],
-    "whyItMatters": "Multiple GitHub projects (daintree with 54 stars, drydock, superpowers-orchestrator, 1c-quality-gate) demonstrate production workflows coordinating multiple Claude agents with spec-driven development, plan conformance, and blocking quality gates. The changelog mentions subagents and advisors; this is a mature pattern worth systematizing.",
-    "firstSeen": "2026-09-01T09:49:18.124Z",
-    "lastSeen": "2026-09-01T09:49:18.124Z"
-  },
-  {
-    "topic": "Persistent agent memory frameworks for Claude Code without vector databases",
-    "status": "candidate",
-    "score": {
-      "frequency": 0.5,
-      "recency": 0.971,
-      "engagement": 0.5,
-      "gap": 1,
-      "total": 0.693
-    },
-    "matchedSources": [
-      "github_search",
-      "docs_map"
-    ],
-    "whyItMatters": "GitHub projects like Shared_Memory (ADR-based shared knowledge) and amem (local personal agent memory) show developers building memory abstractions for multi-session continuity without relying on external services. The docs cover CLAUDE.md and auto memory; these projects extend that pattern.",
     "firstSeen": "2026-09-01T09:49:18.124Z",
     "lastSeen": "2026-09-01T09:49:18.124Z"
   },
