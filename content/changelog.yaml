@@ -1,3 +1,23 @@
+- id: "2.1.259"
+  version: "2.1.259"
+  date: "2026-09-03"
+  entry:
+    en: "Added `managedMcpServers` managed setting for organizations to provide
+      HTTP/SSE MCP servers to users. Added `--permission-prompts none` flag for
+      unattended headless hosts. Fixed concurrent sessions reverting each
+      other's changes, conversations with rejected thinking, Bash deny rules not
+      covering option values and operands, prompt cache invalidation, fullscreen
+      mode blank conversations, auto mode model support, and many other issues.
+      See full changelog for all fixes and improvements."
+    no: "Lagt til `managedMcpServers`-innstilling for at organisasjoner kan levere
+      HTTP/SSE MCP-tjenere til brukere. Lagt til `--permission-prompts
+      none`-flagg for uovervåkede hodeløse verter. Fikset samtidige økter som
+      tilbakestiller hverandres endringer, samtaler med avvist tankegang,
+      Bash-nektelsesregler som ikke dekker alternativverdier og operander,
+      ugyldig ledetekstminne, hodeløs modus tomme samtaler, auto-modus
+      modellstøtte og mange andre problemer. Se fullstendig endringslogg for
+      alle rettelser og forbedringer."
+  sources: []
 - id: "2.1.258"
   version: "2.1.258"
   date: "2026-09-02"

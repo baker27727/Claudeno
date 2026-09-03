@@ -188,3 +188,7 @@ Permission checks for file tools (Read, Write, Edit) have been strengthened to p
 ## What's new in v2.1.258
 
 **Containment Escape rule in auto mode (2.1.257):** Auto mode now includes a Containment Escape rule that requires explicit approval for cloud metadata-credential fetches, egress evasion attempts, and cross-tenant reach operations — unless your environment marks them as expected.
+
+## What's new in v2.1.259
+
+2.1.259 adds `--permission-prompts none` flag for unattended headless hosts: anything that would prompt is denied automatically while the active permission mode (including auto mode) keeps deciding. Additionally, Bash `Read()` deny rules now cover files given as option values (`--ignore-revs-file=.env`, `-f.env`, `@file`), `git diff`/`git grep` file operands, and `cd DIR && cat FILE` compounds; `grep -r`/`cp -r` over a directory holding a denied file now prompts.

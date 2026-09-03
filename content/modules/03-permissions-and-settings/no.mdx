@@ -190,3 +190,7 @@ Tillatelseskontroller for filverktøy (Read, Write, Edit) er styrket for å forh
 ## Nytt i v2.1.258
 
 **Containment Escape-regel i auto-modus (2.1.257):** Auto-modus inkluderer nå en Containment Escape-regel som krever eksplisitt godkjenning for cloud-metadata-legitimasjonshentinger, egress-unngåelsesforsøk og cross-tenant-reaksjoner — med mindre miljøet ditt markerer dem som forventede.
+
+## Nytt i v2.1.259
+
+2.1.259 legger til `--permission-prompts none`-flagg for uovervåkede hodeløse verter: alt som ville stille spørsmål blir automatisk avslått mens den aktive tillatelsesmodusen (inkludert auto-modus) fortsetter å bestemme. I tillegg dekker Bash `Read()`-nektelsesregler nå filer gitt som alternativverdier (`--ignore-revs-file=.env`, `-f.env`, `@file`), `git diff`/`git grep`-filoperander og `cd DIR && cat FILE`-sammensatte; `grep -r`/`cp -r` over en katalog som inneholder en nektet fil spør nå.

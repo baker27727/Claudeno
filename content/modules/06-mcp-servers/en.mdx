@@ -116,3 +116,7 @@ New in 2.1.233: Fixed MCP v2 connections that were endlessly reopening subscript
 ## What's new in v2.1.247
 
 MCP server configuration failures are now better reported: on Bedrock, Vertex AI, and Foundry sessions (and any with telemetry disabled), Claude is now informed when a configured MCP server failed to connect, instead of the system incorrectly concluding that the server's tools don't exist.
+
+## What's new in v2.1.259
+
+2.1.259 introduces `managedMcpServers`: organizations can provide HTTP/SSE MCP servers to every user (same entry shape as `.mcp.json`); entries that name a command to run are skipped. The `allowedMcpServers` setting now governs only servers users add; a literal `managed-mcp.json` server your allowlist used to filter out now loads on upgrade. Use `deniedMcpServers` to keep it off.

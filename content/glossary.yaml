@@ -379,3 +379,14 @@
   no: "PostModelSwitch"
   note: "Hook event fired after a model switch completes (new in 2.1.251); kept as
     English code identifier"
+- id: "managedmcpservers"
+  en: "managedMcpServers"
+  no: "managedMcpServers"
+  note: "Managed setting allowing organizations to provide HTTP/SSE MCP servers to
+    all users (new in 2.1.259); kept as English configuration identifier"
+- id: "permission-prompts-none"
+  en: "permission-prompts none"
+  no: "permission-prompts none"
+  note: "Flag for unattended headless hosts that denies anything prompting
+    automatically while permission mode decides (new in 2.1.259); kept as
+    English command identifier"
