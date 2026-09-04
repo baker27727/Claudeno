@@ -390,3 +390,14 @@
   note: "Flag for unattended headless hosts that denies anything prompting
     automatically while permission mode decides (new in 2.1.259); kept as
     English command identifier"
+- id: "/diff"
+  en: "/diff"
+  no: "/diff"
+  note: "Slash command for opening a diff panel showing uncommitted changes in
+    fullscreen mode; kept as code identifier (new in 2.1.260)"
+- id: "prompt-cache-miss"
+  en: "prompt-cache miss"
+  no: "prompt-cache-miss"
+  note: "When prompt cache is not reused due to changes in tool definitions,
+    system prompt, or idle timeout (TTL); English technical term kept in context
+    (new in 2.1.260)"

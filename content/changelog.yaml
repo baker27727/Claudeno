@@ -1,3 +1,18 @@
+- id: "2.1.260"
+  version: "2.1.260"
+  date: "2026-09-04"
+  entry:
+    en: "Added `/diff` panel for fullscreen mode, improved `/cost` and `/status`
+      output, fixed critical permission rule bugs with parentheses and regex
+      patterns, enhanced `/advisor` text form, added `/reload-plugins` to
+      headless sessions, and added `--permission-prompts none` for unattended
+      hosts."
+    no: "Lagt til `/diff`-panel for fullskjermmodus, forbedret `/cost`- og
+      `/status`-utgang, fikset kritiske tillatelsesregelbugs med parenteser og
+      regex-mønstre, forbedret `/advisor`-tekstform, lagt til `/reload-plugins`
+      til hodeløse økter, og lagt til `--permission-prompts none` for ubetjente
+      verter."
+  sources: []
 - id: "2.1.259"
   version: "2.1.259"
   date: "2026-09-03"

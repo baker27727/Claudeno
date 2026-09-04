@@ -192,3 +192,7 @@ Permission checks for file tools (Read, Write, Edit) have been strengthened to p
 ## What's new in v2.1.259
 
 2.1.259 adds `--permission-prompts none` flag for unattended headless hosts: anything that would prompt is denied automatically while the active permission mode (including auto mode) keeps deciding. Additionally, Bash `Read()` deny rules now cover files given as option values (`--ignore-revs-file=.env`, `-f.env`, `@file`), `git diff`/`git grep` file operands, and `cd DIR && cat FILE` compounds; `grep -r`/`cp -r` over a directory holding a denied file now prompts.
+
+## What's new in v2.1.260
+
+Fixed critical permission rule bugs: Path patterns with parentheses are no longer dropped as invalid in the Bash sandbox, uncompilable regex patterns (e.g. unclosed brackets) now guard the literal path instead of failing all edits, and permission checks now properly prompt for zsh commands hiding substitutions in REPORTTIME/REPORTMEMORY/DIRSTACKSIZE assignments.

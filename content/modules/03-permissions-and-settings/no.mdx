@@ -194,3 +194,7 @@ Tillatelseskontroller for filverktøy (Read, Write, Edit) er styrket for å forh
 ## Nytt i v2.1.259
 
 2.1.259 legger til `--permission-prompts none`-flagg for uovervåkede hodeløse verter: alt som ville stille spørsmål blir automatisk avslått mens den aktive tillatelsesmodusen (inkludert auto-modus) fortsetter å bestemme. I tillegg dekker Bash `Read()`-nektelsesregler nå filer gitt som alternativverdier (`--ignore-revs-file=.env`, `-f.env`, `@file`), `git diff`/`git grep`-filoperander og `cd DIR && cat FILE`-sammensatte; `grep -r`/`cp -r` over en katalog som inneholder en nektet fil spør nå.
+
+## Nytt i v2.1.260
+
+Fikset kritiske tillatelsesregelbugs: Stimonster med parenteser blir ikke lenger forkastet som ugyldige i Bash-sandkassen, ukompilerbare regex-mønstre (f.eks. ulukkede hakeparenteser) beskytter nå den bokstavelige stien i stedet for å mislykkes på alle redigeringer, og tillatelelseskontroller ber nå riktig om godkjenning for zsh-kommandoer som skjuler substitusjonene i REPORTTIME/REPORTMEMORY/DIRSTACKSIZE-tilordninger.

@@ -147,3 +147,7 @@ La til den valgfrie `CLAUDE_CODE_PROJECT_DIR_NAME`-miljøvariabelen. Verter som 
 ## Nytt i v2.1.235
 
 2.1.235 forbedrer minne- og CPU-bruk mens skysesjonene som `/ultrareview` eller `/autofix-pr` kjører i bakgrunnen — deres hendelsesstrømmer gjennomskans og gjengis ikke på nytt ved hver oppdatering. I tillegg nektrer `SendMessage` nå meldinger som er for store til tverrsesjonlevering på forhånd i stedet for å stille dem stille.
+
+## Nytt i v2.1.260
+
+Lagt til `/reload-plugins`-kommando til hodeløse økter, og gjort den tilgjengelig i Claude Code Desktop og SDK-kommandolister for å håndtere plugins i ikke-interaktive miljøer.
