@@ -1,3 +1,21 @@
+- id: "2.1.261"
+  version: "2.1.261"
+  date: "2026-09-05"
+  entry:
+    en: "Claude Code 2.1.261 adds new settings for controlling command output inline
+      limits, a file-based subagent system prompt flag, and `/skill-doctor` for
+      auditing skill costs. Word-editing keys now follow Bash conventions
+      consistently. Organization policy feedback on `/status` explains why
+      policies fail to load. Numerous fixes address session state, Remote
+      Control, cloud sessions, file operations, and permission rules."
+    no: "Claude Code 2.1.261 legger til nye innstillinger for å kontrollere
+      kommandoutdata-inlinegrenser, et filbasert flagg for underagentens
+      systemprompt, og `/skill-doctor` for revisjon av skill-kostnader.
+      Ordrediger­ingstaster følger nå Bash-konvensjoner konsekvent.
+      Organisasjonens policy-feedback på `/status` forklarer hvorfor policyer
+      ikke lastes. Tallrike reparasjoner løser sesjonsstatus-, Remote Control-,
+      cloud-økts- og filtillatrelsesproblemer."
+  sources: []
 - id: "2.1.260"
   version: "2.1.260"
   date: "2026-09-04"

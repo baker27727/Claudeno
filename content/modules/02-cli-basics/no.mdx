@@ -166,3 +166,7 @@ Flagget `--restricted` (eller miljøvariabelen `CLAUDE_CODE_RESTRICTED=1`) fjern
 ## Nytt i v2.1.251
 
 Utdataene fra --resume-flagget navngir nå den nøyaktige `claude attach <id>`-kommandoen for å gjenforene med en kjørende bakgrunnøkt. Nye underkommandoer `attach`, `logs`, `stop`, `respawn`, og `rm` er lagt til `claude --help`. /cost-utdataene inkluderer nå per-økt ledetekst-cache-mål (suksessrate, antall missinger, tokens re-cachede, og varm/kald-deling).
+
+## Nytt i v2.1.261
+
+Claude Code 2.1.261 legger til `bashOutputMaxChars` og `taskOutputMaxChars`-innstillinger for å kontrollere hvor mye kommando- og bakgrunnsopp­gavutdata Claude mottar inline før den lagres i en fil, med støtte for opptil 128K tegn. Det nye `--append-subagent-system-prompt-file`-flagget lar deg lese underagentens systemprompt fra en fil for ledetekster som er for store til å sende på kommandolinjen.

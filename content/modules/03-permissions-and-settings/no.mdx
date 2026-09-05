@@ -198,3 +198,7 @@ Tillatelseskontroller for filverktøy (Read, Write, Edit) er styrket for å forh
 ## Nytt i v2.1.260
 
 Fikset kritiske tillatelsesregelbugs: Stimonster med parenteser blir ikke lenger forkastet som ugyldige i Bash-sandkassen, ukompilerbare regex-mønstre (f.eks. ulukkede hakeparenteser) beskytter nå den bokstavelige stien i stedet for å mislykkes på alle redigeringer, og tillatelelseskontroller ber nå riktig om godkjenning for zsh-kommandoer som skjuler substitusjonene i REPORTTIME/REPORTMEMORY/DIRSTACKSIZE-tilordninger.
+
+## Nytt i v2.1.261
+
+Ordrediger­ingstastene i ledeteksten i 2.1.261 følger nå Bash-konvensjoner: Ctrl+W sletter tilbake til mellomrom, Alt+F og Alt+D stopper ved ordslutting, og tegnsetting skiller ord. Innstillingen `keybindingFlavor` har ikke lenger noen virkning; tastetildelinger er enhetlige.

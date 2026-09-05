@@ -401,3 +401,18 @@
   note: "When prompt cache is not reused due to changes in tool definitions,
     system prompt, or idle timeout (TTL); English technical term kept in context
     (new in 2.1.260)"
+- id: "bashoutputmaxchars"
+  en: "bashOutputMaxChars"
+  no: "bashOutputMaxChars"
+  note: "Settings key to control inline command output limit up to 128K characters
+    (new in 2.1.261); kept as English configuration identifier"
+- id: "taskoutputmaxchars"
+  en: "taskOutputMaxChars"
+  no: "taskOutputMaxChars"
+  note: "Settings key to control inline background-task output limit up to 128K
+    characters (new in 2.1.261); kept as English configuration identifier"
+- id: "/skill-doctor"
+  en: "/skill-doctor"
+  no: "/skill-doctor"
+  note: "Slash command showing which loaded skills go unused and their context
+    cost for pruning (new in 2.1.261); kept as English command identifier"

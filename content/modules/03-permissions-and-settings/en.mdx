@@ -196,3 +196,7 @@ Permission checks for file tools (Read, Write, Edit) have been strengthened to p
 ## What's new in v2.1.260
 
 Fixed critical permission rule bugs: Path patterns with parentheses are no longer dropped as invalid in the Bash sandbox, uncompilable regex patterns (e.g. unclosed brackets) now guard the literal path instead of failing all edits, and permission checks now properly prompt for zsh commands hiding substitutions in REPORTTIME/REPORTMEMORY/DIRSTACKSIZE assignments.
+
+## What's new in v2.1.261
+
+The prompt's word-editing keys in 2.1.261 now match Bash conventions: Ctrl+W deletes back to whitespace, Alt+F and Alt+D stop at word end, and punctuation separates words. The `keybindingFlavor` setting no longer has any effect; key bindings are unified.

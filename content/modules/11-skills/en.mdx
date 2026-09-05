@@ -116,3 +116,7 @@ New in 2.1.221: Plugins now accept `"."` as a `skills` path in their configurati
 ## What's new in v2.1.233
 
 Fixed in 2.1.233: bundled skill aliases like `/checkup` and `/review` no longer report "Unknown command" when running in `-p` mode or with plugins/MCP loaded. Skill and command argument substitution has also been hardened to prevent argument values from being re-expanded as template markers.
+
+## What's new in v2.1.261
+
+Use the new `/skill-doctor` slash command in 2.1.261 to audit your loaded skills, identify which ones are unused, and see how much context each costs. This helps you prune expensive or redundant skills from your økt.

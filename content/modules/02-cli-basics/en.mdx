@@ -166,3 +166,7 @@ The `--restricted` flag (or `CLAUDE_CODE_RESTRICTED=1` environment variable) rem
 ## What's new in v2.1.251
 
 The --resume flag output now names the exact `claude attach <id>` command to rejoin a running background session. New subcommands `attach`, `logs`, `stop`, `respawn`, and `rm` have been added to `claude --help`. The /cost output now includes per-session prompt-cache metrics (hit ratio, misses, tokens re-cached, and warm/cold breakdown).
+
+## What's new in v2.1.261
+
+Claude Code 2.1.261 adds `bashOutputMaxChars` and `taskOutputMaxChars` settings to control how much command and background-task output Claude receives inline before it is saved to a file, supporting up to 128K characters. New `--append-subagent-system-prompt-file` flag allows you to read the subagent system prompt from a file for prompts too large to pass on the command line.
