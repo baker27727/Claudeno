@@ -1,3 +1,20 @@
+- id: "2.1.263"
+  version: "2.1.263"
+  date: "2026-09-06"
+  entry:
+    en: "Version 2.1.263 includes bug fixes and reliability improvements, plus new
+      features from 2.1.261: /diff for viewing uncommitted changes,
+      /skill-doctor for identifying unused skills,
+      --append-subagent-system-prompt-file for large prompts, and
+      bashOutputMaxChars/taskOutputMaxChars settings to control inline command
+      output limits up to 128K characters."
+    no: "Versjon 2.1.263 inkluderer feilrettinger og pålitelighetsforbedringer,
+      pluss nye funksjoner fra 2.1.261: /diff for visning av ucommittede
+      endringer, /skill-doctor for å identifisere ubrukte skills,
+      --append-subagent-system-prompt-file for store ledetekster, og
+      bashOutputMaxChars/taskOutputMaxChars-innstillinger for å kontrollere
+      grenser for innebygd kommando- og oppgaveutdata opp til 128K tegn."
+  sources: []
 - id: "2.1.261"
   version: "2.1.261"
   date: "2026-09-05"
