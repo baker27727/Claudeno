@@ -1,5 +1,144 @@
 [
   {
+    "topic": "Building secure guardrails for Claude Code with plugin-based safety harnesses and approval flows",
+    "status": "candidate",
+    "score": {
+      "frequency": 0.25,
+      "recency": 0.972,
+      "engagement": 0,
+      "gap": 1,
+      "total": 0.481
+    },
+    "matchedSources": [
+      "github_search"
+    ],
+    "whyItMatters": "Community projects (e.g., npm-bun-guard plugin) and discussions about preventing destructive actions suggest developers need practical patterns for restricting what Claude Code agents can execute—techniques for implementing security checkpoints without breaking agentic autonomy.",
+    "firstSeen": "2026-09-08T09:26:17.927Z",
+    "lastSeen": "2026-09-08T09:26:17.927Z"
+  },
+  {
+    "topic": "Cross-device Claude Code coordination with Remote Control and persistent session migration",
+    "status": "candidate",
+    "score": {
+      "frequency": 0.5,
+      "recency": 0.972,
+      "engagement": 0.5,
+      "gap": 1,
+      "total": 0.693
+    },
+    "matchedSources": [
+      "docs_map",
+      "anthropic_changelog"
+    ],
+    "whyItMatters": "Claude Code Remote Control now supports Trusted Devices and mobile sessions; docs show how to continue local sessions on different devices—a workflow enabler for teams and individuals working across phones, laptops, and desktops.",
+    "firstSeen": "2026-09-08T09:26:17.927Z",
+    "lastSeen": "2026-09-08T09:26:17.927Z"
+  },
+  {
+    "topic": "Composing agentic workflows from GitHub-hosted skills in Claude Managed Agents",
+    "status": "candidate",
+    "score": {
+      "frequency": 0.25,
+      "recency": 0.472,
+      "engagement": 0.5,
+      "gap": 1,
+      "total": 0.481
+    },
+    "matchedSources": [
+      "anthropic_changelog"
+    ],
+    "whyItMatters": "Claude Managed Agents can now load skills directly from GitHub repositories at session startup, enabling teams to version-control and share specialized agent capabilities—a pattern for building reusable, maintainable multi-agent systems.",
+    "firstSeen": "2026-09-08T09:26:17.927Z",
+    "lastSeen": "2026-09-08T09:26:17.927Z"
+  },
+  {
+    "topic": "Orchestrating disparate AI agents (Claude, Codex, OpenCode, DeepSeek) with unified skill and MCP frameworks",
+    "status": "candidate",
+    "score": {
+      "frequency": 0.5,
+      "recency": 0.972,
+      "engagement": 0.585,
+      "gap": 1,
+      "total": 0.714
+    },
+    "matchedSources": [
+      "github_search",
+      "hn_search"
+    ],
+    "whyItMatters": "Emerging ecosystem projects (skill-of-skills, Crew, agent-skills repos) and cross-tool integrations show developers building agent swarms spanning multiple coding LLMs—a practical pattern for multi-platform automation where no single model owns the workflow.",
+    "firstSeen": "2026-09-08T09:26:17.927Z",
+    "lastSeen": "2026-09-08T09:26:17.927Z"
+  },
+  {
+    "topic": "Managing context efficiently with turn-scoped system messages and mid-conversation effort changes",
+    "status": "candidate",
+    "score": {
+      "frequency": 0.25,
+      "recency": 0.472,
+      "engagement": 0.5,
+      "gap": 1,
+      "total": 0.481
+    },
+    "matchedSources": [
+      "anthropic_changelog"
+    ],
+    "whyItMatters": "Claude Fable 5.1 now supports turn-scoped system messages (clear_at: 'next_user_message') and per-message effort adjustments without invalidating prompt cache, enabling developers to dynamically control reasoning depth and add transient reminders without context pollution—a precise technique for long-running agentic workflows.",
+    "firstSeen": "2026-09-08T09:26:17.926Z",
+    "lastSeen": "2026-09-08T09:26:17.926Z"
+  },
+  {
+    "topic": "Integrating progress updates between tool calls for transparent agentic reasoning",
+    "status": "candidate",
+    "score": {
+      "frequency": 0.25,
+      "recency": 0.472,
+      "engagement": 0.5,
+      "gap": 1,
+      "total": 0.481
+    },
+    "matchedSources": [
+      "anthropic_changelog"
+    ],
+    "whyItMatters": "Claude Fable 5.1's new thinking.display='updates' mode surfaces short progress updates written between tool calls as text, giving developers visibility into model reasoning without full thinking blocks—useful for debugging complex multi-step workflows and user-facing transparency.",
+    "firstSeen": "2026-09-08T09:26:17.926Z",
+    "lastSeen": "2026-09-08T09:26:17.926Z"
+  },
+  {
+    "topic": "Debugging token leaks in Claude Code with real-time session dashboards and observability",
+    "status": "candidate",
+    "score": {
+      "frequency": 0.5,
+      "recency": 0.9,
+      "engagement": 0.111,
+      "gap": 1,
+      "total": 0.578
+    },
+    "matchedSources": [
+      "hn_search",
+      "github_search"
+    ],
+    "whyItMatters": "Community tools like session observability dashboards and token-tracking plugins (e.g., Codaude, AI-observibility) address the practical problem of detecting stuck or inefficient Claude Code sessions in real-time—techniques for monitoring session cost and context usage that developers actively seek.",
+    "firstSeen": "2026-09-08T09:26:17.926Z",
+    "lastSeen": "2026-09-08T09:26:17.926Z"
+  },
+  {
+    "topic": "Preserving and replaying thinking blocks across Claude models with prefix-mismatch controls",
+    "status": "candidate",
+    "score": {
+      "frequency": 0.25,
+      "recency": 0.472,
+      "engagement": 0.5,
+      "gap": 1,
+      "total": 0.481
+    },
+    "matchedSources": [
+      "anthropic_changelog"
+    ],
+    "whyItMatters": "Claude Fable 5.1 introduces thinking.block_binding.prefix_mismatch_behavior to control whether replayed thinking blocks are rejected or dropped when system prompt or tools change—a critical feature for long-running sessions that want to preserve reasoning state safely.",
+    "firstSeen": "2026-09-08T09:26:17.926Z",
+    "lastSeen": "2026-09-08T09:26:17.926Z"
+  },
+  {
     "topic": "Persistent agent memory frameworks for Claude Code without vector databases",
     "status": "published",
     "score": {
