@@ -122,3 +122,7 @@ Subagent spawning is now capped at 20 concurrent agents per session (override wi
 ## What's new in v2.1.233
 
 New in 2.1.232: Subagent forking is now on by default—a `subagent_type: "fork"` subagent inherits the full conversation and prompt cache, and non-teammate agent spawns in interactive sessions now run in the background by default.
+
+## What's new in v2.1.263
+
+Version 2.1.261 adds `--append-subagent-system-prompt-file` flag to read the subagent system prompt from a file, allowing prompts too large to pass on the command line.
