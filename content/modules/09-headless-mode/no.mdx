@@ -151,3 +151,9 @@ La til den valgfrie `CLAUDE_CODE_PROJECT_DIR_NAME`-miljøvariabelen. Verter som 
 ## Nytt i v2.1.260
 
 Lagt til `/reload-plugins`-kommando til hodeløse økter, og gjort den tilgjengelig i Claude Code Desktop og SDK-kommandolister for å håndtere plugins i ikke-interaktive miljøer.
+
+## Nytt i v2.1.266
+
+**Oppdateringer for versjon 2.1.265:**
+
+- **Arbeidsmappepersistens**: I ikke-interaktive økter (inkludert stream-json-output-automatisering og Agent SDK), beholder shell-arbeidsmappen seg nå på tvers av svinger. En `cd`-kommando vil forbli aktiv for påfølgende brukermeddelelser i stedet for å tilbakestilles (2.1.265).

@@ -174,3 +174,17 @@ Claude Code 2.1.261 adds `bashOutputMaxChars` and `taskOutputMaxChars` settings 
 ## What's new in v2.1.263
 
 New in 2.1.261: Use --append-subagent-system-prompt-file to read the subagent system prompt from a file when your prompt is too large to pass on the command line.
+
+## What's new in v2.1.266
+
+**Version 2.1.266 & 2.1.265 updates:**
+
+- `CLAUDE_CODE_USE_GATEWAY`: This environment variable now requires explicit `ANTHROPIC_BASE_URL` and `ANTHROPIC_AUTH_TOKEN` configuration; setting it alone no longer forces gateway sign-in (2.1.266 regression fix).
+
+- **Plugin directory improvements**: `--plugin-dir` can now point to a folder of plugins, where each child folder with a manifest loads automatically. Changes to plugins (additions or removals) are picked up while the session runs (2.1.265).
+
+- **MCP protocol handling**: Claude Code now falls back to SSE (Server-Sent Events) when HTTP-only MCP servers don't support the newer HTTP+SSE transport, as per MCP spec (2.1.265).
+
+- **Slash command matches**: Slash commands typed mid-prompt now show matches in a list (press Tab to expand outside fullscreen), and plugin skills are found by their bare name (2.1.265).
+
+- **Working directory persistence in non-interactive sessions**: `cd` commands now persist across turns in headless sessions (`-p` with stream-json, Agent SDK, cloud sessions), fixing shell directory resets at each user message (2.1.265).

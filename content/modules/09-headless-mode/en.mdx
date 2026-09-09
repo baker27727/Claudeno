@@ -148,3 +148,9 @@ Added the optional `CLAUDE_CODE_PROJECT_DIR_NAME` environment variable. Hosts th
 ## What's new in v2.1.260
 
 Added `/reload-plugins` command to headless sessions, making it available in Claude Code Desktop and SDK command lists for managing plugins in non-interactive environments.
+
+## What's new in v2.1.266
+
+**Version 2.1.265 updates:**
+
+- **Working directory persistence**: In non-interactive sessions (including stream-json automation and Agent SDK), the shell working directory now persists across turns. A `cd` command will remain in effect for subsequent user messages, instead of resetting (2.1.265).

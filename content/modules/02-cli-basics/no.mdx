@@ -174,3 +174,17 @@ Claude Code 2.1.261 legger til `bashOutputMaxChars` og `taskOutputMaxChars`-inns
 ## Nytt i v2.1.263
 
 Nytt i 2.1.261: Bruk --append-subagent-system-prompt-file for å lese underagentens ledetekst fra en fil når ledeteksten din er for stor til å sendes på kommandolinjen.
+
+## Nytt i v2.1.266
+
+**Oppdateringer for versjon 2.1.266 og 2.1.265:**
+
+- `CLAUDE_CODE_USE_GATEWAY`: Denne miljøvariabelen krever nå eksplisitt `ANTHROPIC_BASE_URL`- og `ANTHROPIC_AUTH_TOKEN`-konfigurasjon; å sette den alene tvinger ikke lenger gateway-pålogging (regresjonsretting 2.1.266).
+
+- **Forbedringer for plugin-mappe**: `--plugin-dir` kan nå peke til en mappe med plugin-er, der hver undermappke med manifest lastes automatisk. Endringer i plugin-er (tillegg eller fjerninger) blir plukket opp mens økten kjører (2.1.265).
+
+- **MCP-protokollhåndtering**: Claude Code faller nå tilbake til SSE (Server-Sent Events) når HTTP-bare MCP-tjenere ikke støtter den nyere HTTP+SSE-transporten, som MCP-spesifikasjonen beskriver (2.1.265).
+
+- **Slash-kommando-treff**: Slash-kommandoer skrevet midt i ledeteksten viser nå treff i en liste (trykk Tab for å ekspandere utenfor fullskjerm), og plugin-ferdigheter finnes etter barnenavnet (2.1.265).
+
+- **Arbeidsmappepersistens i ikke-interaktive økter**: `cd`-kommandoer beholder seg nå på tvers av svinger i hodeløse økter (`-p` med stream-json-output, Agent SDK, skyøkter), og fikser shell-mappeomstillinger ved hver brukermelding (2.1.265).
