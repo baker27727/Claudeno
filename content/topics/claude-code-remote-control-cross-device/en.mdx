@@ -1,0 +1,122 @@
+---
+title: "Cross-Device Claude Code: Remote Control, Trusted Devices, and Session Migration"
+description: "Claude Code's Remote Control lets you start a session on your laptop and continue it from your phone or another device, with Trusted Devices adding an organization-level security layer."
+discoveredAt: "2026-09-08T09:26:17.927Z"
+updatedDate: "2026-09-10T10:22:59.339Z"
+author: "Claude Code Learn"
+trendScore: 0.693
+scoreBreakdown:
+  frequency: 0.5
+  recency: 0.972
+  engagement: 0.5
+  gap: 1
+tags:
+  - "Claude Code"
+  - "Remote Control"
+  - "mobile"
+  - "session management"
+  - "security"
+  - "cross-device"
+sources:
+  - "https://code.claude.com/docs/en/remote-control.md"
+  - "https://code.claude.com/docs/en/mobile.md"
+  - "https://code.claude.com/docs/en/sessions.md"
+  - "https://code.claude.com/docs/en/platforms.md"
+relatedModules:
+  - "cli-basics"
+  - "permissions-and-settings"
+  - "checkpointing"
+relatedUseCases:
+  - "project-management-with-claude"
+relatedSkills: []
+draft: false
+# Verified against Claude Code 2.1.266
+---
+## Quick summary
+
+Remote Control lets a Claude Code session running on one machine (say, your desktop) be watched and driven from another device — most commonly a phone. You start the session locally, connect from the second device over a session URL, and keep working without losing context. Trusted Devices adds an enrollment layer so organizations can restrict which devices are allowed to connect at all.
+
+## What's new
+
+Claude Code's documentation now has a dedicated `remote-control` page alongside a `mobile` page, describing a workflow specifically for continuing a local session from a phone. The docs describe:
+
+- Starting a Remote Control session locally and connecting from another device via a session URL.
+- Checking connection status and getting session URL reminders.
+- Seeing what connected devices can view once linked.
+- Enabling Remote Control for all sessions, and resuming sessions after the server stops.
+- **Trusted Devices**: an organization-level control that requires devices to be enrolled before they can use Remote Control, including how members enroll and how admins manage enrolled devices.
+- A distinction between Remote Control and Claude Code on the web, and support for mobile push notifications.
+- The mobile app itself supports starting and monitoring cloud sessions, and separately, continuing a local session with Remote Control.
+
+This is a meaningful shift from a single-terminal mental model to Claude Code as a session that can be picked up wherever you are — while keeping the actual work running on the machine you started it on (or, separately, in the cloud, via Claude Code on the web).
+
+## How it works
+
+The mechanics fall into two distinct paths that are easy to conflate:
+
+**1. Remote Control (local session, remote viewing/driving)**
+- You start a session on a local machine as usual. Remote Control is enabled either per-session or for all sessions.
+- A session URL is generated; connecting from a second device (e.g. via the mobile app or a browser) links that device to the running local session.
+- The local machine keeps executing — Remote Control is a control/monitoring channel, not a copy of the session. If the local server stops, docs describe an explicit resume path ("Resume sessions after stopping the server").
+- Connected devices see a defined subset of session state — the docs specifically call out "what connected devices see," implying the remote view is not identical to the full local terminal experience.
+- Security requirements gate this feature: it needs a claude.ai subscription, a full-scope login token, and successful org-eligibility checks. A long list of documented error states (e.g. "Remote Control requires feature-flag evaluation," "Remote credentials fetch failed," "Couldn't reconnect to your Remote Control session") indicates this is a negotiated, stateful connection with several failure modes, not a simple pairing.
+
+**2. Trusted Devices (org-level access control)**
+- Organizations can require that only enrolled devices may use Remote Control at all. This is configured at the org level ("Enable Trusted Devices for your organization").
+- Members go through an enrollment step; admins have a management view over enrolled devices.
+- If a device isn't enrolled but the org requires Trusted Devices, the documented error is explicit: "Your organization requires Trusted Devices for Remote Control, but this device is not enrolled." There's also a distinct "session expired for trusted-device check" state, suggesting enrollment status is itself re-verified periodically rather than checked once.
+
+**3. Session continuity underneath both paths**
+- Independent of Remote Control, Claude Code sessions can be resumed, named, and browsed via a session picker (documented under `sessions`), and transcripts/exports are stored locally. Remote Control rides on top of this session model rather than replacing it — it's a transport for reaching an existing local session, not a new persistence mechanism.
+- This is distinct from Claude Code on the web, which runs sessions in a cloud environment rather than surfacing a local one; the docs explicitly note a "Remote Control vs Claude Code on the web" comparison because the two solve different problems (reach a local session vs. run a session that isn't tied to any local machine).
+
+## Hands-on example
+
+A typical cross-device flow, combining what's documented for `remote-control` and `mobile`:
+
+```
+# On your desktop/laptop, inside an existing Claude Code session:
+> /remote-control
+
+# Claude Code prints a session URL and connection status.
+# Scan or open that URL from the Claude Code mobile app on your phone.
+
+# From the phone:
+# - View the live session state
+# - Send follow-up instructions
+# - Get a push notification when Claude finishes a long-running task
+
+# If the local machine's server stops and you reconnect later:
+> /remote-control
+# → "Previous session is unavailable — run /remote-control to start a new one"
+# (if the prior session can't be resumed) or a reconnect prompt if it can.
+```
+
+If your organization requires Trusted Devices, connecting from an unenrolled phone or laptop will surface:
+
+```
+Your organization requires Trusted Devices for Remote Control,
+but this device is not enrolled.
+```
+
+An admin then needs to enroll the device (or approve enrollment) before Remote Control will work from it.
+
+## When to use it (and when not to)
+
+**Use it when:**
+- You need to step away from your desk but want a long-running local Claude Code session (e.g. a big refactor, test suite, or build) to keep going, checking in from your phone.
+- You want push notifications rather than staring at a terminal waiting for a task to finish.
+- Your team needs device-level access control on top of account-level auth — Trusted Devices exists specifically for this.
+
+**Be careful when:**
+- You need the underlying compute to be independent of any local machine — that's what Claude Code on the web is for, not Remote Control, since Remote Control still depends on the originating machine staying up.
+- Your account or org doesn't meet the prerequisites — the docs list a specific, non-trivial set of requirements (claude.ai subscription, full-scope login token, org eligibility, API-based access) and a long list of named error states, so first-time setup can hit friction.
+- You're working with sensitive data and haven't reviewed what "connected devices see" — the docs treat this as a distinct, limited view rather than full parity with the local terminal, so don't assume remote viewers get everything.
+- Trusted Devices enrollment can itself expire ("session expired for trusted-device check"), so don't assume a device stays enrolled indefinitely without re-verification.
+
+## Sources
+
+- https://code.claude.com/docs/en/remote-control.md
+- https://code.claude.com/docs/en/mobile.md
+- https://code.claude.com/docs/en/sessions.md
+- https://code.claude.com/docs/en/platforms.md

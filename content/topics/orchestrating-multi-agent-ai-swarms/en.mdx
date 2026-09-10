@@ -1,0 +1,120 @@
+---
+title: "Orchestrating Claude, Codex, OpenCode, and DeepSeek in One Workflow"
+description: "A growing set of open-source tools lets developers run Claude, Codex, OpenCode, and DeepSeek side by side, sharing skills and MCP servers instead of locking into a single vendor's agent."
+discoveredAt: "2026-09-08T09:26:17.927Z"
+updatedDate: "2026-09-10T10:21:56.294Z"
+author: "Claude Code Learn"
+trendScore: 0.714
+scoreBreakdown:
+  frequency: 0.5
+  recency: 0.972
+  engagement: 0.585
+  gap: 1
+tags:
+  - "multi-agent"
+  - "MCP"
+  - "skills"
+  - "Claude Code"
+  - "Codex"
+  - "OpenCode"
+  - "DeepSeek"
+  - "orchestration"
+sources:
+  - "https://code.claude.com/docs/en/overview.md"
+  - "https://code.claude.com/docs/en/mcp-servers.md"
+  - "https://github.com/dork-labs/dorkos"
+  - "https://github.com/on-keyday/agent-harness"
+  - "https://github.com/rolottr/spotify-shunt"
+  - "https://github.com/vivekchand/clawmetry"
+  - "https://github.com/saeedkolivand/ai-job-hunter-app"
+relatedModules:
+  - "mcp-servers"
+  - "skills"
+  - "subagents"
+  - "hooks"
+relatedUseCases:
+  - "project-management-with-claude"
+relatedSkills: []
+draft: false
+# Verified against Claude Code 2.1.266
+---
+# Orchestrating Claude, Codex, OpenCode, and DeepSeek in One Workflow
+
+## Quick summary
+
+Developers are increasingly building "agent swarms" that mix Claude Code with other coding agents — OpenAI's Codex, OpenCode, DeepSeek-backed CLIs, and more — instead of betting everything on a single vendor. The glue is shared infrastructure: portable Agent Skills, MCP servers that any agent can call, and lightweight orchestration layers that route tasks, review output, and log activity across tools. This matters now because the tooling to do it — mission-control dashboards, cross-agent hooks, and model-agnostic skill formats — has moved from one-off scripts to reusable open-source projects.
+
+## What's new
+
+Recent open-source activity shows this pattern solidifying rather than staying theoretical:
+
+- **Mission control for mixed fleets**: projects like `dorkos` explicitly advertise running Claude Code, Codex, and OpenCode side by side, letting a human see every session, approve actions, and schedule runs across all three from one place.
+- **Cross-tool hooks**: `spotify-shunt` implements a `PreToolUse` hook pattern that works across Claude Code, Codex, OpenCode, and Copilot — the same hook logic intercepts bulk file reads regardless of which agent triggered it, and routes the read to a cheaper worker.
+- **Model-agnostic harnesses**: `agent-harness` dispatches tasks to multiple Claude Code agents across repos and hosts, with agents messaging each other over a per-task broker — a pattern that generalizes to other CLIs.
+- **Observability across runtimes**: `clawmetry` reports zero-config observability for roughly 30 agent runtimes, including Claude Code and OpenAI Codex, tracking token costs, sessions, tool calls, and crons in one view.
+- **Skills and MCP as the shared substrate**: on the Claude side, Agent Skills and the Skills API are now out of beta on the Claude API, and MCP servers remain the standard way Claude Code connects to external tools — both are increasingly written to be portable so other agents can consume the same skill files or MCP endpoints rather than each tool inventing its own extension format.
+- **BYO-agent applications**: end-user tools such as an AI job-hunter assistant now explicitly support routing through "an AI CLI agent (Claude Code, Codex, Gemini CLI)" rather than hardcoding one backend, treating the coding agent as a swappable execution layer.
+
+## How it works
+
+The orchestration pattern generally has four layers:
+
+1. **A shared capability layer (Skills + MCP).** Claude Code loads Agent Skills — folders with instructions and optional scripts — and connects to MCP servers for external tools and data. Because MCP is a protocol, not a Claude-specific API, and because Skills are just files on disk, other CLIs (Codex, OpenCode) can point at the same MCP server or reuse the same skill folder structure if they implement compatible loaders. This avoids re-implementing the same "read Jira," "query a database," or "run linter" logic per agent.
+
+2. **A routing/dispatch layer.** An orchestrator (a script, a hook, or a dashboard like `dorkos`) decides which agent handles which task. Routing can be static (Claude Code for planning, Codex for a specific language, DeepSeek for cost-sensitive bulk work) or dynamic, triggered by hooks. `spotify-shunt` is a concrete example: a `PreToolUse` hook fires before any agent performs a large file read, and instead of letting the primary (expensive) model consume the whole file, it delegates to a cheap worker that returns line-numbered bullets — the same hook definition works whether the calling agent is Claude Code, Codex, or OpenCode.
+
+3. **A messaging/broker layer for multi-agent coordination.** When agents need to hand off work or check each other's output, a broker mediates. `agent-harness` describes this as a "per-task broker" that lets dispatched agents message each other, rather than requiring a human to relay context between separate terminal sessions.
+
+4. **A unified observability layer.** Because each agent runtime has its own logs and cost accounting, tools like `clawmetry` normalize session data, tool calls, token costs, and scheduled runs across ~30 runtimes into a single view, so a team running a mixed fleet doesn't need to check N separate dashboards.
+
+The practical dependency underneath all of this is that Claude Code's extension points — CLAUDE.md/memory, Skills, MCP servers, hooks, subagents — are file- and protocol-based rather than proprietary binary formats, which is what makes them reusable by tooling built around other agents.
+
+## Hands-on example
+
+A minimal cross-agent setup might look like this: a shared MCP server for ticket lookups, and a hook that any agent in the fleet respects.
+
+```bash
+# 1. Start an MCP server both Claude Code and other CLIs can connect to
+npx @your-org/ticket-mcp-server --port 4000
+
+# 2. In Claude Code, register it
+claude mcp add ticket-server http://localhost:4000
+
+# 3. In a Codex or OpenCode config, point at the same endpoint
+# (each tool has its own MCP client config, but the server is identical)
+opencode config set mcp.ticket-server http://localhost:4000
+
+# 4. Add a PreToolUse hook (Claude Code) that also runs for other agents
+# by shelling out to a shared script rather than agent-specific logic
+cat .claude/hooks/pretooluse.sh
+#!/bin/bash
+# Reject bulk reads over 350 lines; delegate to a cheap summarizer instead
+if [ "$LINE_COUNT" -gt 350 ]; then
+  ./scripts/cheap-summarize.sh "$FILE_PATH"
+  exit 1
+fi
+```
+
+The result: whichever agent triggers a large read, the same guard rail and the same ticket-lookup tool apply — you write the policy once instead of once per CLI.
+
+## When to use it (and when not to)
+
+Use a multi-agent orchestration setup when:
+- Different tasks genuinely benefit from different models (e.g., a cheaper model for bulk file triage, a stronger one for final review).
+- Your team already uses more than one coding CLI and wants consistent guardrails (permission checks, cost caps, logging) instead of duplicating policy per tool.
+- You need observability across tools because spend or activity is currently invisible outside each tool's own session.
+
+Avoid it, or start simpler, when:
+- You only use one agent today — the coordination layer (brokers, shared hooks, cross-tool dashboards) is pure overhead until you actually run a second one.
+- The "shared" MCP server or skill isn't actually portable — many Skills and hooks are still written with Claude Code-specific assumptions, so cross-agent compatibility needs to be verified, not assumed.
+- Debugging becomes harder: a failure could originate in the task, the routing logic, the broker, or a specific agent's quirks, and multi-runtime observability tools are still early and mostly community-maintained rather than officially supported.
+
+## Sources
+
+- https://code.claude.com/docs/en/overview.md
+- https://code.claude.com/docs/en/mcp-servers.md
+- https://github.com/dork-labs/dorkos
+- https://github.com/on-keyday/agent-harness
+- https://github.com/rolottr/spotify-shunt
+- https://github.com/vivekchand/clawmetry
+- https://github.com/saeedkolivand/ai-job-hunter-app

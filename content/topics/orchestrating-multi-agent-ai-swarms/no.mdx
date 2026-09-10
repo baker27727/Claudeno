@@ -1,0 +1,120 @@
+---
+title: "Orkestrering av Claude, Codex, OpenCode og DeepSeek i én arbeidsflyt"
+description: "En voksende samling åpen kildekode-verktøy lar utviklere kjøre Claude, Codex, OpenCode og DeepSeek side ved side, med delte skills og MCP-servere i stedet for å låse seg til én leverandørs agent."
+discoveredAt: "2026-09-08T09:26:17.927Z"
+updatedDate: "2026-09-10T10:21:56.294Z"
+author: "Claude Code Learn"
+trendScore: 0.714
+scoreBreakdown:
+  frequency: 0.5
+  recency: 0.972
+  engagement: 0.585
+  gap: 1
+tags:
+  - "multi-agent"
+  - "MCP"
+  - "skills"
+  - "Claude Code"
+  - "Codex"
+  - "OpenCode"
+  - "DeepSeek"
+  - "orchestration"
+sources:
+  - "https://code.claude.com/docs/en/overview.md"
+  - "https://code.claude.com/docs/en/mcp-servers.md"
+  - "https://github.com/dork-labs/dorkos"
+  - "https://github.com/on-keyday/agent-harness"
+  - "https://github.com/rolottr/spotify-shunt"
+  - "https://github.com/vivekchand/clawmetry"
+  - "https://github.com/saeedkolivand/ai-job-hunter-app"
+relatedModules:
+  - "mcp-servers"
+  - "skills"
+  - "subagents"
+  - "hooks"
+relatedUseCases:
+  - "project-management-with-claude"
+relatedSkills: []
+draft: false
+# Verified against Claude Code 2.1.266
+---
+# Orkestrering av Claude, Codex, OpenCode og DeepSeek i én arbeidsflyt
+
+## Kort oppsummert
+
+Utviklere bygger i økende grad "agent-svermer" som kombinerer Claude Code med andre kodeagenter — OpenAIs Codex, OpenCode, DeepSeek-baserte CLI-verktøy og flere — i stedet for å satse alt på én leverandør. Limet er delt infrastruktur: portable Agent Skills, MCP-servere som hvilken som helst agent kan kalle, og lettvekts orkestreringslag som ruter oppgaver, gjennomgår resultater og logger aktivitet over flere verktøy. Dette er relevant nå fordi verktøyene for å gjøre det — kontrollpanel-dashboards, hooks som fungerer over flere agenter, og modellagnostiske skill-formater — har gått fra engangsskript til gjenbrukbare åpen kildekode-prosjekter.
+
+## Hva er nytt
+
+Nylig aktivitet i åpen kildekode-miljøet viser at dette mønsteret fester seg i praksis, ikke bare i teorien:
+
+- **Kontrollpanel for blandede flåter**: prosjekter som `dorkos` reklamerer eksplisitt for å kjøre Claude Code, Codex og OpenCode side ved side, og lar en person se hver sesjon, godkjenne handlinger og planlegge kjøringer over alle tre fra ett sted.
+- **Hooks som fungerer på tvers av verktøy**: `spotify-shunt` implementerer et `PreToolUse`-hook-mønster som virker for Claude Code, Codex, OpenCode og Copilot — samme hook-logikk fanger opp store filavlesninger uansett hvilken agent som utløste den, og ruter avlesningen til en billigere arbeider.
+- **Modellagnostiske "harness"**: `agent-harness` sender oppgaver til flere Claude Code-agenter over repoer og verter, der agenter kan sende meldinger til hverandre via en per-oppgave-megler — et mønster som generaliserer til andre CLI-er.
+- **Observabilitet over flere kjøretider**: `clawmetry` rapporterer nullkonfigurasjons-observabilitet for rundt 30 agent-kjøretider, inkludert Claude Code og OpenAI Codex, og følger token-kostnader, sesjoner, verktøykall og planlagte jobber i én visning.
+- **Skills og MCP som det delte fundamentet**: på Claude-siden er Agent Skills og Skills API nå ute av beta på Claude API, og MCP-servere er fortsatt standardmåten Claude Code kobler til eksterne verktøy — begge skrives i økende grad slik at de er portable, så andre agenter kan bruke de samme skill-filene eller MCP-endepunktene i stedet for at hvert verktøy finner opp sitt eget utvidelsesformat.
+- **Applikasjoner med valgfri agent**: brukerverktøy som en AI-jobbjeger-assistent støtter nå eksplisitt ruting gjennom "en AI CLI-agent (Claude Code, Codex, Gemini CLI)" i stedet for å hardkode én backend, og behandler kodeagenten som et utskiftbart utføringslag.
+
+## Slik fungerer det
+
+Orkestreringsmønsteret har generelt fire lag:
+
+1. **Et delt evnelag (Skills + MCP).** Claude Code laster Agent Skills — mapper med instruksjoner og eventuelle skript — og kobler til MCP-servere for eksterne verktøy og data. Siden MCP er en protokoll, ikke et Claude-spesifikt API, og siden Skills bare er filer på disk, kan andre CLI-er (Codex, OpenCode) peke på samme MCP-server eller gjenbruke samme skill-mappestruktur hvis de implementerer kompatible ladere. Dette unngår å reimplementere samme "les Jira", "spør en database" eller "kjør linter"-logikk per agent.
+
+2. **Et rutings-/dispatch-lag.** En orkestrator (et skript, en hook, eller et dashboard som `dorkos`) bestemmer hvilken agent som håndterer hvilken oppgave. Ruting kan være statisk (Claude Code for planlegging, Codex for et spesifikt språk, DeepSeek for kostnadssensitivt bulk-arbeid) eller dynamisk, utløst av hooks. `spotify-shunt` er et konkret eksempel: en `PreToolUse`-hook utløses før en agent utfører en stor filavlesning, og i stedet for å la den primære (dyre) modellen konsumere hele filen, delegerer den til en billig arbeider som returnerer linjenummererte punkter — samme hook-definisjon fungerer uavhengig av om den kallende agenten er Claude Code, Codex eller OpenCode.
+
+3. **Et meldings-/megler-lag for multi-agent-koordinering.** Når agenter må overlevere arbeid eller kontrollere hverandres resultater, medierer en megler. `agent-harness` beskriver dette som en "per-oppgave-megler" som lar utsendte agenter sende meldinger til hverandre, i stedet for å kreve at et menneske relayerer kontekst mellom separate terminalsesjoner.
+
+4. **Et enhetlig observabilitetslag.** Fordi hver agent-kjøretid har sine egne logger og kostnadsregnskap, normaliserer verktøy som `clawmetry` sesjonsdata, verktøykall, token-kostnader og planlagte kjøringer over rundt 30 kjøretider til én visning, slik at et team som kjører en blandet flåte ikke må sjekke N separate dashboards.
+
+Den praktiske forutsetningen bak alt dette er at Claude Codes utvidelsespunkter — CLAUDE.md/minne, Skills, MCP-servere, hooks, subagenter — er fil- og protokollbaserte i stedet for proprietære binærformater, noe som er det som gjør dem gjenbrukbare av verktøy bygget rundt andre agenter.
+
+## Prøv det selv
+
+Et minimalt tverr-agent-oppsett kan se slik ut: en delt MCP-server for oppslag på saker, og en hook som alle agentene i flåten respekterer.
+
+```bash
+# 1. Start en MCP-server som både Claude Code og andre CLI-er kan koble til
+npx @your-org/ticket-mcp-server --port 4000
+
+# 2. Registrer den i Claude Code
+claude mcp add ticket-server http://localhost:4000
+
+# 3. Pek en Codex- eller OpenCode-konfigurasjon på samme endepunkt
+# (hvert verktøy har sin egen MCP-klientkonfigurasjon, men serveren er identisk)
+opencode config set mcp.ticket-server http://localhost:4000
+
+# 4. Legg til en PreToolUse-hook (Claude Code) som også gjelder for andre agenter
+# ved å kalle et delt skript i stedet for agent-spesifikk logikk
+cat .claude/hooks/pretooluse.sh
+#!/bin/bash
+# Avvis bulk-avlesninger over 350 linjer; deleger til en billig oppsummerer
+if [ "$LINE_COUNT" -gt 350 ]; then
+  ./scripts/cheap-summarize.sh "$FILE_PATH"
+  exit 1
+fi
+```
+
+Resultatet: uansett hvilken agent som utløser en stor avlesning, gjelder samme sikringsmekanisme og samme oppslagsverktøy for saker — du skriver policyen én gang i stedet for én gang per CLI.
+
+## Når du bør bruke det (og når ikke)
+
+Bruk et multi-agent-orkestreringsoppsett når:
+- Ulike oppgaver faktisk drar nytte av ulike modeller (f.eks. en billigere modell for bulk-filtriage, en sterkere for endelig gjennomgang).
+- Teamet allerede bruker mer enn én kode-CLI og ønsker konsistente sikringsmekanismer (tillatelseskontroller, kostnadsgrenser, logging) i stedet for å duplisere policy per verktøy.
+- Du trenger observabilitet over flere verktøy fordi forbruk eller aktivitet i dag er usynlig utenfor hvert verktøys egen sesjon.
+
+Unngå det, eller start enklere, når:
+- Du bare bruker én agent i dag — koordineringslaget (meglere, delte hooks, tverr-verktøy-dashboards) er ren overhead før du faktisk kjører en andre.
+- Den "delte" MCP-serveren eller skillet ikke egentlig er portabelt — mange Skills og hooks er fortsatt skrevet med Claude Code-spesifikke forutsetninger, så tverr-agent-kompatibilitet må verifiseres, ikke antas.
+- Feilsøking blir vanskeligere: en feil kan stamme fra oppgaven, rutingslogikken, megleren, eller en spesifikk agents særegenheter, og observabilitetsverktøy for flere kjøretider er fortsatt tidlige og stort sett fellesskapsvedlikeholdt snarere enn offisielt støttet.
+
+## Kilder
+
+- https://code.claude.com/docs/en/overview.md
+- https://code.claude.com/docs/en/mcp-servers.md
+- https://github.com/dork-labs/dorkos
+- https://github.com/on-keyday/agent-harness
+- https://github.com/rolottr/spotify-shunt
+- https://github.com/vivekchand/clawmetry
+- https://github.com/saeedkolivand/ai-job-hunter-app

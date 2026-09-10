@@ -1,5 +1,43 @@
 [
   {
+    "topic": "Cross-device Claude Code coordination with Remote Control and persistent session migration",
+    "status": "published",
+    "score": {
+      "frequency": 0.5,
+      "recency": 0.972,
+      "engagement": 0.5,
+      "gap": 1,
+      "total": 0.693
+    },
+    "matchedSources": [
+      "docs_map",
+      "anthropic_changelog"
+    ],
+    "whyItMatters": "Claude Code Remote Control now supports Trusted Devices and mobile sessions; docs show how to continue local sessions on different devices—a workflow enabler for teams and individuals working across phones, laptops, and desktops.",
+    "firstSeen": "2026-09-08T09:26:17.927Z",
+    "lastSeen": "2026-09-10T10:22:59.339Z",
+    "publishedSlug": "claude-code-remote-control-cross-device"
+  },
+  {
+    "topic": "Orchestrating disparate AI agents (Claude, Codex, OpenCode, DeepSeek) with unified skill and MCP frameworks",
+    "status": "published",
+    "score": {
+      "frequency": 0.5,
+      "recency": 0.972,
+      "engagement": 0.585,
+      "gap": 1,
+      "total": 0.714
+    },
+    "matchedSources": [
+      "github_search",
+      "hn_search"
+    ],
+    "whyItMatters": "Emerging ecosystem projects (skill-of-skills, Crew, agent-skills repos) and cross-tool integrations show developers building agent swarms spanning multiple coding LLMs—a practical pattern for multi-platform automation where no single model owns the workflow.",
+    "firstSeen": "2026-09-08T09:26:17.927Z",
+    "lastSeen": "2026-09-10T10:21:56.295Z",
+    "publishedSlug": "orchestrating-multi-agent-ai-swarms"
+  },
+  {
     "topic": "Building secure guardrails for Claude Code with plugin-based safety harnesses and approval flows",
     "status": "candidate",
     "score": {
@@ -17,24 +55,6 @@
     "lastSeen": "2026-09-08T09:26:17.927Z"
   },
   {
-    "topic": "Cross-device Claude Code coordination with Remote Control and persistent session migration",
-    "status": "candidate",
-    "score": {
-      "frequency": 0.5,
-      "recency": 0.972,
-      "engagement": 0.5,
-      "gap": 1,
-      "total": 0.693
-    },
-    "matchedSources": [
-      "docs_map",
-      "anthropic_changelog"
-    ],
-    "whyItMatters": "Claude Code Remote Control now supports Trusted Devices and mobile sessions; docs show how to continue local sessions on different devices—a workflow enabler for teams and individuals working across phones, laptops, and desktops.",
-    "firstSeen": "2026-09-08T09:26:17.927Z",
-    "lastSeen": "2026-09-08T09:26:17.927Z"
-  },
-  {
     "topic": "Composing agentic workflows from GitHub-hosted skills in Claude Managed Agents",
     "status": "candidate",
     "score": {
@@ -48,24 +68,6 @@
       "anthropic_changelog"
     ],
     "whyItMatters": "Claude Managed Agents can now load skills directly from GitHub repositories at session startup, enabling teams to version-control and share specialized agent capabilities—a pattern for building reusable, maintainable multi-agent systems.",
-    "firstSeen": "2026-09-08T09:26:17.927Z",
-    "lastSeen": "2026-09-08T09:26:17.927Z"
-  },
-  {
-    "topic": "Orchestrating disparate AI agents (Claude, Codex, OpenCode, DeepSeek) with unified skill and MCP frameworks",
-    "status": "candidate",
-    "score": {
-      "frequency": 0.5,
-      "recency": 0.972,
-      "engagement": 0.585,
-      "gap": 1,
-      "total": 0.714
-    },
-    "matchedSources": [
-      "github_search",
-      "hn_search"
-    ],
-    "whyItMatters": "Emerging ecosystem projects (skill-of-skills, Crew, agent-skills repos) and cross-tool integrations show developers building agent swarms spanning multiple coding LLMs—a practical pattern for multi-platform automation where no single model owns the workflow.",
     "firstSeen": "2026-09-08T09:26:17.927Z",
     "lastSeen": "2026-09-08T09:26:17.927Z"
   },

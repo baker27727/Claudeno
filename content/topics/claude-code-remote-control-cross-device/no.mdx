@@ -1,0 +1,122 @@
+---
+title: "Claude Code på tvers av enheter: Remote Control, Trusted Devices og sesjonsmigrering"
+description: "Med Remote Control i Claude Code kan du starte en sesjon på laptopen og fortsette den fra telefonen eller en annen enhet, mens Trusted Devices legger til et sikkerhetslag på organisasjonsnivå."
+discoveredAt: "2026-09-08T09:26:17.927Z"
+updatedDate: "2026-09-10T10:22:59.339Z"
+author: "Claude Code Learn"
+trendScore: 0.693
+scoreBreakdown:
+  frequency: 0.5
+  recency: 0.972
+  engagement: 0.5
+  gap: 1
+tags:
+  - "Claude Code"
+  - "Remote Control"
+  - "mobile"
+  - "session management"
+  - "security"
+  - "cross-device"
+sources:
+  - "https://code.claude.com/docs/en/remote-control.md"
+  - "https://code.claude.com/docs/en/mobile.md"
+  - "https://code.claude.com/docs/en/sessions.md"
+  - "https://code.claude.com/docs/en/platforms.md"
+relatedModules:
+  - "cli-basics"
+  - "permissions-and-settings"
+  - "checkpointing"
+relatedUseCases:
+  - "project-management-with-claude"
+relatedSkills: []
+draft: false
+# Verified against Claude Code 2.1.266
+---
+## Kort oppsummert
+
+Remote Control lar en Claude Code-sesjon som kjører på én maskin (for eksempel PC-en din) overvåkes og styres fra en annen enhet — vanligvis en telefon. Du starter sesjonen lokalt, kobler til fra den andre enheten via en sesjons-URL, og fortsetter arbeidet uten å tape kontekst. Trusted Devices legger til et registreringslag slik at organisasjoner kan begrense hvilke enheter som i det hele tatt får koble seg til.
+
+## Hva er nytt
+
+Claude Code-dokumentasjonen har nå en egen `remote-control`-side i tillegg til en `mobile`-side, som beskriver en arbeidsflyt spesifikt for å fortsette en lokal sesjon fra en telefon. Dokumentasjonen beskriver:
+
+- Å starte en Remote Control-sesjon lokalt og koble til fra en annen enhet via en sesjons-URL.
+- Å sjekke tilkoblingsstatus og få påminnelser om sesjons-URL.
+- Hva tilkoblede enheter kan se når de er koblet til.
+- Å aktivere Remote Control for alle sesjoner, og å gjenoppta sesjoner etter at serveren har stoppet.
+- **Trusted Devices**: en organisasjonsstyrt kontroll som krever at enheter registreres før de kan bruke Remote Control, inkludert hvordan medlemmer registrerer seg og hvordan administratorer forvalter registrerte enheter.
+- Et skille mellom Remote Control og Claude Code på nett, samt støtte for push-varsler på mobil.
+- Selve mobilappen støtter å starte og overvåke sky-sesjoner, og separat, å fortsette en lokal sesjon med Remote Control.
+
+Dette er et betydelig skifte fra en enkelt-terminal-mentalitet til Claude Code som en sesjon du kan plukke opp uansett hvor du er — mens selve arbeidet fortsatt kjører på maskinen du startet det på (eller, separat, i skyen via Claude Code på nett).
+
+## Slik fungerer det
+
+Mekanikken deler seg i to distinkte spor som lett kan forveksles:
+
+**1. Remote Control (lokal sesjon, ekstern visning/styring)**
+- Du starter en sesjon på en lokal maskin som vanlig. Remote Control aktiveres enten per sesjon eller for alle sesjoner.
+- En sesjons-URL genereres; å koble til fra en annen enhet (f.eks. via mobilappen eller en nettleser) knytter den enheten til den kjørende lokale sesjonen.
+- Den lokale maskinen fortsetter å utføre arbeidet — Remote Control er en kontroll-/overvåkingskanal, ikke en kopi av sesjonen. Hvis den lokale serveren stopper, beskriver dokumentasjonen en egen gjenopptakelsesvei ("Resume sessions after stopping the server").
+- Tilkoblede enheter ser et definert utsnitt av sesjonstilstanden — dokumentasjonen nevner spesifikt «hva tilkoblede enheter ser», noe som antyder at den eksterne visningen ikke er identisk med den fulle lokale terminalopplevelsen.
+- Sikkerhetskrav styrer tilgangen til funksjonen: den krever et claude.ai-abonnement, en fullomfangs innloggingstoken, og vellykkede organisasjonssjekker. En lang liste med dokumenterte feiltilstander (f.eks. «Remote Control requires feature-flag evaluation», «Remote credentials fetch failed», «Couldn't reconnect to your Remote Control session») viser at dette er en forhandlet, tilstandsfull tilkobling med flere feilmodus, ikke en enkel sammenkobling.
+
+**2. Trusted Devices (tilgangskontroll på organisasjonsnivå)**
+- Organisasjoner kan kreve at bare registrerte enheter i det hele tatt kan bruke Remote Control. Dette konfigureres på organisasjonsnivå ("Enable Trusted Devices for your organization").
+- Medlemmer går gjennom et registreringssteg; administratorer har en forvaltningsvisning over registrerte enheter.
+- Hvis en enhet ikke er registrert men organisasjonen krever Trusted Devices, er den dokumenterte feilmeldingen tydelig: «Your organization requires Trusted Devices for Remote Control, but this device is not enrolled.» Det finnes også en egen tilstand, «session expired for trusted-device check», som antyder at registreringsstatusen reverifiseres periodisk snarere enn kun kontrolleres én gang.
+
+**3. Sesjonskontinuitet under begge sporene**
+- Uavhengig av Remote Control kan Claude Code-sesjoner gjenopptas, navngis og bla gjennom via en sesjonsvelger (dokumentert under `sessions`), og transkripsjoner/eksporter lagres lokalt. Remote Control bygger på denne sesjonsmodellen i stedet for å erstatte den — det er en transportmekanisme for å nå en eksisterende lokal sesjon, ikke en ny lagringsmekanisme.
+- Dette skiller seg fra Claude Code på nett, som kjører sesjoner i et skymiljø i stedet for å eksponere en lokal sesjon; dokumentasjonen har eksplisitt en sammenligning «Remote Control vs Claude Code on the web» fordi de to løser forskjellige problemer (nå en lokal sesjon vs. kjøre en sesjon som ikke er knyttet til noen lokal maskin).
+
+## Prøv det selv
+
+En typisk arbeidsflyt på tvers av enheter, basert på det som er dokumentert for `remote-control` og `mobile`:
+
+```
+# På PC-en/laptopen din, inne i en eksisterende Claude Code-sesjon:
+> /remote-control
+
+# Claude Code skriver ut en sesjons-URL og tilkoblingsstatus.
+# Skann eller åpne denne URL-en fra Claude Code-mobilappen på telefonen.
+
+# Fra telefonen:
+# - Se sesjonens tilstand i sanntid
+# - Send oppfølgingsinstruksjoner
+# - Få push-varsel når Claude er ferdig med en langvarig oppgave
+
+# Hvis serveren på den lokale maskinen stopper og du kobler til igjen senere:
+> /remote-control
+# → «Previous session is unavailable — run /remote-control to start a new one»
+# (hvis forrige sesjon ikke kan gjenopptas) eller en gjenoppkoblingsdialog hvis den kan.
+```
+
+Hvis organisasjonen din krever Trusted Devices, vil tilkobling fra en uregistrert telefon eller laptop vise:
+
+```
+Your organization requires Trusted Devices for Remote Control,
+but this device is not enrolled.
+```
+
+En administrator må da registrere (eller godkjenne registrering av) enheten før Remote Control fungerer fra den.
+
+## Når du bør bruke det (og når ikke)
+
+**Bruk det når:**
+- Du må gå fra pulten men vil at en langvarig lokal Claude Code-sesjon (f.eks. en stor refaktorering, testkjøring eller bygg) skal fortsette, mens du følger med fra telefonen.
+- Du vil ha push-varsler i stedet for å stirre på en terminal og vente på at en oppgave fullføres.
+- Teamet ditt trenger tilgangskontroll på enhetsnivå i tillegg til kontonivå-autentisering — det er nettopp det Trusted Devices finnes for.
+
+**Vær forsiktig når:**
+- Du trenger at selve beregningen skal være uavhengig av en lokal maskin — det er Claude Code på nett du skal bruke, ikke Remote Control, siden Remote Control fortsatt er avhengig av at opprinnelsesmaskinen forblir oppe.
+- Kontoen eller organisasjonen din ikke oppfyller forutsetningene — dokumentasjonen lister opp et spesifikt, ikke-trivielt sett med krav (claude.ai-abonnement, fullomfangs innloggingstoken, organisasjonskvalifisering, API-basert tilgang) og en lang liste navngitte feiltilstander, så førstegangsoppsett kan gi friksjon.
+- Du arbeider med sensitive data og ikke har vurdert hva «tilkoblede enheter ser» — dokumentasjonen behandler dette som en distinkt, begrenset visning snarere enn full likhet med den lokale terminalen, så anta ikke at eksterne seere får se alt.
+- Registrering i Trusted Devices kan selv utløpe («session expired for trusted-device check»), så anta ikke at en enhet forblir registrert på ubestemt tid uten reverifisering.
+
+## Kilder
+
+- https://code.claude.com/docs/en/remote-control.md
+- https://code.claude.com/docs/en/mobile.md
+- https://code.claude.com/docs/en/sessions.md
+- https://code.claude.com/docs/en/platforms.md
