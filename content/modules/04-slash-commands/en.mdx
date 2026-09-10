@@ -207,3 +207,7 @@ New `/skill-doctor` slash command shows which loaded skills go unused and what t
 ## What's new in v2.1.263
 
 Added in 2.1.260: Use /diff to open a diff panel showing uncommitted changes beside the conversation in fullscreen mode. Added in 2.1.261: Use /skill-doctor to see which loaded skills go unused and their context cost, helping you prune unnecessary skills.
+
+## What's new in v2.1.267
+
+The `--system-prompt-snapshot off` flag now renders the system prompt fresh on every request instead of reusing the conversation's recorded prompt, useful for iterating on prompt text.

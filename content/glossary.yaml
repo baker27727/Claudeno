@@ -416,3 +416,14 @@
   no: "/skill-doctor"
   note: "Slash command showing which loaded skills go unused and their context
     cost for pruning (new in 2.1.261); kept as English command identifier"
+- id: "maxeffortlevel"
+  en: "maxEffortLevel"
+  no: "maxEffortLevel"
+  note: "Settings key capping the effort level on every provider (Bedrock, Vertex,
+    Foundry); kept as English configuration identifier (new in 2.1.267)"
+- id: "system-prompt-snapshot"
+  en: "system-prompt-snapshot"
+  no: "system-prompt-snapshot"
+  note: "Flag to control system prompt reuse behavior; `off` renders fresh on
+    every request instead of caching from conversation (new in 2.1.267); kept as
+    English command identifier"

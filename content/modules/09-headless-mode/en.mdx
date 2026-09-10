@@ -154,3 +154,7 @@ Added `/reload-plugins` command to headless sessions, making it available in Cla
 **Version 2.1.265 updates:**
 
 - **Working directory persistence**: In non-interactive sessions (including stream-json automation and Agent SDK), the shell working directory now persists across turns. A `cd` command will remain in effect for subsequent user messages, instead of resetting (2.1.265).
+
+## What's new in v2.1.267
+
+Fixed resuming a large session (transcript over 5 MB): parallel tool calls and their hook output are no longer dropped from the reloaded conversation. Fixed `/login` on machines whose managed settings require Claude apps gateway sign-in: Esc now closes the dialog instead of doing nothing.

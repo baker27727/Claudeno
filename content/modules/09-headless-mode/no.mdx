@@ -157,3 +157,7 @@ Lagt til `/reload-plugins`-kommando til hodeløse økter, og gjort den tilgjenge
 **Oppdateringer for versjon 2.1.265:**
 
 - **Arbeidsmappepersistens**: I ikke-interaktive økter (inkludert stream-json-output-automatisering og Agent SDK), beholder shell-arbeidsmappen seg nå på tvers av svinger. En `cd`-kommando vil forbli aktiv for påfølgende brukermeddelelser i stedet for å tilbakestilles (2.1.265).
+
+## Nytt i v2.1.267
+
+Reparert gjenopptaking av en stor økt (transkripsjon over 5 MB): parallelle verktøykall og deres hook-utdata blir ikke lenger droppet fra den gjeninnlastede samtalen. Reparert `/login` på maskiner hvis administrerte innstillinger krever innlogging via Claude apps gateway: Esc lukker nå dialogen i stedet for å ikke gjøre noe.

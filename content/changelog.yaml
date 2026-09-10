@@ -1,3 +1,17 @@
+- id: "2.1.267"
+  version: "2.1.267"
+  date: "2026-09-10"
+  entry:
+    en: "Added `maxEffortLevel` setting to cap effort levels across providers. Added
+      `--system-prompt-snapshot off` flag for fresh system prompt rendering.
+      Fixed managed settings validation, session resumption with large
+      transcripts, and gateway sign-in dialogs."
+    no: "La til `maxEffortLevel`-innstilling for å begrense innsatsnivåer på tvers
+      av leverandører. La til `--system-prompt-snapshot off`-flagg for frisk
+      systemledetekstgjengivelse. Fikset validering av administrerte
+      innstillinger, gjenopptaking av økt med store transkripsjonsfiler og
+      gateway-innloggingsdialogen."
+  sources: []
 - id: "2.1.266"
   version: "2.1.266"
   date: "2026-09-09"

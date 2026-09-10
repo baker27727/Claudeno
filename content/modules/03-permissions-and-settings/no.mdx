@@ -206,3 +206,7 @@ Ordrediger­ingstastene i ledeteksten i 2.1.261 følger nå Bash-konvensjoner: C
 ## Nytt i v2.1.263
 
 Nytt i 2.1.261: bashOutputMaxChars- og taskOutputMaxChars-innstillinger lar deg øke hvor mye kommando- og bakgrunnsoppgaveutdata Claude mottar innebygd før det lagres i en fil, opp til 128K tegn.
+
+## Nytt i v2.1.267
+
+Den nye `maxEffortLevel`-innstillingen (øverst eller per modell under `modelSettings`) begrenser innsatsnivået på alle leverandører, inkludert Bedrock, Vertex og Foundry; brukere kan fortsatt velge et lavere nivå. Administrerte innstillinger for `allowedHttpHookUrls`, `httpHookAllowedEnvVars` og `allowedChannelPlugins` tillater nå korrekt ingenting (i stedet for alt) når de ikke kan leses.
