@@ -158,3 +158,7 @@ Added `/reload-plugins` command to headless sessions, making it available in Cla
 ## What's new in v2.1.267
 
 Fixed resuming a large session (transcript over 5 MB): parallel tool calls and their hook output are no longer dropped from the reloaded conversation. Fixed `/login` on machines whose managed settings require Claude apps gateway sign-in: Esc now closes the dialog instead of doing nothing.
+
+## What's new in v2.1.268
+
+New in 2.1.268: Headless sessions using `--continue` or `--resume` now display the conversation immediately instead of waiting for SessionStart hooks to complete, and the first message no longer re-reads the entire transcript, improving startup time and responsiveness in automation workflows.

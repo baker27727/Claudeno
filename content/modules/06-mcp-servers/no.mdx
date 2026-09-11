@@ -122,3 +122,7 @@ MCP-tjener-konfigurasjonssvikter blir nå bedre rapportert: på Bedrock-, Vertex
 ## Nytt i v2.1.259
 
 2.1.259 introduserer `managedMcpServers`: organisasjoner kan levere HTTP/SSE MCP-tjenere til hver bruker (samme oppføringskape som `.mcp.json`); oppføringer som navngir en kommando å kjøre hoppes over. Innstillingen `allowedMcpServers` styrer nå bare tjenere brukere legger til; en bokstavelig `managed-mcp.json`-tjener som tillatelselisten din pleide å filtrere ut laster nå ved oppgradering. Bruk `deniedMcpServers` for å holde den av.
+
+## Nytt i v2.1.268
+
+Nytt i 2.1.268: MCP-tjenerlegitimasjon og hemmeligheter—inkludert tokener, passord og verdier løst fra `${VAR}`-plassholdere i MCP-konfigurasjoner—vises ikke lenger i feilmeldinger, tjenerdetaljer vist av `/mcp` og `/plugin`, utdata fra `claude mcp list`/`get`, eller MCP-påloggingsfeil, noe som forbedrer sikkerheten når du diagnostiserer konfigurasjonsprobler.

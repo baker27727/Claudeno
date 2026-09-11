@@ -188,3 +188,7 @@ Nytt i 2.1.261: Bruk --append-subagent-system-prompt-file for å lese underagent
 - **Slash-kommando-treff**: Slash-kommandoer skrevet midt i ledeteksten viser nå treff i en liste (trykk Tab for å ekspandere utenfor fullskjerm), og plugin-ferdigheter finnes etter barnenavnet (2.1.265).
 
 - **Arbeidsmappepersistens i ikke-interaktive økter**: `cd`-kommandoer beholder seg nå på tvers av svinger i hodeløse økter (`-p` med stream-json-output, Agent SDK, skyøkter), og fikser shell-mappeomstillinger ved hver brukermelding (2.1.265).
+
+## Nytt i v2.1.268
+
+Nytt i 2.1.268: `claude plugin install`, `uninstall`, `update`, `enable` og `disable` aksepterer nå `--json`-flagg for å returnere resultater i JSON-format, inkludert `errorDetails` og `noteDetails` for hver rad i `claude plugin list --json`. I tillegg inkluderer `claude auth status` nå `configDirectory` i sin `--json`-utdata. Kommandoen `claude self-hosted-runner` støtter et nytt `--remove-session-state`-flagg (standard av) for å slette økt-spesifikke mapper under `<base-dir>/_sessions/` når hver økt avsluttes.

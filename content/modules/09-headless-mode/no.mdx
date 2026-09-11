@@ -161,3 +161,7 @@ Lagt til `/reload-plugins`-kommando til hodeløse økter, og gjort den tilgjenge
 ## Nytt i v2.1.267
 
 Reparert gjenopptaking av en stor økt (transkripsjon over 5 MB): parallelle verktøykall og deres hook-utdata blir ikke lenger droppet fra den gjeninnlastede samtalen. Reparert `/login` på maskiner hvis administrerte innstillinger krever innlogging via Claude apps gateway: Esc lukker nå dialogen i stedet for å ikke gjøre noe.
+
+## Nytt i v2.1.268
+
+Nytt i 2.1.268: Hodeløse økter som bruker `--continue` eller `--resume` viser nå økningen umiddelbart i stedet for å vente på at SessionStart-hooks skal fullføres, og den første meldingen leser ikke lenger hele utskriften på nytt, noe som forbedrer oppstartstiden og responsiviteten i automatiseringsarbeidsflyten.

@@ -427,3 +427,15 @@
   note: "Flag to control system prompt reuse behavior; `off` renders fresh on
     every request instead of caching from conversation (new in 2.1.267); kept as
     English command identifier"
+- id: "gatewayinternalnetworks"
+  en: "gatewayInternalNetworks"
+  no: "gatewayInternalNetworks"
+  note: "Managed setting allowing administrators to permit /login to a Claude apps
+    gateway on their organization's own public IPv4 block (new in 2.1.268); kept
+    as English configuration identifier"
+- id: "claude_code_webfetch_deadline_ms"
+  en: "CLAUDE_CODE_WEBFETCH_DEADLINE_MS"
+  no: "CLAUDE_CODE_WEBFETCH_DEADLINE_MS"
+  note: "Environment variable to override WebFetch timeout deadline in
+    milliseconds; default 300 seconds (300000 ms), set to 0 to disable (new in
+    2.1.268); kept as English environment variable identifier"

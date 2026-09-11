@@ -188,3 +188,7 @@ New in 2.1.261: Use --append-subagent-system-prompt-file to read the subagent sy
 - **Slash command matches**: Slash commands typed mid-prompt now show matches in a list (press Tab to expand outside fullscreen), and plugin skills are found by their bare name (2.1.265).
 
 - **Working directory persistence in non-interactive sessions**: `cd` commands now persist across turns in headless sessions (`-p` with stream-json, Agent SDK, cloud sessions), fixing shell directory resets at each user message (2.1.265).
+
+## What's new in v2.1.268
+
+New in 2.1.268: `claude plugin install`, `uninstall`, `update`, `enable` and `disable` now accept `--json` flag to output results in JSON format, including `errorDetails` and `noteDetails` for each row in `claude plugin list --json`. Additionally, `claude auth status` now includes `configDirectory` in its `--json` output. The `claude self-hosted-runner` command supports a new `--remove-session-state` flag (default off) to delete per-session directories under `<base-dir>/_sessions/` when each session ends.

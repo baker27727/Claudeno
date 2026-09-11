@@ -1,3 +1,114 @@
+- id: "2.1.268"
+  version: "2.1.268"
+  date: "2026-09-11"
+  entry:
+    en: "Gateway pricing support with signed-in rate matching; startup warnings for
+      empty access control; new `gatewayInternalNetworks` managed setting;
+      `claude self-hosted-runner --remove-session-state` flag; `claude auth
+      status --json configDirectory`; `--json` output for plugin commands with
+      error/note details; WebFetch 300-second timeout with
+      `CLAUDE_CODE_WEBFETCH_DEADLINE_MS` override; artifact tool regex fix for
+      third-party Anthropic-compatible endpoints; respawned teammates no longer
+      pick up stale agent files; CPU-usage fixes for idle sessions and terminal
+      focus reports; WebFetch error fix for localhost; MCP and plugin error
+      messages scrubbed of secrets and credentials; prompt-cache and
+      extended-thinking stability for SDK sessions with
+      `excludeDynamicSections`; model-access denial cache freshness
+      improvements; Fable long-context 429 messaging fix; workload identity
+      federation jti-reuse fix; OAuth redirect port availability error
+      messaging; `/compact` text-mangling fix for `$` sequences;
+      conversation-recall suggestions fix; agent list navigation responsiveness;
+      session-delete error messaging for worktrees; Slack tool loss in sessions
+      with MCP allowlist fix; Chrome navigation URL scheme parsing fix; terminal
+      spinner and cursor display improvements; remote control session naming in
+      `ListAgents`; plugin path validation for dot-prefixed directories;
+      WebFetch localhost error messaging; PermissionRequest hooks in print mode;
+      policy-helper warnings in headless runs; `/resume` fork-session naming;
+      cloud-session commands suggest `/login` when signed out; SessionEnd hook
+      timeout extension; `/autofix-pr` GitHub account connection error
+      messaging; cloud-session policy explanation; Bash sandbox instruction
+      accuracy; fullscreen mode repainting performance; `--continue`/`--resume`
+      immediate display and single transcript read; tool-heavy turn
+      responsiveness; project workflow startup time; auto mode denial messaging
+      improvements; Claude in Chrome page-read inlining; MEMORY.md truncation
+      warning detail; artifact terminal permission prompt leading question;
+      prompt footer editor/diff selection display; 1M-context usage-credits
+      message clarification; `/plugin` menu effect immediacy;
+      Bedrock/Vertex/Foundry system-prompt attachment parity; tool-list byte
+      stability on late-connecting tools; task-tracking tool model restrictions;
+      artifact data-edit permission card; local Cowork file-access security;
+      WebFetch deny/ask-rule scope clarification with Artifact tool; MCP server
+      auth startup notice frequency; VSCode session-list and settings-toggle
+      fixes with `CLAUDE_CONFIG_DIR`; VSCode model-pill responsiveness across
+      login/logout; VSCode Auto-mode persistence in open tabs; VSCode
+      SessionStart hook session-name stability; VSCode footer-pill startup
+      synchronization; VSCode rapid session-tab launch handling; VSCode
+      `preferredLocation` sidebar resumption; VSCode Windows WSL and diagnostics
+      fixes; VSCode custom-style-builder folder; VSCode permission-rule
+      arrow-key navigation and focus commands; VSCode Manage-plugins dialog
+      session application; VSCode artifact permission-prompt `don't-ask-again`
+      omission parity; cloud-session file-persistence for up to a day;
+      cloud-session effort-level resume validation; routine-creation connector
+      guidance; Claude Tag admin-settings Retry button; plugin marketplace
+      `command` sources with `mode: link`; SSE keepalive-pings during long
+      thinking; `ListAgents` offline and cloud labels."
+    no: "Gatewayprisingstøtte med signert-inn-sats-matching; startadvarsler for tom
+      tilgangskontroll; ny `gatewayInternalNetworks`-administrert innstilling;
+      `claude self-hosted-runner --remove-session-state`-flagg; `claude auth
+      status --json configDirectory`; `--json`-utdata for plugin-kommandoer med
+      feil-/notatdetaljer; WebFetch 300-sekunders tidsavbrudd med
+      `CLAUDE_CODE_WEBFETCH_DEADLINE_MS`-overstyring;
+      artefaktverktøy-regex-korrigering for tredjepartskompatible
+      Anthropic-endepunkter; respawned-lagkamerater plukker ikke opp foreldede
+      agent-filer lenger; CPU-bruksfikser for inaktive økter og
+      terminalfokusrapporter; WebFetch-feilfiksing for localhost; MCP- og
+      plugin-feilmeldinger rensket for hemmeligheter og legitimasjon;
+      prompt-cache- og extended-thinking-stabilitet for SDK-økter med
+      `excludeDynamicSections`; forbedringer av
+      model-access-denial-cache-friskhet; Fable long-context
+      429-meldingsfiksing; workload identity federation jti-reuse-fiksing; OAuth
+      redirect-portens tilgjengelighetsfeilmelding; `/compact`
+      tekstmanglingfiksing for `$`-sekvenser;
+      conversation-recall-forslagsfiksing; responsivitet for agentovernavn;
+      session-delete-feilmelding for worktrees; Slack-verktøytap i økter med
+      MCP-tillatelselistefiksing; Chrome-navigerings-URL-skjemaparsingfiksing;
+      terminalpinner- og markørviseringsforbedringsinger; remote
+      control-session-navngivning i `ListAgents`; plugin-banevalidering for
+      punktprefixede kataloger; WebFetch localhost-feilmelding;
+      PermissionRequest-hooks i utskriftsmodus; policy-helper-advarsler i
+      hodeløse kjøringer; `/resume` fork-session-navngivning;
+      cloud-session-kommandoer foreslår `/login` når signert ut; SessionEnd
+      hook-tidsavbrytelsesforlengelse; `/autofix-pr`
+      GitHub-kontotilkoblingsfeilmelding; cloud-session-policyforklaring; Bash
+      sandkasse-instruksjonsnøyaktighet; fullscreen-modusommalingsytelse;
+      `--continue`/`--resume` umiddelbar visning og enkelt utskriftslesing;
+      verktøytung turresponsivitet; prosjektarbeidsflytstartingstid; forbedring
+      av auto mode-nekaelsesmeldinger; Claude in Chrome-sidelivlining;
+      MEMORY.md-avkortingsadvarseldetaljer;
+      artefakt-terminaltillatelsesmeldingsførende spørsmål;
+      prompt-foterredaktør/diff-valvisnig; 1M-kontekst
+      bruksgrensemelding-klarlegging; `/plugin`-menyeffektumiddelbarhet;
+      Bedrock/Vertex/Foundry system-prompt-vedleggsparitet;
+      verktøylistebyte-stabilitet på sent tilkoblede verktøy; task-tracking
+      verktøymodellbegrensninger; artefaktdataredigeringspermisjonskort; lokal
+      Cowork-filadgangssikkerhet;
+      WebFetch-nektelse/spørsmål-regelomfangsklarlegging med artefaktverktøy;
+      MCP-tjener-auth-oppstartmeldingsfrekvens; VSCode session-liste og
+      innstillingstogglefikser med `CLAUDE_CONFIG_DIR`; VSCode
+      modelpille-responsivitet på tvers av pålogging/utlogging; VSCode
+      Auto-moduspersistens i åpne faner; VSCode SessionStart
+      hook-session-navnstabilitet; VSCode foterpiille-oppstartsynkronisering;
+      VSCode rask session-tab-lanserhåntering; VSCode `preferredLocation`
+      sidebarresumering; VSCode Windows WSL og diagnostikkfikser; VSCode
+      custom-style-builder-mappe; VSCode tillatelsesregel pil-tastnavn og
+      fokuskommandoer; VSCode Manage-plugins-dialog session-applikasjon; VSCode
+      artefaktiltillatelsesmeldingsbør ikke spørre igjen paritet; cloud-session
+      filpersistens i opptil en dag; cloud-session innsatsvanlig
+      resume-validering; rutineoppretting-samler veiledning; Claude Tag
+      admin-innstillinger Retry-knapp; plugin-markedsplass `command`-kilder med
+      `mode: link`; SSE keepalive-pinger under langtenkt; `ListAgents` offline
+      og sky-merker."
+  sources: []
 - id: "2.1.267"
   version: "2.1.267"
   date: "2026-09-10"

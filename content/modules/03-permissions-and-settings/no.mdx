@@ -210,3 +210,7 @@ Nytt i 2.1.261: bashOutputMaxChars- og taskOutputMaxChars-innstillinger lar deg 
 ## Nytt i v2.1.267
 
 Den nye `maxEffortLevel`-innstillingen (øverst eller per modell under `modelSettings`) begrenser innsatsnivået på alle leverandører, inkludert Bedrock, Vertex og Foundry; brukere kan fortsatt velge et lavere nivå. Administrerte innstillinger for `allowedHttpHookUrls`, `httpHookAllowedEnvVars` og `allowedChannelPlugins` tillater nå korrekt ingenting (i stedet for alt) når de ikke kan leses.
+
+## Nytt i v2.1.268
+
+Nytt i 2.1.268: Gateways sender nå en advarsel ved oppstart når `access_control.allow_cidrs` er tom, og en engangsadvarsel når en forespørsel først ankommer fra en offentlig adresse, som hjelper administratorer med å oppdage potensielle sikkerhetsmiskonfigurasjoner. En ny administrert innstilling `gatewayInternalNetworks` lar administratorer tillate `/login` til en Claude apps gateway på organisasjonens eget offentlige IPv4-blokk.

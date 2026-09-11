@@ -120,3 +120,7 @@ MCP server configuration failures are now better reported: on Bedrock, Vertex AI
 ## What's new in v2.1.259
 
 2.1.259 introduces `managedMcpServers`: organizations can provide HTTP/SSE MCP servers to every user (same entry shape as `.mcp.json`); entries that name a command to run are skipped. The `allowedMcpServers` setting now governs only servers users add; a literal `managed-mcp.json` server your allowlist used to filter out now loads on upgrade. Use `deniedMcpServers` to keep it off.
+
+## What's new in v2.1.268
+
+New in 2.1.268: MCP server credentials and secrets—including tokens, passwords, and values resolved from `${VAR}` placeholders in MCP configs—no longer appear in error messages, server details shown by `/mcp` and `/plugin`, output from `claude mcp list`/`get`, or MCP login errors, improving security when diagnosing configuration issues.
