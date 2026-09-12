@@ -188,3 +188,7 @@ New in 2.1.261: Use --append-subagent-system-prompt-file to read the subagent sy
 - **Slash command matches**: Slash commands typed mid-prompt now show matches in a list (press Tab to expand outside fullscreen), and plugin skills are found by their bare name (2.1.265).
 
 - **Working directory persistence in non-interactive sessions**: `cd` commands now persist across turns in headless sessions (`-p` with stream-json, Agent SDK, cloud sessions), fixing shell directory resets at each user message (2.1.265).
+
+## What's new in v2.1.269
+
+**New in 2.1.269:** The `claude plugin eval` command runs a plugin's eval suite against Claude Code and returns scored, reproducible results in JSON and HTML report formats. Use `claude plugin eval --help` for details.

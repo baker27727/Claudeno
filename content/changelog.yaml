@@ -1,3 +1,20 @@
+- id: "2.1.269"
+  version: "2.1.269"
+  date: "2026-09-12"
+  entry:
+    en: "Added `claude plugin eval` for running plugin eval suites with reproducible
+      JSON+HTML results; added `/output-style [name]` for listing and switching
+      output styles across all session types; improved prompt cache handling
+      after interrupted responses; fixed terminal keyboard issues in kitty, st,
+      rxvt-unicode, and WezTerm; numerous fixes for session resumption,
+      permissions, MCP servers, and terminal rendering."
+    no: "Lagt til `claude plugin eval` for å kjøre plugins test-sekvenser med
+      reproducerbare JSON+HTML-resultater; lagt til `/output-style [name]` for å
+      liste og bytte utdatasiler på tvers av alle økttyper; forbedret håndtering
+      av ledetekst-cache etter avbrutte svar; fikset terminalkalaturproblemer i
+      kitty, st, rxvt-unicode og WezTerm; tallrike rettinger for
+      økt-gjenopptaking, tillatelser, MCP-tjenere og terminal-rendering."
+  sources: []
 - id: "2.1.267"
   version: "2.1.267"
   date: "2026-09-10"
