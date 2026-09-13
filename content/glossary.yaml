@@ -427,3 +427,43 @@
   note: "Flag to control system prompt reuse behavior; `off` renders fresh on
     every request instead of caching from conversation (new in 2.1.267); kept as
     English command identifier"
+- id: "basheditdiffenabled"
+  en: "bashEditDiffEnabled"
+  no: "bashEditDiffEnabled"
+  note: "Settings key to enable file-edit diffs in Bash tool results (new in
+    2.1.269); kept as English configuration identifier"
+- id: "claude-plugin-eval"
+  en: "claude plugin eval"
+  no: "claude plugin eval"
+  note: "CLI command to run a plugin's eval suite against Claude Code with
+    reproducible JSON + HTML scoring report (new in 2.1.269); kept as English
+    command identifier"
+- id: "/output-style"
+  en: "/output-style"
+  no: "/output-style"
+  note: "Slash command to list and switch output styles in interactive sessions
+    and over Remote Control (new in 2.1.269); kept as code identifier"
+- id: "otel_metrics_include_repository"
+  en: "OTEL_METRICS_INCLUDE_REPOSITORY"
+  no: "OTEL_METRICS_INCLUDE_REPOSITORY"
+  note: "Environment variable to tag OpenTelemetry metrics and events with vcs.*
+    repository attributes including commit refs (new in 2.1.269); kept as
+    English environment variable identifier"
+- id: "claude_code_gateway_model_discovery_timeout_ms"
+  en: "CLAUDE_CODE_GATEWAY_MODEL_DISCOVERY_TIMEOUT_MS"
+  no: "CLAUDE_CODE_GATEWAY_MODEL_DISCOVERY_TIMEOUT_MS"
+  note: "Environment variable to extend LLM gateway /v1/models discovery timeout
+    beyond 3s default (new in 2.1.269); kept as English environment variable
+    identifier"
+- id: "claude_code_workflow_max_concurrent_agents"
+  en: "CLAUDE_CODE_WORKFLOW_MAX_CONCURRENT_AGENTS"
+  no: "CLAUDE_CODE_WORKFLOW_MAX_CONCURRENT_AGENTS"
+  note: "Environment variable (1–256) to raise Workflow tool's per-run concurrent
+    agent limit for inference-bound fan-outs (new in 2.1.269); kept as English
+    environment variable identifier"
+- id: "claude_code_bg_tasks_report_running"
+  en: "CLAUDE_CODE_BG_TASKS_REPORT_RUNNING"
+  no: "CLAUDE_CODE_BG_TASKS_REPORT_RUNNING"
+  note: "Environment variable to restore old behavior where remote/headless
+    sessions report 'waiting for your input' while background agents run (new in
+    2.1.269); kept as English environment variable identifier"

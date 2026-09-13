@@ -1,3 +1,18 @@
+- id: "2.1.270"
+  version: "2.1.270"
+  date: "2026-09-13"
+  entry:
+    en: "Fixed read-only git commands in Bash unexpectedly asking for permission
+      after a session had been running for a while (regression in 2.1.269). See
+      2.1.269 release notes for major features like `claude plugin eval`,
+      `/output-style`, bash file-edit diffs, OpenTelemetry metrics tagging, and
+      numerous stability fixes."
+    no: "Fikset at skrivebeskyttede git-kommandoer i Bash uventet ba om tillatelse
+      etter at økten hadde kjørt en stund (regresjon i 2.1.269). Se
+      2.1.269-utgivelsesnotater for store funksjoner som `claude plugin eval`,
+      `/output-style`, bash-filredigeringsdiff-er, OpenTelemetry-metrikkmerking
+      og mange stabilitetsfiks."
+  sources: []
 - id: "2.1.267"
   version: "2.1.267"
   date: "2026-09-10"
