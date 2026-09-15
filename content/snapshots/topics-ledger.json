@@ -1,5 +1,141 @@
 [
   {
+    "topic": "Seeding Claude Managed Agents sessions with initial_events to skip the start call",
+    "status": "candidate",
+    "score": {
+      "frequency": 0.25,
+      "recency": 0.614,
+      "engagement": 0.5,
+      "gap": 1,
+      "total": 0.516
+    },
+    "matchedSources": [
+      "anthropic_changelog"
+    ],
+    "whyItMatters": "The changelog introduces initial_events as a session configuration feature to avoid redundant startup calls. This is a specific optimization pattern for building efficient multi-agent workflows.",
+    "firstSeen": "2026-09-15T09:49:49.576Z",
+    "lastSeen": "2026-09-15T09:49:49.576Z"
+  },
+  {
+    "topic": "Thinking block preservation and replay constraints across Claude model versions",
+    "status": "candidate",
+    "score": {
+      "frequency": 0.25,
+      "recency": 0,
+      "engagement": 0.5,
+      "gap": 1,
+      "total": 0.363
+    },
+    "matchedSources": [
+      "anthropic_changelog"
+    ],
+    "whyItMatters": "Claude Fable 5.1 introduces prefix-mismatch controls for replayed thinking blocks, preventing context corruption when system prompts or tools change. This is a concrete pattern for maintaining reasoning state in multi-turn agentic workflows.",
+    "firstSeen": "2026-09-15T09:49:49.576Z",
+    "lastSeen": "2026-09-15T09:49:49.576Z"
+  },
+  {
+    "topic": "Turn-scoped system messages with clear_at to avoid prompt cache invalidation",
+    "status": "candidate",
+    "score": {
+      "frequency": 0.25,
+      "recency": 0,
+      "engagement": 0.5,
+      "gap": 1,
+      "total": 0.363
+    },
+    "matchedSources": [
+      "anthropic_changelog"
+    ],
+    "whyItMatters": "The new mid-conversation system messages feature (clear_at: \"next_user_message\") allows per-turn reminders without accumulating context or breaking prompt cache. This directly solves a common problem in agentic workflows.",
+    "firstSeen": "2026-09-15T09:49:49.576Z",
+    "lastSeen": "2026-09-15T09:49:49.576Z"
+  },
+  {
+    "topic": "Progress updates between tool calls for transparent agentic reasoning",
+    "status": "candidate",
+    "score": {
+      "frequency": 0.25,
+      "recency": 0,
+      "engagement": 0.5,
+      "gap": 1,
+      "total": 0.363
+    },
+    "matchedSources": [
+      "anthropic_changelog"
+    ],
+    "whyItMatters": "thinking.display: \"updates\" now surfaces intermediate reasoning steps between tool calls as text, enabling real-time visibility into Claude's reasoning without blocking on full thinking blocks—valuable for user-facing agent debugging.",
+    "firstSeen": "2026-09-15T09:49:49.576Z",
+    "lastSeen": "2026-09-15T09:49:49.576Z"
+  },
+  {
+    "topic": "Computer use batch actions and per-member configuration with computer_toolset_20260801",
+    "status": "candidate",
+    "score": {
+      "frequency": 0.25,
+      "recency": 0,
+      "engagement": 0.5,
+      "gap": 1,
+      "total": 0.363
+    },
+    "matchedSources": [
+      "anthropic_changelog"
+    ],
+    "whyItMatters": "The new computer toolset supports batch actions (multiple screen interactions per turn) and per-member configuration through configs. This is a concrete way to speed up desktop automation workflows.",
+    "firstSeen": "2026-09-15T09:49:49.576Z",
+    "lastSeen": "2026-09-15T09:49:49.576Z"
+  },
+  {
+    "topic": "Browser automation with browser_toolset_20260801 for in-viewport interaction and tab management",
+    "status": "candidate",
+    "score": {
+      "frequency": 0.25,
+      "recency": 0,
+      "engagement": 0.5,
+      "gap": 1,
+      "total": 0.363
+    },
+    "matchedSources": [
+      "anthropic_changelog"
+    ],
+    "whyItMatters": "The new browser toolset works inside a browser viewport rather than full desktop, with element references, form input, tab management, and optional file upload—enabling precise in-app automation without desktop scope.",
+    "firstSeen": "2026-09-15T09:49:49.576Z",
+    "lastSeen": "2026-09-15T09:49:49.576Z"
+  },
+  {
+    "topic": "Managing Claude Code context with CLAUDE.md rules directories and symlink-based rule sharing",
+    "status": "candidate",
+    "score": {
+      "frequency": 0.25,
+      "recency": 0.971,
+      "engagement": 0.5,
+      "gap": 1,
+      "total": 0.605
+    },
+    "matchedSources": [
+      "docs_map"
+    ],
+    "whyItMatters": "Claude Code now supports `.claude/rules/` for path-specific and user-level rule organization, plus symlinks for cross-project reuse. This is a concrete pattern for scaling team-wide configurations.",
+    "firstSeen": "2026-09-15T09:49:49.576Z",
+    "lastSeen": "2026-09-15T09:49:49.576Z"
+  },
+  {
+    "topic": "Scaling agentic CI with test impact analysis to prevent Claude-driven test sprawl",
+    "status": "candidate",
+    "score": {
+      "frequency": 0.25,
+      "recency": 0.899,
+      "engagement": 0.288,
+      "gap": 1,
+      "total": 0.534
+    },
+    "matchedSources": [
+      "hn_search"
+    ],
+    "whyItMatters": "Anthropic's post on 'Agentic Coding Strains CI' (4pts, 1c on HN) describes practical techniques for managing the explosion of test runs triggered by autonomous Claude Code agents—a real operational pain point.",
+    "firstSeen": "2026-09-15T09:49:49.576Z",
+    "lastSeen": "2026-09-15T09:49:49.576Z"
+  },
+  {
     "topic": "Cross-device Claude Code coordination with Remote Control and persistent session migration",
     "status": "published",
     "score": {
