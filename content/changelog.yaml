@@ -1,3 +1,10 @@
+- id: "2.1.272"
+  version: "2.1.272"
+  date: "2026-09-15"
+  entry:
+    en: "Bug fixes and reliability improvements"
+    no: "Feilfikser og pålitelighetsforbedringer"
+  sources: []
 - id: "2.1.267"
   version: "2.1.267"
   date: "2026-09-10"
