@@ -210,3 +210,7 @@ Lagt til i 2.1.260: Bruk /diff til å åpne et diff-panel som viser ucommittede 
 ## Nytt i v2.1.267
 
 Flagget `--system-prompt-snapshot off` gjengir nå systemledeteksten frisk på hver forespørsel i stedet for å gjenbruke samtalens registrerte ledetekst, nyttig for iterering på ledeteksttekst.
+
+## Nytt i v2.1.273
+
+**Forgrening av Remote Control-økter**: Økter startet med `claude --remote-control` eller `/remote-control` fra Claude-appen kan nå forgrenes. Forgreningen kjører som en bakgrunns-økt på datamaskinen din, noe som muliggjør parallelle arbeidsstrømmer. **Forbedret innloggings-/oppgradering-meldinger**: `/login`, `/upgrade`, og `/extra-usage` bevarer nå tidligere tenkning fra samtalen i stedet for å forkaste den, og unngår unødvendige prompt-cache-omskrivinger.

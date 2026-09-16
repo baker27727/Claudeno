@@ -427,3 +427,28 @@
   note: "Flag to control system prompt reuse behavior; `off` renders fresh on
     every request instead of caching from conversation (new in 2.1.267); kept as
     English command identifier"
+- id: "x-claude-code-request-class"
+  en: "x-claude-code-request-class"
+  no: "x-claude-code-request-class"
+  note: "LLM gateway request header for request classification; opt in with
+    CLAUDE_CODE_GATEWAY_HINT_HEADERS=1"
+- id: "x-claude-code-agent-type"
+  en: "x-claude-code-agent-type"
+  no: "x-claude-code-agent-type"
+  note: "LLM gateway request header for agent type identification; opt in with
+    CLAUDE_CODE_GATEWAY_HINT_HEADERS=1"
+- id: "x-claude-code-prev-tool-durations"
+  en: "x-claude-code-prev-tool-durations"
+  no: "x-claude-code-prev-tool-durations"
+  note: "LLM gateway request header for previous tool execution durations; opt in
+    with CLAUDE_CODE_GATEWAY_HINT_HEADERS=1"
+- id: "x-claude-code-compaction"
+  en: "x-claude-code-compaction"
+  no: "x-claude-code-compaction"
+  note: "LLM gateway request header for context compaction state; opt in with
+    CLAUDE_CODE_GATEWAY_HINT_HEADERS=1"
+- id: "x-claude-code-context-compacted"
+  en: "x-claude-code-context-compacted"
+  no: "x-claude-code-context-compacted"
+  note: "LLM gateway request header indicating whether context was compacted; opt
+    in with CLAUDE_CODE_GATEWAY_HINT_HEADERS=1"

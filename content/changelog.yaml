@@ -1,3 +1,21 @@
+- id: "2.1.273"
+  version: "2.1.273"
+  date: "2026-09-16"
+  entry:
+    en: "Added MCP server disconnection notifications and automatic reconnection
+      handling; improved error messaging for Bedrock, Vertex, Foundry and
+      gateway authentication; enhanced `/login`, `/upgrade`, `/extra-usage` to
+      preserve conversation thinking; added forking support for Remote Control
+      sessions; improved Bash permission checker to reduce false denials; fixed
+      various session, artifact, and agent reliability issues."
+    no: "La til varsler om MCP-tjener-frakobling og automatisk
+      gjenopprettingshåndtering; forbedret feilmeldinger for Bedrock, Vertex,
+      Foundry og gateway-autentisering; utvidet `/login`, `/upgrade`,
+      `/extra-usage` for å bevare samtaletenkning; lagt til fork-støtte for
+      Remote Control-økter; forbedret Bash-tillatelsesprøver for å redusere
+      falske avslag; fikset ulike økt-, artefakt- og
+      agentpålitelighets-problemer."
+  sources: []
 - id: "2.1.267"
   version: "2.1.267"
   date: "2026-09-10"
