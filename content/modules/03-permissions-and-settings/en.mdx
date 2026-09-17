@@ -208,3 +208,7 @@ New in 2.1.261: bashOutputMaxChars and taskOutputMaxChars settings let you incre
 ## What's new in v2.1.267
 
 The new `maxEffortLevel` setting (top-level or per model under `modelSettings`) caps the effort level on every provider, including Bedrock, Vertex and Foundry; users can still pick a lower level. Managed settings for `allowedHttpHookUrls`, `httpHookAllowedEnvVars` and `allowedChannelPlugins` now correctly admit nothing (instead of everything) when unreadable.
+
+## What's new in v2.1.274
+
+Claude Code now shows a visible warning when memory usage is critical, with steps to free memory or restart safely. New settings keys include `sandbox.filesystem.disabled` (skip filesystem isolation while maintaining network egress control), `sandbox.network.strictAllowlist` (deny non-allowlisted hosts for sandboxed commands without prompting), and `maxEffortLevel` (cap the effort level on every provider).

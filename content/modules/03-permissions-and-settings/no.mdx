@@ -210,3 +210,7 @@ Nytt i 2.1.261: bashOutputMaxChars- og taskOutputMaxChars-innstillinger lar deg 
 ## Nytt i v2.1.267
 
 Den nye `maxEffortLevel`-innstillingen (øverst eller per modell under `modelSettings`) begrenser innsatsnivået på alle leverandører, inkludert Bedrock, Vertex og Foundry; brukere kan fortsatt velge et lavere nivå. Administrerte innstillinger for `allowedHttpHookUrls`, `httpHookAllowedEnvVars` og `allowedChannelPlugins` tillater nå korrekt ingenting (i stedet for alt) når de ikke kan leses.
+
+## Nytt i v2.1.274
+
+Claude Code viser nå en synlig advarsel når minnebruk er kritisk, med trinn for å frigjøre minne eller omstarte trygt. Nye innstillingsnøkler inkluderer `sandbox.filesystem.disabled` (hopp over isolering av filsystem mens nettverksegress kontrolleres), `sandbox.network.strictAllowlist` (nekt ikke-tillatt-listede verter for sandkasserte kommandoer uten spørsmål), og `maxEffortLevel` (begrens anstrengelsenivået på alle leverandører).

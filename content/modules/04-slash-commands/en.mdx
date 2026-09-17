@@ -211,3 +211,7 @@ Added in 2.1.260: Use /diff to open a diff panel showing uncommitted changes bes
 ## What's new in v2.1.267
 
 The `--system-prompt-snapshot off` flag now renders the system prompt fresh on every request instead of reusing the conversation's recorded prompt, useful for iterating on prompt text.
+
+## What's new in v2.1.274
+
+New improvements to slash commands: `/mcp` now provides re-authentication for MCP servers with improved error messages for permission issues; `/status` now correctly shows `apiKeyHelper` failures and gateway spend-limit support (naming cap, reset time, and operator message); `/fast on` in non-interactive sessions now respects managed fast mode policies with clearer messaging; and `/teleport` is available in cloud sessions to resume locally with `claude --teleport <session id>`.

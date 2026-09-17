@@ -120,3 +120,7 @@ MCP server configuration failures are now better reported: on Bedrock, Vertex AI
 ## What's new in v2.1.259
 
 2.1.259 introduces `managedMcpServers`: organizations can provide HTTP/SSE MCP servers to every user (same entry shape as `.mcp.json`); entries that name a command to run are skipped. The `allowedMcpServers` setting now governs only servers users add; a literal `managed-mcp.json` server your allowlist used to filter out now loads on upgrade. Use `deniedMcpServers` to keep it off.
+
+## What's new in v2.1.274
+
+MCP servers now have improved reliability: fixed HTTP+SSE servers answering first requests with 4xx errors, improved MCP 2026-07-28 protocol negotiation with direct HTTP servers by default, fixed prompts and resources not refreshing with `listChanged` notifications, and fixed tool calls with 403 `insufficient_scope` errors now naming missing permissions and pointing to `/mcp` re-authentication.

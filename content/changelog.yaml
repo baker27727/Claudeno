@@ -1,3 +1,22 @@
+- id: "2.1.274"
+  version: "2.1.274"
+  date: "2026-09-17"
+  entry:
+    en: "2.1.274 adds critical memory warnings with safe recovery steps, improves
+      MCP server reliability with fixed protocol negotiation and better error
+      handling, enhances slash command functionality for MCP re-authentication
+      and status reporting, adds new environment variables for headless session
+      control, and fixes numerous session stability issues including transcript
+      corruption, background task handling, and model persistence across
+      updates."
+    no: "2.1.274 legger til kritiske minne-advarsler med sikre gjenopprettingstrinn,
+      forbedrer MCP-tjener-pålitelighet med løst protokollforhandling og bedre
+      feilhåndtering, forbedrer slash-kommando-funksjonalitet for MCP
+      re-autentisering og statusrapportering, legger til nye miljøvariabler for
+      kontroll av hodeløs økt, og løser nombreuse økt-stabilitets-problemer
+      inkludert transskripsjonskorreksjon, bakgrunnsoppgave-håndtering, og
+      modellpersistens på tvers av oppdateringer."
+  sources: []
 - id: "2.1.267"
   version: "2.1.267"
   date: "2026-09-10"

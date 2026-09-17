@@ -161,3 +161,7 @@ Lagt til `/reload-plugins`-kommando til hodeløse økter, og gjort den tilgjenge
 ## Nytt i v2.1.267
 
 Reparert gjenopptaking av en stor økt (transkripsjon over 5 MB): parallelle verktøykall og deres hook-utdata blir ikke lenger droppet fra den gjeninnlastede samtalen. Reparert `/login` på maskiner hvis administrerte innstillinger krever innlogging via Claude apps gateway: Esc lukker nå dialogen i stedet for å ikke gjøre noe.
+
+## Nytt i v2.1.274
+
+Hodeløse økter har nå nye miljøvariabler og forbedret oppførsel: `CLAUDE_CODE_MCP_STARTUP_WAIT_MS` begrenser hvor lenge første ikke-interaktive tur venter på at MCP-tjenere skal koble til (0 = ikke vent); `CLAUDE_CODE_TOOL_MEMORY_LIMIT` aktiverer minnecgroup-støtte for Bash-kommandoer på Linux; `permission-prompts none`-flagget avslår automatisk tillatelse-spørrende handlinger på ubetjente verter. Selvvertsede løperøkter beholder nå å prøve på nytt ved 401-feil og henter nye tokens etter feil i stedet for å mislykkes hver gang.

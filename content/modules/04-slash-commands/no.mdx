@@ -210,3 +210,7 @@ Lagt til i 2.1.260: Bruk /diff til å åpne et diff-panel som viser ucommittede 
 ## Nytt i v2.1.267
 
 Flagget `--system-prompt-snapshot off` gjengir nå systemledeteksten frisk på hver forespørsel i stedet for å gjenbruke samtalens registrerte ledetekst, nyttig for iterering på ledeteksttekst.
+
+## Nytt i v2.1.274
+
+Nye forbedringer til slash-kommandoer: `/mcp` gir nå re-autentisering for MCP-tjenere med forbedret feilmeldinger for tillatelsespørsmål; `/status` viser nå riktig `apiKeyHelper`-feil og gatewayforbrug-grensestøtte (navngir grense, tilbakestillingsklokkeslett, og operatørmelding); `/fast on` i ikke-interaktive økter respekterer nå administrert hurtig-modus-policy med klarere meldinger; og `/teleport` er tilgjengelig i skyøkter for å gjenoppta lokalt med `claude --teleport <session id>`.
