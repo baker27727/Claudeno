@@ -1,0 +1,84 @@
+---
+title: "Turning Repeated Corrections into Claude Code Skills with Config Drift Patterns"
+description: "A pattern-extraction workflow for spotting when you keep correcting Claude Code the same way, and turning that repetition into a durable skill or rule instead of retyping it every session."
+discoveredAt: "2026-09-01T09:49:18.124Z"
+updatedDate: "2026-09-17T10:47:27.219Z"
+author: "Claude Code Learn"
+trendScore: 0.606
+scoreBreakdown:
+  frequency: 0.5
+  recency: 0.899
+  engagement: 0.223
+  gap: 1
+tags:
+  - "Claude Code"
+  - "Skills"
+  - "Config Drift"
+  - "CLAUDE.md"
+  - "Developer Workflow"
+  - "Automation"
+sources:
+  - "https://code.claude.com/docs/en/memory.md"
+  - "https://code.claude.com/docs/en/best-practices.md"
+  - "https://code.claude.com/docs/en/how-claude-code-works.md"
+relatedModules:
+  - "skills"
+  - "memory"
+  - "hooks"
+relatedUseCases: []
+relatedSkills: []
+draft: false
+# Verified against Claude Code 2.1.267
+---
+# Turning Repeated Corrections into Claude Code Skills with Config Drift Patterns
+
+## Quick summary
+
+If you find yourself typing the same correction to Claude Code over and over — "use tabs not spaces," "always run the linter before committing," "don't touch the migration files" — that repetition is a signal, not just noise. Config drift patterns are a way of noticing these recurring corrections and converting them into a rule, a `CLAUDE.md` entry, or a reusable Skill, so Claude follows the convention automatically next time instead of you re-explaining it. This matters now because the community is actively building tooling (drift checkers, skill managers, shared knowledge bases) around exactly this gap between "I corrected the agent" and "the agent remembered."
+
+## What's new
+
+Several independent projects surfaced in the same window point at the same workflow gap: developers manually repeat corrections to coding agents instead of codifying them once. Community tools like config-drift-checker and drydock, alongside GitHub activity such as `kilroy` (a plugin giving agents "a knowledge base shared across your team" so they "write what they learn, and get smarter every session") and `skill-manager` (which detects and disables irrelevant skills per project), show a growing ecosystem trying to close the loop between correction and codification. On the Claude Code side, the documented building blocks for this loop already exist: `CLAUDE.md` files, the `.claude/rules/` directory for organizing path-specific rules, auto memory that captures things Claude learns during a session, and Skills as a first-class mechanism for packaging reusable procedures. The Claude Platform has also shipped `ant apply`, which lets teams manage skills, agents, and memory stores as code from files in a repository with a lockfile for reproducibility — reinforcing that skills and memory are meant to be versioned artifacts, not one-off session state.
+
+## How it works
+
+The technique has three mechanical steps, all grounded in existing Claude Code primitives:
+
+1. **Detect drift.** A correction is any moment where you tell Claude Code to stop doing something it just did, or to do something a specific way going forward. Config drift tooling works by scanning session transcripts or diffs for these correction patterns — repeated phrasing like "don't," "always," "instead," or reverted commits — and flagging them as candidates for codification. This is the same signal Claude Code's own auto memory feature captures when it saves something learned mid-session; the difference is that ad-hoc, drift-based tooling looks across *multiple* sessions and files to find corrections that recur, rather than relying on a single session's memory.
+2. **Classify the correction.** Not every correction belongs in the same place. Claude Code's memory model draws this distinction explicitly: `CLAUDE.md` is suited for project context, taste, and conventions that apply broadly, while `.claude/rules/` supports path-specific rules (e.g., "in `/migrations`, never edit past files"). A correction that is really a repeatable *procedure* — a multi-step task like "run these three checks before opening a PR" — is a better fit for a Skill, since Skills package instructions (and optionally scripts) that Claude invokes deliberately, rather than a passive instruction that has to be re-read every time.
+3. **Codify and verify.** Once classified, the correction is written into the right file — a rule, a `CLAUDE.md` line, or a new Skill definition — and checked into version control alongside the code it governs. For teams, this can be automated further: `ant apply` reads resource definitions (agents, skills, memory stores) from repository files and updates them in place, writing a `claude-lock.json` so repeated runs update the same resources instead of duplicating them. This turns "I corrected the agent" into a durable, auditable artifact instead of tribal knowledge that lives only in someone's prompt history.
+
+The loop closes because Skills and rules are loaded deterministically at session start (or on invocation, for Skills), whereas a spoken correction only affects the current context window and is lost once the session ends or context is compacted.
+
+## Hands-on example
+
+Suppose you've told Claude Code three times in one week: "run `npm run lint:fix` before committing, and never edit files under `/generated`." Instead of repeating it, capture it as a project rule:
+
+```bash
+# Create a path-specific rule
+mkdir -p .claude/rules
+cat > .claude/rules/generated-and-lint.md << 'EOF'
+# Generated files and linting
+
+- Never edit files under /generated — they are build output.
+- Before committing, run: npm run lint:fix
+- If lint:fix reports unresolved errors, stop and ask before committing.
+EOF
+
+# Ask Claude Code to confirm it will follow the new rule
+claude "Read .claude/rules/generated-and-lint.md and summarize what changes going forward."
+```
+
+For a more complex, multi-step correction (e.g., "when adding a new API endpoint, also update the OpenAPI spec, add a changelog entry, and run contract tests"), package it as a Skill instead of a rule, since it's a procedure Claude should actively run rather than a constraint to keep in mind passively.
+
+## When to use it (and when not to)
+
+Use this pattern when a correction has happened more than once, when it applies across sessions (not just the current task), or when it's a multi-step procedure worth packaging once and reusing. It's especially valuable for teams, where codifying a correction into a checked-in rule or Skill means every teammate's agent benefits, not just yours.
+
+Don't over-codify: a one-off correction specific to a single task doesn't need a permanent rule, and stuffing `CLAUDE.md` with every minor preference bloats context and can make instructions harder for Claude to prioritize — the docs note oversized `CLAUDE.md` files and lost instructions after compaction as real troubleshooting scenarios. Also be cautious with automated drift-detection tooling: it can surface false patterns from coincidental phrasing, so treat its suggestions as candidates to review, not rules to auto-apply blindly. Finally, remember that `CLAUDE.md` is better for taste and context than for hard invariants — for anything safety-critical, a rule, hook, or permission setting enforced at the tool-call level is more reliable than prose the model might deprioritize.
+
+## Sources
+
+- https://code.claude.com/docs/en/memory.md
+- https://code.claude.com/docs/en/best-practices.md
+- https://code.claude.com/docs/en/how-claude-code-works.md

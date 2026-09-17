@@ -1,0 +1,110 @@
+---
+title: "Å federere Claude Code-sesjoner tvers av verktøy"
+description: "En gjennomgang av det fremvoksende mønsteret der man flytter en Claude Code-sesjon mellom terminal, web og andre CLI-agenter — hva Anthropic tilbyr innebygd (teleport, Remote Control, Compliance API) versus hva community-prosjekter forsøker å standardisere."
+discoveredAt: "2026-09-01T09:49:18.124Z"
+updatedDate: "2026-09-17T10:46:17.686Z"
+author: "Claude Code Learn"
+trendScore: 0.64
+scoreBreakdown:
+  frequency: 0.5
+  recency: 0.971
+  engagement: 0.288
+  gap: 1
+tags:
+  - "Claude Code"
+  - "session handoff"
+  - "interop"
+  - "CLI"
+  - "cloud sessions"
+  - "Remote Control"
+  - "multi-agent"
+sources:
+  - "https://code.claude.com/docs/en/claude-code-on-the-web.md"
+  - "https://code.claude.com/docs/en/remote-control.md"
+  - "https://code.claude.com/docs/en/sessions.md"
+  - "https://code.claude.com/docs/en/platforms.md"
+  - "https://code.claude.com/docs/en/mobile.md"
+relatedModules:
+  - "cli-basics"
+  - "headless-mode"
+  - "checkpointing"
+  - "mcp-servers"
+relatedUseCases: []
+relatedSkills: []
+draft: false
+# Verified against Claude Code 2.1.267
+---
+# Å federere Claude Code-sesjoner tvers av verktøy
+
+## Kort oppsummert
+
+Utviklere kjører i økende grad Claude Code på flere flater — terminal, web, VS Code, mobil — og ønsker at en sesjon skal følge med dem i stedet for å starte på nytt hver gang. Anthropic tilbyr allerede en del av dette innebygd (teleportere en skysesjon til en lokal terminal, Remote Control fra en telefon, gjenoppta sesjon fra et sammendrag), og en bølge av community-prosjekter (verktøy for sesjonsoverføring, ruting mellom flere leverandører, delte kunnskapslagre mellom agenter) forsøker å generalisere mønsteret tvers av Claude Code, Codex og andre agenter. Dette er en interoperabilitetstrend verdt å følge — ikke ennå en standard.
+
+## Hva er nytt
+
+Claude Codes egen dokumentasjon beskriver flere offisielt støttede måter å flytte en sesjon mellom kontekster på:
+
+- **Terminal → sky og tilbake**: du kan sende en lokal oppgave til et skymiljø, følge opp fra CLI-en, og hente en skysesjon tilbake til terminalen med `--teleport` (forutsatt at teleport-kravene er oppfylt).
+- **Remote Control**: koble en telefon eller en annen enhet til en kjørende lokal sesjon, følge den live, og koble til igjen etter at serveren har stoppet, med tilkoblings-/sikkerhetskontroller og registrering av Trusted Devices.
+- **Gjenoppta og forgrene sesjoner**: `sessions.md` dokumenterer å gjenoppta en sesjon (også fra et sammendrag), navngi sesjoner, forgrene en sesjon, og hvor transkripsjoner lagres — byggeklossene ethvert overføringsverktøy må forholde seg til.
+- **Compliance API-sesjonstranskripsjoner**: endepunkter for å hente ut transkripsjoner fra Claude Code- og Cowork-sesjoner (inkludert sesjoner som kjører på brukernes egne maskiner) er nå ute av beta for Enterprise-organisasjoner, noe som gir en standardisert, revisjonsklar måte å lese en sesjons historie programmatisk.
+- **`ant beta:sessions connect`** (fra Claude Platform release notes, versjon 1.32.0 av `ant`-CLI-en) kobler en terminal til en *Managed Agents*-sesjon — følg den live, send meldinger, godkjenn eller avvis verktøykall som venter på godkjenning, eller server samme visning i en nettleser med `--web`.
+
+På community-siden viser GitHub-aktivitet uavhengige forsøk på å bygge det som mangler: prosjekter som beskriver seg selv som verktøy for sesjonsoverføring, rutingsnav mellom flere leverandører (Claude Code/Codex), og delte minnelag som lar flere agent-runtimer (Claude Code, Codex, OpenCode og andre) lese og skrive til en felles kunnskapsbase tvers av sesjoner. Disse er tredjeparts, ikke en del av Claude Code selv, men de retter seg mot samme hull: det finnes ennå ingen enkelt, versjonert protokoll for å overføre en sesjons kontekst mellom vilkårlige verktøy.
+
+## Slik fungerer det
+
+Det er to distinkte mekanismer her, og det er verdt å skille dem:
+
+**1. Innebygd transport (bygget av Anthropic)**
+- En skysesjon og en lokal terminalsesjon deler samme underliggende sesjons-/transkripsjonsrepresentasjon. `--teleport` henter en skysesjons tilstand ned slik at CLI-en kan fortsette den lokalt; motsatt retning (terminal → sky) fungerer ved å sende det lokale repoet/oppgaven til et skymiljø.
+- Remote Control er en live-tilkoblingsmekanisme: en andre enhet kobler seg til *samme* kjørende sesjonsprosess i stedet for å overføre tilstand — den observerer og kan handle (godkjenne/avvise verktøykall, sende meldinger), styrt av tilkoblings-/sikkerhetsregler og eventuelt Trusted Device-registrering.
+- Å gjenoppta en sesjon rekonstruerer kontekst fra lagrede transkripsjoner, eventuelt fra et *sammendrag* i stedet for hele transkripsjonen, noe som er billigere å laste inn på nytt men gir lavere presisjon.
+- Compliance API-et eksponerer samme transkripsjonsdata som et sett med lese-endepunkter (`GET /v1/compliance/apps/sessions/local`, `.../{session_id}`, `.../{session_id}/messages`), avgrenset av en Compliance Access Key med `read:compliance_user_data` — dette er det nærmeste vi har til et dokumentert, maskinlesbart eksportformat for sesjoner i dag.
+
+**2. Tredjeparts-brobygging (community)**
+- Fordi det ikke finnes noe publisert skjema for sesjonsoverføring, fungerer disse verktøyene generelt ved å wrappe hver agents CLI, fange opp transkripsjon/tilstand der det er mulig, oversette mellom formater, og injisere konteksten på nytt (som et prompt-prefiks, en minnefil, eller en gjenopptakelses-payload) i målverktøyet.
+- Rutingsnav mellom flere leverandører ligger foran flere agent-CLI-er og avgjør hvilken backend (Claude Code, Codex osv.) som skal håndtere en gitt forespørsel, noe som krever at man normaliserer minst et minimalt felles kontekstformat tvers av leverandører.
+- Prosjekter med delt minne mellom agenter tar en annen tilnærming: i stedet for å overføre en hel sesjon, holder de et persistent lager som en hvilken som helst støttet agent leser/skriver fra ved start/slutt av en sesjon, slik at kontinuitet kommer fra et delt eksternt minne heller enn selve sesjonsoverføringen.
+
+Den felles tekniske begrensningen tvers av alt dette: sesjonstilstand inkluderer modellspesifikke artefakter (f.eks. bevarte "thinking"-blokker, cache-tilstand) som ikke nødvendigvis overføres mellom modeller eller leverandører. Anthropics egen dokumentasjon påpeker for eksempel at thinking-blokker kun er gyldige for modellen som produserte dem eller en nyere modell — en påminnelse om at "kontekst" ikke er en enkelt portabel blob, selv innenfor én leverandørs modellfamilie, langt mindre tvers av leverandører.
+
+## Prøv det selv
+
+To innebygde flyter du kan prøve i dag uten tredjepartsverktøy:
+
+```bash
+# Start en oppgave lokalt, overfør den til skyen, og fortsett deretter i terminalen igjen.
+
+# 1. Send en oppgave fra CLI-en til et skymiljø.
+claude "Refactor the auth module" --cloud
+
+# 2. Hent skysesjonen tilbake til terminalen senere for å fortsette der den slapp.
+claude --teleport <session-id>
+
+# 3. Gjenoppta en lokal sesjon fra lagret sammendrag i stedet for full historikk.
+claude --resume --from-summary <session-id>
+```
+
+For en live lese-/godkjenningsvisning av en sesjon fra en annen enhet, bruk Remote Control (`/remote-control` inne i en sesjon) for å generere en tilkobling du åpner fra en telefon eller nettleser — ingen transkripsjonsoverføring nødvendig, bare en live-tilkobling.
+
+## Når du bør bruke det (og når ikke)
+
+**Bruk innebygd overføring når:**
+- Du flytter mellom din egen terminal, sky og enheter du kontrollerer — teleport, Remote Control og gjenopptak av sesjon er dokumenterte, støttede veier.
+- Du trenger en revisjonsklar transkripsjon for compliance-formål — Compliance API-ets sesjons-endepunkter er den godkjente måten å hente ut denne dataen programmatisk.
+- Du opererer Managed Agents-sesjoner og ønsker live-tilsyn — `ant beta:sessions connect` gir deg dette uten å måtte bygge din egen bro.
+
+**Vær forsiktig med tredjeparts kryss-agent-broer når:**
+- Du er avhengig av modellspesifikk tilstand som bevarte thinking-blokker eller prompt-cache — disse overlever ofte ikke en overføring, spesielt tvers av modell- eller leverandørgrenser, og du kan tape resonneringspresisjon eller betale for en kald cache uten å merke det.
+- Prosjektet er i tidlig fase og uten versjonering — det finnes ennå ikke noe standardskjema for sesjonsoverføring, så et brobyggingsverktøys oppførsel kan endre seg eller gå i stykker mellom oppdateringer.
+- Compliance- eller dataoppbevaringskrav gjelder — å rute en sesjon gjennom et tredjeparts-nav kan flytte data utenfor organisasjonens godkjente grense, noe det innebygde Compliance API-et og Remote Controls sikkerhetskontroller spesifikt er designet for å unngå.
+
+Kort sagt: for overføring innenfor Anthropics egne flater, bruk det som er dokumentert. For overføring tvers av forskjellige agent-økosystemer, behandle community-broer som praktiske verktøy, ikke et varig grensesnitt — og verifiser hva som faktisk overlever reisen.
+
+## Kilder
+- https://code.claude.com/docs/en/claude-code-on-the-web.md
+- https://code.claude.com/docs/en/remote-control.md
+- https://code.claude.com/docs/en/sessions.md
+- https://code.claude.com/docs/en/platforms.md
+- https://code.claude.com/docs/en/mobile.md

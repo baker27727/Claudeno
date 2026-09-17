@@ -1,0 +1,110 @@
+---
+title: "Federating Claude Code Sessions Across Tools"
+description: "A look at the emerging pattern of moving a Claude Code session between terminal, web, and other CLI agents — what Anthropic ships natively (teleport, Remote Control, Compliance API) versus what community projects are trying to standardize."
+discoveredAt: "2026-09-01T09:49:18.124Z"
+updatedDate: "2026-09-17T10:46:17.686Z"
+author: "Claude Code Learn"
+trendScore: 0.64
+scoreBreakdown:
+  frequency: 0.5
+  recency: 0.971
+  engagement: 0.288
+  gap: 1
+tags:
+  - "Claude Code"
+  - "session handoff"
+  - "interop"
+  - "CLI"
+  - "cloud sessions"
+  - "Remote Control"
+  - "multi-agent"
+sources:
+  - "https://code.claude.com/docs/en/claude-code-on-the-web.md"
+  - "https://code.claude.com/docs/en/remote-control.md"
+  - "https://code.claude.com/docs/en/sessions.md"
+  - "https://code.claude.com/docs/en/platforms.md"
+  - "https://code.claude.com/docs/en/mobile.md"
+relatedModules:
+  - "cli-basics"
+  - "headless-mode"
+  - "checkpointing"
+  - "mcp-servers"
+relatedUseCases: []
+relatedSkills: []
+draft: false
+# Verified against Claude Code 2.1.267
+---
+# Federating Claude Code Sessions Across Tools
+
+## Quick summary
+
+Developers increasingly run Claude Code across several surfaces — terminal, web, VS Code, mobile — and want a session to move with them rather than restart from scratch. Anthropic already ships some of this natively (teleporting a cloud session to a local terminal, Remote Control from a phone, session resume from a summary), and a wave of community projects (session-handoff CLIs, multi-provider routing hubs, cross-agent knowledge stores) is trying to generalize the pattern across Claude Code, Codex, and other agents. This is an interop trend worth watching, not yet a standard.
+
+## What's new
+
+Claude Code's own docs describe several officially supported ways to move a session between contexts:
+
+- **Terminal → cloud and back**: you can send a local task to a cloud environment, follow up from the CLI, and pull a cloud session back down to your terminal with `--teleport` (subject to teleport requirements).
+- **Remote Control**: attach a phone or another device to a running local session, watch it live, and reconnect after the server stops, with connection/security and Trusted Device enrollment controls.
+- **Session resume and branching**: `sessions.md` documents resuming a session (including from a summary), naming sessions, branching a session, and where transcripts are stored — the building blocks any handoff tool has to interoperate with.
+- **Compliance API session transcripts**: session endpoints for retrieving Claude Code and Cowork session transcripts (including sessions running on users' machines) are now out of beta for enterprise organizations, giving a standardized, auditable way to read a session's history programmatically.
+- **`ant beta:sessions connect`** (Claude Platform release notes, v1.32.0 of the `ant` CLI) attaches a terminal to a *Managed Agents* session — follow it live, send messages, approve or deny pending tool calls, or serve the same view in a browser with `--web`.
+
+On the community side, GitHub activity shows independent attempts to build the missing glue: projects describing themselves as session-handoff tools, multi-provider routing hubs across Claude Code/Codex, and shared-memory layers that let multiple agent runtimes (Claude Code, Codex, OpenCode, and others) read and write a common knowledge base across sessions. These are third-party, not part of Claude Code itself, but they target the same gap: no single, versioned protocol yet exists for handing a session's context between arbitrary tools.
+
+## How it works
+
+Two distinct mechanisms are involved, and it's worth separating them:
+
+**1. Native transport (Anthropic-built)**
+- A cloud session and a local terminal session are both backed by the same session/transcript representation. `--teleport` pulls a cloud session's state down so the CLI can continue it locally; the reverse direction (terminal → cloud) works by sending the local repository/task to a cloud environment.
+- Remote Control is a live attach mechanism: a second device connects to the *same* running session process rather than transferring state — it observes and can act (approve/deny tool calls, send messages), gated by connection/security rules and, optionally, Trusted Device enrollment.
+- Resuming a session reconstructs context from stored transcripts, optionally from a *summary* rather than the full transcript, which is cheaper to reload but loses fidelity.
+- The Compliance API exposes this same transcript data as a set of read endpoints (`GET /v1/compliance/apps/sessions/local`, `.../{session_id}`, `.../{session_id}/messages`) scoped by a Compliance Access Key with `read:compliance_user_data` — this is the closest thing to a documented, machine-readable session export format today.
+
+**2. Third-party bridging (community)**
+- Because there's no published handoff schema, these tools generally work by wrapping each agent's CLI, capturing its transcript/state where possible, translating between formats, and re-injecting context (as a prompt prefix, memory file, or session-resume payload) into the target tool.
+- Multi-provider routing hubs sit in front of several agent CLIs and decide which backend (Claude Code, Codex, etc.) handles a given request, which requires normalizing at least a minimal shared context format across providers.
+- Shared-memory-across-agents projects take a different approach: instead of transferring a whole session, they maintain a persistent store that any supported agent reads/writes at the start/end of a session, so continuity comes from a shared external memory rather than session transfer itself.
+
+The common technical constraint across all of this: session state includes model-specific artifacts (e.g., preserved thinking blocks, cache state) that don't necessarily transfer between models or providers. Anthropic's own docs note, for example, that thinking blocks are only valid for the model that produced them or a newer one — a reminder that "context" isn't a single portable blob even within one vendor's model family, let alone across vendors.
+
+## Hands-on example
+
+Two native flows you can try today without any third-party tooling:
+
+```bash
+# Start a task locally, hand it to the cloud, then continue back in the terminal.
+
+# 1. From the CLI, send a task to a cloud environment.
+claude "Refactor the auth module" --cloud
+
+# 2. Later, pull that cloud session back down to continue where it left off.
+claude --teleport <session-id>
+
+# 3. Resume any local session from its stored summary instead of full history.
+claude --resume --from-summary <session-id>
+```
+
+For a live, read/approve view of a session from another device, use Remote Control (`/remote-control` inside a session) to generate a connection you open from a phone or browser — no transcript transfer needed, just a live attach.
+
+## When to use it (and when not to)
+
+**Use native handoff when:**
+- You're moving between your own terminal, cloud, and devices you control — teleport, Remote Control, and session resume are documented, supported paths.
+- You need an auditable transcript for compliance — the Compliance API's session endpoints are the sanctioned way to pull that data out programmatically.
+- You're operating Managed Agents sessions and want live oversight — `ant beta:sessions connect` gives you that without building your own bridge.
+
+**Be cautious with third-party cross-agent bridges when:**
+- You depend on model-specific state like preserved thinking or prompt cache — these often don't survive a handoff, especially across model or provider boundaries, and you may silently lose reasoning fidelity or pay for a cold cache.
+- The project is early-stage and unversioned — there's no standard handoff schema yet, so a bridge tool's behavior can change or break between updates.
+- Compliance or data-retention requirements apply — routing a session through a third-party hub may move data outside your organization's approved boundary, which the native Compliance API and Remote Control's security controls are specifically designed to avoid.
+
+In short: for handoff within Anthropic's own surfaces, use what's documented. For handoff across different agent ecosystems, treat community bridges as convenience tooling, not a durable interface — and verify what state actually survives the trip.
+
+## Sources
+- https://code.claude.com/docs/en/claude-code-on-the-web.md
+- https://code.claude.com/docs/en/remote-control.md
+- https://code.claude.com/docs/en/sessions.md
+- https://code.claude.com/docs/en/platforms.md
+- https://code.claude.com/docs/en/mobile.md

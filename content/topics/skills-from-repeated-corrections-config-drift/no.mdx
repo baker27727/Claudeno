@@ -1,0 +1,84 @@
+---
+title: "Å gjøre gjentatte rettelser om til Claude Code-skills med konfigurasjonsdrift-mønstre"
+description: "En arbeidsflyt for mønstergjenkjenning som fanger opp når du stadig retter Claude Code på samme måte, og gjør denne repetisjonen om til en varig skill eller regel i stedet for å skrive den på nytt hver økt."
+discoveredAt: "2026-09-01T09:49:18.124Z"
+updatedDate: "2026-09-17T10:47:27.219Z"
+author: "Claude Code Learn"
+trendScore: 0.606
+scoreBreakdown:
+  frequency: 0.5
+  recency: 0.899
+  engagement: 0.223
+  gap: 1
+tags:
+  - "Claude Code"
+  - "Skills"
+  - "Config Drift"
+  - "CLAUDE.md"
+  - "Developer Workflow"
+  - "Automation"
+sources:
+  - "https://code.claude.com/docs/en/memory.md"
+  - "https://code.claude.com/docs/en/best-practices.md"
+  - "https://code.claude.com/docs/en/how-claude-code-works.md"
+relatedModules:
+  - "skills"
+  - "memory"
+  - "hooks"
+relatedUseCases: []
+relatedSkills: []
+draft: false
+# Verified against Claude Code 2.1.267
+---
+# Å gjøre gjentatte rettelser om til Claude Code-skills med konfigurasjonsdrift-mønstre
+
+## Kort oppsummert
+
+Hvis du stadig skriver den samme rettelsen til Claude Code — «bruk tabs, ikke mellomrom», «kjør alltid linteren før commit», «ikke rør migrasjonsfilene» — er den repetisjonen et signal, ikke bare støy. Konfigurasjonsdrift-mønstre handler om å legge merke til slike gjentagende rettelser og gjøre dem om til en regel, en `CLAUDE.md`-oppføring eller en gjenbrukbar Skill, slik at Claude følger konvensjonen automatisk neste gang i stedet for at du må forklare det på nytt. Dette er aktuelt nå fordi fellesskapet aktivt bygger verktøy (drift-sjekkere, skill-managere, delte kunnskapsbaser) rundt nettopp dette gapet mellom «jeg rettet agenten» og «agenten husket det».
+
+## Hva er nytt
+
+Flere uavhengige prosjekter har dukket opp samtidig og peker på det samme arbeidsflyt-gapet: utviklere gjentar rettelser til kodeagenter manuelt i stedet for å kodifisere dem én gang. Fellesskapsverktøy som config-drift-checker og drydock, sammen med GitHub-aktivitet som `kilroy` (et plugin som gir agenter «en kunnskapsbase delt på tvers av teamet» slik at de «skriver ned det de lærer, og blir smartere for hver økt») og `skill-manager` (som oppdager og deaktiverer irrelevante skills per prosjekt), viser et voksende økosystem som forsøker å lukke sløyfen mellom rettelse og kodifisering. På Claude Code-siden finnes byggeklossene for denne sløyfen allerede: `CLAUDE.md`-filer, mappen `.claude/rules/` for å organisere stiavhengige regler, auto-minne som fanger opp ting Claude lærer underveis i en økt, og Skills som en førsteklasses mekanisme for å pakke gjenbrukbare prosedyrer. Claude Platform har også lansert `ant apply`, som lar team administrere skills, agenter og minnelagre som kode fra filer i et repository med en lockfile for reproduserbarhet — noe som understreker at skills og minne er ment å være versjonerte artefakter, ikke engangs-øktdata.
+
+## Slik fungerer det
+
+Teknikken har tre mekaniske steg, alle forankret i eksisterende Claude Code-primitiver:
+
+1. **Oppdage drift.** En rettelse er ethvert øyeblikk der du ber Claude Code slutte å gjøre noe det nettopp gjorde, eller be det gjøre noe på en bestemt måte fremover. Konfigurasjonsdrift-verktøy fungerer ved å skanne øktloggr eller diff-er etter slike rettelsesmønstre — gjentatte formuleringer som «ikke», «alltid», «i stedet», eller reverterte commits — og flagge dem som kandidater for kodifisering. Dette er samme signal som Claude Codes eget auto-minne fanger opp når det lagrer noe lært midt i en økt; forskjellen er at ad hoc, driftbasert verktøy ser på tvers av *flere* økter og filer for å finne rettelser som gjentar seg, i stedet for å stole på minnet fra én enkelt økt.
+2. **Klassifisere rettelsen.** Ikke alle rettelser hører hjemme samme sted. Claude Codes minnemodell trekker dette skillet eksplisitt: `CLAUDE.md` egner seg for prosjektkontekst, smak og konvensjoner som gjelder bredt, mens `.claude/rules/` støtter stiavhengige regler (f.eks. «i `/migrations`, aldri rediger tidligere filer»). En rettelse som egentlig er en gjentakbar *prosedyre* — en flertrinns-oppgave som «kjør disse tre sjekkene før du åpner en PR» — passer bedre som en Skill, siden Skills pakker instruksjoner (og eventuelt skript) som Claude aktivt kaller på, i stedet for en passiv instruksjon som må leses på nytt hver gang.
+3. **Kodifisere og verifisere.** Når rettelsen er klassifisert, skrives den inn i riktig fil — en regel, en `CLAUDE.md`-linje, eller en ny Skill-definisjon — og sjekkes inn i versjonskontroll sammen med koden den styrer. For team kan dette automatiseres videre: `ant apply` leser ressursdefinisjoner (agenter, skills, minnelagre) fra repository-filer og oppdaterer dem på plass, og skriver en `claude-lock.json` slik at gjentatte kjøringer oppdaterer de samme ressursene i stedet for å duplisere dem. Dette gjør «jeg rettet agenten» om til en varig, sporbar artefakt i stedet for taus kunnskap som bare lever i noens prompt-historikk.
+
+Sløyfen lukkes fordi Skills og regler lastes deterministisk ved øktstart (eller ved påkalling, for Skills), mens en muntlig rettelse kun påvirker det gjeldende kontekstvinduet og går tapt når økten avsluttes eller konteksten komprimeres.
+
+## Prøv det selv
+
+Anta at du har sagt til Claude Code tre ganger på én uke: «kjør `npm run lint:fix` før commit, og rør aldri filer under `/generated`». I stedet for å gjenta det, fanger du det opp som en prosjektregel:
+
+```bash
+# Opprett en stiavhengig regel
+mkdir -p .claude/rules
+cat > .claude/rules/generated-and-lint.md << 'EOF'
+# Genererte filer og linting
+
+- Rør aldri filer under /generated — de er byggeutdata.
+- Kjør før commit: npm run lint:fix
+- Hvis lint:fix rapporterer uløste feil, stopp og spør før du committer.
+EOF
+
+# Be Claude Code bekrefte at den følger den nye regelen
+claude "Les .claude/rules/generated-and-lint.md og oppsummer hvilke endringer som gjelder fremover."
+```
+
+For en mer sammensatt, flertrinns rettelse (f.eks. «når du legger til et nytt API-endepunkt, oppdater også OpenAPI-spesifikasjonen, legg til en changelog-oppføring, og kjør kontraktstester»), pakk den som en Skill i stedet for en regel, siden det er en prosedyre Claude bør kjøre aktivt fremfor en begrensning å huske passivt.
+
+## Når du bør bruke det (og når ikke)
+
+Bruk dette mønsteret når en rettelse har skjedd mer enn én gang, når den gjelder på tvers av økter (ikke bare gjeldende oppgave), eller når det er en flertrinns prosedyre som er verdt å pakke én gang og gjenbruke. Det er spesielt verdifullt for team, der kodifisering av en rettelse til en innsjekket regel eller Skill betyr at hele teamets agenter drar nytte av den, ikke bare din egen.
+
+Ikke overkodifiser: en engangsrettelse spesifikk for én enkelt oppgave trenger ikke en permanent regel, og å fylle `CLAUDE.md` med hver eneste småpreferanse blåser opp konteksten og kan gjøre det vanskeligere for Claude å prioritere instruksjoner — dokumentasjonen nevner overdimensjonerte `CLAUDE.md`-filer og tapte instruksjoner etter komprimering som reelle feilsøkingsscenarioer. Vær også forsiktig med automatisert drift-deteksjonsverktøy: det kan avsløre falske mønstre fra tilfeldige formuleringer, så behandle forslagene som kandidater til gjennomgang, ikke regler som skal appliseres blindt. Til sist: husk at `CLAUDE.md` egner seg bedre for smak og kontekst enn for harde invarianter — for alt som er sikkerhetskritisk, er en regel, hook eller tillatelsesinnstilling håndhevet på verktøykall-nivå mer pålitelig enn prosa modellen kan nedprioritere.
+
+## Kilder
+
+- https://code.claude.com/docs/en/memory.md
+- https://code.claude.com/docs/en/best-practices.md
+- https://code.claude.com/docs/en/how-claude-code-works.md
