@@ -188,3 +188,7 @@ New in 2.1.261: Use --append-subagent-system-prompt-file to read the subagent sy
 - **Slash command matches**: Slash commands typed mid-prompt now show matches in a list (press Tab to expand outside fullscreen), and plugin skills are found by their bare name (2.1.265).
 
 - **Working directory persistence in non-interactive sessions**: `cd` commands now persist across turns in headless sessions (`-p` with stream-json, Agent SDK, cloud sessions), fixing shell directory resets at each user message (2.1.265).
+
+## What's new in v2.1.276
+
+New in 2.1.276: Session resumption (`--resume`) is now more robust, handling previously problematic transcript entries like malformed task reminders and @-file attachments. The resume picker preview and background agent resumption also work reliably with corrupted history. Fixed a regression in --continue that was dropping earlier thinking from conversations when built-in tools were disabled server-side.

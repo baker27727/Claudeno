@@ -1,3 +1,20 @@
+- id: "2.1.276"
+  version: "2.1.276"
+  date: "2026-09-18"
+  entry:
+    en: "Version 2.1.276 fixes a 2.1.275 regression where requests failed with a 400
+      error when ANTHROPIC_BASE_URL pointed to a proxy or gateway. This release
+      also includes numerous improvements to artifact handling, memory
+      management, plugin deployment, and VS Code integration—including better
+      support for screen readers, improved session resumption, and enhanced
+      permission and workflow management."
+    no: "Versjon 2.1.276 fikser en 2.1.275-regresjon der forespørsler mislyktes med
+      en 400-feil når ANTHROPIC_BASE_URL pekte til en proxy eller gateway. Denne
+      utgivelsen inkluderer også flere forbedringer av artefakthåndtering,
+      minnebehandling, plugin-distribusjon og VS Code-integrasjon – inkludert
+      bedre skjermleser-støtte, forbedret økt-gjenopptaking og forbedret
+      tillatelse og arbeidsflytbehandling."
+  sources: []
 - id: "2.1.267"
   version: "2.1.267"
   date: "2026-09-10"
