@@ -105,3 +105,7 @@ leser ved behov.
 ## Nytt i v2.1.232
 
 **Økt-isolasjon i samarbeidsmodus (v2.1.232):** Samarbeidskter holder nå brukeromsminne-filer private: eksterne @-import fra CLAUDE.md-lignende filer blir ikke lenger innlagt i delte samtaler, noe som bevarer grensen mellom tvers-økt-kontekst og lokal-økt-kontekst.
+
+## Nytt i v2.1.278
+
+Claude Code bruker nå server-side auto mode-klassifisering som standard på Claude API og Enterprise-brukere, og på Bedrock, Vertex, Foundry og gateways. Dette eliminerer klassifikasjonsgebyrene. Sett `CLAUDE_CODE_AUTO_MODE_SERVER=0` for å velge bort på Bedrock, Vertex, Foundry og gateways. En ny rad i `/status` viser om denne øktas auto mode-klassifiserer kjører på serveren, med en advarsel hvis et fakturert tilbakefall oppstår. Se https://code.claude.com/docs/en/auto-mode-classifier-billing for detaljer.

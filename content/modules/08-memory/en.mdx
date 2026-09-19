@@ -105,3 +105,7 @@ on demand.
 ## What's new in v2.1.232
 
 **Session isolation in cowork mode (v2.1.232):** Cowork sessions now keep user-scope memory files private: external @-imports from CLAUDE.md-style files no longer inline into shared conversations, preserving the boundary between cross-session and local-session context.
+
+## What's new in v2.1.278
+
+Claude Code now defaults to server-side auto mode classification on Claude API and Enterprise users, and on Bedrock, Vertex, Foundry and gateways. This eliminates classifier overhead charges. Set `CLAUDE_CODE_AUTO_MODE_SERVER=0` to opt out on Bedrock, Vertex, Foundry and gateways. A new `/status` row displays whether this session's auto mode classifier runs on the server, with a warning if a billed fallback occurs. See https://code.claude.com/docs/en/auto-mode-classifier-billing for details.
