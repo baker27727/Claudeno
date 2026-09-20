@@ -105,3 +105,9 @@ on demand.
 ## What's new in v2.1.232
 
 **Session isolation in cowork mode (v2.1.232):** Cowork sessions now keep user-scope memory files private: external @-imports from CLAUDE.md-style files no longer inline into shared conversations, preserving the boundary between cross-session and local-session context.
+
+## What's new in v2.1.278
+
+Claude Code now supports reading AGENTS.md for project instructions when no CLAUDE.md exists in your project (available on Anthropic API and Enterprise; not yet on Bedrock, Vertex or Foundry). You can modify AGENTS.md under 'Project instructions' in `/config`.
+
+Auto mode now defaults to the server-side classifier on Claude API and Enterprise users, as well as on Bedrock, Vertex, Foundry and gateways. This eliminates charges for classifier overhead. Use `CLAUDE_CODE_AUTO_MODE_SERVER=0` to opt out on Bedrock, Vertex, Foundry and gateways. You can view whether your session's auto mode runs on the server via the new 'Auto mode server' row in `/status`.

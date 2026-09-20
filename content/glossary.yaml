@@ -427,3 +427,14 @@
   note: "Flag to control system prompt reuse behavior; `off` renders fresh on
     every request instead of caching from conversation (new in 2.1.267); kept as
     English command identifier"
+- id: "agents.md"
+  en: "AGENTS.md"
+  no: "AGENTS.md"
+  note: "Project instructions file read by Claude Code when no CLAUDE.md exists in
+    the project (new in 2.1.278); kept as English filename identifier"
+- id: "claude_code_auto_mode_server"
+  en: "CLAUDE_CODE_AUTO_MODE_SERVER"
+  no: "CLAUDE_CODE_AUTO_MODE_SERVER"
+  note: "Environment variable to opt out of server-side auto mode classifier on
+    Bedrock, Vertex, Foundry and gateways (new in 2.1.278); kept as English
+    environment variable identifier"

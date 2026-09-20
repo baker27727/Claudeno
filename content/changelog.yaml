@@ -1,3 +1,20 @@
+- id: "2.1.278"
+  version: "2.1.278"
+  date: "2026-09-20"
+  entry:
+    en: "Version 2.1.278 introduces AGENTS.md support for project instructions on
+      Anthropic API and Enterprise Claude Code, allowing Claude to read
+      AGENTS.md instead of CLAUDE.md when no CLAUDE.md exists in the project.
+      Additionally, auto mode now defaults to the server-side classifier on
+      Claude API, Enterprise, Bedrock, Vertex, Foundry and gateways, eliminating
+      classifier overhead charges."
+    no: "Versjon 2.1.278 introduserer AGENTS.md-støtte for prosjektinstruksjoner på
+      Anthropic API og Enterprise Claude Code, slik at Claude kan lese AGENTS.md
+      i stedet for CLAUDE.md når ingen CLAUDE.md finnes i prosjektet. I tillegg
+      bruker auto-modus nå som standard klassifisereren på serveren på Claude
+      API, Enterprise, Bedrock, Vertex, Foundry og gateways, noe som eliminerer
+      gebyrene for klassifiserer-overhead."
+  sources: []
 - id: "2.1.267"
   version: "2.1.267"
   date: "2026-09-10"

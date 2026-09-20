@@ -105,3 +105,9 @@ leser ved behov.
 ## Nytt i v2.1.232
 
 **Økt-isolasjon i samarbeidsmodus (v2.1.232):** Samarbeidskter holder nå brukeromsminne-filer private: eksterne @-import fra CLAUDE.md-lignende filer blir ikke lenger innlagt i delte samtaler, noe som bevarer grensen mellom tvers-økt-kontekst og lokal-økt-kontekst.
+
+## Nytt i v2.1.278
+
+Claude Code støtter nå lesing av AGENTS.md for prosjektinstruksjoner når ingen CLAUDE.md finnes i prosjektet ditt (tilgjengelig på Anthropic API og Enterprise; ikke ennå på Bedrock, Vertex eller Foundry). Du kan endre AGENTS.md under 'Prosjektinstruksjoner' i `/config`.
+
+Auto-modus bruker nå som standard klassifisereren på serveren for Claude API og Enterprise-brukere, samt på Bedrock, Vertex, Foundry og gateways. Dette eliminerer gebyrer for klassifiserer-overhead. Bruk `CLAUDE_CODE_AUTO_MODE_SERVER=0` for å velge bort på Bedrock, Vertex, Foundry og gateways. Du kan se om øktens auto-modus kjører på serveren via den nye 'Auto mode server'-raden i `/status`.
