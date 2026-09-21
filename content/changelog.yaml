@@ -1,3 +1,18 @@
+- id: "2.1.278"
+  version: "2.1.278"
+  date: "2026-09-21"
+  entry:
+    en: "Auto mode now defaults to server-side classifier on Claude API and
+      Enterprise users (and on Bedrock, Vertex, Foundry, and gateways),
+      eliminating classifier overhead charges. The /status command now shows an
+      'Auto mode server' row indicating whether this session's classifier runs
+      on the server."
+    no: "Auto-modus bruker nå server-siden klassifikator som standard for Claude
+      API- og Enterprise-brukere (og på Bedrock, Vertex, Foundry og gateways),
+      noe som eliminerer klassifikatorkostnader. Kommandoen /status viser nå en
+      «Auto mode server»-rad som indikerer om økten sin klassifikator kjører på
+      serveren."
+  sources: []
 - id: "2.1.267"
   version: "2.1.267"
   date: "2026-09-10"

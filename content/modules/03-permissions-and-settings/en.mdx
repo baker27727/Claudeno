@@ -208,3 +208,7 @@ New in 2.1.261: bashOutputMaxChars and taskOutputMaxChars settings let you incre
 ## What's new in v2.1.267
 
 The new `maxEffortLevel` setting (top-level or per model under `modelSettings`) caps the effort level on every provider, including Bedrock, Vertex and Foundry; users can still pick a lower level. Managed settings for `allowedHttpHookUrls`, `httpHookAllowedEnvVars` and `allowedChannelPlugins` now correctly admit nothing (instead of everything) when unreadable.
+
+## What's new in v2.1.278
+
+Added in 2.1.278: Auto mode defaults to server-side classifier on Claude API, Enterprise, Bedrock, Vertex, Foundry, and gateways—no classifier overhead charges. Use `CLAUDE_CODE_AUTO_MODE_SERVER=0` to opt out on Bedrock, Vertex, Foundry, and gateways. Check the /status command's new 'Auto mode server' row to see if your session's classifier runs server-side.

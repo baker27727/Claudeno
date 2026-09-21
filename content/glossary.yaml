@@ -427,3 +427,14 @@
   note: "Flag to control system prompt reuse behavior; `off` renders fresh on
     every request instead of caching from conversation (new in 2.1.267); kept as
     English command identifier"
+- id: "auto-mode-server-side-classifier"
+  en: "auto mode server-side classifier"
+  no: "server-siden klassifikator for auto-modus"
+  note: "Feature allowing auto mode to run on the server without incurring
+    classifier overhead charges (new in 2.1.278)"
+- id: "claude_code_auto_mode_server"
+  en: "CLAUDE_CODE_AUTO_MODE_SERVER"
+  no: "CLAUDE_CODE_AUTO_MODE_SERVER"
+  note: "Environment variable to opt out of server-side auto mode classifier on
+    Bedrock, Vertex, Foundry and gateways (new in 2.1.278); kept as English
+    environment variable identifier"
