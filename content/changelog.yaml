@@ -1,3 +1,15 @@
+- id: "2.1.278"
+  version: "2.1.278"
+  date: "2026-09-22"
+  entry:
+    en: "Auto mode now defaults to server-side classifier for Claude API and
+      Enterprise users, which does not charge for classifier overhead. Session
+      status shows whether auto mode runs on the server."
+    no: "Auto-modus bruker nå som standard klassifikatoren på serveren for Claude
+      API- og Enterprise-brukere, noe som ikke belastes for
+      klassifikatoroverhead. Øktstatusen viser om auto-modus kjører på
+      serveren."
+  sources: []
 - id: "2.1.267"
   version: "2.1.267"
   date: "2026-09-10"
