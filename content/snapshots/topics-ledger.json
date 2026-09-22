@@ -1,5 +1,143 @@
 [
   {
+    "topic": "Progress updates between tool calls with thinking.display: 'updates'",
+    "status": "candidate",
+    "score": {
+      "frequency": 0.25,
+      "recency": 0,
+      "engagement": 0.5,
+      "gap": 1,
+      "total": 0.363
+    },
+    "matchedSources": [
+      "anthropic_changelog"
+    ],
+    "whyItMatters": "Claude Fable 5.1 now streams short reasoning updates between tool calls as text, not full thinking blocks, making intermediate reasoning transparent to users and systems—useful for building trust and debugging in agentic workflows.",
+    "firstSeen": "2026-09-22T09:42:36.422Z",
+    "lastSeen": "2026-09-22T09:42:36.422Z"
+  },
+  {
+    "topic": "Detecting intent conflicts between parallel Claude Code agents with Foremerge",
+    "status": "candidate",
+    "score": {
+      "frequency": 0.25,
+      "recency": 0.9,
+      "engagement": 0.605,
+      "gap": 1,
+      "total": 0.614
+    },
+    "matchedSources": [
+      "hn_search"
+    ],
+    "whyItMatters": "When multiple Claude agents edit the same codebase in parallel, Foremerge can catch conflicting intents before merge—an emerging pattern for scaling autonomous development across team-sized agent fleets.",
+    "firstSeen": "2026-09-22T09:42:36.422Z",
+    "lastSeen": "2026-09-22T09:42:36.422Z"
+  },
+  {
+    "topic": "Compacting conversations on-demand with signed compaction blocks in Claude API",
+    "status": "candidate",
+    "score": {
+      "frequency": 0.25,
+      "recency": 0.4,
+      "engagement": 0.5,
+      "gap": 1,
+      "total": 0.463
+    },
+    "matchedSources": [
+      "anthropic_changelog"
+    ],
+    "whyItMatters": "The Messages API now lets developers compact conversations mid-session with cryptographic blocks that preserve recent turns word-for-word and maintain thinking block validity—a concrete pattern for managing context in long-running agentic systems without losing reasoning state.",
+    "firstSeen": "2026-09-22T09:42:36.421Z",
+    "lastSeen": "2026-09-22T09:42:36.421Z"
+  },
+  {
+    "topic": "Per-message effort levels for controlling Claude Opus 5 reasoning depth mid-conversation",
+    "status": "candidate",
+    "score": {
+      "frequency": 0.25,
+      "recency": 0,
+      "engagement": 0.5,
+      "gap": 1,
+      "total": 0.363
+    },
+    "matchedSources": [
+      "anthropic_changelog"
+    ],
+    "whyItMatters": "Turn-scoped system messages with output_config.effort let teams change Claude's reasoning intensity between turns while keeping the prompt cache warm, enabling dynamic cost-capability tradeoffs in long-running workflows without losing context.",
+    "firstSeen": "2026-09-22T09:42:36.421Z",
+    "lastSeen": "2026-09-22T09:42:36.421Z"
+  },
+  {
+    "topic": "Browser use tool (browser_toolset_20260801) for in-app automation without desktop control",
+    "status": "candidate",
+    "score": {
+      "frequency": 0.25,
+      "recency": 0,
+      "engagement": 0.5,
+      "gap": 1,
+      "total": 0.363
+    },
+    "matchedSources": [
+      "anthropic_changelog"
+    ],
+    "whyItMatters": "Claude can now drive browser UIs via accessibility trees and form references instead of full screenshots, enabling safe automation inside hosted web applications—a practical pattern for testing, data extraction, and form filling without requiring desktop access.",
+    "firstSeen": "2026-09-22T09:42:36.421Z",
+    "lastSeen": "2026-09-22T09:42:36.421Z"
+  },
+  {
+    "topic": "Turn-scoped system messages with clear_at for single-turn reminders without cache invalidation",
+    "status": "candidate",
+    "score": {
+      "frequency": 0.25,
+      "recency": 0,
+      "engagement": 0.5,
+      "gap": 1,
+      "total": 0.363
+    },
+    "matchedSources": [
+      "anthropic_changelog"
+    ],
+    "whyItMatters": "Role: system messages can now have clear_at: 'next_user_message' to auto-clear after one turn, enabling per-turn context (guardrails, reminders) without accumulating prompt cache overhead—useful for cost-conscious multi-turn agents.",
+    "firstSeen": "2026-09-22T09:42:36.421Z",
+    "lastSeen": "2026-09-22T09:42:36.421Z"
+  },
+  {
+    "topic": "Model routing based on prompt intent for Claude Code (haiku/sonnet/opus selection)",
+    "status": "candidate",
+    "score": {
+      "frequency": 0.5,
+      "recency": 0.971,
+      "engagement": 0.223,
+      "gap": 1,
+      "total": 0.624
+    },
+    "matchedSources": [
+      "hn_search",
+      "github_search"
+    ],
+    "whyItMatters": "Community tools (jev-router, auto-model-router) now route Claude Code prompts to cheaper or more powerful models based on task classification, enabling cost optimization without manual model selection—a pattern for efficient agentic workflows.",
+    "firstSeen": "2026-09-22T09:42:36.421Z",
+    "lastSeen": "2026-09-22T09:42:36.421Z"
+  },
+  {
+    "topic": "Semantic session archival for Claude Code (version control for agentic conversations)",
+    "status": "candidate",
+    "score": {
+      "frequency": 0.5,
+      "recency": 0.9,
+      "engagement": 1,
+      "gap": 1,
+      "total": 0.8
+    },
+    "matchedSources": [
+      "hn_search",
+      "github_search"
+    ],
+    "whyItMatters": "Tools like Gobag and phistory now capture and version system prompts and full conversation snapshots from Claude Code sessions, enabling reproducibility audits and drift detection—critical for governance in production agentic systems.",
+    "firstSeen": "2026-09-22T09:42:36.421Z",
+    "lastSeen": "2026-09-22T09:42:36.421Z"
+  },
+  {
     "topic": "Cross-device Claude Code coordination with Remote Control and persistent session migration",
     "status": "published",
     "score": {
