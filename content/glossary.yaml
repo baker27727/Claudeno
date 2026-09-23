@@ -427,3 +427,14 @@
   note: "Flag to control system prompt reuse behavior; `off` renders fresh on
     every request instead of caching from conversation (new in 2.1.267); kept as
     English command identifier"
+- id: "claude-opus-5.5"
+  en: "Claude Opus 5.5"
+  no: "Claude Opus 5.5"
+  note: "Default Opus model as of 2.1.280, featuring 1M context and $4/$20 per
+    Mtok pricing with $0.20/Mtok cache reads"
+- id: "claude_code_max_mcp_description_length"
+  en: "CLAUDE_CODE_MAX_MCP_DESCRIPTION_LENGTH"
+  no: "CLAUDE_CODE_MAX_MCP_DESCRIPTION_LENGTH"
+  note: "Environment variable to customize the 2,048-character cap on MCP tool
+    descriptions and server instructions (new in 2.1.280); kept as English
+    environment variable identifier"

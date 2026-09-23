@@ -1,3 +1,26 @@
+- id: "2.1.280"
+  version: "2.1.280"
+  date: "2026-09-23"
+  entry:
+    en: "Claude Code 2.1.280 introduces Claude Opus 5.5 as the new default Opus
+      model with 1M context and improved pricing. This release includes expanded
+      mouse support for fullscreen mode, new environment variable
+      `CLAUDE_CODE_MAX_MCP_DESCRIPTION_LENGTH` to customize MCP tool
+      descriptions, and numerous critical fixes for auto mode stability, dialog
+      navigation, prompt caching in forked subagents, and background session
+      reliability. Improvements to `/permissions` focus handling and
+      OpenTelemetry event reporting provide better administrative control and
+      debugging capabilities."
+    no: "Claude Code 2.1.280 introduserer Claude Opus 5.5 som den nye
+      standardmodellen for Opus med 1M kontekst og forbedret prising. Denne
+      versjonen inneholder utvidet musestøtte for fullskjermmodus, ny
+      miljøvariabel `CLAUDE_CODE_MAX_MCP_DESCRIPTION_LENGTH` for å tilpasse
+      MCP-verktøybeskrivelser, og mange kritiske rettelser for
+      auto-modussstabilitet, dialognavigasjon, prompt-caching i forgreinede
+      underagenter og pålitelighet for bakgrunnsøkter. Forbedringer av
+      fokushåndtering i `/permissions` og OpenTelemetry-hendelsesrapportering
+      gir bedre administrativ kontroll og feilsøkingsmuligheter."
+  sources: []
 - id: "2.1.267"
   version: "2.1.267"
   date: "2026-09-10"

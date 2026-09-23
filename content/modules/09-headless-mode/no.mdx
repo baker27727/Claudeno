@@ -161,3 +161,7 @@ Lagt til `/reload-plugins`-kommando til hodeløse økter, og gjort den tilgjenge
 ## Nytt i v2.1.267
 
 Reparert gjenopptaking av en stor økt (transkripsjon over 5 MB): parallelle verktøykall og deres hook-utdata blir ikke lenger droppet fra den gjeninnlastede samtalen. Reparert `/login` på maskiner hvis administrerte innstillinger krever innlogging via Claude apps gateway: Esc lukker nå dialogen i stedet for å ikke gjøre noe.
+
+## Nytt i v2.1.280
+
+Forbedret pålitelighet: fikset et problem der gjenopptatte underagenter som forgrenes gjenoppbygget verktøylisten i stedet for å gjenbruke den cachelagrede, som brøt prompt-caching. Bakgrunnsøkter avsluttes nå rent når Ctrl+C trykkes to ganger, og ufullstendige bakgrunnsagenter starter ikke lenger uventede modelldreier før brukerinput.
