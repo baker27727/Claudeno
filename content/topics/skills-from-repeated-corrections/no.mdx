@@ -1,0 +1,91 @@
+---
+title: "Gjør gjentatte rettelser om til Claude Code-skills"
+description: "Et mønster for å oppdage når du stadig retter Claude Code på samme måte, og gjøre denne \"konfigurasjonsdriften\" om til en varig regel eller skill i stedet for å gjenta rettelsen for alltid."
+discoveredAt: "2026-09-01T09:49:18.124Z"
+updatedDate: "2026-09-24T10:54:19.031Z"
+author: "Claude Code Learn"
+trendScore: 0.606
+scoreBreakdown:
+  frequency: 0.5
+  recency: 0.899
+  engagement: 0.223
+  gap: 1
+tags:
+  - "Claude Code"
+  - "skills"
+  - "CLAUDE.md"
+  - "memory"
+  - "developer workflow"
+  - "configuration drift"
+sources:
+  - "https://code.claude.com/docs/en/memory.md"
+  - "https://code.claude.com/docs/en/best-practices.md"
+  - "https://code.claude.com/docs/en/features-overview.md"
+relatedModules:
+  - "skills"
+  - "memory"
+  - "hooks"
+  - "subagents"
+relatedUseCases: []
+relatedSkills: []
+draft: false
+# Verified against Claude Code 2.1.267
+---
+## Kort oppsummert
+
+Hvis du stadig skriver den samme rettelsen til Claude Code igjen og igjen — «bruk `const`, ikke `var`», «kjør alltid linteren før commit», «vi bruker tabs her» — er det et signal, ikke bare en irritasjon. Hver gjentatte rettelse er et lite tegn på «konfigurasjonsdrift» mellom det Claude antar og hvordan prosjektet ditt faktisk fungerer. I stedet for å rette det for alltid, kan du fange mønsteret én gang som en regel i `CLAUDE.md` eller som en gjenbrukbar skill, slik at Claude bruker det automatisk fra da av.
+
+## Hva er nytt
+
+En rekke community-verktøy og diskusjoner (et HN-innlegg om å gjøre gjentatte rettelser av kodeagenter om til regler/skills, samt prosjekter som config-drift-checker og drydock) peker på samme observasjon: utviklere gjentar manuelt de samme rettelsene til AI-kodeagenter økt etter økt i stedet for å kodifisere dem. Dette er ikke en offisiell funksjonslansering fra Anthropic — det er et arbeidsmønster som har vokst frem rundt Claude Codes eksisterende primitiver for minne og skills. Claude Code har allerede byggeklossene for dette: `CLAUDE.md`-filer, stiavhengige regler under `.claude/rules/`, et auto-minnesystem som kan lagre observasjoner underveis i en økt, og installerbare skills. Det nye er den eksplisitte rammingen av «gjentatt rettelse» som utløseren for når du skal bruke hvilken mekanisme.
+
+## Slik fungerer det
+
+Mekanismen bak bygger på tre eksisterende primitiver i Claude Code, brukt i rekkefølge:
+
+1. **Oppdag drift.** Konfigurasjonsdrift betyr her et gap mellom Claudes standardoppførsel (eller nåværende minne) og de faktiske konvensjonene i kodebasen din. Signalet er atferdsmessig: du gir samme rettelse mer enn én gang, i samme eller ulike økter.
+2. **Klassifiser rettelsen.** Ikke alle rettelser hører hjemme samme sted:
+   - Et kort, stående faktum om prosjektet («vi bruker pnpm, ikke npm») hører hjemme i `CLAUDE.md`, filen Claude Code laster automatisk inn i konteksten for hver økt i den mappen.
+   - En rettelse som bare gjelder visse filer eller mapper (f.eks. «alle filer under `api/` må ha en OpenAPI-kommentarblokk») hører hjemme i en stiavhengig regel under `.claude/rules/`, som kun lastes når Claude berører matchende stier — dette holder den alltid-lastede konteksten mindre.
+   - En rettelse som beskriver en flerstegsprosedyre Claude bør kjøre gjentatte ganger (f.eks. «når du legger til en migrasjon, gjør X, så Y, så Z») er en kandidat for en **skill**: et pakket, kallbart sett med instruksjoner (og eventuelt skript) som Claude laster ved behov i stedet for hver eneste tur.
+   - En engangsobservasjon Claude la merke til midt i en økt, men som ennå ikke er bekreftet som en stående regel, kan fanges av **auto-minne**, som du senere kan gjennomgå og forfremme til `CLAUDE.md` via `/memory`.
+3. **Skriv det én gang, verifiser at det lastes.** For `CLAUDE.md` og regler er korrekthet avgjørende: frontmatter i regler og sti-mønstre avgjør når instruksjonen faktisk gjelder. For skills avgjør pakkingen (navn, beskrivelse og utløser) om Claude plukker opp skillen på riktig tidspunkt. I alle tilfeller er målet at kontekstkostnaden betales én gang (som dokumenterte instruksjoner) i stedet for gjentatte ganger (som tokens brukt på å forklare samme rettelse på nytt i hver økt).
+
+Dette gjør en tilfeldig vane (skriv rettelsen på nytt) om til en vedlikeholdsoppgave (rediger regelfilen eller skill-definisjonen), som er lettere å gjennomgå, dele på tvers av team, og holde i versjonskontroll sammen med koden den styrer.
+
+## Prøv det selv
+
+En typisk løkke ser slik ut. Legg først merke til den gjentatte rettelsen på tvers av økter:
+
+```
+# Økt 1
+Du: "Ikke bruk `any` i TypeScript, legg til eksplisitte typer."
+
+# Økt 3, annen funksjon
+Du: "Samme som sist — ingen `any`, legg til ordentlige typer her også."
+```
+
+Når du ser mønsteret, kodifiser det i stedet for å gjenta det — enten som en prosjektregel:
+
+```markdown
+<!-- .claude/rules/typescript-style.md -->
+---
+paths: ["**/*.ts", "**/*.tsx"]
+---
+Bruk aldri `any`. Foretrekk eksplisitte interfaces eller generics.
+Hvis en type virkelig er ukjent, bruk `unknown` og snevre den inn.
+```
+
+eller, hvis rettelsen egentlig er en flerstegsarbeidsflyt (f.eks. «når du endrer en offentlig API-type, oppdater også endringsloggen og øk pakkeversjonen»), pakk den som en skill Claude kan kalle ved navn når scenariet dukker opp igjen. Uansett, kjør `/memory` etterpå for å bekrefte at instruksjonen er lastet, og sjekk at den faktisk endrer Claudes oppførsel på neste tilsvarende oppgave.
+
+## Når du bør bruke det (og når ikke)
+
+Bruk dette mønsteret når en rettelse har gjentatt seg minst to ganger og er stabil — altså at den reflekterer en reell, varig konvensjon snarere enn en engangspreferanse for én enkelt PR. Det passer godt for stilregler, stiavhengige konvensjoner og flerstegsprosedyrer som går igjen på tvers av funksjoner.
+
+Ikke overbruk det: å forfremme hver eneste rettelse til `CLAUDE.md` gjør konteksten som lastes i hver økt unødig stor, og Anthropics egen veiledning påpeker at en `CLAUDE.md` som blir for stor, blir et feilsøkingsproblem i seg selv. Foretrekk stiavhengige regler fremfor globale når rettelsen bare gjelder deler av kodebasen, og foretrekk en skill fremfor en regel når rettelsen egentlig er en prosedyre snarere enn et faktum. Vær også forsiktig med å fange opp kontekstspesifikke rettelser («bare for denne ene migrasjonen») via auto-minne — å forfremme disse til stående regler kan slå feil ut på urelatert arbeid senere. Til slutt: dette er en arbeidsdisiplin, ikke en ferdig Anthropic-funksjon med eget grensesnitt — det finnes ingen automatisert «driftdetektor» innebygd i Claude Code selv; oppdagelsessteget er fortsatt manuelt.
+
+## Kilder
+
+- https://code.claude.com/docs/en/memory.md
+- https://code.claude.com/docs/en/best-practices.md
+- https://code.claude.com/docs/en/features-overview.md

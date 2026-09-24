@@ -1,0 +1,98 @@
+---
+title: "Federating Claude Code Sessions Across Tools: Handoff and Context Bridging"
+description: "A look at the emerging pattern of moving a live coding-agent session between Claude Code, Codex, and other CLIs or interfaces, and what Anthropic's own remote-control and session tooling already supports."
+discoveredAt: "2026-09-01T09:49:18.124Z"
+updatedDate: "2026-09-24T10:53:19.540Z"
+author: "Claude Code Learn"
+trendScore: 0.64
+scoreBreakdown:
+  frequency: 0.5
+  recency: 0.971
+  engagement: 0.288
+  gap: 1
+tags:
+  - "Claude Code"
+  - "interoperability"
+  - "session management"
+  - "MCP"
+  - "remote control"
+  - "multi-agent"
+sources:
+  - "https://code.claude.com/docs/en/remote-control.md"
+  - "https://code.claude.com/docs/en/sessions.md"
+  - "https://code.claude.com/docs/en/vs-code.md"
+  - "https://code.claude.com/docs/en/platforms.md"
+  - "https://github.com/Eden-Sun/agents-manager"
+  - "https://github.com/atretyak1985/swarmery"
+  - "https://github.com/yanhs/agentdeck"
+  - "https://github.com/thorwhalen/crowsnest"
+  - "https://useax.dev/"
+relatedModules:
+  - "cli-basics"
+  - "checkpointing"
+  - "mcp-servers"
+  - "headless-mode"
+relatedUseCases:
+  - "project-management-with-claude"
+relatedSkills: []
+draft: false
+# Verified against Claude Code 2.1.267
+---
+## Quick summary
+
+A pattern is emerging around Claude Code: instead of being locked into one terminal or one agent, developers want to hand off a live session — its history, files, and pending approvals — between tools (Claude Code, Codex, OpenCode) and interfaces (CLI, VS Code, web, mobile). Anthropic ships some of this natively (session resume, Remote Control, cloud-to-local handoff), while community projects are building the missing piece: a CLI-agnostic bridge that lets different agents share context and coordinate work.
+
+## What's new
+
+Anthropic's own Claude Code docs already describe several first-party handoff paths: **Remote Control**, which attaches a phone or browser to a running local session so you can watch, message, and approve tool calls from another device; **session resume**, which restores a session (including a summarized version) from the picker or by ID, from scripts, or across VS Code and CLI; and switching between the VS Code extension and terminal mode without losing session state. The `vs-code` docs also mention launching a VS Code tab from other tools and connecting to external tools via MCP, and `platforms` frames this explicitly as "use Claude Code everywhere" and "work when you are away from your terminal."
+
+Outside Anthropic, a wave of small open-source projects on GitHub is filling the gaps between agents rather than within one agent. Recent examples include a Rust/React web UI for managing multiple coding-agent CLIs (Claude, Codex, Grok) running in terminal panes; a local control plane that shows every Claude Code session, queues permission approvals, and delegates tasks to headless agents in git worktrees; a fleet dashboard that runs many Claude Code agents in parallel with a Telegram bridge, each in its own tmux session; a "meta" session that watches other Claude Code sessions and reports which ones are busy or waiting on input; and a tool explicitly built to let Claude, Codex, and OpenCode "talk to each other locally." These projects don't ship from Anthropic, but they target the same seam: session state produced by one CLI needs to be readable, resumable, or routable by another.
+
+## How it works
+
+The mechanics behind session federation fall into a few concrete layers, mirrored in what Claude Code's own docs describe for a single tool:
+
+1. **Session identity and storage.** Claude Code sessions are addressable — they can be resumed by ID, from a picker, or from a summary, and transcripts are exported to a known location that scripts can read. Any cross-tool bridge needs an equivalent: a stable session ID plus a transcript/state format the receiving tool can parse.
+2. **Context restoration on resume.** Resuming a session restores more than raw text — permission mode, branch context, and (per the docs) a summarized version of history can be loaded instead of the full transcript. A handoff tool has to decide whether it replays full history, a compacted summary, or just the final state (files changed, open TODOs) — each has different token cost and fidelity tradeoffs.
+3. **Live attachment vs. cold handoff.** Remote Control is a "live attach" model: a second device connects to the same running session, can watch messages stream, and can approve or deny tool calls waiting on permission — the session state stays on the original machine. This differs from a "cold handoff," where a session's history or summary is exported and re-imported into a different agent or CLI entirely, which is the pattern the community tools above are experimenting with (queuing approvals centrally, delegating to headless agents in separate worktrees, or piping messages through Telegram/Signal bridges).
+4. **Interface switching without state loss.** The VS Code extension and terminal CLI can hand off the same session back and forth, and a VS Code tab can be launched from other tools — this requires the interface layer to be decoupled from session state, so switching UI doesn't require restarting the agent.
+5. **Multi-provider routing.** Some community tools go a step further and route work across *different* agent backends (Claude Code, Codex, Grok) inside one UI or one tmux-based fleet, rather than just switching interfaces on the same agent. This requires a shared task/approval abstraction that's agent-agnostic, since each CLI has its own session and permission model.
+
+## Hands-on example
+
+A minimal, Anthropic-native version of "handoff" you can try today combines session resume with Remote Control:
+
+```bash
+# On your laptop: start a named session so you can find it later
+claude
+# inside the session
+/rename backend-refactor
+
+# Later, from your phone or another machine, attach live:
+/remote-control
+# scan or open the printed session URL to watch, message,
+# and approve/deny tool calls from the other device
+
+# Back at your laptop, resume the same session by name/picker:
+claude --resume
+```
+
+For cross-agent experiments, community tools like a Telegram-bridged fleet dashboard or a local control plane that queues approvals across multiple headless Claude Code sessions in separate git worktrees show the direction this is heading — each session still runs as a normal Claude Code process, but a thin layer outside it tracks state, exposes an approval queue, and lets you dispatch or observe from anywhere.
+
+## When to use it (and when not to)
+
+Use Anthropic's built-in handoff (Remote Control, session resume, VS Code/CLI switching) when you just need to move between your own devices or interfaces without losing a session's state — it's supported, documented, and requires no extra tooling beyond a Claude subscription and, for Remote Control, a full-scope login token.
+
+Be cautious with third-party, CLI-agnostic bridges and multi-provider routers: they are early, community-maintained projects (many single-digit-star repos updated daily), not officially supported integrations. They can be useful for experimenting with running several agents in parallel or centralizing approvals, but you should expect rough edges around how faithfully they preserve context (full transcript vs. summary vs. final-state-only), and treat any tool that reads your session transcripts or forwards approvals through a bridge (e.g., Telegram, Signal) as a new trust boundary — the same care that applies to permissions and MCP servers applies here. Don't rely on these for anything where a dropped or malformed handoff could cause an unapproved action to run.
+
+## Sources
+
+- https://code.claude.com/docs/en/remote-control.md
+- https://code.claude.com/docs/en/sessions.md
+- https://code.claude.com/docs/en/vs-code.md
+- https://code.claude.com/docs/en/platforms.md
+- https://github.com/Eden-Sun/agents-manager
+- https://github.com/atretyak1985/swarmery
+- https://github.com/yanhs/agentdeck
+- https://github.com/thorwhalen/crowsnest
+- https://useax.dev/

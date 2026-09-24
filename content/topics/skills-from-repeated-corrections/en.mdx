@@ -1,0 +1,91 @@
+---
+title: "Turning Repeated Corrections into Claude Code Skills"
+description: "A pattern for spotting when you keep correcting Claude Code the same way, and turning that \"configuration drift\" into a durable rule or skill instead of repeating the correction forever."
+discoveredAt: "2026-09-01T09:49:18.124Z"
+updatedDate: "2026-09-24T10:54:19.031Z"
+author: "Claude Code Learn"
+trendScore: 0.606
+scoreBreakdown:
+  frequency: 0.5
+  recency: 0.899
+  engagement: 0.223
+  gap: 1
+tags:
+  - "Claude Code"
+  - "skills"
+  - "CLAUDE.md"
+  - "memory"
+  - "developer workflow"
+  - "configuration drift"
+sources:
+  - "https://code.claude.com/docs/en/memory.md"
+  - "https://code.claude.com/docs/en/best-practices.md"
+  - "https://code.claude.com/docs/en/features-overview.md"
+relatedModules:
+  - "skills"
+  - "memory"
+  - "hooks"
+  - "subagents"
+relatedUseCases: []
+relatedSkills: []
+draft: false
+# Verified against Claude Code 2.1.267
+---
+## Quick summary
+
+If you find yourself typing the same correction to Claude Code over and over — "use `const`, not `var`", "always run the linter before committing", "we use tabs here" — that's a signal, not just an annoyance. Each repeated correction is a small piece of "configuration drift" between what Claude assumes and how your project actually works. Instead of correcting it forever, you can capture the pattern once as a rule in `CLAUDE.md` or as a reusable skill, so Claude applies it automatically from then on.
+
+## What's new
+
+A cluster of community tooling and discussion (an HN post on turning repeated coding-agent corrections into rules/skills, plus projects like config-drift-checker and drydock) has converged on the same observation: developers manually repeat the same fixes to AI coding agents session after session instead of codifying them. This isn't an official Anthropic feature announcement — it's a workflow pattern that has emerged around Claude Code's existing memory and skills primitives. Claude Code already ships the building blocks for this: `CLAUDE.md` files, path-specific rules under `.claude/rules/`, an auto memory system that can save observations during a session, and installable skills. What's new is the explicit framing of "repeated correction" as the trigger for when to use which mechanism.
+
+## How it works
+
+The underlying mechanism relies on three existing Claude Code primitives, used in sequence:
+
+1. **Detect drift.** Configuration drift here means a gap between Claude's default behavior (or its current memory) and the actual conventions of your codebase. The signal is behavioral: you give the same correction more than once, in the same or different sessions.
+2. **Classify the correction.** Not every correction belongs in the same place:
+   - A short, standing fact about the project ("we use pnpm, not npm") belongs in `CLAUDE.md`, the file Claude Code loads automatically into context for every session in that directory.
+   - A correction that only applies to certain files or directories (e.g., "all files under `api/` must include an OpenAPI comment block") belongs in a path-specific rule under `.claude/rules/`, which loads only when Claude touches matching paths — keeping the always-loaded context smaller.
+   - A correction that describes a multi-step procedure Claude should run repeatedly (e.g., "when adding a migration, do X, then Y, then Z") is a candidate for a **skill**: a packaged, invokable set of instructions (and optionally scripts) that Claude loads on demand rather than every turn.
+   - A one-off observation Claude noticed mid-session but that isn't yet confirmed as a standing rule can be captured by **auto memory**, which you can later audit and promote into `CLAUDE.md` via `/memory`.
+3. **Write it once, verify it loads.** For `CLAUDE.md` and rules, correctness matters: rule frontmatter and path globs determine when the instruction actually applies. For skills, the packaging (name, description, and invocation trigger) determines whether Claude picks the skill up at the right moment. In all cases, the goal is that context cost is paid once (as documented instructions) instead of repeatedly (as tokens spent re-explaining the same correction in every session).
+
+This turns an ad hoc habit (retype the correction) into a maintenance task (edit the rule file or skill definition), which is easier to review, share across a team, and keep in version control alongside the code it governs.
+
+## Hands-on example
+
+A typical loop looks like this. First, notice the repeated correction across sessions:
+
+```
+# Session 1
+You: "Don't use `any` in TypeScript, add explicit types."
+
+# Session 3, different feature
+You: "Same as before — no `any`, please add real types here too."
+```
+
+Once you see the pattern, codify it instead of repeating it — either as a project rule:
+
+```markdown
+<!-- .claude/rules/typescript-style.md -->
+---
+paths: ["**/*.ts", "**/*.tsx"]
+---
+Never use `any`. Prefer explicit interfaces or generics.
+If a type is genuinely unknown, use `unknown` and narrow it.
+```
+
+or, if the correction is really a multi-step workflow (e.g., "when you touch a public API type, also update the changelog and bump the package version"), package it as a skill that Claude can invoke by name when that scenario recurs. Either way, run `/memory` afterward to confirm the instruction is loaded and check that it actually changes Claude's behavior on the next similar task.
+
+## When to use it (and when not to)
+
+Use this pattern when a correction has repeated at least twice and is stable — i.e., it reflects a real, durable convention rather than a one-off preference for a single PR. It's a good fit for style rules, path-specific conventions, and multi-step procedures that recur across features.
+
+Don't over-apply it: promoting every single correction into `CLAUDE.md` bloats the context that loads on every session, and Anthropic's own guidance notes that a CLAUDE.md that grows too large becomes a troubleshooting problem in itself. Prefer path-specific rules over global ones when the correction only applies to part of the codebase, and prefer a skill over a rule when the correction is really a procedure rather than a fact. Also be cautious with auto-memory-based capture of corrections that were context-specific ("just for this one migration") — promoting those to standing rules can misfire on unrelated work later. Finally, this is a workflow discipline, not a shipped Anthropic feature with its own UI — there's no automated "drift detector" built into Claude Code itself; the detection step is still manual.
+
+## Sources
+
+- https://code.claude.com/docs/en/memory.md
+- https://code.claude.com/docs/en/best-practices.md
+- https://code.claude.com/docs/en/features-overview.md

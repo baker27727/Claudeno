@@ -1,0 +1,98 @@
+---
+title: "Å federere Claude Code-sesjoner mellom verktøy: overlevering og kontekstbygging"
+description: "En gjennomgang av det fremvoksende mønsteret der en aktiv agent-sesjon flyttes mellom Claude Code, Codex og andre CLI-er eller grensesnitt, og hva Anthropics egne verktøy for fjernstyring og sesjoner allerede støtter."
+discoveredAt: "2026-09-01T09:49:18.124Z"
+updatedDate: "2026-09-24T10:53:19.541Z"
+author: "Claude Code Learn"
+trendScore: 0.64
+scoreBreakdown:
+  frequency: 0.5
+  recency: 0.971
+  engagement: 0.288
+  gap: 1
+tags:
+  - "Claude Code"
+  - "interoperability"
+  - "session management"
+  - "MCP"
+  - "remote control"
+  - "multi-agent"
+sources:
+  - "https://code.claude.com/docs/en/remote-control.md"
+  - "https://code.claude.com/docs/en/sessions.md"
+  - "https://code.claude.com/docs/en/vs-code.md"
+  - "https://code.claude.com/docs/en/platforms.md"
+  - "https://github.com/Eden-Sun/agents-manager"
+  - "https://github.com/atretyak1985/swarmery"
+  - "https://github.com/yanhs/agentdeck"
+  - "https://github.com/thorwhalen/crowsnest"
+  - "https://useax.dev/"
+relatedModules:
+  - "cli-basics"
+  - "checkpointing"
+  - "mcp-servers"
+  - "headless-mode"
+relatedUseCases:
+  - "project-management-with-claude"
+relatedSkills: []
+draft: false
+# Verified against Claude Code 2.1.267
+---
+## Kort oppsummert
+
+Et mønster er i emning rundt Claude Code: i stedet for å være låst til én terminal eller én agent, vil utviklere kunne overføre en aktiv sesjon — historikk, filer og ventende godkjenninger — mellom verktøy (Claude Code, Codex, OpenCode) og grensesnitt (CLI, VS Code, web, mobil). Anthropic tilbyr noe av dette selv (gjenoppta sesjon, Remote Control, overgang mellom sky og lokalt), mens community-prosjekter bygger den manglende brikken: en CLI-agnostisk bro som lar forskjellige agenter dele kontekst og koordinere arbeid.
+
+## Hva er nytt
+
+Claude Codes egen dokumentasjon beskriver allerede flere innebygde overleveringsveier: **Remote Control**, som kobler en telefon eller nettleser til en kjørende lokal sesjon slik at du kan følge med, sende meldinger og godkjenne verktøykall fra en annen enhet; **gjenoppta sesjon**, som gjenoppretter en sesjon (inkludert en oppsummert versjon) fra velgeren eller via ID, fra skript, eller mellom VS Code og CLI; og bytte mellom VS Code-utvidelsen og terminalmodus uten å tape sesjonstilstand. `vs-code`-dokumentasjonen nevner også å starte en VS Code-fane fra andre verktøy og koble til eksterne verktøy via MCP, og `platforms` rammer dette eksplisitt som "bruk Claude Code hvor som helst" og "arbeid når du er borte fra terminalen."
+
+Utenfor Anthropic bygger en bølge av små open source-prosjekter på GitHub broene *mellom* agenter, ikke bare innad i én agent. Nylige eksempler inkluderer et Rust/React-webgrensesnitt for å administrere flere agent-CLI-er (Claude, Codex, Grok) som kjører i terminalpaneler; en lokal kontrollplattform som viser alle Claude Code-sesjoner, køer opp tillatelsesforespørsler og delegerer oppgaver til hodeløse agenter i git worktrees; et dashbord som kjører mange Claude Code-agenter parallelt med en Telegram-bro, hver i sin egen tmux-sesjon; en "meta"-sesjon som overvåker andre Claude Code-sesjoner og rapporterer hvem som er opptatt eller venter på input; og et verktøy bygget spesifikt for å la Claude, Codex og OpenCode "snakke med hverandre lokalt." Disse prosjektene leveres ikke fra Anthropic, men de retter seg mot samme skjøt: sesjonstilstand produsert av én CLI må kunne leses, gjenopptas eller rutes av en annen.
+
+## Slik fungerer det
+
+Mekanismene bak sesjonsfederering deler seg i noen konkrete lag, som gjenspeiler det Claude Codes egen dokumentasjon beskriver for ett enkelt verktøy:
+
+1. **Sesjonsidentitet og lagring.** Claude Code-sesjoner er adresserbare — de kan gjenopptas via ID, fra en velger, eller fra et sammendrag, og transkripsjoner eksporteres til et kjent sted som skript kan lese. Enhver bro mellom verktøy trenger noe likeverdig: en stabil sesjons-ID pluss et transkripsjons-/tilstandsformat mottakerverktøyet kan tolke.
+2. **Gjenoppretting av kontekst ved gjenopptak.** Å gjenoppta en sesjon gjenoppretter mer enn rå tekst — tillatelsesmodus, grenkontekst, og (ifølge dokumentasjonen) en oppsummert versjon av historikken kan lastes inn i stedet for full transkripsjon. Et overleveringsverktøy må avgjøre om det spiller av full historikk, et komprimert sammendrag, eller bare sluttilstanden (endrede filer, åpne TODO-er) — hver har ulike kostnads- og presisjonsavveininger.
+3. **Levende tilkobling vs. kald overlevering.** Remote Control er en "levende tilkobling"-modell: en annen enhet kobler seg til den samme kjørende sesjonen, kan se meldinger strømme, og kan godkjenne eller avslå verktøykall som venter på tillatelse — sesjonstilstanden forblir på den opprinnelige maskinen. Dette er forskjellig fra en "kald overlevering", der en sesjons historikk eller sammendrag eksporteres og importeres på nytt i en helt annen agent eller CLI — dette er mønsteret community-verktøyene ovenfor eksperimenterer med (sentralisert godkjenningskø, delegering til hodeløse agenter i separate worktrees, eller å sende meldinger gjennom Telegram-/Signal-broer).
+4. **Grensesnittbytte uten tap av tilstand.** VS Code-utvidelsen og terminal-CLI-en kan overlevere samme sesjon fram og tilbake, og en VS Code-fane kan startes fra andre verktøy — dette krever at grensesnittlaget er frikoblet fra sesjonstilstanden, slik at å bytte UI ikke krever at agenten starter på nytt.
+5. **Flerleverandør-ruting.** Noen community-verktøy går et skritt videre og ruter arbeid mellom *forskjellige* agent-backends (Claude Code, Codex, Grok) i én UI eller én tmux-basert flåte, i stedet for bare å bytte grensesnitt på samme agent. Dette krever en delt oppgave-/godkjenningsabstraksjon som er agent-agnostisk, siden hver CLI har sin egen sesjons- og tillatelsesmodell.
+
+## Prøv det selv
+
+En minimal, Anthropic-nativ versjon av "overlevering" du kan prøve i dag, kombinerer gjenopptak av sesjon med Remote Control:
+
+```bash
+# På laptopen: start en navngitt sesjon slik at du finner den senere
+claude
+# inne i sesjonen
+/rename backend-refactor
+
+# Senere, fra telefonen eller en annen maskin: koble deg til direkte
+/remote-control
+# skann eller åpne den utskrevne sesjons-URL-en for å følge med,
+# sende meldinger, og godkjenne/avslå verktøykall fra den andre enheten
+
+# Tilbake på laptopen: gjenoppta samme sesjon via navn/velger
+claude --resume
+```
+
+For eksperimenter mellom ulike agenter viser community-verktøy som et Telegram-koblet flåtedashbord eller en lokal kontrollplattform som køer godkjenninger over flere hodeløse Claude Code-sesjoner i separate git worktrees, hvilken retning dette går — hver sesjon kjører fortsatt som en vanlig Claude Code-prosess, men et tynt lag utenfor følger med på tilstand, eksponerer en godkjenningskø, og lar deg sende eller observere fra hvor som helst.
+
+## Når du bør bruke det (og når ikke)
+
+Bruk Anthropics innebygde overlevering (Remote Control, gjenoppta sesjon, bytte mellom VS Code/CLI) når du bare trenger å flytte mellom dine egne enheter eller grensesnitt uten å tape sesjonstilstand — det er støttet, dokumentert, og krever ikke ekstra verktøy utover et Claude-abonnement og, for Remote Control, et fullskala innloggingstoken.
+
+Vær forsiktig med tredjeparts, CLI-agnostiske broer og flerleverandør-rutere: dette er tidlige, community-forvaltede prosjekter (mange repoer med enkeltsifret antall stjerner, oppdatert daglig), ikke offisielt støttede integrasjoner. De kan være nyttige for å eksperimentere med å kjøre flere agenter parallelt eller sentralisere godkjenninger, men du bør forvente ujevnheter i hvor trofast de bevarer kontekst (full transkripsjon vs. sammendrag vs. bare sluttilstand), og behandle ethvert verktøy som leser sesjonstranskripsjonene dine eller videresender godkjenninger gjennom en bro (f.eks. Telegram, Signal) som en ny tillitsgrense — samme forsiktighet som gjelder for tillatelser og MCP-servere gjelder her. Stol ikke på disse i situasjoner der en mislykket eller feilformet overlevering kan føre til at en ikke-godkjent handling kjøres.
+
+## Kilder
+
+- https://code.claude.com/docs/en/remote-control.md
+- https://code.claude.com/docs/en/sessions.md
+- https://code.claude.com/docs/en/vs-code.md
+- https://code.claude.com/docs/en/platforms.md
+- https://github.com/Eden-Sun/agents-manager
+- https://github.com/atretyak1985/swarmery
+- https://github.com/yanhs/agentdeck
+- https://github.com/thorwhalen/crowsnest
+- https://useax.dev/
