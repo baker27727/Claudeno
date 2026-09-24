@@ -122,3 +122,7 @@ MCP-tjener-konfigurasjonssvikter blir nå bedre rapportert: på Bedrock-, Vertex
 ## Nytt i v2.1.259
 
 2.1.259 introduserer `managedMcpServers`: organisasjoner kan levere HTTP/SSE MCP-tjenere til hver bruker (samme oppføringskape som `.mcp.json`); oppføringer som navngir en kommando å kjøre hoppes over. Innstillingen `allowedMcpServers` styrer nå bare tjenere brukere legger til; en bokstavelig `managed-mcp.json`-tjener som tillatelselisten din pleide å filtrere ut laster nå ved oppgradering. Bruk `deniedMcpServers` for å holde den av.
+
+## Nytt i v2.1.281
+
+MCP URL-mode-opfordring støttes nå (protokollversjon 2026-07-28+): tjenere kan be Claude Code om å åpne en nettleserbasert flyt uten å overlate en ventedialg på skjermen. I tillegg sjekker `claude plugin validate` nå `.mcp.json`-oppføringer som ville bli stille slettet ved lasting, rapporterer udeklarerte `${user_config.*}`-referanser, og oppdager usikre URL-er.

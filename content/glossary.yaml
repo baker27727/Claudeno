@@ -427,3 +427,23 @@
   note: "Flag to control system prompt reuse behavior; `off` renders fresh on
     every request instead of caching from conversation (new in 2.1.267); kept as
     English command identifier"
+- id: "desktop-policy"
+  en: "desktop policy"
+  no: "desktop-policy"
+  note: "Claude Desktop key policies on Claude apps gateway controlling filesystem
+    reads and permission bypass behavior"
+- id: "guardrail"
+  en: "guardrail"
+  no: "sikringsmekanisme"
+  note: "Amazon Bedrock guardrail applied to Claude apps gateway Bedrock upstreams
+    to enforce safety constraints on every request"
+- id: "telemetry.resource_attributes"
+  en: "telemetry.resource_attributes"
+  no: "telemetry.resource_attributes"
+  note: "Claude apps gateway configuration for fixed telemetry labels on Claude
+    Desktop and /login sessions; kept as English configuration identifier"
+- id: "url-mode-elicitation"
+  en: "URL-mode elicitation"
+  no: "URL-mode-opfordring"
+  note: "MCP protocol feature (2026-07-28+) allowing servers to request
+    browser-based OAuth or confirmation flows without blocking dialogs"

@@ -211,3 +211,7 @@ Added in 2.1.260: Use /diff to open a diff panel showing uncommitted changes bes
 ## What's new in v2.1.267
 
 The `--system-prompt-snapshot off` flag now renders the system prompt fresh on every request instead of reusing the conversation's recorded prompt, useful for iterating on prompt text.
+
+## What's new in v2.1.281
+
+The `/insights` command now includes an auto mode recommendation estimating how many permission prompts auto mode could have handled in your recent sessions. The `/permissions` interface now prevents accidental deletions by fixing a bug where holding `1` could answer "No" prompts.

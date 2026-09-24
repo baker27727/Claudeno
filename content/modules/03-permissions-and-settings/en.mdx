@@ -208,3 +208,7 @@ New in 2.1.261: bashOutputMaxChars and taskOutputMaxChars settings let you incre
 ## What's new in v2.1.267
 
 The new `maxEffortLevel` setting (top-level or per model under `modelSettings`) caps the effort level on every provider, including Bedrock, Vertex and Foundry; users can still pick a lower level. Managed settings for `allowedHttpHookUrls`, `httpHookAllowedEnvVars` and `allowedChannelPlugins` now correctly admit nothing (instead of everything) when unreadable.
+
+## What's new in v2.1.281
+
+Claude Desktop key policies now support `blockReadsOutsideWorkingDirectories` and `disableBypassPermissionsMode` flags on Claude apps gateway. Several permission-handling edge cases were fixed: recursive `rm` with command-substitution targets now prompts in auto and `--dangerously-skip-permissions` mode (unless `CLAUDE_CODE_DISABLE_SUBSTITUTION_RM_PROMPT=1` is set), and permission rules containing null bytes are no longer expanded as wildcards.

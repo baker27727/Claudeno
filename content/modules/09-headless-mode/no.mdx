@@ -161,3 +161,7 @@ Lagt til `/reload-plugins`-kommando til hodeløse økter, og gjort den tilgjenge
 ## Nytt i v2.1.267
 
 Reparert gjenopptaking av en stor økt (transkripsjon over 5 MB): parallelle verktøykall og deres hook-utdata blir ikke lenger droppet fra den gjeninnlastede samtalen. Reparert `/login` på maskiner hvis administrerte innstillinger krever innlogging via Claude apps gateway: Esc lukker nå dialogen i stedet for å ikke gjøre noe.
+
+## Nytt i v2.1.281
+
+`claude --bg` krever nå tillits-bekreftelse for arbeidsområde før du starter bakgrunns-økter og kjører projekt-hooks, noe som sikrer at upålitelige mapper ikke kan åpnes stille. Hodeløse økter håndterer nå MCP-tjener-håndtrykk og administrerte-innstillinger-nettverksforespørsler riktig uten unødvendige blokkerings-forsinkelser.

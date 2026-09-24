@@ -1,3 +1,20 @@
+- id: "2.1.281"
+  version: "2.1.281"
+  date: "2026-09-24"
+  entry:
+    en: "Added Claude apps gateway support for desktop policies
+      (blockReadsOutsideWorkingDirectories, disableBypassPermissionsMode),
+      assume_role and guardrail features on Bedrock upstreams, MCP URL-mode
+      elicitation, improved plugin validation, and extensive bug fixes for
+      session resumption, prompt cache, permissions handling, and network
+      robustness."
+    no: "Lagt til Claude apps-gateway-støtte for desktop-policyer
+      (blockReadsOutsideWorkingDirectories, disableBypassPermissionsMode),
+      assume_role- og guardrail-funksjoner på Bedrock-oppstrøms, MCP
+      URL-mode-opfordring, forbedret plugin-validering, og omfattende
+      feilrettinger for økt-gjenopptaking, ledetekst-cache,
+      tillatelseshåndtering og nettverksrobusthet."
+  sources: []
 - id: "2.1.267"
   version: "2.1.267"
   date: "2026-09-10"

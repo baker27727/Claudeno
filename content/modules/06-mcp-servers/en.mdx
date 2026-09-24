@@ -120,3 +120,7 @@ MCP server configuration failures are now better reported: on Bedrock, Vertex AI
 ## What's new in v2.1.259
 
 2.1.259 introduces `managedMcpServers`: organizations can provide HTTP/SSE MCP servers to every user (same entry shape as `.mcp.json`); entries that name a command to run are skipped. The `allowedMcpServers` setting now governs only servers users add; a literal `managed-mcp.json` server your allowlist used to filter out now loads on upgrade. Use `deniedMcpServers` to keep it off.
+
+## What's new in v2.1.281
+
+MCP URL-mode elicitation is now supported (protocol version 2026-07-28+): servers can request Claude Code to open a browser-based flow without leaving a waiting dialog on screen. Additionally, `claude plugin validate` now checks `.mcp.json` entries that would be silently dropped at load, reports undeclared `${user_config.*}` references, and detects insecure URLs.
