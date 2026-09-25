@@ -1,3 +1,21 @@
+- id: "2.1.282"
+  version: "2.1.282"
+  date: "2026-09-25"
+  entry:
+    en: "Added maxProseWidth setting to control prose width in wide terminals. Fixed
+      managed settings parsing to preserve valid settings when one nested value
+      is invalid. Fixed Bash permission rules with mid-pattern `:*` now working
+      from all sources. Fixed requests failing when conversation history
+      contains web search results the API cannot decrypt. Improved error
+      messages for session resumption failures and model-switch scenarios."
+    no: "La til maxProseWidth-innstillingen for å kontrollere prosastørrelse i brede
+      terminaler. Fikset tolking av administrerte innstillinger slik at gyldige
+      innstillinger bevares selv når én nestet verdi er ugyldig. Fikset
+      Bash-tillatelses-regler med midmønster `:*` som nå fungerer fra alle
+      kilder. Fikset forespørsler som mislykkes når samtalehistorikk inneholder
+      websøkresultater som API-en ikke kan dekryptere. Forbedret feilmeldinger
+      for mislykking ved gjenopptaking av økt og modellbytting."
+  sources: []
 - id: "2.1.267"
   version: "2.1.267"
   date: "2026-09-10"

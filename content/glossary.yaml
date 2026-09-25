@@ -427,3 +427,9 @@
   note: "Flag to control system prompt reuse behavior; `off` renders fresh on
     every request instead of caching from conversation (new in 2.1.267); kept as
     English command identifier"
+- id: "maxprosewidth"
+  en: "maxProseWidth"
+  no: "maxProseWidth"
+  note: "Settings key to cap the width of Claude's prose in wide terminals while
+    tables and code blocks keep full width (new in 2.1.282); kept as English
+    configuration identifier"

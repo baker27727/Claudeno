@@ -210,3 +210,7 @@ Nytt i 2.1.261: bashOutputMaxChars- og taskOutputMaxChars-innstillinger lar deg 
 ## Nytt i v2.1.267
 
 Den nye `maxEffortLevel`-innstillingen (øverst eller per modell under `modelSettings`) begrenser innsatsnivået på alle leverandører, inkludert Bedrock, Vertex og Foundry; brukere kan fortsatt velge et lavere nivå. Administrerte innstillinger for `allowedHttpHookUrls`, `httpHookAllowedEnvVars` og `allowedChannelPlugins` tillater nå korrekt ingenting (i stedet for alt) når de ikke kan leses.
+
+## Nytt i v2.1.282
+
+Claude Code 2.1.282 introduserer innstillingen `maxProseWidth` for å begrense bredden på Claude sin prosatekst i brede terminaler, mens tabeller og kodeblokker beholder full bredde. Tolking av administrerte innstillinger er nå mer robust: hvis én nestet verdi i en permissions-, autoMode-, worktree- eller attribution-blokk er ugyldig, gjelder resten av blokken fortsatt. Bash-tillatelses-regler med midmønster `:*` (f.eks. `foo:*`) blir nå tatt i betraktning fra alle konfigurasjonskilder og viser en oppstartsadvarsel om hvordan de samsvarer. Løste problemer inkluderer: administrerte innstillinger ignorerer ikke lenger feilstavet booleske låsnøkler, repository- og brukerkunnskaper godkjenner ikke lenger sine egne verktøy under administrert `allowManagedPermissionRulesOnly`, og ugyldige nestede innstillinger blokkerer ikke lenger hele konfigurasjonsblokken.
