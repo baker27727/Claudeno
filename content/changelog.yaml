@@ -1,3 +1,19 @@
+- id: "2.1.283"
+  version: "2.1.283"
+  date: "2026-09-26"
+  entry:
+    en: "New managed settings `availableModelsMatch` and `deniedModels` provide
+      finer control over model access. MCP tool outputs now log to OpenTelemetry
+      when `OTEL_LOG_TOOL_CONTENT=1`. New `/doctor prompt-audit` command audits
+      prompts for older-model patterns. Many bug fixes across plugins, MCP
+      servers, permissions, vim mode, and cross-session messaging."
+    no: "Nye administrerte innstillinger `availableModelsMatch` og `deniedModels`
+      gir finere kontroll over modellaksess. MCP-verktøyutdata blir nå logget
+      til OpenTelemetry når `OTEL_LOG_TOOL_CONTENT=1`. Ny `/doctor
+      prompt-audit`-kommando revisoranmeldinger ledetekster for mønstre fra
+      eldre modeller. Mange feilrettinger på tvers av plugins, MCP-tjenere,
+      tillatelser, vim-modus og tverr-økt-meldinger."
+  sources: []
 - id: "2.1.267"
   version: "2.1.267"
   date: "2026-09-10"

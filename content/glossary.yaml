@@ -427,3 +427,20 @@
   note: "Flag to control system prompt reuse behavior; `off` renders fresh on
     every request instead of caching from conversation (new in 2.1.267); kept as
     English command identifier"
+- id: "availablemodelsmatch"
+  en: "availableModelsMatch"
+  no: "availableModelsMatch"
+  note: "Managed setting with `\"exact\"` value restricting availableModels
+    entries to specific model versions only (new in 2.1.283); kept as English
+    configuration identifier"
+- id: "deniedmodels"
+  en: "deniedModels"
+  no: "deniedModels"
+  note: "Managed setting to block specific models even when availableModels allows
+    them, enabling fine-grained model access control (new in 2.1.283); kept as
+    English configuration identifier"
+- id: "mantle"
+  en: "mantle"
+  no: "mantle"
+  note: "Upstream provider for Amazon Bedrock's Mantle endpoint in the Claude apps
+    gateway (new in 2.1.283); kept as English provider identifier"

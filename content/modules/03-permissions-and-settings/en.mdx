@@ -208,3 +208,7 @@ New in 2.1.261: bashOutputMaxChars and taskOutputMaxChars settings let you incre
 ## What's new in v2.1.267
 
 The new `maxEffortLevel` setting (top-level or per model under `modelSettings`) caps the effort level on every provider, including Bedrock, Vertex and Foundry; users can still pick a lower level. Managed settings for `allowedHttpHookUrls`, `httpHookAllowedEnvVars` and `allowedChannelPlugins` now correctly admit nothing (instead of everything) when unreadable.
+
+## What's new in v2.1.283
+
+New managed settings added in 2.1.283: `availableModelsMatch` with `"exact"` value restricts `availableModels` entries to only the model version they name, keeping new releases blocked until explicitly listed; `deniedModels` allows blocking specific models even when `availableModels` permits them. These give administrators finer control over model access policies.
