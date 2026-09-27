@@ -427,3 +427,14 @@
   note: "Flag to control system prompt reuse behavior; `off` renders fresh on
     every request instead of caching from conversation (new in 2.1.267); kept as
     English command identifier"
+- id: "availablemodelsmatch"
+  en: "availableModelsMatch"
+  no: "availableModelsMatch"
+  note: "Managed setting controlling model version matching behavior; `\"exact\"`
+    mode restricts `availableModels` entries to exact version matches (new in
+    2.1.283); kept as English configuration identifier"
+- id: "deniedmodels"
+  en: "deniedModels"
+  no: "deniedModels"
+  note: "Managed setting to block specific models even when `availableModels`
+    allows them (new in 2.1.283); kept as English configuration identifier"

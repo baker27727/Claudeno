@@ -1,3 +1,23 @@
+- id: "2.1.283"
+  version: "2.1.283"
+  date: "2026-09-27"
+  entry:
+    en: "Added managed settings for model availability control
+      (`availableModelsMatch`, `deniedModels`), `/doctor prompt-audit` for
+      auditing prompts against older model patterns, improved MCP tool results
+      with file-saved images, enhanced `/mcp` list navigation, and multiple
+      fixes including Remote Control availability on paid plans, MCP progress
+      tracking, auto-memory editing in git subdirectories, and plugin validation
+      improvements."
+    no: "La til administrerte innstillinger for modellgjengjengjørelseskontroll
+      (`availableModelsMatch`, `deniedModels`), `/doctor prompt-audit` for
+      revisjon av ledetekster mot eldre modellmønstre, forbedrede
+      MCP-verktøyresultater med fillagrede bilder, forbedret
+      `/mcp`-listenavigering, og flere rettelser inkludert
+      fjernstyringtilgjengelighet på betalingsplaner, MCP-framgangssporing,
+      auto-minne-redigering i Git-underkataloger, og forbedringer av
+      plugin-validering."
+  sources: []
 - id: "2.1.267"
   version: "2.1.267"
   date: "2026-09-10"
