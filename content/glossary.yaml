@@ -427,3 +427,19 @@
   note: "Flag to control system prompt reuse behavior; `off` renders fresh on
     every request instead of caching from conversation (new in 2.1.267); kept as
     English command identifier"
+- id: "availablemodelsmatch"
+  en: "availableModelsMatch"
+  no: "availableModelsMatch"
+  note: "Managed setting to enforce exact model version matching; kept as English
+    configuration identifier (new in 2.1.283)"
+- id: "deniedmodels"
+  en: "deniedModels"
+  no: "deniedModels"
+  note: "Managed setting to block specific models from use; kept as English
+    configuration identifier (new in 2.1.283)"
+- id: "claude_code_gateway_hint_headers"
+  en: "CLAUDE_CODE_GATEWAY_HINT_HEADERS"
+  no: "CLAUDE_CODE_GATEWAY_HINT_HEADERS"
+  note: "Environment variable to enable x-claude-code-prompt-id headers for LLM
+    gateway request grouping; kept as English environment variable identifier
+    (new in 2.1.283)"

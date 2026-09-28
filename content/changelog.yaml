@@ -1,3 +1,18 @@
+- id: "2.1.283"
+  version: "2.1.283"
+  date: "2026-09-28"
+  entry:
+    en: "New managed settings for model access control (`availableModelsMatch`,
+      `deniedModels`), `/doctor prompt-audit` command for auditing outdated
+      prompt patterns, improved MCP tool list and results display, and various
+      bug fixes including fixes for plugin loading, sessions, and UI
+      accessibility."
+    no: "Nye administrerte innstillinger for modellakseskontroll
+      (`availableModelsMatch`, `deniedModels`), `/doctor prompt-audit`-kommando
+      for revisjon av foreldet ledetekstmønstre, forbedret MCP-verktøyliste og
+      resultatvisning, samt ulike feilrettinger inkludert
+      programutvidelseslasting, økter og UI-tilgjengelighet."
+  sources: []
 - id: "2.1.267"
   version: "2.1.267"
   date: "2026-09-10"

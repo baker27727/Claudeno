@@ -210,3 +210,7 @@ Nytt i 2.1.261: bashOutputMaxChars- og taskOutputMaxChars-innstillinger lar deg 
 ## Nytt i v2.1.267
 
 Den nye `maxEffortLevel`-innstillingen (øverst eller per modell under `modelSettings`) begrenser innsatsnivået på alle leverandører, inkludert Bedrock, Vertex og Foundry; brukere kan fortsatt velge et lavere nivå. Administrerte innstillinger for `allowedHttpHookUrls`, `httpHookAllowedEnvVars` og `allowedChannelPlugins` tillater nå korrekt ingenting (i stedet for alt) når de ikke kan leses.
+
+## Nytt i v2.1.283
+
+**Nytt i 2.1.283**: To nye administrerte innstillinger hjelper til med å kontrollere modellaksess: `availableModelsMatch` (sett til `"exact"` for å blokkere nye versjoner til de er eksplisitt oppført) og `deniedModels` (for å blokkere spesifikke modeller selv når `availableModels` tillater dem). I tillegg aktiverer `CLAUDE_CODE_GATEWAY_HINT_HEADERS=1` `x-claude-code-prompt-id`-headere for at LLM-gateways skal gruppere forespørsler etter brukerledetekst.
