@@ -427,3 +427,15 @@
   note: "Flag to control system prompt reuse behavior; `off` renders fresh on
     every request instead of caching from conversation (new in 2.1.267); kept as
     English command identifier"
+- id: "claude-sonnet-5.5"
+  en: "Claude Sonnet 5.5"
+  no: "Claude Sonnet 5.5"
+  note: "New default Sonnet model as of 2.1.284, featuring 1M context window and
+    pricing of $2/$10 per million tokens with $0.20/Mtok cache reads on the
+    Anthropic API"
+- id: "effortslider:decreaseeffort,-effortslider:increaseeffort,-toggleultracode"
+  en: "effortSlider:decreaseEffort, effortSlider:increaseEffort, toggleUltracode"
+  no: "effortSlider:decreaseEffort, effortSlider:increaseEffort, toggleUltracode"
+  note: "Keybinding actions added in 2.1.284 allowing rebinding of /effort slider
+    controls and Ultracode toggle in keybindings.json; kept as English code
+    identifiers"

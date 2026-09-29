@@ -1,3 +1,27 @@
+- id: "2.1.284"
+  version: "2.1.284"
+  date: "2026-09-29"
+  entry:
+    en: "Claude Sonnet 5.5 is now the default Sonnet model with 1M context window.
+      Added new keybinding actions for effort slider control and /mcp reconnect
+      all for managing MCP servers. /rate-limit-options is now discoverable in
+      /help and the command menu. Improved error handling for damaged response
+      streams and overloaded servers. Fixed session unavailability messages to
+      show helpful model-unavailable notices. Enhanced auto mode with a 'Yes,
+      but ask again next time' option for read confirmations. Dollar amounts now
+      display in usage limits across the gateway. Improved artifact pages and
+      plugin configuration screens."
+    no: "Claude Sonnet 5.5 er nå standard Sonnet-modell med 1M kontekstvindu. Lagt
+      til nye tastaturkombinasjonsaksjoner for skrollfiltrering av innsatsgrad
+      og /mcp reconnect all for administrering av MCP-tjenere.
+      /rate-limit-options er nå synlig i /help og kommandomenyen. Forbedret
+      feilhåndtering for ødelagte svarmeldinger og overbelastede servere. Fikset
+      sesjontilgjengelighetsmeldinger for å vise hjelpesomme
+      modellutilgjengelighetsmeldinger. Forbedret auto-modus med et \"Ja, men
+      spør igjen neste gang\"-alternativ for lesekonfirmasjoner. Dollarbeløp
+      vises nå i bruksgrenser på tvers av gatewayen. Forbedret artefaktsider og
+      plugin-konfigurasjonsgrensesnitt."
+  sources: []
 - id: "2.1.267"
   version: "2.1.267"
   date: "2026-09-10"

@@ -188,3 +188,7 @@ New in 2.1.261: Use --append-subagent-system-prompt-file to read the subagent sy
 - **Slash command matches**: Slash commands typed mid-prompt now show matches in a list (press Tab to expand outside fullscreen), and plugin skills are found by their bare name (2.1.265).
 
 - **Working directory persistence in non-interactive sessions**: `cd` commands now persist across turns in headless sessions (`-p` with stream-json, Agent SDK, cloud sessions), fixing shell directory resets at each user message (2.1.265).
+
+## What's new in v2.1.284
+
+New keybinding actions effortSlider:decreaseEffort, effortSlider:increaseEffort, and toggleUltracode allow you to rebind the /effort slider's arrow and Tab keys in keybindings.json. Error handling has been improved to retry damaged response streams showing raw JSON parse errors instead of propagating them, and to retry overloaded or server errors that arrive immediately after thinking blocks. Session unavailability messages now clearly indicate when a model is unavailable and provide helpful Learn more links.
