@@ -1,5 +1,142 @@
 [
   {
+    "topic": "Preserving thinking blocks across Claude models with prefix-mismatch controls",
+    "status": "candidate",
+    "score": {
+      "frequency": 0.25,
+      "recency": 0,
+      "engagement": 0.5,
+      "gap": 1,
+      "total": 0.363
+    },
+    "matchedSources": [
+      "anthropic_changelog"
+    ],
+    "whyItMatters": "Newer Claude models can now enforce strict validation that thinking blocks haven't been replayed after the conversation history changed, and the prefix_mismatch_behavior setting controls whether mismatches are rejected or silently dropped.",
+    "firstSeen": "2026-09-29T11:11:41.273Z",
+    "lastSeen": "2026-09-29T11:11:41.273Z"
+  },
+  {
+    "topic": "Using turn-scoped system messages with clear_at to avoid context bloat and prompt cache invalidation",
+    "status": "candidate",
+    "score": {
+      "frequency": 0.25,
+      "recency": 0,
+      "engagement": 0.5,
+      "gap": 1,
+      "total": 0.363
+    },
+    "matchedSources": [
+      "anthropic_changelog"
+    ],
+    "whyItMatters": "Turn-scoped system messages render for a single turn then persist at zero token cost without invalidating the prompt cache, eliminating the context accumulation problem of repeated per-turn reminders.",
+    "firstSeen": "2026-09-29T11:11:41.273Z",
+    "lastSeen": "2026-09-29T11:11:41.273Z"
+  },
+  {
+    "topic": "Streaming reasoning progress with thinking.display='updates' between tool calls",
+    "status": "candidate",
+    "score": {
+      "frequency": 0.25,
+      "recency": 0,
+      "engagement": 0.5,
+      "gap": 1,
+      "total": 0.363
+    },
+    "matchedSources": [
+      "anthropic_changelog"
+    ],
+    "whyItMatters": "Claude Fable 5.1 now emits short progress updates as text between tool calls, providing transparency into the agent's reasoning without the overhead of full thinking blocks.",
+    "firstSeen": "2026-09-29T11:11:41.273Z",
+    "lastSeen": "2026-09-29T11:11:41.273Z"
+  },
+  {
+    "topic": "Managing context efficiently in Claude Code with skills, subagents, and session resumption patterns",
+    "status": "candidate",
+    "score": {
+      "frequency": 0.25,
+      "recency": 0.967,
+      "engagement": 0.5,
+      "gap": 1,
+      "total": 0.604
+    },
+    "matchedSources": [
+      "docs_map"
+    ],
+    "whyItMatters": "The documentation maps specific patterns for context window management including skills for delegation, subagents for investigation, checkpoint rewinding, and conversation resumption—all critical for long-running agent workflows.",
+    "firstSeen": "2026-09-29T11:11:41.273Z",
+    "lastSeen": "2026-09-29T11:11:41.273Z"
+  },
+  {
+    "topic": "Building Claude Code guardrails and safety plugins to prevent destructive commands and unsafe tool use",
+    "status": "candidate",
+    "score": {
+      "frequency": 0.5,
+      "recency": 0.967,
+      "engagement": 0,
+      "gap": 1,
+      "total": 0.567
+    },
+    "matchedSources": [
+      "github_search",
+      "hn_search"
+    ],
+    "whyItMatters": "Multiple GitHub projects demonstrate plugin-based approaches to block dangerous commands like `rm -RF`, enforce approval flows, and gate tool execution—essential patterns for deploying agents in production environments.",
+    "firstSeen": "2026-09-29T11:11:41.273Z",
+    "lastSeen": "2026-09-29T11:11:41.273Z"
+  },
+  {
+    "topic": "Migrating Claude Code to inline tools in mid-conversation system messages",
+    "status": "candidate",
+    "score": {
+      "frequency": 0.25,
+      "recency": 0.467,
+      "engagement": 0.5,
+      "gap": 1,
+      "total": 0.479
+    },
+    "matchedSources": [
+      "anthropic_changelog"
+    ],
+    "whyItMatters": "The inline-tools beta feature allows adding, removing, or modifying tool definitions mid-conversation while preserving the prompt cache, enabling more flexible and dynamic agent workflows without breaking cached context.",
+    "firstSeen": "2026-09-29T11:11:41.272Z",
+    "lastSeen": "2026-09-29T11:11:41.272Z"
+  },
+  {
+    "topic": "Compacting conversations on-demand with signed compaction blocks in Claude API",
+    "status": "candidate",
+    "score": {
+      "frequency": 0.25,
+      "recency": 0,
+      "engagement": 0.5,
+      "gap": 1,
+      "total": 0.363
+    },
+    "matchedSources": [
+      "anthropic_changelog"
+    ],
+    "whyItMatters": "The new compact beta feature lets you summarize conversation history on demand and replay it as a signed block, enabling efficient context management while preserving recent turns word-for-word and keeping thinking blocks valid across sessions.",
+    "firstSeen": "2026-09-29T11:11:41.272Z",
+    "lastSeen": "2026-09-29T11:11:41.272Z"
+  },
+  {
+    "topic": "Controlling adaptive thinking depth with per-message effort levels in Claude Opus 5.5",
+    "status": "candidate",
+    "score": {
+      "frequency": 0.25,
+      "recency": 0.467,
+      "engagement": 0.5,
+      "gap": 1,
+      "total": 0.479
+    },
+    "matchedSources": [
+      "anthropic_changelog"
+    ],
+    "whyItMatters": "Claude Opus 5.5 requires controlling thinking through effort parameters rather than discrete enabled/disabled states, and effort can now be changed mid-conversation in system messages while keeping the prompt cache valid.",
+    "firstSeen": "2026-09-29T11:11:41.272Z",
+    "lastSeen": "2026-09-29T11:11:41.272Z"
+  },
+  {
     "topic": "Cross-device Claude Code coordination with Remote Control and persistent session migration",
     "status": "published",
     "score": {
