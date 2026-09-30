@@ -427,3 +427,19 @@
   note: "Flag to control system prompt reuse behavior; `off` renders fresh on
     every request instead of caching from conversation (new in 2.1.267); kept as
     English command identifier"
+- id: "claude_code_disable_web_fetch"
+  en: "CLAUDE_CODE_DISABLE_WEB_FETCH"
+  no: "CLAUDE_CODE_DISABLE_WEB_FETCH"
+  note: "Environment variable to turn off the WebFetch tool (new in 2.1.285); kept
+    as English environment variable identifier"
+- id: "claude_code_nonstreaming_timeout_retries"
+  en: "CLAUDE_CODE_NONSTREAMING_TIMEOUT_RETRIES"
+  no: "CLAUDE_CODE_NONSTREAMING_TIMEOUT_RETRIES"
+  note: "Environment variable to cap re-sends of a non-streaming fallback request
+    that timed out (new in 2.1.285); kept as English environment variable
+    identifier"
+- id: "allowedproviders"
+  en: "allowedProviders"
+  no: "allowedProviders"
+  note: "Managed setting to limit which API providers a machine may use (new in
+    2.1.285); kept as English configuration identifier"

@@ -208,3 +208,7 @@ New in 2.1.261: bashOutputMaxChars and taskOutputMaxChars settings let you incre
 ## What's new in v2.1.267
 
 The new `maxEffortLevel` setting (top-level or per model under `modelSettings`) caps the effort level on every provider, including Bedrock, Vertex and Foundry; users can still pick a lower level. Managed settings for `allowedHttpHookUrls`, `httpHookAllowedEnvVars` and `allowedChannelPlugins` now correctly admit nothing (instead of everything) when unreadable.
+
+## What's new in v2.1.285
+
+New in 2.1.285: The `allowedProviders` managed setting limits which API providers a machine may use (Anthropic API, a custom endpoint, Bedrock, Mantle, Vertex AI, Foundry, Claude Platform on AWS, or a Cloud gateway). Two new environment variables provide finer control: `CLAUDE_CODE_DISABLE_WEB_FETCH` turns off the WebFetch tool, and `CLAUDE_CODE_NONSTREAMING_TIMEOUT_RETRIES` caps re-sends of a non-streaming fallback request that timed out.

@@ -1,3 +1,18 @@
+- id: "2.1.285"
+  version: "2.1.285"
+  date: "2026-09-30"
+  entry:
+    en: "Claude Code 2.1.285 adds new environment variables for WebFetch and timeout
+      control, the `allowedProviders` managed setting, improved `claude
+      --desktop` and `claude plugin configure` commands, better MCP server
+      listing, and numerous fixes for subagent permission handling, cloud
+      sessions, artifact publishing, and more."
+    no: "Claude Code 2.1.285 legger til nye miljøvariabler for WebFetch- og
+      timeout-kontroll, innstillingen `allowedProviders` for behandlet,
+      forbedret `claude --desktop` og `claude plugin configure`-kommandoer,
+      bedre MCP-tjenerlistinger, og mange rettelser for
+      underagent-tillatelseshåndtering, skyøkter, artefaktpublisering og mer."
+  sources: []
 - id: "2.1.267"
   version: "2.1.267"
   date: "2026-09-10"

@@ -188,3 +188,7 @@ New in 2.1.261: Use --append-subagent-system-prompt-file to read the subagent sy
 - **Slash command matches**: Slash commands typed mid-prompt now show matches in a list (press Tab to expand outside fullscreen), and plugin skills are found by their bare name (2.1.265).
 
 - **Working directory persistence in non-interactive sessions**: `cd` commands now persist across turns in headless sessions (`-p` with stream-json, Agent SDK, cloud sessions), fixing shell directory resets at each user message (2.1.265).
+
+## What's new in v2.1.285
+
+New in 2.1.285: Use `claude --desktop` to open the Claude desktop app on the current directory, or on a session with `--continue` / `--resume <id>`. The `claude plugin configure <plugin>` command now shows a plugin's options and which are unset, or saves new values read from stdin with `--values-stdin`. Plugin install configuration now supports `<server>.<key>=<value>` syntax so a bundled `.mcpb` MCP server's own settings can be set at install time.

@@ -188,3 +188,7 @@ Nytt i 2.1.261: Bruk --append-subagent-system-prompt-file for å lese underagent
 - **Slash-kommando-treff**: Slash-kommandoer skrevet midt i ledeteksten viser nå treff i en liste (trykk Tab for å ekspandere utenfor fullskjerm), og plugin-ferdigheter finnes etter barnenavnet (2.1.265).
 
 - **Arbeidsmappepersistens i ikke-interaktive økter**: `cd`-kommandoer beholder seg nå på tvers av svinger i hodeløse økter (`-p` med stream-json-output, Agent SDK, skyøkter), og fikser shell-mappeomstillinger ved hver brukermelding (2.1.265).
+
+## Nytt i v2.1.285
+
+Nytt i 2.1.285: Bruk `claude --desktop` for å åpne Claude-skrivebordsappen i gjeldende katalog, eller i en økt med `--continue` / `--resume <id>`. Kommandoen `claude plugin configure <plugin>` viser nå en plugins alternativer og hvilke som ikke er satt, eller lagrer nye verdier lest fra stdin med `--values-stdin`. Plugin-installasjonskonfigurasjon støtter nå `<server>.<key>=<value>`-syntaks slik at en pakket `.mcpb`-MCP-tjeneres egne innstillinger kan settes under installasjonstid.
