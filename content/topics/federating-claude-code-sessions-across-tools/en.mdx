@@ -1,0 +1,109 @@
+---
+title: "Federating Claude Code Sessions Across Tools: Handoff and Context Bridging"
+description: "An emerging pattern of community tools lets you move a Claude Code session between CLI, web, IDE, and other agents like Codex without losing context, building on native handoffs like Remote Control and VS Code's extension-to-CLI switch."
+discoveredAt: "2026-09-01T09:49:18.124Z"
+updatedDate: "2026-10-01T12:11:19.000Z"
+author: "Claude Code Learn"
+trendScore: 0.64
+scoreBreakdown:
+  frequency: 0.5
+  recency: 0.971
+  engagement: 0.288
+  gap: 1
+tags:
+  - "Claude Code"
+  - "session handoff"
+  - "interoperability"
+  - "MCP"
+  - "Codex"
+  - "remote control"
+  - "context window"
+  - "multi-agent"
+sources:
+  - "https://code.claude.com/docs/en/sessions.md"
+  - "https://code.claude.com/docs/en/remote-control.md"
+  - "https://code.claude.com/docs/en/vs-code.md"
+  - "https://code.claude.com/docs/en/platforms.md"
+  - "https://code.claude.com/docs/en/context-window.md"
+  - "https://github.com/kimwz/agent-session-tower"
+  - "https://github.com/HarnessDesk/HarnessDesk"
+  - "https://github.com/michaelrigart/tagteam"
+  - "https://github.com/Sawmills/claudectl"
+relatedModules:
+  - "mcp-servers"
+  - "headless-mode"
+  - "checkpointing"
+relatedUseCases: []
+relatedSkills: []
+draft: false
+# Verified against Claude Code 2.1.267
+---
+# Federating Claude Code Sessions Across Tools: Handoff and Context Bridging
+
+## Quick summary
+
+Developers are building a layer of tools that let a Claude Code session move between the CLI, web, IDE, mobile, and even other coding agents like Codex, without starting over from scratch. This isn't an official Anthropic feature so much as an emerging interop pattern: part native (Remote Control, session resume, VS Code's CLI switch) and part community-built (session routers, account switchers, multi-agent control planes). The point is to stop losing context every time you switch where you work.
+
+## What's new
+
+Claude Code's own docs already describe several "handoff" primitives: resuming a session restores its state from local transcripts, Remote Control lets you attach a phone or browser to a running terminal session and continue it, and the VS Code extension documents an explicit "switch between extension and CLI" workflow alongside launching a VS Code tab from other tools. On top of these native bridges, a wave of community projects on GitHub extends the idea further. Tools like agent-session-tower and HarnessDesk describe themselves as control planes for running multiple agent "harnesses" — Claude Code, Codex, and others — side by side with shared history, permissions, and handoffs between them. Others, like tagteam and claudectl, focus narrower: switching between multiple Claude Code accounts or logins without disturbing local memory or session history. There's also a Reddit/HN thread ("tired of relaying context between Slack and my Claude Code CLI") that captures the underlying motivation directly: people are manually copy-pasting context between surfaces today, and tooling is emerging to automate that.
+
+## How it works
+
+At the protocol level, the pieces that make federation possible are mostly already documented for Claude Code itself:
+
+1. **Session state lives on disk.** Claude Code stores session transcripts locally; resuming a session reads from this stored state, restores permission mode, and can resume from a summary rather than the full transcript if context is large.
+2. **Remote Control attaches, it doesn't copy.** Instead of transferring the conversation to a new process, Remote Control connects an external device (phone, browser) to the *same* running terminal session, so there is only one source of truth for context at any time.
+3. **The VS Code extension and CLI share underlying session data,** which is what makes "switch between extension and CLI" possible without a separate export/import step — it's the same session being viewed from a different front end.
+4. **Context windows are finite and bounded,** so any handoff layer has to decide what to carry over: the full transcript, a compacted summary, or just key files/memory. Claude Code's own context-window docs describe what survives compaction and what gets dropped — the same tradeoff any third-party bridge has to make when moving context between tools that don't share Claude Code's internal format.
+5. **Community routers and control planes add a layer above this.** Projects like HarnessDesk and agent-session-tower run multiple agent CLIs (Claude Code, Codex, ACP-compatible agents) as managed processes, and provide their own session store, permission model, and audit log that sits outside any single vendor's format — effectively a lingua franca for "what happened in this session" that can be replayed or handed off regardless of which agent produced it.
+6. **Account-level switchers (tagteam, claudectl) solve a narrower but related problem:** multiple logins/accounts need to coexist without each one clobbering the other's local memory, history, or rate-limit state.
+
+None of this is a single standardized protocol yet — each project defines its own handoff format. The common thread is treating a session's context (transcript, memory, permissions, pending approvals) as a portable object that should survive a change of interface or even a change of underlying agent.
+
+## Hands-on example
+
+Using Claude Code's native handoff primitives, a simple cross-surface workflow looks like this: start work in the terminal, then pick it up from your phone without losing state.
+
+```bash
+# In your terminal: start a Claude Code session and turn on Remote Control
+claude
+/remote-control
+
+# Claude Code prints a pairing link/QR code.
+# Open Claude on your phone or another browser and connect to the session.
+# You can now watch the session live, send messages, and approve
+# or deny tool calls waiting on permission — from either device.
+
+# Later, resume the same session from the CLI:
+claude --resume
+# or pick it from the session picker if you don't remember the ID
+```
+
+For a cross-agent example in the spirit of the community tools described above, the pattern looks like this (conceptual, not an official command):
+
+```bash
+# A control-plane tool might expose something like:
+agent-session-tower attach --agent claude-code --session <id>
+agent-session-tower handoff --from claude-code --to codex --session <id>
+```
+
+The exact commands depend entirely on the third-party tool you choose — there is no Anthropic-standard CLI for cross-agent handoff today.
+
+## When to use it (and when not to)
+
+Use native handoff (Remote Control, session resume, VS Code's extension/CLI switch) when you're moving between your own devices or interfaces and want zero setup risk — these are documented, supported paths. Reach for third-party session federation tools when you're deliberately running multiple agent products (e.g., Claude Code and Codex) and need a shared view, shared permissions, or audit trail across them, or when you manage multiple Claude Code accounts and need isolation between them.
+
+Be cautious, though: community handoff and multi-agent control planes are not Anthropic products, so you're trusting a third party with session transcripts, credentials, and potentially approval authority over tool calls — review what data each tool stores and how. They also don't share a standardized context format, so a handoff between different agent types will typically lose or flatten some information (e.g., thinking blocks, which Claude's own API ties to the specific model and account that produced them and won't carry over to another model or account unchanged). For routine single-agent, single-account work, stick to the built-in session resume, Remote Control, and the VS Code switch — they're simpler and fully documented.
+
+## Sources
+
+- https://code.claude.com/docs/en/sessions.md
+- https://code.claude.com/docs/en/remote-control.md
+- https://code.claude.com/docs/en/vs-code.md
+- https://code.claude.com/docs/en/platforms.md
+- https://code.claude.com/docs/en/context-window.md
+- https://github.com/kimwz/agent-session-tower
+- https://github.com/HarnessDesk/HarnessDesk
+- https://github.com/michaelrigart/tagteam
+- https://github.com/Sawmills/claudectl

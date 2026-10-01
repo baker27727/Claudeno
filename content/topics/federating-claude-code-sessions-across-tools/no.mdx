@@ -1,0 +1,109 @@
+---
+title: "Å federere Claude Code-økter på tvers av verktøy: overlevering og kontekstbroer"
+description: "Et fremvoksende mønster av fellesskapsverktøy lar deg flytte en Claude Code-økt mellom CLI, nett, IDE og andre agenter som Codex uten å miste kontekst, basert på innebygde overleveringer som Remote Control og VS Codes bytte mellom utvidelse og CLI."
+discoveredAt: "2026-09-01T09:49:18.124Z"
+updatedDate: "2026-10-01T12:11:19.000Z"
+author: "Claude Code Learn"
+trendScore: 0.64
+scoreBreakdown:
+  frequency: 0.5
+  recency: 0.971
+  engagement: 0.288
+  gap: 1
+tags:
+  - "Claude Code"
+  - "session handoff"
+  - "interoperability"
+  - "MCP"
+  - "Codex"
+  - "remote control"
+  - "context window"
+  - "multi-agent"
+sources:
+  - "https://code.claude.com/docs/en/sessions.md"
+  - "https://code.claude.com/docs/en/remote-control.md"
+  - "https://code.claude.com/docs/en/vs-code.md"
+  - "https://code.claude.com/docs/en/platforms.md"
+  - "https://code.claude.com/docs/en/context-window.md"
+  - "https://github.com/kimwz/agent-session-tower"
+  - "https://github.com/HarnessDesk/HarnessDesk"
+  - "https://github.com/michaelrigart/tagteam"
+  - "https://github.com/Sawmills/claudectl"
+relatedModules:
+  - "mcp-servers"
+  - "headless-mode"
+  - "checkpointing"
+relatedUseCases: []
+relatedSkills: []
+draft: false
+# Verified against Claude Code 2.1.267
+---
+# Å federere Claude Code-økter på tvers av verktøy: overlevering og kontekstbroer
+
+## Kort oppsummert
+
+Utviklere bygger nå et lag av verktøy som lar en Claude Code-økt flyttes mellom CLI, nett, IDE, mobil og til og med andre kodeagenter som Codex — uten å starte på nytt. Dette er ikke en offisiell Anthropic-funksjon, men et fremvoksende interop-mønster: dels innebygd (Remote Control, øktgjenopptak, VS Codes bytte mellom utvidelse og CLI) og dels bygget av fellesskapet (øktrutere, kontobytter, kontrollplan for flere agenter). Poenget er å slutte å miste kontekst hver gang du bytter arbeidsflate.
+
+## Hva er nytt
+
+Claude Codes egen dokumentasjon beskriver allerede flere "overleverings"-mekanismer: å gjenoppta en økt gjenoppretter tilstanden fra lokale transkripsjoner, Remote Control lar deg koble en telefon eller nettleser til en kjørende terminaløkt og fortsette den, og VS Code-utvidelsen dokumenterer en eksplisitt arbeidsflyt for å "bytte mellom utvidelse og CLI" i tillegg til å starte en VS Code-fane fra andre verktøy. Oppå disse innebygde broene bygger en bølge av fellesskapsprosjekter på GitHub videre på ideen. Verktøy som agent-session-tower og HarnessDesk beskriver seg selv som kontrollplan for å kjøre flere agent-"harnesser" — Claude Code, Codex og andre — side om side med delt historikk, tillatelser og overleveringer mellom dem. Andre, som tagteam og claudectl, har et smalere fokus: å bytte mellom flere Claude Code-kontoer eller pålogginger uten å forstyrre lokal hukommelse eller økthistorikk. Det finnes også en Reddit/HN-tråd ("lei av å videreformidle kontekst mellom Slack og min Claude Code CLI") som fanger motivasjonen direkte: folk kopierer i dag kontekst manuelt mellom flater, og verktøy dukker opp for å automatisere det.
+
+## Slik fungerer det
+
+På protokollnivå er delene som gjør federering mulig stort sett allerede dokumentert for Claude Code selv:
+
+1. **Økttilstand lagres lokalt.** Claude Code lagrer økttranskripsjoner lokalt; å gjenoppta en økt leser fra denne lagrede tilstanden, gjenoppretter tillatelsesmodus, og kan gjenoppta fra et sammendrag i stedet for hele transkripsjonen hvis konteksten er stor.
+2. **Remote Control kobler til, det kopierer ikke.** I stedet for å overføre samtalen til en ny prosess, kobler Remote Control en ekstern enhet (telefon, nettleser) til den *samme* kjørende terminaløkten, slik at det bare finnes én kilde til sannhet for konteksten til enhver tid.
+3. **VS Code-utvidelsen og CLI-en deler underliggende øktdata,** noe som gjør "bytte mellom utvidelse og CLI" mulig uten et separat eksport-/importtrinn — det er den samme økten som betraktes fra en annen frontend.
+4. **Kontekstvinduer er endelige og begrensede,** så ethvert overleveringslag må bestemme hva som skal videreføres: hele transkripsjonen, et komprimert sammendrag, eller bare nøkkelfiler/hukommelse. Claude Codes egen dokumentasjon om kontekstvinduet beskriver hva som overlever komprimering og hva som forkastes — samme avveining enhver tredjeparts bro må gjøre når kontekst flyttes mellom verktøy som ikke deler Claude Codes interne format.
+5. **Fellesskapsrutere og kontrollplan legger et lag oppå dette.** Prosjekter som HarnessDesk og agent-session-tower kjører flere agent-CLI-er (Claude Code, Codex, ACP-kompatible agenter) som administrerte prosesser, og tilbyr sitt eget øktlager, tillatelsesmodell og revisjonslogg som ligger utenfor noen enkelt leverandørs format — i praksis et felles språk for "hva som skjedde i denne økten" som kan spilles av på nytt eller overleveres uavhengig av hvilken agent som produserte det.
+6. **Kontobaserte bytter (tagteam, claudectl) løser et smalere, men beslektet problem:** flere pålogginger/kontoer må sameksistere uten at den ene overskriver den andres lokale hukommelse, historikk eller ratebegrensningstilstand.
+
+Ingenting av dette er én standardisert protokoll ennå — hvert prosjekt definerer sitt eget overleveringsformat. Fellesnevneren er å behandle en økts kontekst (transkripsjon, hukommelse, tillatelser, ventende godkjenninger) som et portabelt objekt som skal overleve et bytte av grensesnitt eller til og med et bytte av underliggende agent.
+
+## Prøv det selv
+
+Med Claude Codes innebygde overleveringsmekanismer ser en enkel arbeidsflyt på tvers av flater slik ut: start arbeidet i terminalen, og fortsett det fra telefonen uten å miste tilstand.
+
+```bash
+# I terminalen: start en Claude Code-økt og slå på Remote Control
+claude
+/remote-control
+
+# Claude Code skriver ut en parkoblingslenke/QR-kode.
+# Åpne Claude på telefonen eller en annen nettleser og koble til økten.
+# Du kan nå følge økten live, sende meldinger, og godkjenne
+# eller avslå verktøykall som venter på tillatelse — fra begge enheter.
+
+# Senere, gjenoppta samme økt fra CLI-en:
+claude --resume
+# eller velg den fra øktvelgeren hvis du ikke husker ID-en
+```
+
+For et eksempel på tvers av agenter, i samme ånd som fellesskapsverktøyene beskrevet over, ser mønsteret slik ut (konseptuelt, ikke en offisiell kommando):
+
+```bash
+# Et kontrollplan-verktøy kan eksponere noe slikt som:
+agent-session-tower attach --agent claude-code --session <id>
+agent-session-tower handoff --from claude-code --to codex --session <id>
+```
+
+De eksakte kommandoene avhenger helt av tredjepartsverktøyet du velger — det finnes ingen Anthropic-standard CLI for overlevering på tvers av agenter i dag.
+
+## Når du bør bruke det (og når ikke)
+
+Bruk innebygd overlevering (Remote Control, øktgjenopptak, VS Codes bytte mellom utvidelse/CLI) når du beveger deg mellom dine egne enheter eller grensesnitt og vil ha null oppsettsrisiko — dette er dokumenterte, støttede veier. Grip til tredjeparts øktfederering når du bevisst kjører flere agentprodukter (f.eks. Claude Code og Codex) og trenger en felles visning, delte tillatelser eller revisjonsspor på tvers av dem, eller når du administrerer flere Claude Code-kontoer og trenger isolasjon mellom dem.
+
+Vær likevel forsiktig: fellesskapets overleverings- og kontrollplanverktøy for flere agenter er ikke Anthropic-produkter, så du betror en tredjepart økttranskripsjoner, legitimasjon og potensielt godkjenningsmyndighet over verktøykall — se gjennom hva hvert verktøy lagrer og hvordan. De deler heller ikke et standardisert kontekstformat, så en overlevering mellom ulike agenttyper vil typisk miste eller flate ut informasjon (for eksempel tankeblokker, som Claudes eget API knytter til den spesifikke modellen og kontoen som produserte dem, og som ikke overføres uendret til en annen modell eller konto). For rutinemessig arbeid med én agent og én konto, hold deg til innebygd øktgjenopptak, Remote Control og VS Code-byttet — de er enklere og fullstendig dokumentert.
+
+## Kilder
+
+- https://code.claude.com/docs/en/sessions.md
+- https://code.claude.com/docs/en/remote-control.md
+- https://code.claude.com/docs/en/vs-code.md
+- https://code.claude.com/docs/en/platforms.md
+- https://code.claude.com/docs/en/context-window.md
+- https://github.com/kimwz/agent-session-tower
+- https://github.com/HarnessDesk/HarnessDesk
+- https://github.com/michaelrigart/tagteam
+- https://github.com/Sawmills/claudectl

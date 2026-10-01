@@ -1,0 +1,105 @@
+---
+title: "Turning Repeated Corrections into Claude Code Skills"
+description: "When you find yourself correcting Claude Code the same way more than once, that correction is a signal to codify — as a CLAUDE.md rule or a reusable skill — instead of repeating it forever."
+discoveredAt: "2026-09-01T09:49:18.124Z"
+updatedDate: "2026-10-01T12:12:17.210Z"
+author: "Claude Code Learn"
+trendScore: 0.606
+scoreBreakdown:
+  frequency: 0.5
+  recency: 0.899
+  engagement: 0.223
+  gap: 1
+tags:
+  - "Claude Code"
+  - "skills"
+  - "CLAUDE.md"
+  - "memory"
+  - "developer workflow"
+  - "agentic coding"
+sources:
+  - "https://code.claude.com/docs/en/memory.md"
+  - "https://code.claude.com/docs/en/best-practices.md"
+  - "https://code.claude.com/docs/en/claude-directory.md"
+  - "https://code.claude.com/docs/en/how-claude-code-works.md"
+relatedModules:
+  - "skills"
+  - "memory"
+  - "hooks"
+  - "subagents"
+relatedUseCases: []
+relatedSkills: []
+draft: false
+# Verified against Claude Code 2.1.267
+---
+## Quick summary
+
+If you keep telling Claude Code the same thing — "use our internal logger, not console.log", "always run the linter before committing", "don't touch the generated/ folder" — that repetition is a signal, not a nuisance. Instead of retyping the same correction every session, you can capture it once as a rule in `CLAUDE.md`, a path-specific rule in `.claude/rules/`, or a full reusable skill. This turns one-off corrections ("configuration drift" between what Claude assumes and what your project actually requires) into durable, shareable project knowledge.
+
+## What's new
+
+A pattern has emerged across the Claude Code community (visible in projects like config-drift-checker and drydock, and discussed on Hacker News) around systematically converting repeated agent corrections into rules or skills, rather than leaving them as tribal knowledge re-explained in every prompt. This builds directly on capabilities already documented for Claude Code:
+
+- **`CLAUDE.md` and `.claude/rules/`** let you persist project-wide or path-specific instructions so Claude doesn't need to be told the same thing twice. Rules can be scoped to specific paths, shared across projects via symlinks, or deployed organization-wide.
+- **Auto memory** lets Claude Code itself save things it learns mid-session, which you can audit and edit later via `/memory`.
+- **Skills** are a first-class way to package reusable, invokable capability — distinct from passive memory files — and Claude Code's docs explicitly list "Create skills" as a best practice for configuring your environment.
+- The Claude API itself now supports managing skills as code: `ant apply` (CLI v1.30.0) creates and updates skills, agents, environments, and deployments from files in your repository, with a `claude-lock.json` lockfile so repeated runs update the same resources instead of duplicating them — making "codify once, apply everywhere" a first-class workflow, not just a convention.
+
+## How it works
+
+The underlying mechanism is straightforward, and the discipline is in recognizing the pattern:
+
+1. **Detect drift**: You notice Claude Code producing output that violates an implicit project convention (wrong import style, wrong test runner, ignoring a generated directory) and you correct it mid-session.
+2. **Check for repetition**: The first time, it's a one-off instruction. The second or third time you give functionally the same correction — across sessions or across team members — that's the signal to stop repeating and start codifying.
+3. **Choose the right container**:
+   - A short, always-relevant convention → add a line to project `CLAUDE.md`.
+   - A convention that only applies to certain paths (e.g., "files under `/generated` are never hand-edited") → a path-specific rule in `.claude/rules/`, using rule frontmatter to scope it.
+   - A multi-step, invokable procedure (e.g., "how we cut a release," "how we add a new API endpoint") → a skill, which Claude can explicitly load and execute rather than passively reading.
+   - Something Claude itself inferred correctly mid-session → let auto memory capture it, then review it with `/memory` rather than hand-writing it.
+4. **Audit, don't accumulate blindly**: Claude Code's docs recommend auditing instruction files, since an oversized `CLAUDE.md` increases context cost and can cause Claude to ignore parts of it. Not every correction deserves a permanent rule — only ones that recur.
+5. **Distribute consistently**: Rules can be shared across projects with symlinks or deployed organization-wide, and skills can now be managed as code with `ant apply`, which uses a lockfile to make repeated application idempotent rather than creating duplicate resources on every run.
+6. **Keep cache behavior in mind**: Editing `CLAUDE.md` mid-session is one of the actions that *keeps* the prompt cache intact, so codifying a correction into memory is cheaper than you might expect — unlike, say, switching models or toggling a plugin, which invalidate it.
+
+## Hands-on example
+
+Suppose Claude Code keeps using `print()` for debug output instead of your project's structured logger. The first correction is just a chat message. The second time it happens, codify it:
+
+```markdown
+# .claude/rules/logging.md
+---
+paths:
+  - "src/**/*.py"
+---
+
+# Logging convention
+
+- Never use `print()` for debug or diagnostic output.
+- Use `from app.logging import logger` and call `logger.debug(...)`,
+  `logger.info(...)`, etc.
+- Exception: scripts under `scripts/` may use `print()` for CLI output.
+```
+
+Then verify it sticks:
+
+```
+> Add a debug line to the new payment retry handler
+
+# Claude now uses logger.debug(...) automatically,
+# without being told again in this session.
+```
+
+For a multi-step convention — say, "how we add a new database migration" — package it as a skill instead of a rule, so Claude can invoke the whole procedure (generate file, run validation, update changelog) as one unit rather than you re-explaining each step.
+
+## When to use it (and when not to)
+
+Codify a correction when: it has happened more than once, it applies broadly (a whole path, a whole repo, or an org), and it's stable (unlikely to change next sprint). Rules and skills are ideal here because they're loaded once and reused, and — per Claude Code's docs — editing them mid-session doesn't blow away your prompt cache the way switching models or plugins does.
+
+Don't do it when: the correction is a one-time, context-specific fix (e.g., "undo that specific refactor") that won't recur; you're not sure yet if the convention will stick (let auto memory capture it first, then promote it manually after review); or your `CLAUDE.md` is already large — the docs warn that an oversized instruction file raises context cost and can cause Claude to quietly ignore parts of it, so pruning stale rules matters as much as adding new ones. For deep, infrequent procedures, prefer a skill over a rule, since skills are explicitly invoked rather than always loaded into context.
+
+## Sources
+
+- https://code.claude.com/docs/en/memory.md
+- https://code.claude.com/docs/en/best-practices.md
+- https://code.claude.com/docs/en/claude-directory.md
+- https://code.claude.com/docs/en/how-claude-code-works.md
+- https://code.claude.com/docs/en/prompt-caching.md
