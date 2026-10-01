@@ -11,32 +11,70 @@ verktøy, databaser og API-er — saksbehandlingssystemer, overvåkingsdashboard
 og mer — slik at Claude kan handle direkte på dem i stedet for at du kopierer inn data
 manuelt.
 
-## Legg til en ekstern tjener (HTTP)
+Claude Code kan koble til hundrevis av eksterne verktøy og datakilder gjennom [Model Context Protocol (MCP)](https://modelcontextprotocol.io/introduction), en åpen standard for AI-verktøyintegrasjoner. MCP-servere gir Claude Code tilgang til dine verktøy, databaser og API-er.
+
+## Hva du kan gjøre med MCP
+
+Med MCP-servere tilkoblet kan du be Claude Code om å:
+
+* **Implementere funksjoner fra saksbehandlingssystemer**: "Legg til funksjonen beskrevet i JIRA-sak ENG-4521 og lag en PR på GitHub."
+* **Analysere overvåkingsdata**: "Sjekk Sentry og Statsig for å kontrollere bruken av funksjonen beskrevet i ENG-4521."
+* **Søk i databaser**: "Finn e-postadresser til 10 tilfeldige brukere som brukte funksjonen ENG-4521, basert på PostgreSQL-databasen vår."
+* **Integrer designs**: "Oppdater standard e-postmalen vår basert på de nye Figma-designene som ble lagt ut på Slack"
+* **Automatiser arbeidsflyter**: "Lag Gmail-utkast som inviterer disse 10 brukerne til en tilbakemeldingsøkt om den nye funksjonen."
+* **Reager på eksterne hendelser**: En MCP-tjener kan også fungere som en kanal som pusher meldinger inn i økten din, slik at Claude reagerer på Telegram-meldinger, Discord-chatter eller webhook-hendelser mens du er borte.
+
+## Installere MCP-servere
+
+MCP-servere kan konfigureres på flere måter avhengig av dine behov:
+
+### Alternativ 1: Legg til en ekstern HTTP-tjener
+
+HTTP-servere er det anbefalte valget for tilkobling til eksterne MCP-servere. Dette er den mest bredt støttede transporten for skybaserte tjenester.
 
 ```bash
 claude mcp add --transport http notion https://mcp.notion.com/mcp
 ```
 
-De fleste hostede integrasjoner eksponerer et HTTP- (eller SSE-)endepunkt. Dette er
-den enkleste måten å koble til en tredjepartstjeneste på.
+Du kan også sende autentiseringshoder:
 
-## Legg til en lokal tjener (stdio)
+```bash
+claude mcp add --transport http secure-api https://api.example.com/mcp \
+  --header "Authorization: Bearer your-token"
+```
+
+### Alternativ 2: Legg til en ekstern SSE-tjener
+
+<Callout type="warning">
+SSE-transporten (Server-Sent Events) er foreldet. Bruk HTTP-servere i stedet der det er mulig.
+</Callout>
+
+Noen tjenester eksponerer bare et SSE-endepunkt:
+
+```bash
+claude mcp add --transport sse asana https://mcp.asana.com/sse
+```
+
+### Alternativ 3: Legg til en lokal stdio-tjener
+
+Stdio-servere kjører som lokale prosesser på maskinen din. De er ideelle for verktøy som trenger direkte systemtilgang eller tilpassede skript.
 
 ```bash
 claude mcp add --transport stdio myserver -- npx server
 ```
 
-Stdio-tjenere kjører som en prosess på din egen maskin — bra for verktøy som trenger
-direkte systemtilgang eller et tilpasset skript. Alt etter `--` sendes uendret til
-den prosessen, atskilt fra Claudes egne flagg som `--transport` eller `--env`.
+**Viktig:** Bruk `--` (dobbelt bindestrek) for å skille Claudes alternativer fra tjenarkommandoen. Alt etter `--` sendes uendret til serveren.
 
-## Valg av transport
+Claude Code setter `CLAUDE_PROJECT_DIR` i tjenarens miljø til prosjektroten, slik at serveren din kan løse prosjektrelaterte stier.
 
-| Transport | Kjører hvor | Typisk bruk |
-|---|---|---|
-| `stdio` | Lokal prosess | Tilpassede skript, direkte systemtilgang |
-| `http` / `sse` | Ekstern | Hostede SaaS-integrasjoner |
-| `ws` | Ekstern, vedvarende | Tjenere som pusher hendelser uoppfordret |
+### Alternativ 4: Legg til en ekstern WebSocket-tjener
+
+WebSocket-servere opprettholder en vedvarende toveis forbindelse, som passer for eksterne MCP-servere som pusher hendelser til Claude uoppfordret:
+
+```bash
+claude mcp add-json events-server \
+  '{"type":"ws","url":"wss://mcp.example.com/socket","headers":{"Authorization":"Bearer YOUR_TOKEN"}}'
+```
 
 ## Valg av nivå (scope)
 
@@ -44,16 +82,56 @@ den prosessen, atskilt fra Claudes egne flagg som `--transport` eller `--env`.
 claude mcp add --transport http stripe --scope local https://mcp.stripe.com
 ```
 
-`--scope` styrer hvem andre som ser denne tjeneren: `local` (standard) holder den
-privat for deg i dette prosjektet, `project` skriver den til en committet `.mcp.json`
-hele teamet ditt får, og `user` gjør den tilgjengelig på tvers av alle prosjektene du
-jobber i.
+`--scope` styrer hvem andre som ser denne tjeneren:
+
+| Nivå | Lastes inn i | Delt med team | Lagret i |
+| - | - | - | - |
+| `local` (standard) | Kun gjeldende prosjekt | Nei | `~/.claude.json` |
+| `project` | Kun gjeldende prosjekt | Ja, via versjonskontroll | `.mcp.json` i prosjektroten |
+| `user` | Alle dine prosjekter | Nei | `~/.claude.json` |
 
 <Callout type="mistake" title="Vanlig feil">
-  Å legge til en tjener med API-nøkkel med `--scope project` — det committer
-  tilkoblingskonfigurasjonen der hele teamet ditt (og git-historikken) kan se den. Bruk
-  `local`- eller `user`-nivå for alt som er sensitivt med tanke på legitimasjon.
+Å legge til en tjener med API-nøkkel med `--scope project` committer tilkoblingskonfigurasjonen der hele teamet ditt (og git-historikken) kan se den. Bruk `local`- eller `user`-nivå for alt som er sensitivt med tanke på legitimasjon.
 </Callout>
+
+### Prosjektnivå
+
+Prosjektscope-servere muliggjør teamsamarbeid ved å lagre konfigurasjoner i en `.mcp.json`-fil i prosjektroten. Når du legger til en prosjektscope-tjener, oppretter eller oppdaterer Claude Code automatisk denne filen:
+
+```json
+{
+  "mcpServers": {
+    "shared-server": {
+      "type": "http",
+      "url": "https://example.com/mcp"
+    }
+  }
+}
+```
+
+Sjekk `.mcp.json` inn i versjonskontroll slik at alle på teamet ditt får de samme MCP-verktøyene.
+
+### Miljøvariabelutvidelse i `.mcp.json`
+
+Claude Code støtter miljøvariabelutvidelse i `.mcp.json`-filer:
+
+```json
+{
+  "mcpServers": {
+    "api-server": {
+      "type": "http",
+      "url": "${API_BASE_URL:-https://api.example.com}/mcp",
+      "headers": {
+        "Authorization": "Bearer ${API_KEY}"
+      }
+    }
+  }
+}
+```
+
+Bruk `${VAR}` for å referere til en miljøvariabel, eller `${VAR:-default}` for å angi en standardverdi.
+
+**Legitimasjonsvariablene som leses som tomme:** I en ekstern tjeners `url` og `headers` leser Claude Code legitimasjonsvariablene som `ANTHROPIC_API_KEY`, `AWS_BEARER_TOKEN_BEDROCK` og andre sensitive navn som tomme for å forhindre lekkasje av legitimasjon. Bruk dine egne variabelnavn i stedet.
 
 ## Administrere tilkoblinger
 
@@ -61,9 +139,77 @@ jobber i.
 /mcp
 ```
 
-`/mcp` åpner den interaktive listen over MCP-tjenertilkoblingene dine. Send
-`reconnect <server>` for å koble til på nytt en som falt fra, eller `enable`/`disable`
-med et tjenernavn (eller `all`) for å endre tilkoblingsstatus uten å åpne dialogen.
+`/mcp` åpner den interaktive listen over MCP-tjenertilkoblingene dine. Du kan:
+
+* Kontrollere tjenerstatus med `✔ Connected`, `! Needs authentication` eller `✘ Failed to connect`
+* Sende `reconnect <server>` for å koble til på nytt en som falt fra
+* Bruke `enable`/`disable` med et tjenernavn (eller `all`) for å veksle tilkoblingsstatus
+* Bruke `claude mcp list` for å liste alle servere fra kommandolinjen
+
+## Autentiser med eksterne MCP-servere
+
+Mange skybaserte MCP-servere krever autentisering via OAuth 2.0. Claude Code markerer en ekstern tjener som trenger autentisering når den svarer med `401 Unauthorized` eller `403 Forbidden`.
+
+Åpne `/mcp` og velg en tjener for å fullføre OAuth-flyten. Når du fjerner en ekstern tjener, sletter Claude Code også OAuth-tokenene som ble lagret for den tjeneren.
+
+## Deaktiver en tjener uten å fjerne den
+
+Slå en tjener av i `/mcp`-panelet for å stoppe Claude Code fra å koble til den uten å miste konfigurasjonen. Claude Code viser fortsatt serveren i `/mcp`, merket som deaktivert.
+
+## Finn og bygg MCP-servere
+
+Bla gjennom gjennomgåtte koblinger i [Anthropic Directory](https://claude.ai/directory). Directory-koblinger bruker samme MCP-infrastruktur som Claude Code.
+
+For å bygge din egen tjener, se [MCP-serverveiledningen](https://modelcontextprotocol.io/docs/develop/build-server) for protokollfundamenter og [Claude-koblingsdokumentasjonen](https://claude.com/docs/connectors/building) for autentisering, testing og kataloginnsendinser.
+
+Du kan også la Claude bygge en tjener for deg med det offisielle `mcp-server-dev`-pluginet:
+
+```
+/plugin install mcp-server-dev@claude-plugins-official
+/mcp-server-dev:build-mcp-server
+```
+
+Claude spør om brukstilfelle ditt og bygger en ekstern HTTP- eller lokal stdio-tjener.
+
+## Praktiske eksempler
+
+### Eksempel: Koble til GitHub for kodegjennomganger
+
+GitHubs eksterne MCP-tjener autentiserer med et GitHub-personlig tilgangstoken. For å få ett, åpner du [GitHub-tokeninnstillingene](https://github.com/settings/personal-access-tokens) og genererer et nytt finkornet token med tilgang til repositoriene du vil at Claude skal jobbe med:
+
+```bash
+claude mcp add --transport http github https://api.githubcopilot.com/mcp/ \
+  --header "Authorization: Bearer YOUR_GITHUB_PAT"
+```
+
+Arbeid deretter med GitHub:
+
+```
+Gjennomgå PR #456 og foreslå forbedringer
+```
+
+```
+Lag en ny sak for feilen vi nettopp fant
+```
+
+### Eksempel: Spør PostgreSQL-databasen
+
+DBHub er en MCP-tjener som kobler Claude til en relasjonsdatabase. Bruk en skrivebeskyttet databasebruker i tilkoblingsstrengen slik at spørringene Claude kjører ikke kan endre data:
+
+```bash
+claude mcp add --transport stdio db -- npx -y @bytebase/dbhub \
+  --dsn "postgresql://readonly:pass@prod.db.com:5432/analytics"
+```
+
+Spør deretter databasen naturlig:
+
+```
+Hva er totale inntekter våre denne måneden?
+```
+
+```
+Vis meg skjemaet for orders-tabellen
+```
 
 ## Oppsummering
 
@@ -78,47 +224,3 @@ med et tjenernavn (eller `all`) for å endre tilkoblingsstatus uten å åpne dia
 ## Relaterte skills
 
 MCP kobler Claude til eksterne systemer; skills lærer den arbeidsflyter som ofte *bruker* disse koblingene. Mange kuraterte skills passer naturlig sammen med en MCP-tjener. Se [Skills og SKILL.md](/no/learn/skills/) og [skills-katalogen](/no/skills/).
-
-## Nytt i v2.1.206
-
-MCP-tjenere konfigurert via `--mcp-config` eller `.mcp.json` respekterer nå korrekt per-tjener `request_timeout_ms`-innstillinger, noe som fikser timeoutproblemer der langvarige MCP-verktøykall tidligere ville tidsavbruddet på 60-sekunders standard i friske økter. OAuth MCP-tjenere krever ikke lenger manuell omautentisering etter ett enkelt mislykket tokenverdier. I tillegg fikser en kritisk retting at `--permission-prompt-tool` som peker på en MCP-tjener som krasjer med "MCP-verktøy ikke funnet" ved kaldstart før tjeneren er ferdig tilkoblet. De reserverte navnene "Claude Browser" og "Claude Preview" er blitt reservert for systembruk; brukerens konfigurerte MCP-tjenere kan ikke lenger registrere seg under noen av navnene.
-
-## Nytt i v2.1.209
-
-MCP-tjenere konfigurert med en tom URL vises nå som "ikke konfigurert" i `/mcp` i stedet for en konfigurasjonsfeil. Fikset OAuth MCP-tjenere som krevde manuell re-autentisering etter en enkelt mislykket token-refresh — de håndterer nå token-refresh-feil mer elegantly. Fikset `--permission-prompt-tool` som peker på en MCP-tjener som krasjet med "MCP tool not found" ved kald start før tjeneren er ferdig med tilkoblingen.
-
-## Nytt i v2.1.218
-
-Kommandoen /mcp og claude mcp list viser nå HTTP-status og feilmelding når en tjener ikke klarer å koble til. En ny advarsel varsler deg om MCP-konfigurasjonsverdier med skjult ledende eller etterfølgende mellomrom som kan forårsake tilkoblingsproblemer.
-
-## Nytt i v2.1.220
-
-Kommandoen `claude mcp list` og `/mcp` viser nå HTTP-statuskoder og feiltekst når en tjener ikke klarer å koble til. En advarsel varsler også brukere om MCP-konfigurasjonsverdier med skjult ledende eller etterfølgende mellomrom som kan forårsake tilkoblingsproblemer.
-
-## Nytt i v2.1.221
-
-Nytt i 2.1.221: MCP-tjenere fra `--mcp-config` er nå riktig tilkoblet før første tur i utskriftsmodus (`-p`). Kommandoen `claude mcp list` er forbedret til å vise HTTP-status og feilmelding når en tjener ikke klarer å koble til. Merk at oppføringer i administrert MCP allowlist/denylist med `${VAR}`-plassholdere nå løses fra oppstartsmiljøet og administrert-innstillingsmiljø i stedet for innstillingsfil-miljø.
-
-## Nytt i v2.1.226
-
-**Nytt i 2.1.226:** Self-hosted runnere er nå tilgjengelige på Team- og Enterprise-planer via kommandoen `claude self-hosted-runner`, noe som lar dine egne maskiner eller containere fungere som verter for Claude Code-økter. I tillegg muliggjør den nye `archive`-plugin-kilden plugin-installasjon fra zip-filer over HTTPS med valgfri SHA-256-pinning, uten å kreve git eller npm.
-
-## Nytt i v2.1.228
-
-**Forbedret OAuth-pålitelighet (2.1.225+):** MCP OAuth-tjenere på macOS er nå mer robuste — intermitterende nøkkelkjedelesetimeouts forårsaker ikke lenger gjentatte 401-feil som kunne tyde på at autentisering aldri lyktes. Utløpte eller manglende Google Cloud-legitimasjon for Vertex AI feiler nå raskt (innen sekunder) i stedet for å prøve på nytt i minutter.
-
-## Nytt i v2.1.233
-
-Nytt i 2.1.233: Fikset MCP v2-tilkoblinger som endelig åpnet abonnement/lytt-strømmer på nytt mot servere som avslutter langvarige strømmer på en fast tidsavbrudd (vanlig på serverless-verter).
-
-## Nytt i v2.1.238
-
-**Headers helper for MCP**: MCP-tjenere kan nå inkludere en `headersHelper`-kommando som produserer HTTP-hodinger (f.eks. nylig utstedte tokens) for katalog- og same-origin-arkivhentinger. I prosjekt `.mcp.json`-filer krever `headersHelper` at prosjektmappens tillitsdialog er blitt akseptert, og den kjøres uten arvede legitimasjonsomgivelsesvariabler.
-
-## Nytt i v2.1.247
-
-MCP-tjener-konfigurasjonssvikter blir nå bedre rapportert: på Bedrock-, Vertex AI- og Foundry-økter (og alle med telemetri deaktivert), blir Claude nå informert når en konfigurert MCP-tjener ikke klarte å koble til, i stedet for at systemet feilaktig konkluderer med at tjenestens verktøy ikke eksisterer.
-
-## Nytt i v2.1.259
-
-2.1.259 introduserer `managedMcpServers`: organisasjoner kan levere HTTP/SSE MCP-tjenere til hver bruker (samme oppføringskape som `.mcp.json`); oppføringer som navngir en kommando å kjøre hoppes over. Innstillingen `allowedMcpServers` styrer nå bare tjenere brukere legger til; en bokstavelig `managed-mcp.json`-tjener som tillatelselisten din pleide å filtrere ut laster nå ved oppgradering. Bruk `deniedMcpServers` for å holde den av.

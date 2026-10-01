@@ -10,32 +10,70 @@ The Model Context Protocol (MCP) is an open standard that connects Claude Code t
 external tools, databases, and APIs — issue trackers, monitoring dashboards, CRMs,
 and more — so Claude can act on them directly instead of you copy-pasting data in.
 
-## Add a remote server (HTTP)
+Claude Code can connect to hundreds of external tools and data sources through the [Model Context Protocol (MCP)](https://modelcontextprotocol.io/introduction), an open source standard for AI-tool integrations. MCP servers give Claude Code access to your tools, databases, and APIs.
+
+## What you can do with MCP
+
+With MCP servers connected, you can ask Claude Code to:
+
+* **Implement features from issue trackers**: "Add the feature described in JIRA issue ENG-4521 and create a PR on GitHub."
+* **Analyze monitoring data**: "Check Sentry and Statsig to check the usage of the feature described in ENG-4521."
+* **Query databases**: "Find emails of 10 random users who used feature ENG-4521, based on our PostgreSQL database."
+* **Integrate designs**: "Update our standard email template based on the new Figma designs that were posted in Slack"
+* **Automate workflows**: "Create Gmail drafts inviting these 10 users to a feedback session about the new feature."
+* **React to external events**: an MCP server can also act as a channel that pushes messages into your session, so Claude reacts to Telegram messages, Discord chats, or webhook events while you're away.
+
+## Installing MCP servers
+
+MCP servers can be configured in several ways depending on your needs:
+
+### Option 1: Add a remote HTTP server
+
+HTTP servers are the recommended option for connecting to remote MCP servers. This is the most widely supported transport for cloud-based services.
 
 ```bash
 claude mcp add --transport http notion https://mcp.notion.com/mcp
 ```
 
-Most hosted integrations expose an HTTP (or SSE) endpoint. This is the simplest way
-to connect to a third-party service.
+You can also pass authentication headers:
 
-## Add a local server (stdio)
+```bash
+claude mcp add --transport http secure-api https://api.example.com/mcp \
+  --header "Authorization: Bearer your-token"
+```
+
+### Option 2: Add a remote SSE server
+
+<Callout type="warning">
+The SSE (Server-Sent Events) transport is deprecated. Use HTTP servers instead, where available.
+</Callout>
+
+Some services still expose only an SSE endpoint:
+
+```bash
+claude mcp add --transport sse asana https://mcp.asana.com/sse
+```
+
+### Option 3: Add a local stdio server
+
+Stdio servers run as local processes on your machine. They're ideal for tools that need direct system access or custom scripts.
 
 ```bash
 claude mcp add --transport stdio myserver -- npx server
 ```
 
-Stdio servers run as a process on your own machine — good for tools that need direct
-system access or a custom script. Everything after `--` is passed to that process
-untouched, separate from Claude's own flags like `--transport` or `--env`.
+**Important:** Use `--` (double dash) to separate Claude's options from the server command. Everything after `--` is passed to the server untouched.
 
-## Choosing a transport
+Claude Code sets `CLAUDE_PROJECT_DIR` in the spawned server's environment to the project root, so your server can resolve project-relative paths.
 
-| Transport | Runs where | Typical use |
-|---|---|---|
-| `stdio` | Local process | Custom scripts, direct system access |
-| `http` / `sse` | Remote | Hosted SaaS integrations |
-| `ws` | Remote, persistent | Servers that push events unprompted |
+### Option 4: Add a remote WebSocket server
+
+WebSocket servers hold a persistent bidirectional connection, which suits remote MCP servers that push events to Claude unprompted:
+
+```bash
+claude mcp add-json events-server \
+  '{"type":"ws","url":"wss://mcp.example.com/socket","headers":{"Authorization":"Bearer YOUR_TOKEN"}}'
+```
 
 ## Choosing a scope
 
@@ -43,15 +81,56 @@ untouched, separate from Claude's own flags like `--transport` or `--env`.
 claude mcp add --transport http stripe --scope local https://mcp.stripe.com
 ```
 
-`--scope` controls who else sees this server: `local` (default) keeps it private to
-you in this project, `project` writes it to a committed `.mcp.json` your whole team
-gets, and `user` makes it available across every project you work in.
+`--scope` controls who else sees this server:
+
+| Scope | Loads in | Shared with team | Stored in |
+| - | - | - | - |
+| `local` (default) | Current project only | No | `~/.claude.json` |
+| `project` | Current project only | Yes, via version control | `.mcp.json` in project root |
+| `user` | All your projects | No | `~/.claude.json` |
 
 <Callout type="mistake" title="Common mistake">
-  Adding an API-key-bearing server with `--scope project` — that commits the
-  connection config where your whole team (and git history) can see it. Use `local`
-  or `user` scope for anything credential-sensitive.
+Adding an API-key-bearing server with `--scope project` commits the connection config where your whole team (and git history) can see it. Use `local` or `user` scope for anything credential-sensitive.
 </Callout>
+
+### Project scope
+
+Project-scoped servers enable team collaboration by storing configurations in a `.mcp.json` file at your project's root. When you add a project-scoped server, Claude Code automatically creates or updates this file:
+
+```json
+{
+  "mcpServers": {
+    "shared-server": {
+      "type": "http",
+      "url": "https://example.com/mcp"
+    }
+  }
+}
+```
+
+Check `.mcp.json` into version control so everyone on your team gets the same MCP tools.
+
+### Environment variable expansion in `.mcp.json`
+
+Claude Code supports environment variable expansion in `.mcp.json` files:
+
+```json
+{
+  "mcpServers": {
+    "api-server": {
+      "type": "http",
+      "url": "${API_BASE_URL:-https://api.example.com}/mcp",
+      "headers": {
+        "Authorization": "Bearer ${API_KEY}"
+      }
+    }
+  }
+}
+```
+
+Use `${VAR}` to reference an environment variable, or `${VAR:-default}` to provide a default value.
+
+**Credential variables that read as empty:** In a remote server's `url` and `headers`, Claude Code reads credential variables like `ANTHROPIC_API_KEY`, `AWS_BEARER_TOKEN_BEDROCK`, and other sensitive names as empty to prevent leaking credentials. Use your own variable names instead.
 
 ## Managing connections
 
@@ -59,9 +138,77 @@ gets, and `user` makes it available across every project you work in.
 /mcp
 ```
 
-`/mcp` opens the interactive list of your MCP server connections. Pass
-`reconnect <server>` to reconnect one that dropped, or `enable`/`disable` with a
-server name (or `all`) to change connection state without opening the dialog.
+`/mcp` opens the interactive list of your MCP server connections. You can:
+
+* Check server status with `✔ Connected`, `! Needs authentication`, or `✘ Failed to connect`
+* Pass `reconnect <server>` to reconnect one that dropped
+* Use `enable`/`disable` with a server name (or `all`) to toggle connection state
+* Use `claude mcp list` to list all servers from the command line
+
+## Authenticate with remote MCP servers
+
+Many cloud-based MCP servers require authentication via OAuth 2.0. Claude Code marks a remote server as needing authentication when it responds with `401 Unauthorized` or `403 Forbidden`.
+
+Open `/mcp` and select a server to complete the OAuth flow. When you remove a remote server, Claude Code also deletes the OAuth tokens it stored for that server.
+
+## Disable a server without removing it
+
+Toggle a server off in the `/mcp` panel to stop Claude Code from connecting to it without losing its configuration. Claude Code still lists the server in `/mcp`, marked as disabled.
+
+## Find and build MCP servers
+
+Browse reviewed connectors in the [Anthropic Directory](https://claude.ai/directory). Directory connectors use the same MCP infrastructure as Claude Code.
+
+To build your own server, see the [MCP server guide](https://modelcontextprotocol.io/docs/develop/build-server) for protocol fundamentals and the [Claude connector building docs](https://claude.com/docs/connectors/building) for authentication, testing, and Directory submission.
+
+You can also have Claude scaffold a server for you with the official `mcp-server-dev` plugin:
+
+```
+/plugin install mcp-server-dev@claude-plugins-official
+/mcp-server-dev:build-mcp-server
+```
+
+Claude will ask about your use case and scaffold a remote HTTP or local stdio server.
+
+## Practical examples
+
+### Example: Connect to GitHub for code reviews
+
+GitHub's remote MCP server authenticates with a GitHub personal access token. To get one, open your [GitHub token settings](https://github.com/settings/personal-access-tokens) and generate a new fine-grained token with access to the repositories you want Claude to work with:
+
+```bash
+claude mcp add --transport http github https://api.githubcopilot.com/mcp/ \
+  --header "Authorization: Bearer YOUR_GITHUB_PAT"
+```
+
+Then work with GitHub:
+
+```
+Review PR #456 and suggest improvements
+```
+
+```
+Create a new issue for the bug we just found
+```
+
+### Example: Query your PostgreSQL database
+
+DBHub is an MCP server that connects Claude to a relational database. Use a read-only database user in the connection string so queries Claude runs can't modify data:
+
+```bash
+claude mcp add --transport stdio db -- npx -y @bytebase/dbhub \
+  --dsn "postgresql://readonly:pass@prod.db.com:5432/analytics"
+```
+
+Then query your database naturally:
+
+```
+What's our total revenue this month?
+```
+
+```
+Show me the schema for the orders table
+```
 
 ## Key takeaways
 
@@ -76,47 +223,3 @@ server name (or `all`) to change connection state without opening the dialog.
 ## Related skills
 
 MCP connects Claude to external systems; skills teach it workflows that often *use* those connections. Many curated skills pair naturally with an MCP server. See [Skills & SKILL.md](/en/learn/skills/) and the [skills catalog](/en/skills/).
-
-## What's new in v2.1.206
-
-MCP servers configured via `--mcp-config` or `.mcp.json` now properly respect per-server `request_timeout_ms` settings, fixing timeout issues where long-running MCP tool calls would previously time out at the 60-second default in fresh sessions. OAuth MCP servers no longer require manual re-authentication after a single failed token refresh. Additionally, a critical fix addresses `--permission-prompt-tool` pointing at an MCP server crashing with "MCP tool not found" on cold start before the server finishes connecting. The reserved names "Claude Browser" and "Claude Preview" have been reserved for system use; user-configured MCP servers can no longer register under either name.
-
-## What's new in v2.1.209
-
-MCP servers configured with an empty URL now show as "not configured" in `/mcp` instead of a config error. Fixed OAuth MCP servers requiring manual re-authentication after a single failed token refresh — they now handle token refresh failures more gracefully. Fixed `--permission-prompt-tool` pointing at an MCP server crashing with "MCP tool not found" on cold start before the server finishes connecting.
-
-## What's new in v2.1.218
-
-The /mcp command and claude mcp list now display HTTP status and error text when a server fails to connect. A new warning alerts you to MCP config values with hidden leading or trailing whitespace that could cause connection issues.
-
-## What's new in v2.1.220
-
-The `claude mcp list` command and `/mcp` now display HTTP status codes and error text when a server fails to connect. Additionally, a warning alerts users to MCP config values with hidden leading or trailing whitespace that could cause connection issues.
-
-## What's new in v2.1.221
-
-New in 2.1.221: MCP servers from `--mcp-config` are now properly connected before the first turn in print mode (`-p`). The `claude mcp list` command has been improved to show HTTP status and error text when a server fails to connect. Note that managed MCP allowlist/denylist entries with `${VAR}` placeholders now resolve from the startup environment and managed-settings env instead of settings-file env.
-
-## What's new in v2.1.226
-
-**New in 2.1.226:** Self-hosted runners are now available on Team and Enterprise plans via the `claude self-hosted-runner` command, allowing your own machines or containers to serve as hosts for Claude Code sessions. Additionally, the new `archive` plugin source enables plugin installation from zip files over HTTPS with optional SHA-256 pinning, without requiring git or npm.
-
-## What's new in v2.1.228
-
-**Improved OAuth reliability (2.1.225+):** MCP OAuth servers on macOS are now more resilient — intermittent keychain read timeouts no longer cause repeated 401 errors that would wrongly suggest authentication never succeeded. Expired or missing Google Cloud credentials for Vertex AI now fail fast (within seconds) instead of retrying for minutes.
-
-## What's new in v2.1.233
-
-New in 2.1.233: Fixed MCP v2 connections that were endlessly reopening subscriptions/listen streams against servers terminating long-held streams on a fixed timeout (common on serverless hosts).
-
-## What's new in v2.1.238
-
-**Headers helper for MCP**: MCP servers can now include a `headersHelper` command that mints HTTP headers (e.g. freshly issued tokens) for catalog and same-origin archive fetches. In project `.mcp.json` files, `headersHelper` requires that the project folder's trust dialog has been accepted, and it runs without inherited credential environment variables.
-
-## What's new in v2.1.247
-
-MCP server configuration failures are now better reported: on Bedrock, Vertex AI, and Foundry sessions (and any with telemetry disabled), Claude is now informed when a configured MCP server failed to connect, instead of the system incorrectly concluding that the server's tools don't exist.
-
-## What's new in v2.1.259
-
-2.1.259 introduces `managedMcpServers`: organizations can provide HTTP/SSE MCP servers to every user (same entry shape as `.mcp.json`); entries that name a command to run are skipped. The `allowedMcpServers` setting now governs only servers users add; a literal `managed-mcp.json` server your allowlist used to filter out now loads on upgrade. Use `deniedMcpServers` to keep it off.
