@@ -1,3 +1,17 @@
+- id: "2.1.286"
+  version: "2.1.286"
+  date: "2026-10-01"
+  entry:
+    en: "Version 2.1.286 adds permission request stacking indicators and improves
+      prompt consistency across permission types. The /hooks command is now
+      streamlined with a single grouped list view. Subagent messages and
+      send-now behavior have been improved for better usability."
+    no: "Versjon 2.1.286 legger til indikatorer for stablet tillatelseforespørsler
+      og forbedrer konsistensen i meldinger på tvers av tillatelsetyper.
+      Kommandoen /hooks er nå strømlinjeformet med en enkelt gruppert
+      listevisning. Underagent-meldinger og send-nå-oppførsel er forbedret for
+      bedre brukbarhet."
+  sources: []
 - id: "2.1.267"
   version: "2.1.267"
   date: "2026-09-10"
