@@ -427,3 +427,19 @@
   note: "Flag to control system prompt reuse behavior; `off` renders fresh on
     every request instead of caching from conversation (new in 2.1.267); kept as
     English command identifier"
+- id: "claude-mods"
+  en: "Claude Mods"
+  no: "Claude Mods"
+  note: "Plugins that modify deeper behavior of Claude Code sessions. Kept as
+    English technical term as it is a proper product name."
+- id: "you-should-know"
+  en: "You should know"
+  no: "You should know"
+  note: "Built-in mod that watches sessions and flags potentially missed issues.
+    Kept as English as it is a proper feature name
+    (cc-plugin-you-should-know@builtin)."
+- id: "bareelicitationcapability"
+  en: "bareElicitationCapability"
+  no: "bareElicitationCapability"
+  note: "MCP server configuration field for handling URL prompts from the
+    2025-11-25 protocol. Kept as English configuration identifier."
