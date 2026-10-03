@@ -1,3 +1,18 @@
+- id: "2.1.288"
+  version: "2.1.288"
+  date: "2026-10-03"
+  entry:
+    en: "Added `$.ui.selection()` for mods to access user text selections in
+      fullscreen mode. Improved auto mode, screen reader mode, and numerous
+      fixes for session recovery, plugin handling, MCP tool calls, and
+      cross-session messaging. Enhanced support for platform-native features and
+      structured outputs."
+    no: "Lagt til `$.ui.selection()` for mods for å få tilgang til bruker-tekstvalg
+      i fullskjerm-modus. Forbedret auto-modus, skjermleser-modus og mange
+      rettinger for økt-gjenoppretting, plugin-håndtering, MCP-verktøykall og
+      meldinger på tvers av økter. Bedre støtte for plattformspesifikke
+      funksjoner og strukturert output."
+  sources: []
 - id: "2.1.267"
   version: "2.1.267"
   date: "2026-09-10"
