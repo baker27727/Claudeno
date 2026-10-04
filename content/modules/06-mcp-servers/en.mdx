@@ -120,3 +120,7 @@ MCP server configuration failures are now better reported: on Bedrock, Vertex AI
 ## What's new in v2.1.259
 
 2.1.259 introduces `managedMcpServers`: organizations can provide HTTP/SSE MCP servers to every user (same entry shape as `.mcp.json`); entries that name a command to run are skipped. The `allowedMcpServers` setting now governs only servers users add; a literal `managed-mcp.json` server your allowlist used to filter out now loads on upgrade. Use `deniedMcpServers` to keep it off.
+
+## What's new in v2.1.289
+
+Added support for `headersHelper` field in MCP server marketplace configuration, allowing commands to mint HTTP headers (e.g. short-lived tokens) for catalog and archive fetches during plugin resolution.

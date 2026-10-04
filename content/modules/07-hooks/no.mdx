@@ -168,3 +168,7 @@ To nye hook-hendelser er nå tilgjengelige: `PreModelSwitch` og `PostModelSwitch
 ## Nytt i v2.1.252
 
 To nye hook-ereignisse er nå tilgjengelige: `PreModelSwitch` (aktiveres før en modellbytting og lar deg blokkere, bekrefte eller merke den) og `PostModelSwitch` (aktiveres etter at en modellbytting er fullført). I tillegg mottar `SessionStart` resume-hooks nå økt-foreldelse og den estimerte omlagringskostnaden.
+
+## Nytt i v2.1.289
+
+Fikset hook-matching og PreToolUse/PermissionRequest hook-påkalling til å ikke lenger hoppe over når matching mislykkes eller verktøy-inndata ikke kan serialiseres til JSON; verktøy-kallet blokkeres nå i stedet.

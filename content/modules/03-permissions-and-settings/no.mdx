@@ -210,3 +210,7 @@ Nytt i 2.1.261: bashOutputMaxChars- og taskOutputMaxChars-innstillinger lar deg 
 ## Nytt i v2.1.267
 
 Den nye `maxEffortLevel`-innstillingen (øverst eller per modell under `modelSettings`) begrenser innsatsnivået på alle leverandører, inkludert Bedrock, Vertex og Foundry; brukere kan fortsatt velge et lavere nivå. Administrerte innstillinger for `allowedHttpHookUrls`, `httpHookAllowedEnvVars` og `allowedChannelPlugins` tillater nå korrekt ingenting (i stedet for alt) når de ikke kan leses.
+
+## Nytt i v2.1.289
+
+Forbedret Bash-tillatelsseregler til å håndtere miljøvariabel-ekspansjoner i kommandoprefiks og bare variabeltildelinger før kommandoer i sandkasse auto-allow modus. Lagt til `sandbox.filesystem.disabled`-innstilling for å hoppe over filsystem-isolasjon mens nettverksutsgreskontroll opprettholdes.

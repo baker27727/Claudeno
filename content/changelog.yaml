@@ -1,3 +1,16 @@
+- id: "2.1.289"
+  version: "2.1.289"
+  date: "2026-10-04"
+  entry:
+    en: "Fixed permission rules for nested shell commands, Bash variable handling in
+      sandbox mode, and plugin hook invocation. Added headersHelper support for
+      MCP marketplace header generation and /skill-doctor command for skill
+      optimization."
+    no: "Fikset tillatelsseregler for nestede shell-kommandoer,
+      Bash-variabel-håndtering i sandkasse-modus, og plugin hook-påkalling. Lagt
+      til headersHelper-støtte for MCP-markedsplass headergenering og
+      /skill-doctor-kommando for ferdighetsoptimalisering."
+  sources: []
 - id: "2.1.267"
   version: "2.1.267"
   date: "2026-09-10"
